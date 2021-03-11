@@ -1,24 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios"
+
+switch (process.env.NODE_ENV) {
+  case 'development':
+    axios.defaults.baseURL = 'http://localhost:3000/api';
+    break;
+  case 'production':
+    axios.defaults.baseURL = 'https://reword-web.herokuapp.com/api';
+    break;
+  default:
+    axios.defaults.baseURL = 'http://localhost:3000/api';
+}
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
     </div>
   );
 }
