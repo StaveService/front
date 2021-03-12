@@ -7,13 +7,13 @@ import "./index.css"
 
 switch (process.env.NODE_ENV) {
   case "development":
-    axios.defaults.baseURL = "http://localhost:3000/api"
+    axios.defaults.baseURL = "http://localhost:3000"
     break
   case "production":
-    axios.defaults.baseURL = "https://reword-web.herokuapp.com/api"
+    axios.defaults.baseURL = ""
     break
   default:
-    axios.defaults.baseURL = "http://localhost:3000/api"
+    axios.defaults.baseURL = "http://localhost:3000"
 }
 
 ReactDOM.render(
