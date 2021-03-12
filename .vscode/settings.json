@@ -1,0 +1,25 @@
+{
+  "files.associations": {
+    ".babelrc": "jsonc",
+    ".eslintrc": "jsonc",
+    ".prettierrc": "jsonc",
+    ".stylelintrc": "json",
+    ".dockerignore": "ignore",
+    ".eslintignore": "ignore"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.snippetSuggestions": "top",
+
+  "javascript.validate.enable": false,
+  "javascript.format.enable": false,
+  "typescript.format.enable": false,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "workbench.editorAssociations": [
+  
+  ]
+}
