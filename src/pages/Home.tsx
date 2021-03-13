@@ -1,9 +1,5 @@
-import React, {useState} from "react"
-import axios from "axios"
+import React from 'react';
 
-const Home = () => {
-  const [users, setUsers] = useState([])
-  return <p>home</p>
-}
+const Home:React.FC = () => <p>home</p>;
 
-export default Home
+export default Home;
