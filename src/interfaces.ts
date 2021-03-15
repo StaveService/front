@@ -24,6 +24,8 @@ export interface ISignInFormValues {
 }
 
 export interface ISignUpFormValues extends ISignInFormValues {
-  name: string
+  nickname: string
+  firstname: string
+  lastname: string
   passwordConfirmation: string
 }
