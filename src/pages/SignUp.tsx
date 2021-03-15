@@ -6,11 +6,12 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import ControlTextField from '../components/ControlTextField';
 import LoadingButton from '../components/LoadingButton';
+import { ISignUpFormValues } from '../interfaces';
 
 const SignUp:React.FC = () => {
   const { errors, control, handleSubmit } = useForm();
-  const onSubmit = () => {
-    console.log('data');
+  const onSubmit = (data: SubmitHandler<ISignUpFormValues>) => {
+    console.log(data);
   };
   return (
     <Container maxWidth="xs">
