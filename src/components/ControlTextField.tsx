@@ -1,31 +1,35 @@
-import React from 'react';
-import {
-  Control, DeepMap, FieldError, useController,
-} from 'react-hook-form';
-import { ErrorMessage } from '@hookform/error-message';
-import TextField from '@material-ui/core/TextField';
+import React from "react";
+import { Control, DeepMap, FieldError, useController } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
+import TextField from "@material-ui/core/TextField";
 
 interface IControlTextFieldProps {
   // html5 props
-  name: string
-  defaultValue: string
-  type?: 'text' | 'email' | 'password'
-  autoComplete?: 'off' | 'on' | 'given-name' | 'family-name' | 'nickname' | 'new-password'
+  name: string;
+  defaultValue: string;
+  type?: "text" | "email" | "password";
+  autoComplete?:
+    | "off"
+    | "on"
+    | "given-name"
+    | "family-name"
+    | "nickname"
+    | "new-password";
 
   // material-ui props
-  label: string
-  fullWidth?: boolean
-  disabled?: boolean
-  variant?: 'filled' | 'outlined' | 'standard'
+  label: string;
+  fullWidth?: boolean;
+  disabled?: boolean;
+  variant?: "filled" | "outlined" | "standard";
 
   // react-hook-form props
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<Record<string, any>>
+  control: Control<Record<string, any>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  errors: DeepMap<Record<string, any>, FieldError>
+  errors: DeepMap<Record<string, any>, FieldError>;
 }
 
-const ControlTextField:React.FC<IControlTextFieldProps> = ({
+const ControlTextField: React.FC<IControlTextFieldProps> = ({
   // html5 props
   type,
   name,
@@ -65,11 +69,11 @@ const ControlTextField:React.FC<IControlTextFieldProps> = ({
 };
 
 ControlTextField.defaultProps = {
-  type: 'text',
-  variant: 'standard',
+  type: "text",
+  variant: "standard",
   disabled: false,
   fullWidth: false,
-  autoComplete: 'off',
+  autoComplete: "off",
 };
 
 export default ControlTextField;

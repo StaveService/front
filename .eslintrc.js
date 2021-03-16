@@ -4,13 +4,15 @@ module.exports = {
     es2021: true,
   },
   extends: [
-    'plugin:react/recommended',
+    'prettier',
     'airbnb',
+    'plugin:react/recommended',
+    'plugin:prettier/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
     'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking'
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -21,8 +23,16 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'import'],
+  plugins: ['react', '@typescript-eslint', 'import', "prettier"],
   rules: {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      },
+    ],
+    "arrow-body-style": "off",
+    "prefer-arrow-callback": "off",
     'linebreak-style': 'off',
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': 'off',

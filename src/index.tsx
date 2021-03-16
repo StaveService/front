@@ -1,26 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import axios from 'axios';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom";
+import axios from "axios";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import "./index.css";
 
 switch (process.env.NODE_ENV) {
-  case 'development':
-    axios.defaults.baseURL = 'http://localhost:3000';
+  case "development":
+    axios.defaults.baseURL = "http://localhost:3000";
     break;
-  case 'production':
-    axios.defaults.baseURL = '';
+  case "production":
+    axios.defaults.baseURL = "";
     break;
   default:
-    axios.defaults.baseURL = 'http://localhost:3000';
+    axios.defaults.baseURL = "http://localhost:3000";
 }
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root'),
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

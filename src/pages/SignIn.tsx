@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import ControlTextField from '../components/ControlTextField';
-import LoadingButton from '../components/LoadingButton';
-import { ISignInFormValues } from '../interfaces';
-import { signInSchema } from '../schema';
+import React, { useState } from "react";
+import axios from "axios";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Container from "@material-ui/core/Container";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import ControlTextField from "../components/ControlTextField";
+import LoadingButton from "../components/LoadingButton";
+import { ISignInFormValues } from "../interfaces";
+import { signInSchema } from "../schema";
 
-const SignIn:React.FC = () => {
+const SignIn: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const { errors, control, handleSubmit } = useForm({ resolver: yupResolver(signInSchema) });
-  const onSubmit = async (data:SubmitHandler<ISignInFormValues>) => {
+  const { errors, control, handleSubmit } = useForm({
+    resolver: yupResolver(signInSchema),
+  });
+  const onSubmit = async (data: SubmitHandler<ISignInFormValues>) => {
     setLoading(true);
     try {
-      const res = await axios.post('/auth/sign_in', data);
+      const res = await axios.post("/auth/sign_in", data);
       console.log(res);
     } catch (err) {
       console.log(err);
@@ -28,15 +30,18 @@ const SignIn:React.FC = () => {
     <Container maxWidth="xs">
       <Paper variant="outlined">
         <Box m={3}>
-          <Typography variant="h4" align="center">SignIn</Typography>
+          <Typography variant="h4" align="center">
+            SignIn
+          </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ControlTextField
               type="email"
               name="email"
+              defaultValue=""
+              autoComplete="on"
               label="Email"
               variant="outlined"
               control={control}
-              defaultValue=""
               errors={errors}
               disabled={loading}
               fullWidth
@@ -52,9 +57,7 @@ const SignIn:React.FC = () => {
               disabled={loading}
               fullWidth
             />
-            <LoadingButton loading={loading}>
-              SignIn
-            </LoadingButton>
+            <LoadingButton loading={loading}>SignIn</LoadingButton>
           </form>
         </Box>
       </Paper>

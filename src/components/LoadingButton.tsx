@@ -1,11 +1,11 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import React from "react";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 interface ILoadingButton {
   loading: boolean;
   children: React.ReactNode;
-  color?: 'primary' | 'secondary';
+  color?: "primary" | "secondary";
   fullWidth?: boolean;
   onClick?: () => void;
 }
@@ -20,9 +20,7 @@ const LoadingButton: React.FC<ILoadingButton> = ({
     type="submit"
     variant="contained"
     color={color}
-    startIcon={
-        loading && <CircularProgress size={20} />
-    }
+    startIcon={loading && <CircularProgress size={20} />}
     disabled={loading}
     disableElevation
     fullWidth={fullWidth}
@@ -32,7 +30,7 @@ const LoadingButton: React.FC<ILoadingButton> = ({
   </Button>
 );
 LoadingButton.defaultProps = {
-  color: 'primary',
+  color: "primary",
   fullWidth: true,
   onClick: undefined,
 };

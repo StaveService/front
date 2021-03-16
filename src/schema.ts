@@ -1,4 +1,4 @@
-import * as yup from 'yup';
+import * as yup from "yup";
 
 const email = yup.string().email().required();
 const required = yup.string().required();
@@ -13,10 +13,7 @@ const signUpSchema = yup.object().shape({
   familyname: required,
   givenname: required,
   password,
-  passwordConfirmation: yup.string().oneOf([yup.ref('password'), null]),
+  passwordConfirmation: yup.string().oneOf([yup.ref("password"), null]),
 });
 
-export {
-  signInSchema,
-  signUpSchema,
-};
+export { signInSchema, signUpSchema };

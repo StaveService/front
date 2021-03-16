@@ -1,5 +1,5 @@
-import React from 'react';
+import React from "react";
 
-const Root:React.FC = () => <p>root</p>;
+const Root: React.FC = () => <p>root</p>;
 
 export default Root;

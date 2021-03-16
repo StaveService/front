@@ -1,9 +1,9 @@
-import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import Routes from './router/Routes';
-import Header from './components/Header';
+import React from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import Routes from "./router/Routes";
+import Header from "./components/Header";
 
-const App:React.FC = () => (
+const App: React.FC = () => (
   <Router>
     <Header />
     <Routes />
