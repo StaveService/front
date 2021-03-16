@@ -6,13 +6,19 @@ import { ErrorMessage } from '@hookform/error-message';
 import TextField from '@material-ui/core/TextField';
 
 interface IControlTextFieldProps {
-  type: string
+  // html5 props
   name: string
-  label: string
   defaultValue: string
+  type?: 'text' | 'email' | 'password'
+  autoComplete?: 'off' | 'on' | 'given-name' | 'family-name' | 'nickname' | 'new-password'
+
+  // material-ui props
+  label: string
   fullWidth?: boolean
   disabled?: boolean
   variant?: 'filled' | 'outlined' | 'standard'
+
+  // react-hook-form props
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<Record<string, any>>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,15 +26,19 @@ interface IControlTextFieldProps {
 }
 
 const ControlTextField:React.FC<IControlTextFieldProps> = ({
+  // html5 props
   type,
   name,
-  label,
-  control,
   defaultValue,
+  autoComplete,
+  // material-ui props
+  label,
   fullWidth,
   disabled,
   variant,
+  // react-hook-form props
   errors,
+  control,
 }: IControlTextFieldProps) => {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -41,6 +51,7 @@ const ControlTextField:React.FC<IControlTextFieldProps> = ({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       value={value}
       inputRef={ref}
+      autoComplete={autoComplete}
       error={invalid}
       label={label}
       disabled={disabled}
@@ -54,9 +65,11 @@ const ControlTextField:React.FC<IControlTextFieldProps> = ({
 };
 
 ControlTextField.defaultProps = {
+  type: 'text',
   variant: 'standard',
   disabled: false,
   fullWidth: false,
+  autoComplete: 'off',
 };
 
 export default ControlTextField;

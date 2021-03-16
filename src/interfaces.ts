@@ -25,8 +25,8 @@ export interface ISignInFormValues {
 
 export interface ISignUpFormValues extends ISignInFormValues {
   nickname: string
-  firstname: string
-  lastname: string
+  familyname: string
+  givenname: string
   // eslint-disable-next-line camelcase
   password_confirmation: string
 }
