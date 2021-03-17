@@ -25,6 +25,7 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint', 'import', "prettier"],
   rules: {
+    'no-param-reassign': ['error', { props: false }],
     "prettier/prettier": [
       "error",
       {

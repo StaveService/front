@@ -1,30 +1,37 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import { ISignInFormValues, IUserSuccessResponse } from "../interfaces";
+import { signInSchema } from "../schema";
+import { setHeaders, setCurrentUser } from "../slices/currentUser";
 import ControlTextField from "../components/ControlTextField";
 import LoadingButton from "../components/LoadingButton";
-import { ISignInFormValues } from "../interfaces";
-import { signInSchema } from "../schema";
 
 const SignIn: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const history = useHistory();
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(signInSchema),
   });
-  const onSubmit = async (data: SubmitHandler<ISignInFormValues>) => {
+  const onSubmit = (data: SubmitHandler<ISignInFormValues>) => {
     setLoading(true);
-    try {
-      const res = await axios.post("/auth/sign_in", data);
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
-    setLoading(false);
+    axios
+      .post<IUserSuccessResponse>("/auth/sign_in", data)
+      .then((res) => {
+        dispatch(setCurrentUser(res.data.data));
+        dispatch(setHeaders(res.headers));
+        history.push("/");
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
   };
   return (
     <Container maxWidth="xs">

@@ -1,6 +1,5 @@
 {
   "ROOT": "/",
-  "HOME": "/home",
   "SIGNUP": "/signup",
   "SIGNIN": "/signin"
 }

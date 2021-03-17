@@ -20,7 +20,7 @@ const SignUp: React.FC = () => {
   const onSubmit = async (data: SubmitHandler<ISignUpFormValues>) => {
     setLoading(true);
     try {
-      const res = await axios.post("/auth/sign_in", data);
+      const res = await axios.post("/auth", data);
       console.log(res);
     } catch (err) {
       console.log(err);

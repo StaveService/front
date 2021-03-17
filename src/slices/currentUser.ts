@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ITokenHeaders, IUser } from '../interfaces';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ITokenHeaders, IUser } from "../interfaces";
 /* eslint-disable import/no-cycle */
-import { RootState } from '../store';
+import { RootState } from "../store";
 
 interface ICurrentUser {
   currentUser: null | IUser;
@@ -10,7 +10,7 @@ interface ICurrentUser {
 const initialState: ICurrentUser = { currentUser: null, headers: null };
 
 const currentUserSlice = createSlice({
-  name: 'currentUser',
+  name: "currentUser",
   initialState,
   reducers: {
     setCurrentUser: (state, action: PayloadAction<IUser>) => {
@@ -18,15 +18,15 @@ const currentUserSlice = createSlice({
     },
     setHeaders: (state, action: PayloadAction<ITokenHeaders>) => {
       const {
-        'content-type': contentType,
-        'access-token': accessToken,
+        "content-type": contentType,
+        "access-token": accessToken,
         client,
         uid,
       } = action.payload;
       state.headers = {
         headers: {
-          'content-type': contentType,
-          'access-token': accessToken,
+          "content-type": contentType,
+          "access-token": accessToken,
           client,
           uid,
         },
