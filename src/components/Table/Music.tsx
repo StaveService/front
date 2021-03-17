@@ -41,8 +41,12 @@ const Music: React.FC = () => {
             <TableRow key={row.id}>
               <TableCell>{row.title}</TableCell>
               <TableCell>{row.band?.name}</TableCell>
-              <TableCell />
-              <TableCell />
+              <TableCell>
+                {row.music_composers?.map((composer) => composer.name)}
+              </TableCell>
+              <TableCell>
+                {row.music_lyrists?.map((lyrist) => lyrist.name)}
+              </TableCell>
               <TableCell>{row.user?.nickname}</TableCell>
             </TableRow>
           ))}

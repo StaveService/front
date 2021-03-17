@@ -32,7 +32,14 @@ export interface IMusic {
   ["created_at"]: string;
   ["updated_at"]: string;
   user?: IUser;
-  band: IBand;
+  band?: IBand;
+  ["music_composers"]?: IArtist[];
+  ["music_lyrists"]?: IArtist[];
+}
+
+export interface IArtist {
+  id: number;
+  name: string;
 }
 
 export interface ISignInFormValues {
