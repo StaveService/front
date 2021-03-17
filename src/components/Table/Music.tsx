@@ -17,10 +17,7 @@ const Music: React.FC = () => {
     setLoading(true);
     axios
       .get<IMusic[]>("/musics")
-      .then((res) => {
-        console.log(res);
-        setRows(res.data);
-      })
+      .then((res) => setRows(res.data))
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
