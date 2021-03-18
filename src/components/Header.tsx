@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import Link from "@material-ui/core/Link";
+import routes from "../router/routes.json";
 
 const Header: React.FC = () => (
   <AppBar position="static" color="default">
@@ -15,12 +16,28 @@ const Header: React.FC = () => (
           Stave
         </Link>
       </Typography>
+      <Button
+        color="inherit"
+        variant="contained"
+        component={RouterLink}
+        to={routes.ARTISTS}
+      >
+        Artists
+      </Button>
+      <Button
+        color="inherit"
+        variant="contained"
+        component={RouterLink}
+        to="/musics"
+      >
+        Musics
+      </Button>
       <Box ml="auto">
         <Button
           color="inherit"
           variant="contained"
           component={RouterLink}
-          to="/signin"
+          to={routes.SIGNIN}
         >
           SignIn
         </Button>
@@ -28,7 +45,7 @@ const Header: React.FC = () => (
           color="inherit"
           variant="contained"
           component={RouterLink}
-          to="/signup"
+          to={routes.SIGNUP}
         >
           SignUp
         </Button>

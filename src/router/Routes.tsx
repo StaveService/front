@@ -4,9 +4,11 @@ import routes from "./routes.json";
 import Root from "../pages/Root";
 import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
+import Artists from "../pages/Artists";
 
 const Routes: React.FC = () => (
   <Switch>
+    <Route path={routes.ARTISTS} component={Artists} />
     <Route path={routes.SIGNIN} component={SignIn} />
     <Route path={routes.SIGNUP} component={SignUp} />
     <Route path={routes.ROOT} component={Root} />
