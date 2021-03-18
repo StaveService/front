@@ -28,9 +28,9 @@ export interface IMusic {
   id: number;
   title: string;
   bpm: number;
-  length: number;
-  ["created_at"]: string;
-  ["updated_at"]: string;
+  length: string;
+  ["created_at"]?: string;
+  ["updated_at"]?: string;
   user?: IUser;
   band?: IBand;
   ["music_composers"]?: IArtist[];

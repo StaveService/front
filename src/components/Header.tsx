@@ -16,22 +16,6 @@ const Header: React.FC = () => (
           Stave
         </Link>
       </Typography>
-      <Button
-        color="inherit"
-        variant="contained"
-        component={RouterLink}
-        to={routes.ARTISTS}
-      >
-        Artists
-      </Button>
-      <Button
-        color="inherit"
-        variant="contained"
-        component={RouterLink}
-        to="/musics"
-      >
-        Musics
-      </Button>
       <Box ml="auto">
         <Button
           color="inherit"

@@ -2,5 +2,12 @@
   "ROOT": "/",
   "SIGNUP": "/signup",
   "SIGNIN": "/signin",
-  "ARTISTS": "/artists"
+  "ARTISTS": "/artists",
+  "ARTIST": "/artist/",
+  "MUSICS": "/musics",
+  "MUSIC": "/music/",
+  "BANDS": "/bands",
+  "BAND": "/band/",
+  "USERS" : "/users",
+  "USER" : "/user/"
 }
