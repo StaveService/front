@@ -10,17 +10,19 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
-import { IArtist } from "../../interfaces";
-import routes from "../../router/routes.json";
+import { IUser } from "../../../interfaces";
+import routes from "../../../router/routes.json";
 
-const Artist: React.FC = () => {
+const Users: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState<IArtist[]>([]);
+  const [rows, setRows] = useState<IUser[]>([]);
   useEffect(() => {
     setLoading(true);
     axios
-      .get<IArtist[]>("/artists")
+      .get<IUser[]>("/users")
       .then((res) => setRows(res.data))
+      // TODO:
+      // eslint-disable-next-line no-console
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
@@ -36,8 +38,8 @@ const Artist: React.FC = () => {
           {rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell>
-                <Link component={RouterLink} to={`${routes.ARTIST}${row.id}`}>
-                  {row.name}
+                <Link component={RouterLink} to={`${routes.USER}${row.id}`}>
+                  {row.nickname}
                 </Link>
               </TableCell>
             </TableRow>
@@ -49,4 +51,4 @@ const Artist: React.FC = () => {
   );
 };
 
-export default Artist;
+export default Users;

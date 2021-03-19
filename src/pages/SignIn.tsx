@@ -30,6 +30,8 @@ const SignIn: React.FC = () => {
         dispatch(setHeaders(res.headers));
         history.push("/");
       })
+      // TODO:
+      // eslint-disable-next-line no-console
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   };

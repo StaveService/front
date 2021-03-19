@@ -1,11 +1,12 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
-import BandTable from "../../components/Table/Band";
+import BandsTable from "../../components/Table/Band/Index";
 
 const Index: React.FC = () => {
   return (
     <Container>
-      <BandTable />
+      <p>/bands</p>
+      <BandsTable />
     </Container>
   );
 };

@@ -10,10 +10,10 @@ import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { IMusic } from "../../interfaces";
-import routes from "../../router/routes.json";
+import { IMusic } from "../../../interfaces";
+import routes from "../../../router/routes.json";
 
-const Music: React.FC = () => {
+const Musics: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<IMusic[]>([]);
   useEffect(() => {
@@ -21,6 +21,8 @@ const Music: React.FC = () => {
     axios
       .get<IMusic[]>("/musics")
       .then((res) => setRows(res.data))
+      // TODO:
+      // eslint-disable-next-line no-console
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
@@ -104,7 +106,7 @@ const Music: React.FC = () => {
                 <TableCell>
                   <Link
                     component={RouterLink}
-                    to={`${routes.USERS}${user?.id || "undefined"}`}
+                    to={`${routes.USER}${user?.id || "undefined"}`}
                   >
                     {user?.nickname}
                   </Link>
@@ -119,4 +121,4 @@ const Music: React.FC = () => {
   );
 };
 
-export default Music;
+export default Musics;

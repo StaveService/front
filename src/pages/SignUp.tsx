@@ -17,15 +17,17 @@ const SignUp: React.FC = () => {
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(signUpSchema),
   });
-  const onSubmit = async (data: SubmitHandler<ISignUpFormValues>) => {
+  const onSubmit = (data: SubmitHandler<ISignUpFormValues>) => {
     setLoading(true);
-    try {
-      const res = await axios.post("/auth", data);
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
-    setLoading(false);
+    axios
+      .post("/auth", data)
+      // TODO:
+      // eslint-disable-next-line no-console
+      .then((res) => console.log(res))
+      // TODO:
+      // eslint-disable-next-line no-console
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
   };
   return (
     <Container maxWidth="xs">

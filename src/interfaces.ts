@@ -17,11 +17,13 @@ export interface IUser {
   gender: number | null;
   introduction: string | null;
   ["created_at"]: string;
+  musics?: IMusic[];
 }
 
 export interface IBand {
   id: number;
   name: string;
+  artists?: IArtist[];
 }
 
 export interface IMusic {
@@ -33,6 +35,7 @@ export interface IMusic {
   ["updated_at"]?: string;
   user?: IUser;
   band?: IBand;
+  roles?: IRole[];
   ["music_composers"]?: IArtist[];
   ["music_lyrists"]?: IArtist[];
 }
@@ -40,6 +43,13 @@ export interface IMusic {
 export interface IArtist {
   id: number;
   name: string;
+  musics?: IMusic[];
+}
+
+export interface IRole {
+  id: number;
+  role: string;
+  artist: IArtist;
 }
 
 export interface ISignInFormValues {

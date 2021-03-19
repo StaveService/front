@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -10,10 +10,10 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
-import { IBand } from "../../interfaces";
-import routes from "../../router/routes.json";
+import { IBand } from "../../../interfaces";
+import routes from "../../../router/routes.json";
 
-const Band: React.FC = () => {
+const Bands: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<IBand[]>([]);
   useEffect(() => {
@@ -21,6 +21,8 @@ const Band: React.FC = () => {
     axios
       .get<IBand[]>("/bands")
       .then((res) => setRows(res.data))
+      // TODO:
+      // eslint-disable-next-line no-console
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
@@ -49,4 +51,4 @@ const Band: React.FC = () => {
   );
 };
 
-export default Band;
+export default Bands;

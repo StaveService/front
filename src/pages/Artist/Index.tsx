@@ -1,11 +1,11 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
-import ArtistTable from "../../components/Table/Artist";
+import ArtistsTable from "../../components/Table/Artist/Index";
 
 const Index: React.FC = () => {
   return (
     <Container>
-      <ArtistTable />
+      <ArtistsTable />
     </Container>
   );
 };
