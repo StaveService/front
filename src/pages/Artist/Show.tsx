@@ -26,16 +26,65 @@ const Show: React.FC = () => {
       // TODO:
       // eslint-disable-next-line no-console
       .catch((err) => console.log(err));
-  }, []);
+  }, [params]);
+  console.log(artist);
   if (!artist?.id) return <LinearProgress />;
+
   return (
     <Container>
       <Typography variant="h3">{artist.name}</Typography>
+      <Typography variant="h3">Band</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Band</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {artist.bands?.map((band) => (
+              <TableRow key={band.id}>
+                <TableCell>
+                  <Link component={RouterLink} to={`${routes.BAND}${band.id}`}>
+                    {band.name}
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Typography variant="h3">Album</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Band</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {artist.albums?.map((album) => (
+              <TableRow key={album.id}>
+                <TableCell>
+                  <Link component={RouterLink} to={`${routes.BAND}${album.id}`}>
+                    {album.title}
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Typography variant="h3">Music</Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Music</TableCell>
+              <TableCell>Composer</TableCell>
+              <TableCell>Lyrist</TableCell>
               <TableCell>User</TableCell>
             </TableRow>
           </TableHead>
@@ -51,6 +100,28 @@ const Show: React.FC = () => {
                   >
                     {music.title}
                   </Link>
+                </TableCell>
+                <TableCell>
+                  {music.music_composers?.map((composer) => (
+                    <Link
+                      key={composer.id}
+                      component={RouterLink}
+                      to={`${routes.ARTIST}${composer.id}`}
+                    >
+                      {composer.name}
+                    </Link>
+                  ))}
+                </TableCell>
+                <TableCell>
+                  {music.music_lyrists?.map((lyrist) => (
+                    <Link
+                      key={lyrist.id}
+                      component={RouterLink}
+                      to={`${routes.ARTIST}${lyrist.id}`}
+                    >
+                      {lyrist.name}
+                    </Link>
+                  ))}
                 </TableCell>
                 <TableCell>
                   <Link

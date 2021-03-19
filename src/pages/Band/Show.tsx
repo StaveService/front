@@ -55,6 +55,65 @@ const Show: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Typography variant="h3">Music</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Music</TableCell>
+              <TableCell>Composer</TableCell>
+              <TableCell>Lyrist</TableCell>
+              <TableCell>User</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {band.musics?.map((music) => (
+              <TableRow key={music.id}>
+                <TableCell>
+                  <Link
+                    component={RouterLink}
+                    to={`${routes.USER}${music.user?.id || "undefined"}${
+                      routes.MUSIC
+                    }${music.id}`}
+                  >
+                    {music.title}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  {music.music_composers?.map((composer) => (
+                    <Link
+                      key={composer.id}
+                      component={RouterLink}
+                      to={`${routes.ARTIST}${composer.id}`}
+                    >
+                      {composer.name}
+                    </Link>
+                  ))}
+                </TableCell>
+                <TableCell>
+                  {music.music_lyrists?.map((lyrist) => (
+                    <Link
+                      key={lyrist.id}
+                      component={RouterLink}
+                      to={`${routes.ARTIST}${lyrist.id}`}
+                    >
+                      {lyrist.name}
+                    </Link>
+                  ))}
+                </TableCell>
+                <TableCell>
+                  <Link
+                    component={RouterLink}
+                    to={`${routes.USER}${music.user?.id || "undefined"}`}
+                  >
+                    {music.user?.nickname}
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Container>
   );
 };

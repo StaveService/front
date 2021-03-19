@@ -35,6 +35,9 @@ const Show: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell>Music</TableCell>
+              <TableCell>Band</TableCell>
+              <TableCell>Composer</TableCell>
+              <TableCell>Lyrist</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -47,6 +50,36 @@ const Show: React.FC = () => {
                   >
                     {music.title}
                   </Link>
+                </TableCell>
+                <TableCell>
+                  <Link
+                    component={RouterLink}
+                    to={`${routes.BAND}${music.band?.id || "undefined"}`}
+                  >
+                    {music.band?.name}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  {music.music_composers?.map((composer) => (
+                    <Link
+                      key={composer.id}
+                      component={RouterLink}
+                      to={`${routes.ARTIST}${composer.id}`}
+                    >
+                      {composer.name}
+                    </Link>
+                  ))}
+                </TableCell>
+                <TableCell>
+                  {music.music_lyrists?.map((lyrist) => (
+                    <Link
+                      key={lyrist.id}
+                      component={RouterLink}
+                      to={`${routes.ARTIST}${lyrist.id}`}
+                    >
+                      {lyrist.name}
+                    </Link>
+                  ))}
                 </TableCell>
               </TableRow>
             ))}

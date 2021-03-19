@@ -24,6 +24,7 @@ export interface IBand {
   id: number;
   name: string;
   artists?: IArtist[];
+  musics?: IMusic[];
 }
 
 export interface IMusic {
@@ -44,6 +45,14 @@ export interface IArtist {
   id: number;
   name: string;
   musics?: IMusic[];
+  albums?: IAlbum[];
+  bands?: IBand[];
+}
+
+export interface IAlbum {
+  id: number;
+  title: string;
+  ["release_date"]: string;
 }
 
 export interface IRole {
