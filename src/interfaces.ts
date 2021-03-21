@@ -1,3 +1,5 @@
+export type MenuCardType = "Artist" | "Album" | "Music" | "Band";
+
 export interface ITokenHeaders {
   ["content-type"]: string;
   ["access-token"]: string;
@@ -37,6 +39,7 @@ export interface IMusic {
   user?: IUser;
   band?: IBand;
   roles?: IRole[];
+  albums?: IAlbum[];
   ["music_composers"]?: IArtist[];
   ["music_lyrists"]?: IArtist[];
 }

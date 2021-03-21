@@ -27,7 +27,7 @@ const Show: React.FC = () => {
       // eslint-disable-next-line no-console
       .catch((err) => console.log(err));
   }, [params]);
-  console.log(artist);
+
   if (!artist?.id) return <LinearProgress />;
 
   return (

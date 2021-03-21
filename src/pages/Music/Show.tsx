@@ -26,7 +26,9 @@ const Show: React.FC = () => {
       // eslint-disable-next-line no-console
       .catch((err) => console.log(err));
   }, []);
+
   if (!music?.id) return <LinearProgress />;
+
   return (
     <Container>
       <Typography variant="h3">{music.title}</Typography>
@@ -101,7 +103,7 @@ const Show: React.FC = () => {
         </Table>
       </TableContainer>
 
-      <Typography variant="h3">Artists</Typography>
+      <Typography variant="h3">Artist</Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -120,6 +122,31 @@ const Show: React.FC = () => {
                     to={`${routes.ARTIST}${role.artist.id}`}
                   >
                     {role.artist.name}
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Typography variant="h3">Album</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Album</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {music.albums?.map((album) => (
+              <TableRow key={album.id}>
+                <TableCell>
+                  <Link
+                    component={RouterLink}
+                    to={`${routes.ALBUM}${album.id}`}
+                  >
+                    {album.title}
                   </Link>
                 </TableCell>
               </TableRow>

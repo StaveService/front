@@ -7,10 +7,10 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Grid from "@material-ui/core/Grid";
-import ControlTextField from "../components/ControlTextField";
-import LoadingButton from "../components/LoadingButton";
-import { ISignUpFormValues } from "../interfaces";
-import { signUpSchema } from "../schema";
+import ControlTextField from "../../components/ControlTextField";
+import LoadingButton from "../../components/LoadingButton";
+import { ISignUpFormValues } from "../../interfaces";
+import { signUpSchema } from "../../schema";
 
 const SignUp: React.FC = () => {
   const [loading, setLoading] = useState(false);

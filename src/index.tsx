@@ -1,20 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
-
-switch (process.env.NODE_ENV) {
-  case "development":
-    axios.defaults.baseURL = "http://localhost:3000";
-    break;
-  case "production":
-    axios.defaults.baseURL = "";
-    break;
-  default:
-    axios.defaults.baseURL = "http://localhost:3000";
-}
 
 ReactDOM.render(
   <React.StrictMode>
