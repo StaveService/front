@@ -14,17 +14,19 @@ import { Typography } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { IBand } from "../../interfaces";
 import routes from "../../router/routes.json";
+import ArtistsTable from "../../components/Table/Artist/Index";
 
 const Show: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const [band, setBand] = useState<IBand>();
   const params = useParams<{ id: string; userId: string }>();
   useEffect(() => {
+    setLoading(true);
     axios
-      .get<IBand>(`/bands/${params.id}`)
+      .get<IBand>(`${routes.BANDS}/${params.id}`)
       .then((res) => setBand(res.data))
-      // TODO:
-      // eslint-disable-next-line no-console
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
   }, []);
 
   if (!band?.id) return <LinearProgress />;
@@ -32,29 +34,8 @@ const Show: React.FC = () => {
   return (
     <Container>
       <Typography variant="h3">{band.name}</Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Artist</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {band.artists?.map((artist) => (
-              <TableRow key={artist.id}>
-                <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.ARTISTS}${artist.id}`}
-                  >
-                    {artist.name}
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <ArtistsTable artists={band.artists || []} loading={loading} />
+
       <Typography variant="h3">Music</Typography>
       <TableContainer component={Paper}>
         <Table>

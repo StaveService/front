@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -13,31 +12,33 @@ import Link from "@material-ui/core/Link";
 import { IArtist } from "../../../interfaces";
 import routes from "../../../router/routes.json";
 
-const Artists: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState<IArtist[]>([]);
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get<IArtist[]>("/artists")
-      .then((res) => setRows(res.data))
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, []);
+interface IIndex {
+  artists: IArtist[];
+  loading: boolean;
+}
+
+const Index: React.FC<IIndex> = ({ artists, loading }: IIndex) => {
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
+            <TableCell>
+              <Link component={RouterLink} to={routes.ARTISTS}>
+                Artists
+              </Link>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
+          {artists.map((artist) => (
+            <TableRow key={artist.id}>
               <TableCell>
-                <Link component={RouterLink} to={`${routes.ARTISTS}/${row.id}`}>
-                  {row.name}
+                <Link
+                  component={RouterLink}
+                  to={`${routes.ARTISTS}/${artist.id}`}
+                >
+                  {artist.name}
                 </Link>
               </TableCell>
             </TableRow>
@@ -49,4 +50,4 @@ const Artists: React.FC = () => {
   );
 };
 
-export default Artists;
+export default Index;

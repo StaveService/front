@@ -56,6 +56,7 @@ export interface IAlbum {
   id: number;
   title: string;
   ["release_date"]: string;
+  musics?: IMusic[];
 }
 
 export interface IRole {

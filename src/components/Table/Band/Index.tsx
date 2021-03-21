@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -13,31 +12,30 @@ import Link from "@material-ui/core/Link";
 import { IBand } from "../../../interfaces";
 import routes from "../../../router/routes.json";
 
-const Bands: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState<IBand[]>([]);
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get<IBand[]>("/bands")
-      .then((res) => setRows(res.data))
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, []);
+interface IIndex {
+  bands: IBand[];
+  loading: boolean;
+}
+
+const Bands: React.FC<IIndex> = ({ bands, loading }: IIndex) => {
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
+            <TableCell>
+              <Link component={RouterLink} to={`${routes.BANDS}`}>
+                Band
+              </Link>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
+          {bands.map((band) => (
+            <TableRow key={band.id}>
               <TableCell>
-                <Link component={RouterLink} to={`${routes.BANDS}/${row.id}`}>
-                  {row.name}
+                <Link component={RouterLink} to={`${routes.BANDS}/${band.id}`}>
+                  {band.name}
                 </Link>
               </TableCell>
             </TableRow>

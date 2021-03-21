@@ -14,16 +14,21 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { IArtist } from "../../interfaces";
 import routes from "../../router/routes.json";
+import MusicsTable from "../../components/Table/Music/Index";
+import BandsTable from "../../components/Table/Band/Index";
 
 const Show: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const [artist, setArtist] = useState<IArtist>();
   const params = useParams<{ id: string }>();
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`/artists/${params.id}`)
       .then((res) => setArtist(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
   }, [params]);
 
   if (!artist?.id) return <LinearProgress />;
@@ -32,30 +37,8 @@ const Show: React.FC = () => {
     <Container>
       <Typography variant="h3">{artist.name}</Typography>
       <Typography variant="h3">Band</Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Band</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {artist.bands?.map((band) => (
-              <TableRow key={band.id}>
-                <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.BANDS}/${band.id}`}
-                  >
-                    {band.name}
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
 
+      <BandsTable bands={artist.bands || []} loading={loading} />
       <Typography variant="h3">Album</Typography>
       <TableContainer component={Paper}>
         <Table>
@@ -82,64 +65,7 @@ const Show: React.FC = () => {
       </TableContainer>
 
       <Typography variant="h3">Music</Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Music</TableCell>
-              <TableCell>Composer</TableCell>
-              <TableCell>Lyrist</TableCell>
-              <TableCell>User</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {artist.musics?.map((music) => (
-              <TableRow key={music.id}>
-                <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.USERS}/${music.user?.id || "undefined"}${
-                      routes.MUSICS
-                    }/${music.id}`}
-                  >
-                    {music.title}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  {music.music_composers?.map((composer) => (
-                    <Link
-                      key={composer.id}
-                      component={RouterLink}
-                      to={`${routes.ARTISTS}/${composer.id}`}
-                    >
-                      {composer.name}
-                    </Link>
-                  ))}
-                </TableCell>
-                <TableCell>
-                  {music.music_lyrists?.map((lyrist) => (
-                    <Link
-                      key={lyrist.id}
-                      component={RouterLink}
-                      to={`${routes.ARTISTS}/${lyrist.id}`}
-                    >
-                      {lyrist.name}
-                    </Link>
-                  ))}
-                </TableCell>
-                <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.USERS}/${music.user?.id || "undefined"}`}
-                  >
-                    {music.user?.nickname}
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <MusicsTable musics={artist.musics || []} loading={loading} />
     </Container>
   );
 };

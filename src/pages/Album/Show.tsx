@@ -1,22 +1,28 @@
-import Container from "@material-ui/core/Container";
-import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import MusicTable from "../../components/Table/Music/Index";
+import axios from "axios";
+import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
+import { IAlbum } from "../../interfaces";
 import routes from "../../router/routes.json";
+import MusicsTable from "../../components/Table/Music/Index";
 
 const Show: React.FC = () => {
-  const params = useParams();
+  const [loading, setLoading] = useState(false);
+  const [album, setAlbum] = useState<IAlbum>();
+  const params = useParams<{ id: string }>();
   useEffect(() => {
+    setLoading(true);
     axios
-      .get(routes.ALBUMS)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .get<IAlbum>(`${routes.ALBUMS}/${params.id}`)
+      .then((res) => setAlbum(res.data))
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
   }, []);
   return (
     <Container>
-      <p>Album Show</p>
-      <MusicTable />
+      <Typography variant="h3">{album?.title}</Typography>
+      <MusicsTable musics={album?.musics || []} loading={loading} />
     </Container>
   );
 };

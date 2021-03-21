@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -9,57 +8,56 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import { LinearProgress } from "@material-ui/core";
 import { IMusic } from "../../../interfaces";
 import routes from "../../../router/routes.json";
 
-const Musics: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState<IMusic[]>([]);
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get<IMusic[]>("/musics")
-      .then((res) => setRows(res.data))
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, []);
+interface IIndex {
+  musics: IMusic[];
+  loading: boolean;
+}
+
+const Index: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
+  const columns = [
+    {
+      route: routes.MUSICS,
+      name: "Musics",
+    },
+    {
+      route: routes.ARTISTS,
+      name: "Composers",
+    },
+    {
+      route: routes.ARTISTS,
+      name: "Lyrists",
+    },
+    { route: routes.BANDS, name: "Bands" },
+    { route: routes.USERS, name: "Users" },
+  ];
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>
-              <Link component={RouterLink} to={routes.MUSICS}>
-                Music
-              </Link>
-            </TableCell>
-            <TableCell>
-              <Link component={RouterLink} to={routes.BANDS}>
-                Band
-              </Link>
-            </TableCell>
-            <TableCell>
-              <Link component={RouterLink} to={routes.BANDS}>
-                Composer
-              </Link>
-            </TableCell>
-            <TableCell>
-              <Link component={RouterLink} to={routes.BANDS}>
-                Lyrist
-              </Link>
-            </TableCell>
-            <TableCell>
-              <Link component={RouterLink} to={routes.USERS}>
-                User
-              </Link>
-            </TableCell>
+            {columns.map((column) => (
+              <TableCell key={column.name}>
+                <Link component={RouterLink} to={column.route}>
+                  {column.name}
+                </Link>
+              </TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(
-            // eslint-disable-next-line camelcase
-            ({ id, title, band, user, music_composers, music_lyrists }) => (
+          {musics.map(
+            ({
+              id,
+              title,
+              band,
+              user,
+              music_composers: composers,
+              music_lyrists: lyrists,
+            }) => (
               <TableRow key={id}>
                 <TableCell>
                   <Link
@@ -80,7 +78,7 @@ const Musics: React.FC = () => {
                   </Link>
                 </TableCell>
                 <TableCell>
-                  {music_composers?.map((composer) => (
+                  {composers?.map((composer) => (
                     <Link
                       key={composer.id}
                       component={RouterLink}
@@ -91,7 +89,7 @@ const Musics: React.FC = () => {
                   ))}
                 </TableCell>
                 <TableCell>
-                  {music_lyrists?.map((lyrist) => (
+                  {lyrists?.map((lyrist) => (
                     <Link
                       key={lyrist.id}
                       component={RouterLink}
@@ -119,4 +117,4 @@ const Musics: React.FC = () => {
   );
 };
 
-export default Musics;
+export default Index;
