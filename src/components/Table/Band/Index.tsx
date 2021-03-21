@@ -21,8 +21,6 @@ const Bands: React.FC = () => {
     axios
       .get<IBand[]>("/bands")
       .then((res) => setRows(res.data))
-      // TODO:
-      // eslint-disable-next-line no-console
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
@@ -38,7 +36,7 @@ const Bands: React.FC = () => {
           {rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell>
-                <Link component={RouterLink} to={`${routes.BAND}${row.id}`}>
+                <Link component={RouterLink} to={`${routes.BANDS}/${row.id}`}>
                   {row.name}
                 </Link>
               </TableCell>

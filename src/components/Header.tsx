@@ -62,7 +62,7 @@ const Header: React.FC = () => {
               >
                 <MenuItem
                   component={RouterLink}
-                  to={`${routes.USER}${currentUser.id}`}
+                  to={`${routes.USERS}/${currentUser.id}`}
                 >
                   Account
                 </MenuItem>

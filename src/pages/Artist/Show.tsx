@@ -23,8 +23,6 @@ const Show: React.FC = () => {
     axios
       .get(`/artists/${params.id}`)
       .then((res) => setArtist(res.data))
-      // TODO:
-      // eslint-disable-next-line no-console
       .catch((err) => console.log(err));
   }, [params]);
 
@@ -45,7 +43,10 @@ const Show: React.FC = () => {
             {artist.bands?.map((band) => (
               <TableRow key={band.id}>
                 <TableCell>
-                  <Link component={RouterLink} to={`${routes.BAND}${band.id}`}>
+                  <Link
+                    component={RouterLink}
+                    to={`${routes.BANDS}/${band.id}`}
+                  >
                     {band.name}
                   </Link>
                 </TableCell>
@@ -67,7 +68,10 @@ const Show: React.FC = () => {
             {artist.albums?.map((album) => (
               <TableRow key={album.id}>
                 <TableCell>
-                  <Link component={RouterLink} to={`${routes.BAND}${album.id}`}>
+                  <Link
+                    component={RouterLink}
+                    to={`${routes.BANDS}/${album.id}`}
+                  >
                     {album.title}
                   </Link>
                 </TableCell>
@@ -94,9 +98,9 @@ const Show: React.FC = () => {
                 <TableCell>
                   <Link
                     component={RouterLink}
-                    to={`${routes.USER}${music.user?.id || "undefined"}${
-                      routes.MUSIC
-                    }${music.id}`}
+                    to={`${routes.USERS}/${music.user?.id || "undefined"}${
+                      routes.MUSICS
+                    }/${music.id}`}
                   >
                     {music.title}
                   </Link>
@@ -106,7 +110,7 @@ const Show: React.FC = () => {
                     <Link
                       key={composer.id}
                       component={RouterLink}
-                      to={`${routes.ARTIST}${composer.id}`}
+                      to={`${routes.ARTISTS}/${composer.id}`}
                     >
                       {composer.name}
                     </Link>
@@ -117,7 +121,7 @@ const Show: React.FC = () => {
                     <Link
                       key={lyrist.id}
                       component={RouterLink}
-                      to={`${routes.ARTIST}${lyrist.id}`}
+                      to={`${routes.ARTISTS}/${lyrist.id}`}
                     >
                       {lyrist.name}
                     </Link>
@@ -126,7 +130,7 @@ const Show: React.FC = () => {
                 <TableCell>
                   <Link
                     component={RouterLink}
-                    to={`${routes.USER}${music.user?.id || "undefined"}`}
+                    to={`${routes.USERS}/${music.user?.id || "undefined"}`}
                   >
                     {music.user?.nickname}
                   </Link>

@@ -21,8 +21,6 @@ const Artists: React.FC = () => {
     axios
       .get<IArtist[]>("/artists")
       .then((res) => setRows(res.data))
-      // TODO:
-      // eslint-disable-next-line no-console
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
@@ -38,7 +36,7 @@ const Artists: React.FC = () => {
           {rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell>
-                <Link component={RouterLink} to={`${routes.ARTIST}${row.id}`}>
+                <Link component={RouterLink} to={`${routes.ARTISTS}/${row.id}`}>
                   {row.name}
                 </Link>
               </TableCell>

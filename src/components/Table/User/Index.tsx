@@ -21,8 +21,6 @@ const Users: React.FC = () => {
     axios
       .get<IUser[]>("/users")
       .then((res) => setRows(res.data))
-      // TODO:
-      // eslint-disable-next-line no-console
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
@@ -38,7 +36,7 @@ const Users: React.FC = () => {
           {rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell>
-                <Link component={RouterLink} to={`${routes.USER}${row.id}`}>
+                <Link component={RouterLink} to={`${routes.USERS}/${row.id}`}>
                   {row.nickname}
                 </Link>
               </TableCell>

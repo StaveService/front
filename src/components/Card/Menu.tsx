@@ -9,6 +9,7 @@ import AlbumIcon from "@material-ui/icons/Album";
 import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import GroupIcon from "@material-ui/icons/Group";
+import Box from "@material-ui/core/Box";
 import routes from "../../router/routes.json";
 import { MenuCardType } from "../../interfaces";
 
@@ -22,19 +23,19 @@ const Layout: React.FC<ILayout> = ({ type }: ILayout) => {
   switch (type) {
     case "Album":
       icon = <AlbumIcon fontSize={size} />;
-      to = routes.NEW_ALBUM;
+      to = routes.ALBUMS;
       break;
     case "Artist":
       icon = <AccessibilityNewIcon fontSize={size} />;
-      to = routes.NEW_ARTIST;
+      to = routes.ARTISTS;
       break;
     case "Music":
       icon = <MusicNoteIcon fontSize={size} />;
-      to = routes.NEW_MUSIC;
+      to = routes.MUSICS;
       break;
     case "Band":
       icon = <GroupIcon fontSize={size} />;
-      to = routes.NEW_BAND;
+      to = routes.BANDS;
       break;
     default:
       return null;
@@ -42,7 +43,7 @@ const Layout: React.FC<ILayout> = ({ type }: ILayout) => {
   return (
     <Card variant="outlined">
       <CardContent>
-        {icon}
+        <Box textAlign="center">{icon}</Box>
         <Typography variant="h5" component="h2">
           {type}
         </Typography>
@@ -52,7 +53,7 @@ const Layout: React.FC<ILayout> = ({ type }: ILayout) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" component={RouterLink} to={to}>
+        <Button size="small" component={RouterLink} to={`${to}${routes.NEW}`}>
           Create
         </Button>
       </CardActions>

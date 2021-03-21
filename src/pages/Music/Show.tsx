@@ -48,7 +48,7 @@ const Show: React.FC = () => {
                   <Link
                     key={composer.id}
                     component={RouterLink}
-                    to={`${routes.ARTIST}${composer.id}`}
+                    to={`${routes.ARTISTS}/${composer.id}`}
                   >
                     {composer.name}
                   </Link>
@@ -62,7 +62,7 @@ const Show: React.FC = () => {
                   <Link
                     key={lyrists.id}
                     component={RouterLink}
-                    to={`${routes.ARTIST}${lyrists.id}`}
+                    to={`${routes.ARTISTS}/${lyrists.id}`}
                   >
                     {lyrists.name}
                   </Link>
@@ -82,7 +82,7 @@ const Show: React.FC = () => {
               <TableCell>
                 <Link
                   component={RouterLink}
-                  to={`${routes.BAND}${music.band?.id || "undefined"}`}
+                  to={`${routes.BANDS}/${music.band?.id || "undefined"}`}
                 >
                   {music.band?.name}
                 </Link>
@@ -93,7 +93,7 @@ const Show: React.FC = () => {
               <TableCell>
                 <Link
                   component={RouterLink}
-                  to={`${routes.USER}${music.user?.id || "undefined"}`}
+                  to={`${routes.USERS}/${music.user?.id || "undefined"}`}
                 >
                   {music.user?.nickname}
                 </Link>
@@ -119,7 +119,7 @@ const Show: React.FC = () => {
                 <TableCell>
                   <Link
                     component={RouterLink}
-                    to={`${routes.ARTIST}${role.artist.id}`}
+                    to={`${routes.ARTISTS}/${role.artist.id}`}
                   >
                     {role.artist.name}
                   </Link>
@@ -144,7 +144,7 @@ const Show: React.FC = () => {
                 <TableCell>
                   <Link
                     component={RouterLink}
-                    to={`${routes.ALBUM}${album.id}`}
+                    to={`${routes.ALBUMS}/${album.id}`}
                   >
                     {album.title}
                   </Link>

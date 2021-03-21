@@ -12,20 +12,26 @@ import Bands from "../pages/Band/Index";
 import Band from "../pages/Band/Show";
 import Users from "../pages/User/Index";
 import User from "../pages/User/Show";
+import Album from "../pages/Album/Show";
 
 const Routes: React.FC = () => (
   <Switch>
     <Route path={routes.MUSICS} component={Musics} />
-    <Route path={`${routes.USER}:userId${routes.MUSIC}:id`} component={Music} />
+    <Route
+      path={`${routes.USERS}:userId${routes.MUSICS}:id`}
+      component={Music}
+    />
 
     <Route path={routes.USERS} component={Users} />
-    <Route path={`${routes.USER}:id`} component={User} />
+    <Route path={`${routes.USERS}/:id`} component={User} />
 
     <Route path={routes.BANDS} component={Bands} />
-    <Route path={`${routes.BAND}:id`} component={Band} />
+    <Route path={`${routes.BANDS}/:id`} component={Band} />
 
     <Route path={routes.ARTISTS} component={Artists} />
-    <Route path={`${routes.ARTIST}:id`} component={Artist} />
+    <Route path={`${routes.ARTISTS}/:id`} component={Artist} />
+
+    <Route path={`${routes.ALBUMS}/:id`} component={Album} />
 
     <Route path={routes.SIGNIN} component={SignIn} />
     <Route path={routes.SIGNUP} component={SignUp} />

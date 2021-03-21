@@ -21,8 +21,6 @@ const Musics: React.FC = () => {
     axios
       .get<IMusic[]>("/musics")
       .then((res) => setRows(res.data))
-      // TODO:
-      // eslint-disable-next-line no-console
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
@@ -66,9 +64,9 @@ const Musics: React.FC = () => {
                 <TableCell>
                   <Link
                     component={RouterLink}
-                    to={`${routes.USER}${user?.id || "undefined"}${
-                      routes.MUSIC
-                    }${id}`}
+                    to={`${routes.USERS}/${user?.id || "undefined"}${
+                      routes.MUSICS
+                    }/${id}`}
                   >
                     {title}
                   </Link>
@@ -76,7 +74,7 @@ const Musics: React.FC = () => {
                 <TableCell>
                   <Link
                     component={RouterLink}
-                    to={`${routes.BAND}${band?.id || "undefined"}`}
+                    to={`${routes.BANDS}/${band?.id || "undefined"}`}
                   >
                     {band?.name}
                   </Link>
@@ -86,7 +84,7 @@ const Musics: React.FC = () => {
                     <Link
                       key={composer.id}
                       component={RouterLink}
-                      to={`${routes.ARTIST}${composer.id}`}
+                      to={`${routes.ARTISTS}/${composer.id}`}
                     >
                       {composer.name}
                     </Link>
@@ -97,7 +95,7 @@ const Musics: React.FC = () => {
                     <Link
                       key={lyrist.id}
                       component={RouterLink}
-                      to={`${routes.ARTIST}${lyrist.id}`}
+                      to={`${routes.ARTISTS}/${lyrist.id}`}
                     >
                       {lyrist.name}
                     </Link>
@@ -106,7 +104,7 @@ const Musics: React.FC = () => {
                 <TableCell>
                   <Link
                     component={RouterLink}
-                    to={`${routes.USER}${user?.id || "undefined"}`}
+                    to={`${routes.USERS}/${user?.id || "undefined"}`}
                   >
                     {user?.nickname}
                   </Link>
