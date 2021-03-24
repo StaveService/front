@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
-import BandsTable from "../../components/Table/Band/Index";
+import BandsTable from "../../components/Table/Band";
 import { IBand } from "../../interfaces";
 
 const Index: React.FC = () => {

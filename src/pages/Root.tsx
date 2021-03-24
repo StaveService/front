@@ -2,7 +2,7 @@ import Container from "@material-ui/core/Container";
 import React, { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import axios from "axios";
-import MusicsTable from "../components/Table/Music/Index";
+import MusicsTable from "../components/Table/Music";
 import MenuCard from "../components/Card/Menu";
 import { IMusic } from "../interfaces";
 

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Link as RouterLink } from "react-router-dom";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -9,36 +10,34 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
-import { IArtist } from "../../../interfaces";
-import routes from "../../../router/routes.json";
+import { IUser } from "../../interfaces";
+import routes from "../../router/routes.json";
 
-interface IIndex {
-  artists: IArtist[];
-  loading: boolean;
-}
-
-const Index: React.FC<IIndex> = ({ artists, loading }: IIndex) => {
+const User: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState<IUser[]>([]);
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get<IUser[]>("/users")
+      .then((res) => setRows(res.data))
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
+  }, []);
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>
-              <Link component={RouterLink} to={routes.ARTISTS}>
-                Artists
-              </Link>
-            </TableCell>
+            <TableCell>Name</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {artists.map((artist) => (
-            <TableRow key={artist.id}>
+          {rows.map((row) => (
+            <TableRow key={row.id}>
               <TableCell>
-                <Link
-                  component={RouterLink}
-                  to={`${routes.ARTISTS}/${artist.id}`}
-                >
-                  {artist.name}
+                <Link component={RouterLink} to={`${routes.USERS}/${row.id}`}>
+                  {row.nickname}
                 </Link>
               </TableCell>
             </TableRow>
@@ -50,4 +49,4 @@ const Index: React.FC<IIndex> = ({ artists, loading }: IIndex) => {
   );
 };
 
-export default Index;
+export default User;

@@ -34,6 +34,7 @@ export interface IMusic {
   title: string;
   bpm: number;
   length: string;
+  ["itunes_artwork_url"]: string;
   ["created_at"]?: string;
   ["updated_at"]?: string;
   user?: IUser;
@@ -78,6 +79,28 @@ export interface ISignUpFormValues extends ISignInFormValues {
   password_confirmation: string;
 }
 
+export interface INewMusicFormValues {
+  bpm: number;
+  title: string;
+}
 export interface IUserSuccessResponse {
   data: IUser;
+}
+
+export interface IItunesMusic {
+  artistName: string;
+  artworkUrl100: string;
+  collectionArtistId: number;
+  collectionArtistViewUrl: string;
+  collectionCensoredName: string;
+  trackId: number;
+  trackViewUrl: string;
+  trackCensoredName: string;
+  previewUrl: string;
+  releaseDate: string;
+}
+
+export interface IItunesMusicsResponse {
+  resultCount: number;
+  results: IItunesMusic[];
 }

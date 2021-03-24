@@ -1,7 +1,7 @@
 import Container from "@material-ui/core/Container";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import MusicsTable from "../../components/Table/Music/Index";
+import MusicsTable from "../../components/Table/Music";
 import { IMusic } from "../../interfaces";
 
 const Index: React.FC = () => {

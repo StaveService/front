@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
-import ArtistsTable from "../../components/Table/Artist/Index";
+import ArtistsTable from "../../components/Table/Artist";
 import { IArtist } from "../../interfaces";
 import routes from "../../router/routes.json";
 

@@ -8,16 +8,17 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
-import { LinearProgress } from "@material-ui/core";
-import { IMusic } from "../../../interfaces";
-import routes from "../../../router/routes.json";
+import Image from "material-ui-image";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import { IMusic } from "../../interfaces";
+import routes from "../../router/routes.json";
 
 interface IIndex {
   musics: IMusic[];
   loading: boolean;
 }
 
-const Index: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
+const Music: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
   const columns = [
     {
       route: routes.MUSICS,
@@ -39,6 +40,7 @@ const Index: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell />
             {columns.map((column) => (
               <TableCell key={column.name}>
                 <Link component={RouterLink} to={column.route}>
@@ -53,12 +55,19 @@ const Index: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
             ({
               id,
               title,
+              itunes_artwork_url: itunesArtworkUrl,
               band,
               user,
               music_composers: composers,
               music_lyrists: lyrists,
             }) => (
               <TableRow key={id}>
+                <TableCell>
+                  <Image
+                    src={itunesArtworkUrl}
+                    disableSpinner={!itunesArtworkUrl}
+                  />
+                </TableCell>
                 <TableCell>
                   <Link
                     component={RouterLink}
@@ -117,4 +126,4 @@ const Index: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
   );
 };
 
-export default Index;
+export default Music;

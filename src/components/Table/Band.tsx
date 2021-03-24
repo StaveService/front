@@ -9,15 +9,15 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
-import { IBand } from "../../../interfaces";
-import routes from "../../../router/routes.json";
+import { IBand } from "../../interfaces";
+import routes from "../../router/routes.json";
 
 interface IIndex {
   bands: IBand[];
   loading: boolean;
 }
 
-const Bands: React.FC<IIndex> = ({ bands, loading }: IIndex) => {
+const Band: React.FC<IIndex> = ({ bands, loading }: IIndex) => {
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -47,4 +47,4 @@ const Bands: React.FC<IIndex> = ({ bands, loading }: IIndex) => {
   );
 };
 
-export default Bands;
+export default Band;

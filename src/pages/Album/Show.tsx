@@ -5,7 +5,7 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { IAlbum } from "../../interfaces";
 import routes from "../../router/routes.json";
-import MusicsTable from "../../components/Table/Music/Index";
+import MusicsTable from "../../components/Table/Music";
 
 const Show: React.FC = () => {
   const [loading, setLoading] = useState(false);

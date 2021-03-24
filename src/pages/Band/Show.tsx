@@ -14,7 +14,7 @@ import { Typography } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { IBand } from "../../interfaces";
 import routes from "../../router/routes.json";
-import ArtistsTable from "../../components/Table/Artist/Index";
+import ArtistsTable from "../../components/Table/Artist";
 
 const Show: React.FC = () => {
   const [loading, setLoading] = useState(false);

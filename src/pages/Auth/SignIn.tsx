@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -18,9 +18,16 @@ const SignIn: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
-  const { errors, control, handleSubmit } = useForm({
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { errors, control, setValue, handleSubmit } = useForm({
     resolver: yupResolver(signInSchema),
   });
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      setValue("email", "test@test.com");
+      setValue("password", "password");
+    }
+  }, []);
   const onSubmit = (data: SubmitHandler<ISignInFormValues>) => {
     setLoading(true);
     axios
@@ -30,8 +37,6 @@ const SignIn: React.FC = () => {
         dispatch(setHeaders(res.headers));
         history.push("/");
       })
-      // TODO:
-      // eslint-disable-next-line no-console
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   };
