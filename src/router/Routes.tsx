@@ -16,6 +16,7 @@ import NewMusic from "../pages/Music/New";
 
 import Bands from "../pages/Band/Index";
 import Band from "../pages/Band/Show";
+import NewBand from "../pages/Band/New";
 
 import Users from "../pages/User/Index";
 import User from "../pages/User/Show";
@@ -36,6 +37,7 @@ const Routes: React.FC = () => (
     <Route exact path={`${routes.USERS}/:id`} component={User} />
 
     <Route exact path={routes.BANDS} component={Bands} />
+    <Route exact path={`${routes.BANDS}${routes.NEW}`} component={NewBand} />
     <Route exact path={`${routes.BANDS}/:id`} component={Band} />
 
     <Route exact path={routes.ARTISTS} component={Artists} />

@@ -25,6 +25,7 @@ export interface IUser {
 export interface IBand {
   id: number;
   name: string;
+  ["itunes_artist_id"]: number;
   artists?: IArtist[];
   albums?: IAlbum[];
   musics?: IMusic[];
