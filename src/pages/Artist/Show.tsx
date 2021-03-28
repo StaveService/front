@@ -25,7 +25,7 @@ const Show: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`/artists/${params.id}`)
+      .get(`${routes.ARTISTS}/${params.id}`)
       .then((res) => setArtist(res.data))
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));

@@ -5,25 +5,25 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
+import { IItunesMusic } from "../../../interfaces";
 
-interface IItunesMusic {
-  artworkUrl100: string;
-  artistName: string;
-  collectionCensoredName: string;
-  trackCensoredName: string;
-}
 const useStyles = makeStyles({
   media: {
     height: 100,
     width: 100,
   },
 });
-const ItunesMusic: React.FC<IItunesMusic> = ({
-  artworkUrl100,
-  artistName,
-  collectionCensoredName,
-  trackCensoredName,
-}: IItunesMusic) => {
+interface IItunesMusicCard {
+  music: IItunesMusic;
+}
+const ItunesMusicCard: React.FC<IItunesMusicCard> = ({
+  music: {
+    artworkUrl100,
+    artistName,
+    collectionCensoredName,
+    trackCensoredName,
+  },
+}: IItunesMusicCard) => {
   const classes = useStyles();
   return (
     <Card>
@@ -47,4 +47,4 @@ const ItunesMusic: React.FC<IItunesMusic> = ({
   );
 };
 
-export default ItunesMusic;
+export default ItunesMusicCard;

@@ -21,13 +21,8 @@ import Link from "@material-ui/core/Link";
 import Image from "material-ui-image";
 import itunesSearch from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
-import {
-  IItunesMusic,
-  IItunesMusicsResponse,
-  IMusic,
-  INewMusicFormValues,
-} from "../../interfaces";
-import ItunesMusicCard from "../../components/Card/ItunesMusic";
+import { IItunesMusic, IItunesMusicsResponse, IMusic } from "../../interfaces";
+import ItunesMusicCard from "../../components/Card/Itunes/Music";
 import MusicCard from "../../components/Card/Music";
 import LoadingButton from "../../components/LoadingButton";
 import routes from "../../router/routes.json";
@@ -54,9 +49,12 @@ const New: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [itunesLoading, setItunesLoading] = useState(false);
-  const [musics, setMusics] = useState<IItunesMusic[]>([]);
+  const [itunesMusics, setItunesMusics] = useState<IItunesMusic[]>([]);
+  const [
+    selectedItunesMusic,
+    setSelectedItunesMusic,
+  ] = useState<IItunesMusic>();
   const [searchedMusics, setSearchedMusics] = useState<IMusic[]>([]);
-  const [selectedMusic, setSelectedMusic] = useState<IItunesMusic>();
   const [checked, setChecked] = useState(false);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
@@ -64,7 +62,7 @@ const New: React.FC = () => {
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
   const history = useHistory();
-  const onSubmit = (data: SubmitHandler<INewMusicFormValues>) => {
+  const onSubmit = (data: SubmitHandler<IFormValues>) => {
     console.log(data);
     if (!headers) return;
     setLoading(true);
@@ -94,52 +92,49 @@ const New: React.FC = () => {
             term: (e.target as HTMLInputElement).value,
           },
         })
-        .then((res) => setMusics(res.data.results))
+        .then((res) => setItunesMusics(res.data.results))
         .catch((err) => console.log(err))
         .finally(() => setItunesLoading(false));
     }
   };
   useEffect(() => {
-    if (selectedMusic) {
-      setValue("music.title", selectedMusic.trackCensoredName);
-      setValue("music.itunes_track_id", selectedMusic.trackId);
-      setValue("album.title", selectedMusic.collectionCensoredName);
-      setValue("band.name", selectedMusic.artistName);
-      setValue(
-        "release_date",
-        format(new Date(selectedMusic.releaseDate), "yyyy-MM-dd")
-      );
+    if (selectedItunesMusic) {
+      const {
+        trackCensoredName,
+        trackId,
+        collectionCensoredName,
+        artistName,
+        releaseDate,
+      } = selectedItunesMusic;
+      setValue("music.title", trackCensoredName);
+      setValue("music.itunes_track_id", trackId);
+      setValue("album.title", collectionCensoredName);
+      setValue("band.name", artistName);
+      setValue("release_date", format(new Date(releaseDate), "yyyy-MM-dd"));
       axios
         .get("/musics", {
-          params: { q: { title_cont: selectedMusic.trackCensoredName } },
+          params: { q: { title_cont: trackCensoredName } },
         })
         .then((res) => setSearchedMusics(res.data))
         .catch((err) => console.log(err));
     }
-  }, [selectedMusic]);
-  const MusicsDialog = () => {
-    const handleClose = () => {
-      setOpen(false);
-      setMusics([]);
-    };
+  }, [selectedItunesMusic]);
+  const ItunesMusicsDialog = () => {
+    const handleClose = () => setOpen(false);
+
     return (
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Choose Music</DialogTitle>
         {itunesLoading && <LinearProgress />}
         <Box p={2}>
-          {musics.map((music) => {
+          {itunesMusics.map((itunesMusic) => {
             const handleClick = () => {
               handleClose();
-              setSelectedMusic(music);
+              setSelectedItunesMusic(itunesMusic);
             };
             return (
-              <Box key={music.trackId} mb={2} onClick={handleClick}>
-                <ItunesMusicCard
-                  artistName={music.artistName}
-                  artworkUrl100={music.artworkUrl100}
-                  collectionCensoredName={music.collectionCensoredName}
-                  trackCensoredName={music.trackCensoredName}
-                />
+              <Box key={itunesMusic.trackId} mb={2} onClick={handleClick}>
+                <ItunesMusicCard music={itunesMusic} />
               </Box>
             );
           })}
@@ -194,7 +189,7 @@ const New: React.FC = () => {
         <Box p={3}>
           <form>
             <Box height="100px" width="100px" m="auto">
-              <Image src={selectedMusic?.artworkUrl100 || "undefiend"} />
+              <Image src={selectedItunesMusic?.artworkUrl100 || "undefiend"} />
             </Box>
             <Box visibility="hidden">
               <ControlTextField
@@ -298,7 +293,7 @@ const New: React.FC = () => {
         >
           Create Music
         </LoadingButton>
-        <MusicsDialog />
+        <ItunesMusicsDialog />
       </Paper>
     </Container>
   );

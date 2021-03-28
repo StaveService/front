@@ -80,10 +80,6 @@ export interface ISignUpFormValues extends ISignInFormValues {
   password_confirmation: string;
 }
 
-export interface INewMusicFormValues {
-  bpm: number;
-  title: string;
-}
 export interface IUserSuccessResponse {
   data: IUser;
 }
@@ -102,8 +98,22 @@ export interface IItunesMusic {
   previewUrl: string;
   releaseDate: string;
 }
+export interface IItunesArtist {
+  amgArtistId: number;
+  artistId: number;
+  artistLinkUrl: string;
+  artistName: string;
+  artistType: "Artist";
+  primaryGenreId: 21;
+  wrapperType: string;
+}
 
 export interface IItunesMusicsResponse {
   resultCount: number;
   results: IItunesMusic[];
+}
+
+export interface IItunesArtistsResponse {
+  resultCount: number;
+  results: IItunesArtist[];
 }

@@ -14,6 +14,8 @@ import { IItunesMusicsResponse, IMusic } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { itunesAxios } from "../../constants/axios";
 
+// TODO: add create with band & album & composer & artist & lyrist
+
 interface IIndex {
   musics: IMusic[];
   loading: boolean;
