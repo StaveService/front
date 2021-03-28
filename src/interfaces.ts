@@ -49,6 +49,7 @@ export interface IMusic {
 export interface IArtist {
   id: number;
   name: string;
+  ["itunes_artist_id"]: number;
   musics?: IMusic[];
   albums?: IAlbum[];
   bands?: IBand[];

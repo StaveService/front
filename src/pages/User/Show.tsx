@@ -20,10 +20,8 @@ const Show: React.FC = () => {
   const params = useParams<{ id: string }>();
   useEffect(() => {
     axios
-      .get<IUser>(`/users/${params.id}`)
+      .get<IUser>(`${routes.USERS}/${params.id}`)
       .then((res) => setUser(res.data))
-      // TODO:
-      // eslint-disable-next-line no-console
       .catch((err) => console.log(err));
   }, []);
   if (!user?.id) return <CircularProgress />;

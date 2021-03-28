@@ -14,14 +14,18 @@ const useStyles = makeStyles({
     width: 100,
   },
 });
-
-const Music: React.FC<IMusic> = ({
-  title,
-  itunes_track_id: itunesTrackId,
-  music_composers: composers,
-  music_lyrists: lyrists,
-  band,
-}: IMusic) => {
+interface IMusicCard {
+  music: IMusic;
+}
+const MusicCard: React.FC<IMusicCard> = ({
+  music: {
+    title,
+    itunes_track_id: itunesTrackId,
+    music_composers: composers,
+    music_lyrists: lyrists,
+    band,
+  },
+}: IMusicCard) => {
   const classes = useStyles();
   const [artworkUrl, setArtworkUrl] = useState<string>("");
   useEffect(() => {
@@ -64,4 +68,4 @@ const Music: React.FC<IMusic> = ({
   );
 };
 
-export default Music;
+export default MusicCard;

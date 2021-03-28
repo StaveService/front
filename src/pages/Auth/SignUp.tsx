@@ -21,11 +21,7 @@ const SignUp: React.FC = () => {
     setLoading(true);
     axios
       .post("/auth", data)
-      // TODO:
-      // eslint-disable-next-line no-console
       .then((res) => console.log(res))
-      // TODO:
-      // eslint-disable-next-line no-console
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   };

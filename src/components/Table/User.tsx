@@ -19,7 +19,7 @@ const User: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get<IUser[]>("/users")
+      .get<IUser[]>(routes.USERS)
       .then((res) => setRows(res.data))
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));

@@ -54,7 +54,7 @@ const New: React.FC = () => {
     selectedItunesMusic,
     setSelectedItunesMusic,
   ] = useState<IItunesMusic>();
-  const [searchedMusics, setSearchedMusics] = useState<IMusic[]>([]);
+  const [musics, setMusics] = useState<IMusic[]>([]);
   const [checked, setChecked] = useState(false);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
@@ -112,16 +112,15 @@ const New: React.FC = () => {
       setValue("band.name", artistName);
       setValue("release_date", format(new Date(releaseDate), "yyyy-MM-dd"));
       axios
-        .get("/musics", {
+        .get(routes.MUSICS, {
           params: { q: { title_cont: trackCensoredName } },
         })
-        .then((res) => setSearchedMusics(res.data))
+        .then((res) => setMusics(res.data))
         .catch((err) => console.log(err));
     }
   }, [selectedItunesMusic]);
   const ItunesMusicsDialog = () => {
     const handleClose = () => setOpen(false);
-
     return (
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Choose Music</DialogTitle>
@@ -143,43 +142,22 @@ const New: React.FC = () => {
     );
   };
   const SearchedMusicCards: React.FC = () => {
-    if (!searchedMusics.length) return <></>;
+    if (!musics.length) return <></>;
     return (
       <Box>
         <Typography>Music already exists</Typography>
-        {searchedMusics.map(
-          ({
-            id,
-            title,
-            bpm,
-            length,
-            itunes_track_id: itunesTrackId,
-            music_composers: composers,
-            music_lyrists: lyrists,
-            band,
-            user,
-          }) => (
-            <Link
-              underline="none"
-              key={id}
-              component={RouterLink}
-              to={`${routes.USERS}/${user?.id || "undefined"}${
-                routes.MUSICS
-              }/${id}`}
-            >
-              <MusicCard
-                id={id}
-                length={length}
-                bpm={bpm}
-                title={title}
-                itunes_track_id={itunesTrackId}
-                music_composers={composers}
-                music_lyrists={lyrists}
-                band={band}
-              />
-            </Link>
-          )
-        )}
+        {musics.map((music) => (
+          <Link
+            underline="none"
+            key={music.id}
+            component={RouterLink}
+            to={`${routes.USERS}/${music.user?.id || "undefined"}${
+              routes.MUSICS
+            }/${music.id}`}
+          >
+            <MusicCard music={music} />
+          </Link>
+        ))}
       </Box>
     );
   };
@@ -187,86 +165,84 @@ const New: React.FC = () => {
     <Container>
       <Paper>
         <Box p={3}>
-          <form>
-            <Box height="100px" width="100px" m="auto">
-              <Image src={selectedItunesMusic?.artworkUrl100 || "undefiend"} />
-            </Box>
-            <Box visibility="hidden">
-              <ControlTextField
-                type="hidden"
-                name="music.itunes_track_id"
-                defaultValue=""
-                autoComplete="on"
-                label="Image"
-                variant="outlined"
-                control={control}
-                errors={errors}
-                disabled={loading}
-                fullWidth
-              />
-            </Box>
+          <Box height="100px" width="100px" m="auto">
+            <Image src={selectedItunesMusic?.artworkUrl100 || "undefiend"} />
+          </Box>
+          <Box visibility="hidden">
             <ControlTextField
-              name="music.title"
+              type="hidden"
+              name="music.itunes_track_id"
               defaultValue=""
               autoComplete="on"
-              label="Title"
-              variant="outlined"
-              control={control}
-              errors={errors}
-              disabled={loading}
-              fullWidth
-              onKeyPress={handleKeyPress}
-            />
-            <SearchedMusicCards />
-            <ControlTextField
-              name="music.bpm"
-              defaultValue=""
-              autoComplete="on"
-              label="BPM"
+              label="Image"
               variant="outlined"
               control={control}
               errors={errors}
               disabled={loading}
               fullWidth
             />
-            <ControlTextField
-              type="date"
-              name="music.release_date"
-              defaultValue=""
-              autoComplete="on"
-              label="ReleaseDate"
-              variant="outlined"
-              control={control}
-              errors={errors}
-              disabled={loading}
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-            <ControlTextField
-              name="album.title"
-              defaultValue=""
-              autoComplete="on"
-              label="Album"
-              variant="outlined"
-              control={control}
-              errors={errors}
-              disabled={loading}
-              fullWidth
-            />
-            <ControlTextField
-              name="band.name"
-              defaultValue=""
-              autoComplete="on"
-              label="Band"
-              variant="outlined"
-              control={control}
-              errors={errors}
-              disabled={loading}
-              fullWidth
-            />
-          </form>
+          </Box>
+          <ControlTextField
+            name="music.title"
+            defaultValue=""
+            autoComplete="on"
+            label="Title"
+            variant="outlined"
+            control={control}
+            errors={errors}
+            disabled={loading}
+            fullWidth
+            onKeyPress={handleKeyPress}
+          />
+          <SearchedMusicCards />
+          <ControlTextField
+            name="music.bpm"
+            defaultValue=""
+            autoComplete="on"
+            label="BPM"
+            variant="outlined"
+            control={control}
+            errors={errors}
+            disabled={loading}
+            fullWidth
+          />
+          <ControlTextField
+            type="date"
+            name="music.release_date"
+            defaultValue=""
+            autoComplete="on"
+            label="ReleaseDate"
+            variant="outlined"
+            control={control}
+            errors={errors}
+            disabled={loading}
+            fullWidth
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <ControlTextField
+            name="album.title"
+            defaultValue=""
+            autoComplete="on"
+            label="Album"
+            variant="outlined"
+            control={control}
+            errors={errors}
+            disabled={loading}
+            fullWidth
+          />
+          <ControlTextField
+            name="band.name"
+            defaultValue=""
+            autoComplete="on"
+            label="Band"
+            variant="outlined"
+            control={control}
+            errors={errors}
+            disabled={loading}
+            fullWidth
+          />
         </Box>
         <Accordion square>
           <AccordionSummary

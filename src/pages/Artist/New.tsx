@@ -7,13 +7,21 @@ import Paper from "@material-ui/core/Paper";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { Link as RouterLink } from "react-router-dom";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
 import itunesSearch from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/LoadingButton";
-import { IItunesArtist, IItunesArtistsResponse } from "../../interfaces";
+import {
+  IArtist,
+  IItunesArtist,
+  IItunesArtistsResponse,
+} from "../../interfaces";
 import routes from "../../router/routes.json";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
+import ArtistCard from "../../components/Card/Artist";
 
 interface IFormValues {
   name: string;
@@ -25,6 +33,7 @@ const New: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [itunesArtists, setItunesArtists] = useState<IItunesArtist[]>([]);
   const [itunesLoading, setItunesLoading] = useState(false);
+  const [artists, setArtists] = useState<IArtist[]>([]);
   const [
     selectedItunesArtist,
     setSelectedItunesArtist,
@@ -55,11 +64,23 @@ const New: React.FC = () => {
         .finally(() => setItunesLoading(false));
     }
   };
+  useEffect(() => {
+    if (selectedItunesArtist) {
+      const { artistName, artistId } = selectedItunesArtist;
+      setValue("name", artistName);
+      setValue("itunes_artist_id", artistId);
+      axios
+        .get(routes.ARTISTS, { params: { q: { name_eq: artistName } } })
+        .then((res) => setArtists(res.data))
+        .catch((err) => console.log(err));
+    }
+  }, [selectedItunesArtist]);
+
   const ItunesMusicsDialog = () => {
     const handleClose = () => setOpen(false);
     return (
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Choose Music</DialogTitle>
+        <DialogTitle>Choose Artist</DialogTitle>
         {itunesLoading && <LinearProgress />}
         <Box p={2}>
           {itunesArtists.map((itunesArtist) => {
@@ -78,35 +99,33 @@ const New: React.FC = () => {
       </Dialog>
     );
   };
-  useEffect(() => {
-    if (selectedItunesArtist) {
-      const { artistName, artistId } = selectedItunesArtist;
-      setValue("name", artistName);
-      setValue("itunes_artist_id", artistId);
-    }
-  }, [selectedItunesArtist]);
+  const SearchedArtistsCard = () => {
+    if (!artists.length) return <></>;
+    return (
+      <Box>
+        <Typography>Artist already exists</Typography>
+        {artists.map((artist) => (
+          <Link
+            underline="none"
+            key={artist.id}
+            component={RouterLink}
+            to={`${routes.ARTISTS}/${artist.id}`}
+          >
+            <ArtistCard artist={artist} />
+          </Link>
+        ))}
+      </Box>
+    );
+  };
 
   return (
     <Container>
       <Paper>
         <Box p={3}>
-          <form>
-            <Box visibility="hidden">
-              <ControlTextField
-                name="itunes_artist_id"
-                defaultValue=""
-                autoComplete="on"
-                label="Name"
-                variant="outlined"
-                control={control}
-                errors={errors}
-                disabled={loading}
-                fullWidth
-              />
-            </Box>
-
+          <Box visibility="hidden">
             <ControlTextField
-              name="name"
+              type="hidden"
+              name="itunes_artist_id"
               defaultValue=""
               autoComplete="on"
               label="Name"
@@ -115,17 +134,28 @@ const New: React.FC = () => {
               errors={errors}
               disabled={loading}
               fullWidth
-              onKeyPress={handleKeyPress}
             />
-
-            <LoadingButton
-              type="button"
-              loading={loading}
-              onClick={handleSubmit(onSubmit)}
-            >
-              Create Artist
-            </LoadingButton>
-          </form>
+          </Box>
+          <ControlTextField
+            name="name"
+            defaultValue=""
+            autoComplete="on"
+            label="Name"
+            variant="outlined"
+            control={control}
+            errors={errors}
+            disabled={loading}
+            fullWidth
+            onKeyPress={handleKeyPress}
+          />
+          <SearchedArtistsCard />
+          <LoadingButton
+            type="button"
+            loading={loading}
+            onClick={handleSubmit(onSubmit)}
+          >
+            Create Artist
+          </LoadingButton>
         </Box>
       </Paper>
       <ItunesMusicsDialog />

@@ -22,12 +22,12 @@ const SignIn: React.FC = () => {
   const { errors, control, setValue, handleSubmit } = useForm({
     resolver: yupResolver(signInSchema),
   });
-  useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === "development") {
+    useEffect(() => {
       setValue("email", "test@test.com");
       setValue("password", "password");
-    }
-  }, []);
+    }, []);
+  }
   const onSubmit = (data: SubmitHandler<ISignInFormValues>) => {
     setLoading(true);
     axios

@@ -6,6 +6,7 @@ import { Box } from "@material-ui/core";
 import MusicsTable from "../components/Table/Music";
 import MenuCard from "../components/Card/Menu";
 import { IMusic } from "../interfaces";
+import routes from "../router/routes.json";
 
 const Root: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -13,7 +14,7 @@ const Root: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get<IMusic[]>("/musics")
+      .get<IMusic[]>(routes.MUSICS)
       .then((res) => setMusics(res.data))
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
