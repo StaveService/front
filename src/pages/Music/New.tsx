@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { format } from "date-fns";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import axios from "axios";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
@@ -16,26 +17,37 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
 import Image from "material-ui-image";
 import itunesSearch from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import {
   IItunesMusic,
   IItunesMusicsResponse,
+  IMusic,
   INewMusicFormValues,
 } from "../../interfaces";
+import ItunesMusicCard from "../../components/Card/ItunesMusic";
 import MusicCard from "../../components/Card/Music";
 import LoadingButton from "../../components/LoadingButton";
 import routes from "../../router/routes.json";
-import { selectCurrentUser } from "../../slices/currentUser";
+import {
+  selectCurrentUser,
+  selectHeaders,
+  setHeaders,
+} from "../../slices/currentUser";
 
 interface IFormValues {
-  title: string;
-  bpm: number;
-  album: string;
-  band: string;
-  ["itunes_artwork_url"]: string;
-  ["release_date"]: string;
+  music: {
+    title: string;
+    bpm: number;
+    ["itunes_track_id"]: string;
+    ["release_date"]: string;
+  };
+  album: { title: string };
+  band: {
+    name: string;
+  };
 }
 
 const New: React.FC = () => {
@@ -43,25 +55,29 @@ const New: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [itunesLoading, setItunesLoading] = useState(false);
   const [musics, setMusics] = useState<IItunesMusic[]>([]);
+  const [searchedMusics, setSearchedMusics] = useState<IMusic[]>([]);
   const [selectedMusic, setSelectedMusic] = useState<IItunesMusic>();
   const [checked, setChecked] = useState(false);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const {
-    errors,
-    control,
-    watch,
-    setValue,
-    handleSubmit,
-  } = useForm<IFormValues>();
-  // eslint-disable-next-line camelcase
-  const { itunes_artwork_url } = watch();
+  const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
+  const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
+  const headers = useSelector(selectHeaders);
+  const history = useHistory();
   const onSubmit = (data: SubmitHandler<INewMusicFormValues>) => {
     console.log(data);
+    if (!headers) return;
     setLoading(true);
     axios
-      .post(`${routes.USERS}/${currentUser?.id || "undefiend"}${routes.MUSICS}`)
-      .then((res) => console.log(res))
+      .post(
+        `${routes.USERS}/${currentUser?.id || "undefiend"}${routes.MUSICS}`,
+        data,
+        headers
+      )
+      .then((res) => {
+        dispatch(setHeaders(res.headers));
+        history.push(routes.ROOT);
+      })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   };
@@ -85,14 +101,20 @@ const New: React.FC = () => {
   };
   useEffect(() => {
     if (selectedMusic) {
-      setValue("title", selectedMusic.trackCensoredName);
-      setValue("itunes_artwork_url", selectedMusic.artworkUrl100);
-      setValue("album", selectedMusic.collectionCensoredName);
-      setValue("band", selectedMusic.artistName);
+      setValue("music.title", selectedMusic.trackCensoredName);
+      setValue("music.itunes_track_id", selectedMusic.trackId);
+      setValue("album.title", selectedMusic.collectionCensoredName);
+      setValue("band.name", selectedMusic.artistName);
       setValue(
         "release_date",
         format(new Date(selectedMusic.releaseDate), "yyyy-MM-dd")
       );
+      axios
+        .get("/musics", {
+          params: { q: { title_cont: selectedMusic.trackCensoredName } },
+        })
+        .then((res) => setSearchedMusics(res.data))
+        .catch((err) => console.log(err));
     }
   }, [selectedMusic]);
   const MusicsDialog = () => {
@@ -112,9 +134,9 @@ const New: React.FC = () => {
             };
             return (
               <Box key={music.trackId} mb={2} onClick={handleClick}>
-                <MusicCard
+                <ItunesMusicCard
                   artistName={music.artistName}
-                  itunesImg={music.artworkUrl100}
+                  artworkUrl100={music.artworkUrl100}
                   collectionCensoredName={music.collectionCensoredName}
                   trackCensoredName={music.trackCensoredName}
                 />
@@ -125,19 +147,59 @@ const New: React.FC = () => {
       </Dialog>
     );
   };
+  const SearchedMusicCards: React.FC = () => {
+    if (!searchedMusics.length) return <></>;
+    return (
+      <Box>
+        <Typography>Music already exists</Typography>
+        {searchedMusics.map(
+          ({
+            id,
+            title,
+            bpm,
+            length,
+            itunes_track_id: itunesTrackId,
+            music_composers: composers,
+            music_lyrists: lyrists,
+            band,
+            user,
+          }) => (
+            <Link
+              underline="none"
+              key={id}
+              component={RouterLink}
+              to={`${routes.USERS}/${user?.id || "undefined"}${
+                routes.MUSICS
+              }/${id}`}
+            >
+              <MusicCard
+                id={id}
+                length={length}
+                bpm={bpm}
+                title={title}
+                itunes_track_id={itunesTrackId}
+                music_composers={composers}
+                music_lyrists={lyrists}
+                band={band}
+              />
+            </Link>
+          )
+        )}
+      </Box>
+    );
+  };
   return (
-    <Container maxWidth="xs">
+    <Container>
       <Paper>
         <Box p={3}>
           <form>
             <Box height="100px" width="100px" m="auto">
-              {/* eslint-disable-next-line camelcase */}
-              {itunes_artwork_url && <Image src={itunes_artwork_url} />}
+              <Image src={selectedMusic?.artworkUrl100 || "undefiend"} />
             </Box>
             <Box visibility="hidden">
               <ControlTextField
                 type="hidden"
-                name="itunes_artwork_url"
+                name="music.itunes_track_id"
                 defaultValue=""
                 autoComplete="on"
                 label="Image"
@@ -149,7 +211,7 @@ const New: React.FC = () => {
               />
             </Box>
             <ControlTextField
-              name="title"
+              name="music.title"
               defaultValue=""
               autoComplete="on"
               label="Title"
@@ -160,8 +222,9 @@ const New: React.FC = () => {
               fullWidth
               onKeyPress={handleKeyPress}
             />
+            <SearchedMusicCards />
             <ControlTextField
-              name="bpm"
+              name="music.bpm"
               defaultValue=""
               autoComplete="on"
               label="BPM"
@@ -172,19 +235,8 @@ const New: React.FC = () => {
               fullWidth
             />
             <ControlTextField
-              name="album"
-              defaultValue=""
-              autoComplete="on"
-              label="Album"
-              variant="outlined"
-              control={control}
-              errors={errors}
-              disabled={loading}
-              fullWidth
-            />
-            <ControlTextField
               type="date"
-              name="release_date"
+              name="music.release_date"
               defaultValue=""
               autoComplete="on"
               label="ReleaseDate"
@@ -198,10 +250,21 @@ const New: React.FC = () => {
               }}
             />
             <ControlTextField
-              name="band"
+              name="album.title"
               defaultValue=""
               autoComplete="on"
-              label="band"
+              label="Album"
+              variant="outlined"
+              control={control}
+              errors={errors}
+              disabled={loading}
+              fullWidth
+            />
+            <ControlTextField
+              name="band.name"
+              defaultValue=""
+              autoComplete="on"
+              label="Band"
               variant="outlined"
               control={control}
               errors={errors}

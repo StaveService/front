@@ -26,6 +26,7 @@ export interface IBand {
   id: number;
   name: string;
   artists?: IArtist[];
+  albums?: IAlbum[];
   musics?: IMusic[];
 }
 
@@ -34,7 +35,7 @@ export interface IMusic {
   title: string;
   bpm: number;
   length: string;
-  ["itunes_artwork_url"]: string;
+  ["itunes_track_id"]: number;
   ["created_at"]?: string;
   ["updated_at"]?: string;
   user?: IUser;
@@ -89,6 +90,8 @@ export interface IUserSuccessResponse {
 
 export interface IItunesMusic {
   artistName: string;
+  artworkUrl30: string;
+  artworkUrl60: string;
   artworkUrl100: string;
   collectionArtistId: number;
   collectionArtistViewUrl: string;

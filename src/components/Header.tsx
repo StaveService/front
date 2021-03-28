@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link as RouterLink, useHistory } from "react-router-dom";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -32,14 +32,14 @@ const Header: React.FC = () => {
     if (!headers) return;
     axios
       .delete("/auth/sign_out", headers)
-      .then(() => {
+      .catch((err: AxiosError) => console.log(err.response))
+      .finally(() => {
         dispatch(remove());
         history.push({
-          pathname: routes.ROOT,
+          pathname: routes.SIGNIN,
         });
-      })
-      .catch((err) => console.log(err))
-      .finally(() => handleClose());
+        handleClose();
+      });
   };
   return (
     <AppBar position="static" color="default">

@@ -1,46 +1,63 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@material-ui/core/Card";
-import CardMedia from "@material-ui/core/CardMedia";
-import Box from "@material-ui/core/Box";
-import { makeStyles } from "@material-ui/core/styles";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import CardMedia from "@material-ui/core/CardMedia";
+import { makeStyles } from "@material-ui/core/styles";
+import { IItunesMusicsResponse, IMusic } from "../../interfaces";
+import { itunesAxios } from "../../constants/axios";
 
-interface IMusic {
-  itunesImg: string;
-  artistName: string;
-  collectionCensoredName: string;
-  trackCensoredName: string;
-}
 const useStyles = makeStyles({
   media: {
     height: 100,
     width: 100,
   },
 });
+
 const Music: React.FC<IMusic> = ({
-  itunesImg,
-  artistName,
-  collectionCensoredName,
-  trackCensoredName,
+  title,
+  itunes_track_id: itunesTrackId,
+  music_composers: composers,
+  music_lyrists: lyrists,
+  band,
 }: IMusic) => {
   const classes = useStyles();
+  const [artworkUrl, setArtworkUrl] = useState<string>("");
+  useEffect(() => {
+    if (!itunesTrackId) return;
+    itunesAxios
+      .get<IItunesMusicsResponse>("/lookup", {
+        params: { id: itunesTrackId, entity: "song" },
+      })
+      .then((res) => setArtworkUrl(res.data.results[0].artworkUrl100))
+      .catch((err) => console.log(err));
+  }, []);
   return (
     <Card>
       <Box display="flex">
-        <Box flex="1" overflow="hidden">
+        <Box flex={1}>
           <CardContent>
-            <Typography noWrap>{trackCensoredName}</Typography>
+            <Typography>{title}</Typography>
             <Typography color="textSecondary" noWrap>
-              {artistName}
+              Composer:
+              {composers?.map(({ id, name }) => (
+                <span key={id}>{name}</span>
+              ))}
             </Typography>
             <Typography color="textSecondary" noWrap>
-              {collectionCensoredName}
+              Lyrist:
+              {lyrists?.map(({ id, name }) => (
+                <span key={id}>{name}</span>
+              ))}
+            </Typography>
+            <Typography color="textSecondary" noWrap>
+              Band: {band?.name}
             </Typography>
           </CardContent>
         </Box>
         <Box display="flex" justifyItems="center" alignItems="center" mx={1}>
-          <CardMedia image={itunesImg} className={classes.media} />
+          <CardMedia image={artworkUrl} className={classes.media} />
         </Box>
       </Box>
     </Card>

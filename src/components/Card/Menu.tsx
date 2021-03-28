@@ -49,7 +49,7 @@ const Layout: React.FC<ILayout> = ({ type }: ILayout) => {
         </Typography>
         <Typography color="textSecondary">create {type}</Typography>
         <Typography variant="body2" component="p">
-          you can create {type}
+          create {type}
         </Typography>
       </CardContent>
       <CardActions>

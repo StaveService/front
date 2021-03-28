@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Link from "@material-ui/core/Link";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { Typography } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+import Box from "@material-ui/core/Box";
 import { IBand } from "../../interfaces";
 import routes from "../../router/routes.json";
 import ArtistsTable from "../../components/Table/Artist";
+import MusicsTable from "../../components/Table/Music";
+import AlbumsTable from "../../components/Table/Album";
 
 const Show: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -34,67 +29,15 @@ const Show: React.FC = () => {
   return (
     <Container>
       <Typography variant="h3">{band.name}</Typography>
-      <ArtistsTable artists={band.artists || []} loading={loading} />
-
-      <Typography variant="h3">Music</Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Music</TableCell>
-              <TableCell>Composer</TableCell>
-              <TableCell>Lyrist</TableCell>
-              <TableCell>User</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {band.musics?.map((music) => (
-              <TableRow key={music.id}>
-                <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.USERS}/${music.user?.id || "undefined"}${
-                      routes.MUSICS
-                    }/${music.id}`}
-                  >
-                    {music.title}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  {music.music_composers?.map((composer) => (
-                    <Link
-                      key={composer.id}
-                      component={RouterLink}
-                      to={`${routes.ARTISTS}/${composer.id}`}
-                    >
-                      {composer.name}
-                    </Link>
-                  ))}
-                </TableCell>
-                <TableCell>
-                  {music.music_lyrists?.map((lyrist) => (
-                    <Link
-                      key={lyrist.id}
-                      component={RouterLink}
-                      to={`${routes.ARTISTS}/${lyrist.id}`}
-                    >
-                      {lyrist.name}
-                    </Link>
-                  ))}
-                </TableCell>
-                <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.USERS}/${music.user?.id || "undefined"}`}
-                  >
-                    {music.user?.nickname}
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Box mb={3}>
+        <ArtistsTable artists={band.artists || []} loading={loading} />
+      </Box>
+      <Box mb={3}>
+        <MusicsTable musics={band.musics || []} loading={loading} />
+      </Box>
+      <Box mb={3}>
+        <AlbumsTable albums={band.albums || []} loading={loading} />
+      </Box>
     </Container>
   );
 };

@@ -3,6 +3,7 @@ import Container from "@material-ui/core/Container";
 import axios from "axios";
 import BandsTable from "../../components/Table/Band";
 import { IBand } from "../../interfaces";
+import routes from "../../router/routes.json";
 
 const Index: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -10,14 +11,13 @@ const Index: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get<IBand[]>("/bands")
+      .get<IBand[]>(routes.BANDS)
       .then((res) => setBands(res.data))
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
   return (
     <Container>
-      <p>/bands</p>
       <BandsTable bands={bands} loading={loading} />
     </Container>
   );

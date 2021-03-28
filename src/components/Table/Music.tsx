@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -10,20 +10,55 @@ import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { IMusic } from "../../interfaces";
+import { IItunesMusicsResponse, IMusic } from "../../interfaces";
 import routes from "../../router/routes.json";
+import { itunesAxios } from "../../constants/axios";
 
 interface IIndex {
   musics: IMusic[];
   loading: boolean;
 }
 
+interface IMergedMusic extends IMusic {
+  itunesArtworkUrl: string;
+}
 const Music: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
+  const [mergedMusics, setMergedMusics] = useState<IMergedMusic[]>([]);
+
+  useEffect(() => {
+    if (!musics.length) return;
+    itunesAxios
+      .get<IItunesMusicsResponse>("/lookup", {
+        params: {
+          id: musics.map((music) => music.itunes_track_id).join(","),
+          entity: "song",
+        },
+      })
+      .then((res) => {
+        let i = 0;
+        const { results } = res.data;
+        setMergedMusics(
+          musics.map((music) => {
+            if (music.itunes_track_id === results[i]?.trackId) {
+              const mergedMusic = {
+                ...music,
+                itunesArtworkUrl: results[i].artworkUrl60,
+              };
+              i += 1;
+              return mergedMusic;
+            }
+            return { ...music, itunesArtworkUrl: "undefiend" };
+          })
+        );
+      })
+      .catch((err) => console.log(err));
+  }, [musics]);
   const columns = [
     {
       route: routes.MUSICS,
       name: "Musics",
     },
+    { route: routes.BANDS, name: "Bands" },
     {
       route: routes.ARTISTS,
       name: "Composers",
@@ -32,7 +67,6 @@ const Music: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
       route: routes.ARTISTS,
       name: "Lyrists",
     },
-    { route: routes.BANDS, name: "Bands" },
     { route: routes.USERS, name: "Users" },
   ];
   return (
@@ -51,73 +85,72 @@ const Music: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {musics.map(
+          {mergedMusics.map(
             ({
               id,
               title,
-              itunes_artwork_url: itunesArtworkUrl,
               band,
               user,
+              itunesArtworkUrl,
               music_composers: composers,
               music_lyrists: lyrists,
-            }) => (
-              <TableRow key={id}>
-                <TableCell>
-                  <Image
-                    src={itunesArtworkUrl}
-                    disableSpinner={!itunesArtworkUrl}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.USERS}/${user?.id || "undefined"}${
-                      routes.MUSICS
-                    }/${id}`}
-                  >
-                    {title}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.BANDS}/${band?.id || "undefined"}`}
-                  >
-                    {band?.name}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  {composers?.map((composer) => (
+            }) => {
+              return (
+                <TableRow key={id}>
+                  <TableCell>
+                    <Image src={itunesArtworkUrl} />
+                  </TableCell>
+                  <TableCell>
                     <Link
-                      key={composer.id}
                       component={RouterLink}
-                      to={`${routes.ARTISTS}/${composer.id}`}
+                      to={`${routes.USERS}/${user?.id || "undefined"}${
+                        routes.MUSICS
+                      }/${id}`}
                     >
-                      {composer.name}
+                      {title}
                     </Link>
-                  ))}
-                </TableCell>
-                <TableCell>
-                  {lyrists?.map((lyrist) => (
+                  </TableCell>
+                  <TableCell>
                     <Link
-                      key={lyrist.id}
                       component={RouterLink}
-                      to={`${routes.ARTISTS}/${lyrist.id}`}
+                      to={`${routes.BANDS}/${band?.id || "undefined"}`}
                     >
-                      {lyrist.name}
+                      {band?.name}
                     </Link>
-                  ))}
-                </TableCell>
-                <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.USERS}/${user?.id || "undefined"}`}
-                  >
-                    {user?.nickname}
-                  </Link>
-                </TableCell>
-              </TableRow>
-            )
+                  </TableCell>
+                  <TableCell>
+                    {composers?.map((composer) => (
+                      <Link
+                        key={composer.id}
+                        component={RouterLink}
+                        to={`${routes.ARTISTS}/${composer.id}`}
+                      >
+                        {composer.name}
+                      </Link>
+                    ))}
+                  </TableCell>
+                  <TableCell>
+                    {lyrists?.map((lyrist) => (
+                      <Link
+                        key={lyrist.id}
+                        component={RouterLink}
+                        to={`${routes.ARTISTS}/${lyrist.id}`}
+                      >
+                        {lyrist.name}
+                      </Link>
+                    ))}
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      component={RouterLink}
+                      to={`${routes.USERS}/${user?.id || "undefined"}`}
+                    >
+                      {user?.nickname}
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              );
+            }
           )}
         </TableBody>
       </Table>
