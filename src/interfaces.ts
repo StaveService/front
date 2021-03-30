@@ -59,6 +59,7 @@ export interface IArtist {
 export interface IAlbum {
   id: number;
   title: string;
+  ["itunes_collection_id"]: number;
   ["release_date"]: string;
   musics?: IMusic[];
 }
@@ -86,11 +87,14 @@ export interface IUserSuccessResponse {
   data: IUser;
 }
 
-export interface IItunesMusic {
-  artistName: string;
+interface IItunesArtwork {
   artworkUrl30: string;
   artworkUrl60: string;
   artworkUrl100: string;
+}
+
+export interface IItunesMusic extends IItunesArtwork {
+  artistName: string;
   collectionArtistId: number;
   collectionArtistViewUrl: string;
   collectionCensoredName: string;
@@ -100,6 +104,7 @@ export interface IItunesMusic {
   previewUrl: string;
   releaseDate: string;
 }
+
 export interface IItunesArtist {
   amgArtistId: number;
   artistId: number;
@@ -110,6 +115,27 @@ export interface IItunesArtist {
   wrapperType: string;
 }
 
+export interface IItunesAlbum extends IItunesArtwork {
+  amgArtistId: number;
+  artistId: number;
+  artistName: string;
+  artistViewUrl: string;
+  collectionCensoredName: string;
+  collectionExplictness: string;
+  collectionId: number;
+  collectionName: string;
+  collectionPrice: number;
+  collectionType: "Album";
+  collectionViewUrl: string;
+  copyright: string;
+  country: "USA";
+  currency: "USD";
+  primaryGenreName: "Pop";
+  releaseDate: string;
+  trackCount: number;
+  wrapperType: "collection";
+}
+
 export interface IItunesMusicsResponse {
   resultCount: number;
   results: IItunesMusic[];
@@ -118,4 +144,9 @@ export interface IItunesMusicsResponse {
 export interface IItunesArtistsResponse {
   resultCount: number;
   results: IItunesArtist[];
+}
+
+export interface IItunesAlbumsResponse {
+  resultCount: number;
+  results: IItunesAlbum[];
 }

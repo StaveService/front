@@ -24,19 +24,17 @@ const Show: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (!band?.id) return <LinearProgress />;
-
   return (
     <Container>
-      <Typography variant="h3">{band.name}</Typography>
+      <Typography variant="h3">{band?.name}</Typography>
       <Box mb={3}>
-        <ArtistsTable artists={band.artists || []} loading={loading} />
+        <ArtistsTable artists={band?.artists || []} loading={loading} />
       </Box>
       <Box mb={3}>
-        <MusicsTable musics={band.musics || []} loading={loading} />
+        <MusicsTable musics={band?.musics || []} loading={loading} />
       </Box>
       <Box mb={3}>
-        <AlbumsTable albums={band.albums || []} loading={loading} />
+        <AlbumsTable albums={band?.albums || []} loading={loading} />
       </Box>
     </Container>
   );
