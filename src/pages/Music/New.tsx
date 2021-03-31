@@ -1,24 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { format } from "date-fns";
-import { useDispatch, useSelector } from "react-redux";
-import { Link as RouterLink, useHistory } from "react-router-dom";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import Image from "material-ui-image";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import Image from "material-ui-image";
+import Button from "@material-ui/core/Button";
 import itunesSearch from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import { IItunesMusic, IItunesMusicsResponse, IMusic } from "../../interfaces";
@@ -32,19 +26,6 @@ import {
   setHeaders,
 } from "../../slices/currentUser";
 
-interface IFormValues {
-  music: {
-    title: string;
-    bpm: number;
-    ["itunes_track_id"]: string;
-    ["release_date"]: string;
-  };
-  album: { title: string };
-  band: {
-    name: string;
-  };
-}
-
 const New: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -55,15 +36,13 @@ const New: React.FC = () => {
     setSelectedItunesMusic,
   ] = useState<IItunesMusic>();
   const [musics, setMusics] = useState<IMusic[]>([]);
-  const [checked, setChecked] = useState(false);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
+  const { errors, control, setValue, handleSubmit } = useForm<IMusic>();
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
   const history = useHistory();
-  const onSubmit = (data: SubmitHandler<IFormValues>) => {
-    console.log(data);
+  const onSubmit = (data: SubmitHandler<IMusic>) => {
     if (!headers) return;
     setLoading(true);
     axios
@@ -79,8 +58,6 @@ const New: React.FC = () => {
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   };
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setChecked(event.target.checked);
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setOpen(true);
@@ -99,18 +76,9 @@ const New: React.FC = () => {
   };
   useEffect(() => {
     if (selectedItunesMusic) {
-      const {
-        trackCensoredName,
-        trackId,
-        collectionCensoredName,
-        artistName,
-        releaseDate,
-      } = selectedItunesMusic;
-      setValue("music.title", trackCensoredName);
-      setValue("music.itunes_track_id", trackId);
-      setValue("album.title", collectionCensoredName);
-      setValue("band.name", artistName);
-      setValue("release_date", format(new Date(releaseDate), "yyyy-MM-dd"));
+      const { trackCensoredName, trackId } = selectedItunesMusic;
+      setValue("title", trackCensoredName);
+      setValue("itunes_track_id", trackId);
       axios
         .get(routes.MUSICS, {
           params: { q: { title_cont: trackCensoredName } },
@@ -132,8 +100,9 @@ const New: React.FC = () => {
               setSelectedItunesMusic(itunesMusic);
             };
             return (
-              <Box key={itunesMusic.trackId} mb={2} onClick={handleClick}>
+              <Box key={itunesMusic.trackId} mb={2}>
                 <ItunesMusicCard music={itunesMusic} />
+                <Button onClick={handleClick}>select this Music</Button>
               </Box>
             );
           })}
@@ -171,7 +140,7 @@ const New: React.FC = () => {
           <Box visibility="hidden">
             <ControlTextField
               type="hidden"
-              name="music.itunes_track_id"
+              name="itunes_track_id"
               defaultValue=""
               autoComplete="on"
               label="Image"
@@ -183,7 +152,7 @@ const New: React.FC = () => {
             />
           </Box>
           <ControlTextField
-            name="music.title"
+            name="title"
             defaultValue=""
             autoComplete="on"
             label="Title"
@@ -195,80 +164,14 @@ const New: React.FC = () => {
             onKeyPress={handleKeyPress}
           />
           <SearchedMusicCards />
-          <ControlTextField
-            name="music.bpm"
-            defaultValue=""
-            autoComplete="on"
-            label="BPM"
-            variant="outlined"
-            control={control}
-            errors={errors}
-            disabled={loading}
-            fullWidth
-          />
-          <ControlTextField
-            type="date"
-            name="music.release_date"
-            defaultValue=""
-            autoComplete="on"
-            label="ReleaseDate"
-            variant="outlined"
-            control={control}
-            errors={errors}
-            disabled={loading}
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <ControlTextField
-            name="album.title"
-            defaultValue=""
-            autoComplete="on"
-            label="Album"
-            variant="outlined"
-            control={control}
-            errors={errors}
-            disabled={loading}
-            fullWidth
-          />
-          <ControlTextField
-            name="band.name"
-            defaultValue=""
-            autoComplete="on"
-            label="Band"
-            variant="outlined"
-            control={control}
-            errors={errors}
-            disabled={loading}
-            fullWidth
-          />
-        </Box>
-        <Accordion square>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1bh-content"
-            id="panel1bh-header"
+          <LoadingButton
+            type="button"
+            loading={loading}
+            onClick={handleSubmit(onSubmit)}
           >
-            <Typography>Option</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Box width="100%">
-              <FormControlLabel
-                control={<Checkbox color="primary" onChange={handleChange} />}
-                label="if created by band, please checked box"
-              />
-              <Box width="100%" visibility={checked ? "visible" : "hidden"} />
-            </Box>
-          </AccordionDetails>
-        </Accordion>
-        <LoadingButton
-          type="button"
-          loading={loading}
-          onClick={handleSubmit(onSubmit)}
-        >
-          Create Music
-        </LoadingButton>
+            Create Music
+          </LoadingButton>
+        </Box>
         <ItunesMusicsDialog />
       </Paper>
     </Container>

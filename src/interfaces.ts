@@ -34,8 +34,6 @@ export interface IBand {
 export interface IMusic {
   id: number;
   title: string;
-  bpm: number;
-  length: string;
   ["itunes_track_id"]: number;
   ["created_at"]?: string;
   ["updated_at"]?: string;

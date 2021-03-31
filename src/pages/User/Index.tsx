@@ -5,7 +5,6 @@ import UsersTable from "../../components/Table/User";
 const Index: React.FC = () => {
   return (
     <Container>
-      <p>/users</p>
       <UsersTable />
     </Container>
   );

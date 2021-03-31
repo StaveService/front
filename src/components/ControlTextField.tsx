@@ -1,5 +1,11 @@
 import React, { ChangeEvent } from "react";
-import { Control, DeepMap, FieldError, useController } from "react-hook-form";
+import {
+  Control,
+  DeepMap,
+  FieldError,
+  RegisterOptions,
+  useController,
+} from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import TextField from "@material-ui/core/TextField";
 
@@ -28,10 +34,10 @@ interface IControlTextFieldProps {
   };
 
   // react-hook-form props
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<Record<string, any>>;
+  control: Control;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors: DeepMap<Record<string, any>, FieldError>;
+  rules?: RegisterOptions;
 }
 
 const ControlTextField: React.FC<IControlTextFieldProps> = ({
@@ -51,12 +57,13 @@ const ControlTextField: React.FC<IControlTextFieldProps> = ({
   // react-hook-form props
   errors,
   control,
+  rules,
 }: IControlTextFieldProps) => {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     field: { ref, value, onChange: onChangeController },
     meta: { invalid },
-  } = useController({ name, control, defaultValue });
+  } = useController({ name, control, rules, defaultValue });
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (onChange) onChange(e.target.value);
     onChangeController(e.target.value);
@@ -94,6 +101,8 @@ ControlTextField.defaultProps = {
   disabled: false,
   fullWidth: false,
   InputLabelProps: { shrink: undefined },
+
+  rules: {},
 
   onChange: undefined,
   onKeyPress: undefined,

@@ -11,6 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
+import { useSelector } from "react-redux";
 import itunesSearch from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/LoadingButton";
@@ -18,6 +19,7 @@ import { IBand, IItunesArtist, IItunesArtistsResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import BandCard from "../../components/Card/Band";
+import { selectHeaders } from "../../slices/currentUser";
 
 interface IFormValues {
   name: string;
@@ -36,10 +38,12 @@ const New: React.FC = () => {
   ] = useState<IItunesArtist>();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
+  const headers = useSelector(selectHeaders);
   const onSubmit = (data: SubmitHandler<IFormValues>) => {
+    if (!headers) return;
     setLoading(true);
     axios
-      .post(routes.ARTISTS, data)
+      .post(routes.ARTISTS, data, headers)
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));

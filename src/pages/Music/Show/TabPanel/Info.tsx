@@ -1,56 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { Link as RouterLink, useParams } from "react-router-dom";
-import axios from "axios";
-import Container from "@material-ui/core/Container";
+import React, { useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { format } from "date-fns";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 import Link from "@material-ui/core/Link";
-import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import Image from "material-ui-image";
-import AlbumsTable from "../../components/Table/Album";
-import { IItunesMusic, IItunesMusicsResponse, IMusic } from "../../interfaces";
-import routes from "../../router/routes.json";
-import { itunesAxios } from "../../constants/axios";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import routes from "../../../../router/routes.json";
+import AlbumsTable from "../../../../components/Table/Album";
+import { IItunesMusic, IMusic } from "../../../../interfaces";
 
-const Show: React.FC = () => {
-  const [music, setMusic] = useState<IMusic>();
-  const [itunesMusic, setItunesMusic] = useState<IItunesMusic>();
-  const [loading, setLoading] = useState(false);
-  const params = useParams<{ id: string; userId: string }>();
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get<IMusic>(
-        `${routes.USERS}/${params.userId}${routes.MUSICS}/${params.id}`
-      )
-      .then((res) => setMusic(res.data))
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    if (music) {
-      itunesAxios
-        .get<IItunesMusicsResponse>("/lookup", {
-          params: { id: music.itunes_track_id, entity: "song" },
-        })
-        .then((res) => setItunesMusic(res.data.results[0]))
-        .catch((err) => console.log(err));
-    }
-  }, [music]);
-
+interface IInfo {
+  music?: IMusic;
+  itunesMusic?: IItunesMusic;
+  loading: boolean;
+}
+const Info: React.FC<IInfo> = ({ music, itunesMusic, loading }: IInfo) => {
+  const [open, setOpen] = useState(false);
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const EditDialog: React.FC = () => {
+    return (
+      <Dialog onClose={handleClose} open={open}>
+        <DialogTitle>edit info</DialogTitle>
+      </Dialog>
+    );
+  };
   return (
-    <Container>
-      <Typography variant="h3">{music?.title}</Typography>
-      <Box height="100px" width="100px" m="auto">
-        <Image src={itunesMusic?.artworkUrl100 || "undefiend"} />
-      </Box>
+    <>
+      <Button onClick={handleClickOpen}>Edit</Button>
+      <EditDialog />
       <Box mb={3}>
         <TableContainer component={Paper}>
           <Table>
@@ -61,6 +47,13 @@ const Show: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
+              <TableRow>
+                <TableCell>ReleaseDate</TableCell>
+                <TableCell>
+                  {itunesMusic?.releaseDate &&
+                    format(new Date(itunesMusic.releaseDate), "yyyy/MM/dd")}
+                </TableCell>
+              </TableRow>
               <TableRow>
                 <TableCell>Composer</TableCell>
                 <TableCell>
@@ -90,14 +83,6 @@ const Show: React.FC = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>BPM</TableCell>
-                <TableCell>{music?.bpm}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Length</TableCell>
-                <TableCell>{music?.length}</TableCell>
-              </TableRow>
-              <TableRow>
                 <TableCell>BAND</TableCell>
                 <TableCell>
                   <Link
@@ -123,7 +108,6 @@ const Show: React.FC = () => {
           </Table>
         </TableContainer>
       </Box>
-
       <Box mb={3}>
         <TableContainer component={Paper}>
           <Table>
@@ -152,8 +136,12 @@ const Show: React.FC = () => {
         </TableContainer>
       </Box>
       <AlbumsTable albums={music?.albums || []} loading={loading} />
-    </Container>
+    </>
   );
 };
+Info.defaultProps = {
+  music: undefined,
+  itunesMusic: undefined,
+};
 
-export default Show;
+export default Info;

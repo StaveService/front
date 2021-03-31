@@ -24,6 +24,9 @@ const Root: React.FC = () => {
       <Box mb={3}>
         <Grid container spacing={2}>
           <Grid item xs={3}>
+            <MenuCard type="Music" />
+          </Grid>
+          <Grid item xs={3}>
             <MenuCard type="Album" />
           </Grid>
           <Grid item xs={3}>
@@ -31,9 +34,6 @@ const Root: React.FC = () => {
           </Grid>
           <Grid item xs={3}>
             <MenuCard type="Band" />
-          </Grid>
-          <Grid item xs={3}>
-            <MenuCard type="Music" />
           </Grid>
         </Grid>
       </Box>

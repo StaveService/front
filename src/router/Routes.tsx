@@ -11,7 +11,7 @@ import Artist from "../pages/Artist/Show";
 import NewArtist from "../pages/Artist/New";
 
 import Musics from "../pages/Music/Index";
-import Music from "../pages/Music/Show";
+import Music from "../pages/Music/Show/Show";
 import NewMusic from "../pages/Music/New";
 
 import Bands from "../pages/Band/Index";
