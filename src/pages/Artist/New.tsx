@@ -12,7 +12,7 @@ import { Link as RouterLink } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import itunes from "../../axios";
+import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/LoadingButton";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";

@@ -7,7 +7,7 @@ import {
   IItunesArtist,
   IItunesArtistsResponse,
 } from "../../interfaces";
-import { itunesAxios } from "../../constants/axios";
+import { itunes } from "../../axios";
 
 interface IAlbumCard {
   album: IAlbum;
@@ -18,7 +18,7 @@ const AlbumCard: React.FC<IAlbumCard> = ({
   const [itunesAlbum, setItunesAlbum] = useState<IItunesArtist>();
   useEffect(() => {
     if (!itunesCollectionId) return;
-    itunesAxios
+    itunes
       .get<IItunesArtistsResponse>("/lookup", {
         params: { id: itunesCollectionId, entity: "album" },
       })

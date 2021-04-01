@@ -13,7 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Image from "material-ui-image";
 import { useSelector } from "react-redux";
-import itunes from "../../axios";
+import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/LoadingButton";
 import ItunesAlbumCard from "../../components/Card/Itunes/Album";

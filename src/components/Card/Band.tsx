@@ -3,7 +3,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { IBand, IItunesArtist, IItunesArtistsResponse } from "../../interfaces";
-import { itunesAxios } from "../../constants/axios";
+import { itunes } from "../../axios";
 
 interface IBandCard {
   band: IBand;
@@ -14,7 +14,7 @@ const BandCard: React.FC<IBandCard> = ({
   const [itunesArtist, setItunesArtist] = useState<IItunesArtist>();
   useEffect(() => {
     if (!itunesArtistId) return;
-    itunesAxios
+    itunes
       .get<IItunesArtistsResponse>("/lookup", {
         params: { id: itunesArtistId, entity: "musicArtist" },
       })

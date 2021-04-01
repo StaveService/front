@@ -19,7 +19,7 @@ import BandCard from "../../components/Card/Band";
 import { selectHeaders } from "../../slices/currentUser";
 import { IBand, IItunesArtist, IItunesArtistsResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
-import itunes from "../../axios";
+import { itunes } from "../../axios";
 import { search } from "../common/search";
 
 interface IFormValues {

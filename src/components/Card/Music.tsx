@@ -6,7 +6,7 @@ import Box from "@material-ui/core/Box";
 import CardMedia from "@material-ui/core/CardMedia";
 import { makeStyles } from "@material-ui/core/styles";
 import { IItunesMusicsResponse, IMusic } from "../../interfaces";
-import { itunesAxios } from "../../constants/axios";
+import { itunes } from "../../axios";
 
 const useStyles = makeStyles({
   media: {
@@ -30,7 +30,7 @@ const MusicCard: React.FC<IMusicCard> = ({
   const [artworkUrl, setArtworkUrl] = useState<string>("");
   useEffect(() => {
     if (!itunesTrackId) return;
-    itunesAxios
+    itunes
       .get<IItunesMusicsResponse>("/lookup", {
         params: { id: itunesTrackId, entity: "song" },
       })

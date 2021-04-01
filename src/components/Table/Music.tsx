@@ -12,9 +12,7 @@ import Image from "material-ui-image";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { IItunesMusicsResponse, IMusic } from "../../interfaces";
 import routes from "../../router/routes.json";
-import { itunesAxios } from "../../constants/axios";
-
-// TODO: add create with band & album & composer & artist & lyrist
+import { itunes } from "../../axios";
 
 interface IIndex {
   musics: IMusic[];
@@ -29,7 +27,7 @@ const Music: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
 
   useEffect(() => {
     if (!musics.length) return;
-    itunesAxios
+    itunes
       .get<IItunesMusicsResponse>("/lookup", {
         params: {
           id: musics.map((music) => music.itunes_track_id).join(","),

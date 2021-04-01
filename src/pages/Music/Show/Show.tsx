@@ -21,7 +21,7 @@ import {
   IMusic,
 } from "../../../interfaces";
 import routes from "../../../router/routes.json";
-import { itunesAxios } from "../../../constants/axios";
+import { itunes } from "../../../axios";
 
 const Show: React.FC = () => {
   const [music, setMusic] = useState<IMusic>();
@@ -46,7 +46,7 @@ const Show: React.FC = () => {
   }, []);
   useEffect(() => {
     if (music) {
-      itunesAxios
+      itunes
         .get<IItunesMusicsResponse>("/lookup", {
           params: { id: music.itunes_track_id, entity: "song" },
         })
