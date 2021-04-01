@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import {
   Control,
   DeepMap,
@@ -9,31 +9,22 @@ import {
 import { ErrorMessage } from "@hookform/error-message";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 
-type IControlTextFieldProps = TextFieldProps & {
+export type IControlTextFieldProps = TextFieldProps & {
   control: Control;
   errors: DeepMap<Record<string, any>, FieldError>;
   rules?: RegisterOptions;
 };
 
 const ControlTextField: React.FC<IControlTextFieldProps> = ({
-  // html5 props
-  type,
   name = "",
   defaultValue,
-  autoComplete,
   onChange,
   onKeyPress,
-  // material-ui props
-  label,
-  fullWidth,
-  disabled,
-  variant,
-  InputProps,
-  InputLabelProps,
   // react-hook-form props
   errors,
   control,
   rules,
+  ...props
 }: IControlTextFieldProps) => {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -54,18 +45,11 @@ const ControlTextField: React.FC<IControlTextFieldProps> = ({
 
   return (
     <TextField
-      type={type}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
       value={value as string}
-      autoComplete={autoComplete}
       inputRef={ref}
-      label={label}
       error={invalid}
-      disabled={disabled}
-      fullWidth={fullWidth}
-      margin="normal"
-      variant={variant}
-      InputProps={InputProps}
-      InputLabelProps={InputLabelProps}
       helperText={<ErrorMessage errors={errors} name={name} />}
       onChange={handleChange}
       onKeyPress={handleKeyPress}

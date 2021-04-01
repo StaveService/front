@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { Control, DeepMap, FieldError } from "react-hook-form";
-import axios from "axios";
-import ControlTextField from "./ControlTextField";
+import ControlTextField, { IControlTextFieldProps } from "./ControlTextField";
 import { IArtist, IBand } from "../interfaces";
 
-interface IControlAutocompeteTextField {
-  control: Control;
-  errors: DeepMap<Record<string, any>, FieldError>;
+type IControlAutocompleteTextFieldProps = IControlTextFieldProps & {
   route: string;
-  name: string;
-  label: string;
-}
-const ControlAutocompleteTextField: React.FC<IControlAutocompeteTextField> = ({
-  control,
-  errors,
+};
+const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps> = ({
   route,
-  name,
-  label,
-}: IControlAutocompeteTextField) => {
+  ...props
+}: IControlAutocompleteTextFieldProps) => {
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState<IArtist[] | IBand[]>([]);
   const [open, setOpen] = useState(false);
@@ -33,6 +25,9 @@ const ControlAutocompleteTextField: React.FC<IControlAutocompeteTextField> = ({
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
+  useEffect(() => {
+    if (!open) setOptions([]);
+  }, [open]);
   return (
     <Autocomplete
       open={open}
@@ -45,13 +40,12 @@ const ControlAutocompleteTextField: React.FC<IControlAutocompeteTextField> = ({
       renderInput={(params) => (
         <ControlTextField
           // eslint-disable-next-line react/jsx-props-no-spreading
+          {...props}
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
-          control={control}
-          errors={errors}
-          name={name}
-          label={label}
           InputProps={{
             ...params.InputProps,
+            ...props.InputProps,
             endAdornment: (
               <>
                 {loading ? (
