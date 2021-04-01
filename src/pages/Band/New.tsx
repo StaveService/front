@@ -43,7 +43,7 @@ const New: React.FC = () => {
     if (!headers) return;
     setLoading(true);
     axios
-      .post(routes.ARTISTS, data, headers)
+      .post(routes.BANDS, data, headers)
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));

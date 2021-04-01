@@ -7,43 +7,18 @@ import {
   useController,
 } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
-import TextField from "@material-ui/core/TextField";
+import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 
-interface IControlTextFieldProps {
-  // html5 props
-  name: string;
-  defaultValue: string;
-  type?: "text" | "email" | "password" | "date" | "hidden" | "datetime-local";
-  autoComplete?:
-    | "off"
-    | "on"
-    | "given-name"
-    | "family-name"
-    | "nickname"
-    | "new-password";
-  onChange?: (value: string) => void;
-  onKeyPress?: (value: React.KeyboardEvent<HTMLInputElement>) => void;
-
-  // material-ui props
-  label: string;
-  fullWidth?: boolean;
-  disabled?: boolean;
-  variant?: "filled" | "outlined" | "standard";
-  InputLabelProps?: {
-    shrink: boolean | undefined;
-  };
-
-  // react-hook-form props
+type IControlTextFieldProps = TextFieldProps & {
   control: Control;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors: DeepMap<Record<string, any>, FieldError>;
   rules?: RegisterOptions;
-}
+};
 
 const ControlTextField: React.FC<IControlTextFieldProps> = ({
   // html5 props
   type,
-  name,
+  name = "",
   defaultValue,
   autoComplete,
   onChange,
@@ -53,6 +28,7 @@ const ControlTextField: React.FC<IControlTextFieldProps> = ({
   fullWidth,
   disabled,
   variant,
+  InputProps,
   InputLabelProps,
   // react-hook-form props
   errors,
@@ -64,7 +40,11 @@ const ControlTextField: React.FC<IControlTextFieldProps> = ({
     field: { ref, value, onChange: onChangeController },
     meta: { invalid },
   } = useController({ name, control, rules, defaultValue });
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     if (onChange) onChange(e.target.value);
     onChangeController(e.target.value);
   };
@@ -75,37 +55,26 @@ const ControlTextField: React.FC<IControlTextFieldProps> = ({
   return (
     <TextField
       type={type}
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      value={value}
-      inputRef={ref}
+      value={value as string}
       autoComplete={autoComplete}
-      error={invalid}
+      inputRef={ref}
       label={label}
+      error={invalid}
       disabled={disabled}
       fullWidth={fullWidth}
       margin="normal"
       variant={variant}
+      InputProps={InputProps}
+      InputLabelProps={InputLabelProps}
       helperText={<ErrorMessage errors={errors} name={name} />}
       onChange={handleChange}
       onKeyPress={handleKeyPress}
-      InputLabelProps={InputLabelProps}
     />
   );
 };
 
 ControlTextField.defaultProps = {
-  type: "text",
-  autoComplete: "off",
-
-  variant: "standard",
-  disabled: false,
-  fullWidth: false,
-  InputLabelProps: { shrink: undefined },
-
   rules: {},
-
-  onChange: undefined,
-  onKeyPress: undefined,
 };
 
 export default ControlTextField;

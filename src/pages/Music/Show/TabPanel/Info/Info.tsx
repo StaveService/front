@@ -11,11 +11,10 @@ import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import routes from "../../../../router/routes.json";
-import AlbumsTable from "../../../../components/Table/Album";
-import { IItunesMusic, IMusic } from "../../../../interfaces";
+import AlbumsTable from "../../../../../components/Table/Album";
+import EditDialog from "./Dialog/Edit";
+import routes from "../../../../../router/routes.json";
+import { IItunesMusic, IMusic } from "../../../../../interfaces";
 
 interface IInfo {
   music?: IMusic;
@@ -25,18 +24,10 @@ interface IInfo {
 const Info: React.FC<IInfo> = ({ music, itunesMusic, loading }: IInfo) => {
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const EditDialog: React.FC = () => {
-    return (
-      <Dialog onClose={handleClose} open={open}>
-        <DialogTitle>edit info</DialogTitle>
-      </Dialog>
-    );
-  };
   return (
     <>
       <Button onClick={handleClickOpen}>Edit</Button>
-      <EditDialog />
+      <EditDialog open={open} setOpen={setOpen} />
       <Box mb={3}>
         <TableContainer component={Paper}>
           <Table>

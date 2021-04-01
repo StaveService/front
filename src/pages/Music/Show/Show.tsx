@@ -12,7 +12,7 @@ import TabPanel from "@material-ui/lab/TabPanel";
 import Image from "material-ui-image";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../slices/currentUser";
-import InfoTabPanel from "./TabPanel/Info";
+import InfoTabPanel from "./TabPanel/Info/Info";
 import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issues";
 import {
