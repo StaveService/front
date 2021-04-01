@@ -5,25 +5,26 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import { useSelector } from "react-redux";
-import itunesSearch from "../../axios";
+import itunes from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/LoadingButton";
+import ItunesArtistCard from "../../components/Card/Itunes/Artist";
+import ArtistCard from "../../components/Card/Artist";
+import { selectHeaders } from "../../slices/currentUser";
+import { search } from "../common/search";
 import {
   IArtist,
   IItunesArtist,
   IItunesArtistsResponse,
 } from "../../interfaces";
 import routes from "../../router/routes.json";
-import ItunesArtistCard from "../../components/Card/Itunes/Artist";
-import ArtistCard from "../../components/Card/Artist";
-import { selectHeaders } from "../../slices/currentUser";
 
 interface IFormValues {
   name: string;
@@ -43,6 +44,8 @@ const New: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
   const headers = useSelector(selectHeaders);
+  const searchArtists = (value: string) =>
+    search<IArtist[]>(value, routes.ARTISTS, { name_eq: value }, setArtists);
   const onSubmit = (data: SubmitHandler<IFormValues>) => {
     if (!headers) return;
     setLoading(true);
@@ -52,11 +55,13 @@ const New: React.FC = () => {
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   };
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
+    searchArtists(e.target.value);
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setOpen(true);
       setItunesLoading(true);
-      itunesSearch
+      itunes
         .get<IItunesArtistsResponse>("/search", {
           params: {
             entity: "musicArtist",
@@ -73,10 +78,7 @@ const New: React.FC = () => {
       const { artistName, artistId } = selectedItunesArtist;
       setValue("name", artistName);
       setValue("itunes_artist_id", artistId);
-      axios
-        .get(routes.ARTISTS, { params: { q: { name_eq: artistName } } })
-        .then((res) => setArtists(res.data))
-        .catch((err) => console.log(err));
+      searchArtists(artistName);
     }
   }, [selectedItunesArtist]);
 
@@ -151,6 +153,7 @@ const New: React.FC = () => {
             disabled={loading}
             fullWidth
             onKeyPress={handleKeyPress}
+            onChange={handleChange}
           />
           <SearchedArtistsCard />
           <LoadingButton

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent } from "react";
 import {
   Control,
   DeepMap,
@@ -34,9 +34,7 @@ const ControlTextField: React.FC<IControlTextFieldProps> = ({
   const handleChange = (
     e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (onChange) onChange(e.target.value);
+    if (onChange) onChange(e);
     onChangeController(e.target.value);
   };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {

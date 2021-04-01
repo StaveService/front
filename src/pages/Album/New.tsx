@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
@@ -13,7 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Image from "material-ui-image";
 import { useSelector } from "react-redux";
-import itunesSearch from "../../axios";
+import itunes from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/LoadingButton";
 import ItunesAlbumCard from "../../components/Card/Itunes/Album";
@@ -21,6 +21,7 @@ import AlbumCard from "../../components/Card/Album";
 import { IAlbum, IItunesAlbum, IItunesAlbumsResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { selectHeaders } from "../../slices/currentUser";
+import { search } from "../common/search";
 
 interface IFormValues {
   title: string;
@@ -49,11 +50,15 @@ const New: React.FC = () => {
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   };
+  const searchAlbums = (value: string) =>
+    search<IAlbum[]>(value, routes.ALBUMS, { title_eq: value }, setAlbums);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
+    searchAlbums(e.target.value);
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setOpen(true);
       setItunesLoading(true);
-      itunesSearch
+      itunes
         .get<IItunesAlbumsResponse>("/search", {
           params: {
             entity: "album",
@@ -70,10 +75,7 @@ const New: React.FC = () => {
       const { collectionName, collectionId } = selectedItunesAlbum;
       setValue("title", collectionName);
       setValue("itunes_collection_id", collectionId);
-      axios
-        .get(routes.ALBUMS, { params: { q: { title_eq: collectionName } } })
-        .then((res) => setAlbums(res.data))
-        .catch((err) => console.log(err));
+      searchAlbums(collectionName);
     }
   }, [selectedItunesAlbum]);
 
@@ -151,6 +153,7 @@ const New: React.FC = () => {
             disabled={loading}
             fullWidth
             onKeyPress={handleKeyPress}
+            onChange={handleChange}
           />
           <SearchedArtistsCard />
           <LoadingButton

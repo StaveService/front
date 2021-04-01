@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const itunesSearch = axios.create({
+const itunes = axios.create({
   baseURL: "https://itunes.apple.com",
 });
 
-export default itunesSearch;
+export default itunes;

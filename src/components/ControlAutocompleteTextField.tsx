@@ -7,27 +7,32 @@ import { IArtist, IBand } from "../interfaces";
 
 type IControlAutocompleteTextFieldProps = IControlTextFieldProps & {
   route: string;
+  query: string;
+  inputValue: string;
 };
 const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps> = ({
   route,
+  query,
+  inputValue,
   ...props
 }: IControlAutocompleteTextFieldProps) => {
-  const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState<IArtist[] | IBand[]>([]);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   useEffect(() => {
     setLoading(true);
     axios
-      .get(route)
+      .get(route, { params: { q: { [query]: inputValue } } })
       .then((res) => setOptions(res.data))
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [inputValue]);
   useEffect(() => {
     if (!open) setOptions([]);
   }, [open]);
+
   return (
     <Autocomplete
       open={open}

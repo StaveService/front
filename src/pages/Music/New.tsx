@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink, useHistory } from "react-router-dom";
@@ -13,7 +13,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
-import itunesSearch from "../../axios";
+import itunes from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import { IItunesMusic, IItunesMusicsResponse, IMusic } from "../../interfaces";
 import ItunesMusicCard from "../../components/Card/Itunes/Music";
@@ -25,6 +25,7 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../slices/currentUser";
+import { search } from "../common/search";
 
 const New: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -58,11 +59,16 @@ const New: React.FC = () => {
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   };
+  const searchMusics = (value: string) =>
+    search<IMusic[]>(value, routes.MUSICS, { title_cont: value }, setMusics);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
+    searchMusics(e.target.value);
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setOpen(true);
       setItunesLoading(true);
-      itunesSearch
+      itunes
         .get<IItunesMusicsResponse>("/search", {
           params: {
             entity: "song",
@@ -79,12 +85,7 @@ const New: React.FC = () => {
       const { trackCensoredName, trackId } = selectedItunesMusic;
       setValue("title", trackCensoredName);
       setValue("itunes_track_id", trackId);
-      axios
-        .get(routes.MUSICS, {
-          params: { q: { title_cont: trackCensoredName } },
-        })
-        .then((res) => setMusics(res.data))
-        .catch((err) => console.log(err));
+      searchMusics(trackCensoredName);
     }
   }, [selectedItunesMusic]);
   const ItunesMusicsDialog = () => {
@@ -162,6 +163,7 @@ const New: React.FC = () => {
             disabled={loading}
             fullWidth
             onKeyPress={handleKeyPress}
+            onChange={handleChange}
           />
           <SearchedMusicCards />
           <LoadingButton

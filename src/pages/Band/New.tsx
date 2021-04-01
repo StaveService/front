@@ -1,5 +1,6 @@
+import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
 import Box from "@material-ui/core/Box";
@@ -11,15 +12,15 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import { useSelector } from "react-redux";
-import itunesSearch from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/LoadingButton";
-import { IBand, IItunesArtist, IItunesArtistsResponse } from "../../interfaces";
-import routes from "../../router/routes.json";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import BandCard from "../../components/Card/Band";
 import { selectHeaders } from "../../slices/currentUser";
+import { IBand, IItunesArtist, IItunesArtistsResponse } from "../../interfaces";
+import routes from "../../router/routes.json";
+import itunes from "../../axios";
+import { search } from "../common/search";
 
 interface IFormValues {
   name: string;
@@ -48,11 +49,17 @@ const New: React.FC = () => {
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   };
+  const searchBands = (value: string) =>
+    search<IBand[]>(value, routes.BANDS, { name_eq: value }, setBands);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    searchBands(e.target.value);
+  };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setOpen(true);
       setItunesLoading(true);
-      itunesSearch
+      itunes
         .get<IItunesArtistsResponse>("/search", {
           params: {
             entity: "musicArtist",
@@ -69,10 +76,7 @@ const New: React.FC = () => {
       const { artistName, artistId } = selectedItunesArtist;
       setValue("name", artistName);
       setValue("itunes_artist_id", artistId);
-      axios
-        .get(routes.BANDS, { params: { q: { name_eq: artistName } } })
-        .then((res) => setBands(res.data))
-        .catch((err) => console.log(err));
+      searchBands(artistName);
     }
   }, [selectedItunesArtist]);
 
@@ -147,6 +151,7 @@ const New: React.FC = () => {
             disabled={loading}
             fullWidth
             onKeyPress={handleKeyPress}
+            onChange={handleChange}
           />
           <SearchedArtistsCard />
           <LoadingButton
