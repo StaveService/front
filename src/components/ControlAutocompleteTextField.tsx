@@ -5,16 +5,24 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import ControlTextField, { IControlTextFieldProps } from "./ControlTextField";
 import { IArtist, IBand } from "../interfaces";
 
-type IControlAutocompleteTextFieldProps = IControlTextFieldProps & {
+type IControlAutocompleteTextFieldProps = {
   route: string;
   query: string;
   inputValue: string;
+  controlTextFieldProps: IControlTextFieldProps;
+  autocompleteProps?: {
+    multiple?: boolean | undefined;
+    disableClearable?: boolean | undefined;
+    freeSolo?: boolean | undefined;
+  };
 };
+
 const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps> = ({
   route,
   query,
   inputValue,
-  ...props
+  controlTextFieldProps,
+  autocompleteProps,
 }: IControlAutocompleteTextFieldProps) => {
   const [options, setOptions] = useState<IArtist[] | IBand[]>([]);
   const [open, setOpen] = useState(false);
@@ -35,6 +43,8 @@ const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps>
 
   return (
     <Autocomplete
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...autocompleteProps}
       open={open}
       onOpen={handleOpen}
       onClose={handleClose}
@@ -45,12 +55,12 @@ const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps>
       renderInput={(params) => (
         <ControlTextField
           // eslint-disable-next-line react/jsx-props-no-spreading
-          {...props}
+          {...controlTextFieldProps}
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
           InputProps={{
             ...params.InputProps,
-            ...props.InputProps,
+            ...controlTextFieldProps.InputProps,
             endAdornment: (
               <>
                 {loading ? (
@@ -64,6 +74,13 @@ const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps>
       )}
     />
   );
+};
+ControlAutocompleteTextField.defaultProps = {
+  autocompleteProps: {
+    multiple: undefined,
+    disableClearable: undefined,
+    freeSolo: undefined,
+  },
 };
 
 export default ControlAutocompleteTextField;

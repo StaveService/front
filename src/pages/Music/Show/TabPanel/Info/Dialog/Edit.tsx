@@ -35,34 +35,41 @@ const Edit: React.FC<IEdit> = ({ setOpen, open }: IEdit) => {
           route={routes.ARTISTS}
           query="name_cont"
           inputValue={composers}
-          name="composers"
-          label="Composers"
-          defaultValue=""
-          control={control}
-          errors={errors}
-          variant="outlined"
+          controlTextFieldProps={{
+            name: "composers",
+            label: "Composers",
+            defaultValue: "",
+            control,
+            errors,
+            variant: "outlined",
+          }}
+          autocompleteProps={{ multiple: true }}
         />
         <ControlAutocompleteTextField
           route={routes.ARTISTS}
           query="name_cont"
           inputValue={lyrists}
-          name="lyrists"
-          label="Lyrists"
-          defaultValue=""
-          control={control}
-          errors={errors}
-          variant="outlined"
+          controlTextFieldProps={{
+            name: "lyrists",
+            label: "Lyrists",
+            defaultValue: "",
+            control,
+            errors,
+            variant: "outlined",
+          }}
         />
         <ControlAutocompleteTextField
           route={routes.BANDS}
           query="name_cont"
           inputValue={band}
-          name="band"
-          label="Band"
-          defaultValue=""
-          control={control}
-          errors={errors}
-          variant="outlined"
+          controlTextFieldProps={{
+            name: "band",
+            label: "band",
+            defaultValue: "",
+            control,
+            errors,
+            variant: "outlined",
+          }}
         />
         <LoadingButton
           type="button"
