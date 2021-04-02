@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Image from "material-ui-image";
 import { useSelector } from "react-redux";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/LoadingButton";
@@ -29,15 +30,16 @@ interface IFormValues {
 }
 
 const New: React.FC = () => {
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [itunesAlbums, setItunesAlbums] = useState<IItunesAlbum[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [albums, setAlbums] = useState<IAlbum[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [itunesLoading, setItunesLoading] = useState(false);
+  const [itunesAlbums, setItunesAlbums] = useState<IItunesAlbum[]>([]);
   const [
     selectedItunesAlbum,
     setSelectedItunesAlbum,
   ] = useState<IItunesAlbum>();
-  const [albums, setAlbums] = useState<IAlbum[]>([]);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
   const headers = useSelector(selectHeaders);
@@ -51,7 +53,7 @@ const New: React.FC = () => {
       .finally(() => setLoading(false));
   };
   const searchAlbums = (value: string) =>
-    search<IAlbum[]>(value, routes.ALBUMS, { title_eq: value }, setAlbums);
+    search<IAlbum>(routes.ALBUMS, { title_eq: value }, setAlbums);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     searchAlbums(e.target.value);
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -154,6 +156,15 @@ const New: React.FC = () => {
             fullWidth
             onKeyPress={handleKeyPress}
             onChange={handleChange}
+            InputProps={{
+              endAdornment: (
+                <>
+                  {searchLoading ? (
+                    <CircularProgress color="inherit" size={20} />
+                  ) : null}
+                </>
+              ),
+            }}
           />
           <SearchedArtistsCard />
           <LoadingButton

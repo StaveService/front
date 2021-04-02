@@ -6,7 +6,6 @@ import Box from "@material-ui/core/Box";
 import LoadingButton from "../../../../../../components/LoadingButton";
 import ControlAutocompleteTextField from "../../../../../../components/ControlAutocompleteTextField";
 import routes from "../../../../../../router/routes.json";
-import { search } from "../../../../../common/search";
 
 interface IEdit {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,6 +41,7 @@ const Edit: React.FC<IEdit> = ({ setOpen, open }: IEdit) => {
             control,
             errors,
             variant: "outlined",
+            margin: "normal",
           }}
           autocompleteProps={{ multiple: true }}
         />
@@ -56,7 +56,9 @@ const Edit: React.FC<IEdit> = ({ setOpen, open }: IEdit) => {
             control,
             errors,
             variant: "outlined",
+            margin: "normal",
           }}
+          autocompleteProps={{ multiple: true }}
         />
         <ControlAutocompleteTextField
           route={routes.BANDS}
@@ -69,6 +71,7 @@ const Edit: React.FC<IEdit> = ({ setOpen, open }: IEdit) => {
             control,
             errors,
             variant: "outlined",
+            margin: "normal",
           }}
         />
         <LoadingButton

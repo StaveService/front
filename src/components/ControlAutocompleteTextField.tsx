@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ControlTextField, { IControlTextFieldProps } from "./ControlTextField";
 import { IArtist, IBand } from "../interfaces";
+import { search } from "../pages/common/search";
 
 type IControlAutocompleteTextFieldProps = {
   route: string;
@@ -29,14 +29,14 @@ const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps>
   const [loading, setLoading] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get(route, { params: { q: { [query]: inputValue } } })
-      .then((res) => setOptions(res.data))
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, [inputValue]);
+
+  const handleChange = () =>
+    search<IArtist | IBand>(
+      route,
+      { [query]: inputValue },
+      setOptions,
+      setLoading
+    );
   useEffect(() => {
     if (!open) setOptions([]);
   }, [open]);
@@ -70,6 +70,7 @@ const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps>
               </>
             ),
           }}
+          onChange={handleChange}
         />
       )}
     />

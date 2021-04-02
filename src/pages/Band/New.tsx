@@ -50,7 +50,7 @@ const New: React.FC = () => {
       .finally(() => setLoading(false));
   };
   const searchBands = (value: string) =>
-    search<IBand[]>(value, routes.BANDS, { name_eq: value }, setBands);
+    search<IBand>(routes.BANDS, { name_eq: value }, setBands);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     searchBands(e.target.value);

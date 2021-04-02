@@ -60,7 +60,7 @@ const New: React.FC = () => {
       .finally(() => setLoading(false));
   };
   const searchMusics = (value: string) =>
-    search<IMusic[]>(value, routes.MUSICS, { title_cont: value }, setMusics);
+    search<IMusic>(routes.MUSICS, { title_cont: value }, setMusics);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     searchMusics(e.target.value);
 

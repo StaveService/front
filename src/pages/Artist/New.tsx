@@ -41,7 +41,7 @@ const New: React.FC = () => {
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
   const headers = useSelector(selectHeaders);
   const searchArtists = (value: string) =>
-    search<IArtist[]>(value, routes.ARTISTS, { name_eq: value }, setArtists);
+    search<IArtist>(routes.ARTISTS, { name_eq: value }, setArtists);
   const onSubmit = (data: SubmitHandler<IFormValues>) => {
     if (!headers) return;
     setLoading(true);
