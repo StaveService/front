@@ -19,11 +19,7 @@ import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import ArtistCard from "../../components/Card/Artist";
 import { selectHeaders } from "../../slices/currentUser";
 import { search } from "../common/search";
-import {
-  IArtist,
-  IItunesArtist,
-  IItunesArtistsResponse,
-} from "../../interfaces";
+import { IArtist, IItunesArtist, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 
 interface IFormValues {
@@ -62,7 +58,7 @@ const New: React.FC = () => {
       setOpen(true);
       setItunesLoading(true);
       itunes
-        .get<IItunesArtistsResponse>("/search", {
+        .get<IItunesResponse<IItunesArtist>>("/search", {
           params: {
             entity: "musicArtist",
             term: (e.target as HTMLInputElement).value,

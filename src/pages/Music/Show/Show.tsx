@@ -15,11 +15,7 @@ import { selectCurrentUser } from "../../../slices/currentUser";
 import InfoTabPanel from "./TabPanel/Info/Info";
 import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issues";
-import {
-  IItunesMusic,
-  IItunesMusicsResponse,
-  IMusic,
-} from "../../../interfaces";
+import { IItunesMusic, IItunesResponse, IMusic } from "../../../interfaces";
 import routes from "../../../router/routes.json";
 import { itunes } from "../../../axios";
 
@@ -47,7 +43,7 @@ const Show: React.FC = () => {
   useEffect(() => {
     if (music) {
       itunes
-        .get<IItunesMusicsResponse>("/lookup", {
+        .get<IItunesResponse<IItunesMusic>>("/lookup", {
           params: { id: music.itunes_track_id, entity: "song" },
         })
         .then((res) => setItunesMusic(res.data.results[0]))

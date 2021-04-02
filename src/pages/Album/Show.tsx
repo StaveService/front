@@ -5,7 +5,7 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Image from "material-ui-image";
-import { IAlbum, IItunesAlbum, IItunesAlbumsResponse } from "../../interfaces";
+import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import MusicsTable from "../../components/Table/Music";
 import { itunes } from "../../axios";
@@ -26,7 +26,7 @@ const Show: React.FC = () => {
   useEffect(() => {
     if (album) {
       itunes
-        .get<IItunesAlbumsResponse>("/lookup", {
+        .get<IItunesResponse<IItunesAlbum>>("/lookup", {
           params: { id: album.itunes_collection_id, entity: "album" },
         })
         .then((res) => setItunesMusic(res.data.results[0]))

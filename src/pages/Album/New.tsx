@@ -18,7 +18,7 @@ import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/LoadingButton";
 import ItunesAlbumCard from "../../components/Card/Itunes/Album";
 import AlbumCard from "../../components/Card/Album";
-import { IAlbum, IItunesAlbum, IItunesAlbumsResponse } from "../../interfaces";
+import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { selectHeaders } from "../../slices/currentUser";
 import { search } from "../common/search";
@@ -59,7 +59,7 @@ const New: React.FC = () => {
       setOpen(true);
       setItunesLoading(true);
       itunes
-        .get<IItunesAlbumsResponse>("/search", {
+        .get<IItunesResponse<IItunesAlbum>>("/search", {
           params: {
             entity: "album",
             term: (e.target as HTMLInputElement).value,

@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import {
-  IArtist,
-  IItunesArtist,
-  IItunesArtistsResponse,
-} from "../../interfaces";
+import { IArtist, IItunesArtist, IItunesResponse } from "../../interfaces";
 import { itunes } from "../../axios";
 
 interface IArtistCard {
@@ -19,7 +15,7 @@ const ArtistCard: React.FC<IArtistCard> = ({
   useEffect(() => {
     if (!itunesArtistId) return;
     itunes
-      .get<IItunesArtistsResponse>("/lookup", {
+      .get<IItunesResponse<IItunesArtist>>("/lookup", {
         params: { id: itunesArtistId, entity: "musicArtist" },
       })
       .then((res) => setItunesArtist(res.data.results[0]))

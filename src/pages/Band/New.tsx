@@ -17,7 +17,7 @@ import LoadingButton from "../../components/LoadingButton";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import BandCard from "../../components/Card/Band";
 import { selectHeaders } from "../../slices/currentUser";
-import { IBand, IItunesArtist, IItunesArtistsResponse } from "../../interfaces";
+import { IBand, IItunesArtist, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { itunes } from "../../axios";
 import { search } from "../common/search";
@@ -60,7 +60,7 @@ const New: React.FC = () => {
       setOpen(true);
       setItunesLoading(true);
       itunes
-        .get<IItunesArtistsResponse>("/search", {
+        .get<IItunesResponse<IItunesArtist>>("/search", {
           params: {
             entity: "musicArtist",
             term: (e.target as HTMLInputElement).value,

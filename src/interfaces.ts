@@ -134,17 +134,7 @@ export interface IItunesAlbum extends IItunesArtwork {
   wrapperType: "collection";
 }
 
-export interface IItunesMusicsResponse {
+export interface IItunesResponse<T> {
   resultCount: number;
-  results: IItunesMusic[];
-}
-
-export interface IItunesArtistsResponse {
-  resultCount: number;
-  results: IItunesArtist[];
-}
-
-export interface IItunesAlbumsResponse {
-  resultCount: number;
-  results: IItunesAlbum[];
+  results: T[];
 }

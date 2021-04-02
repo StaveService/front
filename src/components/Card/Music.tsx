@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import CardMedia from "@material-ui/core/CardMedia";
 import { makeStyles } from "@material-ui/core/styles";
-import { IItunesMusicsResponse, IMusic } from "../../interfaces";
+import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
 import { itunes } from "../../axios";
 
 const useStyles = makeStyles({
@@ -31,7 +31,7 @@ const MusicCard: React.FC<IMusicCard> = ({
   useEffect(() => {
     if (!itunesTrackId) return;
     itunes
-      .get<IItunesMusicsResponse>("/lookup", {
+      .get<IItunesResponse<IItunesMusic>>("/lookup", {
         params: { id: itunesTrackId, entity: "song" },
       })
       .then((res) => setArtworkUrl(res.data.results[0].artworkUrl100))

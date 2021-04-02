@@ -15,7 +15,7 @@ import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
 import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
-import { IItunesMusic, IItunesMusicsResponse, IMusic } from "../../interfaces";
+import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
 import ItunesMusicCard from "../../components/Card/Itunes/Music";
 import MusicCard from "../../components/Card/Music";
 import LoadingButton from "../../components/LoadingButton";
@@ -69,7 +69,7 @@ const New: React.FC = () => {
       setOpen(true);
       setItunesLoading(true);
       itunes
-        .get<IItunesMusicsResponse>("/search", {
+        .get<IItunesResponse<IItunesMusic>>("/search", {
           params: {
             entity: "song",
             term: (e.target as HTMLInputElement).value,

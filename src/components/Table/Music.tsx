@@ -10,7 +10,7 @@ import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { IItunesMusicsResponse, IMusic } from "../../interfaces";
+import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { itunes } from "../../axios";
 
@@ -28,7 +28,7 @@ const Music: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
   useEffect(() => {
     if (!musics.length) return;
     itunes
-      .get<IItunesMusicsResponse>("/lookup", {
+      .get<IItunesResponse<IItunesMusic>>("/lookup", {
         params: {
           id: musics.map((music) => music.itunes_track_id).join(","),
           entity: "song",
