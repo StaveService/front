@@ -1,15 +1,32 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+import React, { ChangeEvent, FC, useEffect, useState } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import ControlTextField, { IControlTextFieldProps } from "./ControlTextField";
-import { IArtist, IBand } from "../interfaces";
-import { search } from "../pages/common/search";
+import TextField, { TextFieldProps } from "@material-ui/core/TextField";
+import {
+  Control,
+  DeepMap,
+  FieldError,
+  RegisterOptions,
+  useController,
+} from "react-hook-form";
+import { search } from "../common/search";
+import { IArtist } from "../interfaces";
 
-type IControlAutocompleteTextFieldProps = {
+type ControlAutocompleteTextFieldProps = {
   route: string;
   query: string;
-  inputValue: string;
-  controlTextFieldProps: IControlTextFieldProps;
+  property: string;
+
+  // react-hook-form
+  name: string;
+  defaultValue: string;
+  control: Control;
+  errors: DeepMap<Record<string, any>, FieldError>;
+  rules?: RegisterOptions;
+
+  // material-ui
+  textFieldProps: TextFieldProps;
   autocompleteProps?: {
     multiple?: boolean | undefined;
     disableClearable?: boolean | undefined;
@@ -17,26 +34,47 @@ type IControlAutocompleteTextFieldProps = {
   };
 };
 
-const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps> = ({
+const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
+  name,
+  defaultValue,
+  control,
+  rules,
   route,
   query,
-  inputValue,
-  controlTextFieldProps,
+  property,
+  textFieldProps,
   autocompleteProps,
-}: IControlAutocompleteTextFieldProps) => {
-  const [options, setOptions] = useState<IArtist[] | IBand[]>([]);
+}: ControlAutocompleteTextFieldProps) => {
+  const [options, setOptions] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    field: { ref, value, onChange },
+    meta: { invalid },
+  } = useController({
+    name,
+    control,
+    rules,
+    defaultValue,
+  });
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const handleChange = () =>
-    search<IArtist | IBand>(
+  const handleChange = (
+    _e: ChangeEvent<Record<string, unknown>>,
+    autoCompleteValue: any
+  ) => onChange(autoCompleteValue);
+  const handleInputChange = (
+    _e: ChangeEvent<Record<string, unknown>>,
+    inputValue: string
+  ) =>
+    search<any>(
       route,
-      { [query]: inputValue },
+      { [`${property}_${query}`]: inputValue },
       setOptions,
       setLoading
     );
+
   useEffect(() => {
     if (!open) setOptions([]);
   }, [open]);
@@ -46,21 +84,26 @@ const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps>
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...autocompleteProps}
       open={open}
-      onOpen={handleOpen}
-      onClose={handleClose}
-      getOptionSelected={(option, value) => option.name === value.name}
-      getOptionLabel={(option) => option.name}
+      getOptionSelected={(option, selectedValue) =>
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        option[property] === selectedValue[property]
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      getOptionLabel={(option) => option[property]}
       options={options}
       loading={loading}
+      noOptionsText="No Results"
       renderInput={(params) => (
-        <ControlTextField
+        <TextField
           // eslint-disable-next-line react/jsx-props-no-spreading
-          {...controlTextFieldProps}
+          {...textFieldProps}
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
+          inputRef={ref}
+          error={invalid}
           InputProps={{
             ...params.InputProps,
-            ...controlTextFieldProps.InputProps,
+            ...textFieldProps.InputProps,
             endAdornment: (
               <>
                 {loading ? (
@@ -70,18 +113,23 @@ const ControlAutocompleteTextField: React.FC<IControlAutocompleteTextFieldProps>
               </>
             ),
           }}
-          onChange={handleChange}
         />
       )}
+      onChange={handleChange}
+      onOpen={handleOpen}
+      onClose={handleClose}
+      onInputChange={handleInputChange}
     />
   );
 };
+
 ControlAutocompleteTextField.defaultProps = {
   autocompleteProps: {
     multiple: undefined,
     disableClearable: undefined,
     freeSolo: undefined,
   },
+  rules: {},
 };
 
 export default ControlAutocompleteTextField;

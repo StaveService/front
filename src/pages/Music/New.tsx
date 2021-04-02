@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { KeyboardEvent, ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink, useHistory } from "react-router-dom";
@@ -13,23 +13,25 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
-import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
-import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
 import ItunesMusicCard from "../../components/Card/Itunes/Music";
 import MusicCard from "../../components/Card/Music";
-import LoadingButton from "../../components/LoadingButton";
+import LoadingButton from "../../components/Loading/LoadingButton";
+import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
+import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
+import { itunes } from "../../axios";
 import routes from "../../router/routes.json";
 import {
   selectCurrentUser,
   selectHeaders,
   setHeaders,
 } from "../../slices/currentUser";
-import { search } from "../common/search";
+import { search } from "../../common/search";
 
 const New: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [itunesLoading, setItunesLoading] = useState(false);
   const [itunesMusics, setItunesMusics] = useState<IItunesMusic[]>([]);
   const [
@@ -60,11 +62,15 @@ const New: React.FC = () => {
       .finally(() => setLoading(false));
   };
   const searchMusics = (value: string) =>
-    search<IMusic>(routes.MUSICS, { title_cont: value }, setMusics);
+    search<IMusic>(
+      routes.MUSICS,
+      { title_eq: value },
+      setMusics,
+      setSearchLoading
+    );
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     searchMusics(e.target.value);
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setOpen(true);
       setItunesLoading(true);
@@ -162,6 +168,15 @@ const New: React.FC = () => {
             errors={errors}
             disabled={loading}
             fullWidth
+            InputProps={{
+              endAdornment: (
+                <LoadingCircularProgress
+                  color="inherit"
+                  size={20}
+                  loading={searchLoading}
+                />
+              ),
+            }}
             onKeyPress={handleKeyPress}
             onChange={handleChange}
           />

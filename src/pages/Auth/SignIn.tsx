@@ -12,7 +12,7 @@ import { ISignInFormValues, IUserSuccessResponse } from "../../interfaces";
 import { signInSchema } from "../../schema";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
 import ControlTextField from "../../components/ControlTextField";
-import LoadingButton from "../../components/LoadingButton";
+import LoadingButton from "../../components/Loading/LoadingButton";
 
 const SignIn: React.FC = () => {
   const [loading, setLoading] = useState(false);

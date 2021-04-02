@@ -9,7 +9,7 @@ import { useHistory, useParams } from "react-router-dom";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Typography from "@material-ui/core/Typography";
 import ControlTextField from "../../../../components/ControlTextField";
-import LoadingButton from "../../../../components/LoadingButton";
+import LoadingButton from "../../../../components/Loading/LoadingButton";
 import {
   selectCurrentUser,
   selectHeaders,

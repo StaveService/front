@@ -14,11 +14,12 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
-import LoadingButton from "../../components/LoadingButton";
+import LoadingButton from "../../components/Loading/LoadingButton";
+import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import ArtistCard from "../../components/Card/Artist";
 import { selectHeaders } from "../../slices/currentUser";
-import { search } from "../common/search";
+import { search } from "../../common/search";
 import { IArtist, IItunesArtist, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 
@@ -30,6 +31,7 @@ interface IFormValues {
 const New: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [itunesArtists, setItunesArtists] = useState<IItunesArtist[]>([]);
   const [itunesLoading, setItunesLoading] = useState(false);
   const [artists, setArtists] = useState<IArtist[]>([]);
@@ -41,7 +43,12 @@ const New: React.FC = () => {
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
   const headers = useSelector(selectHeaders);
   const searchArtists = (value: string) =>
-    search<IArtist>(routes.ARTISTS, { name_eq: value }, setArtists);
+    search<IArtist>(
+      routes.ARTISTS,
+      { name_eq: value },
+      setArtists,
+      setSearchLoading
+    );
   const onSubmit = (data: SubmitHandler<IFormValues>) => {
     if (!headers) return;
     setLoading(true);
@@ -148,6 +155,15 @@ const New: React.FC = () => {
             errors={errors}
             disabled={loading}
             fullWidth
+            InputProps={{
+              endAdornment: (
+                <LoadingCircularProgress
+                  color="inherit"
+                  size={20}
+                  loading={searchLoading}
+                />
+              ),
+            }}
             onKeyPress={handleKeyPress}
             onChange={handleChange}
           />

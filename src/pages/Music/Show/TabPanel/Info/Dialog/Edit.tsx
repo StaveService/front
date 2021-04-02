@@ -3,11 +3,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Box from "@material-ui/core/Box";
-import LoadingButton from "../../../../../../components/LoadingButton";
+import LoadingButton from "../../../../../../components/Loading/LoadingButton";
 import ControlAutocompleteTextField from "../../../../../../components/ControlAutocompleteTextField";
+
 import routes from "../../../../../../router/routes.json";
 
-interface IEdit {
+interface EditProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
 }
@@ -16,60 +17,58 @@ interface IFormValue {
   lyrists: string;
   band: string;
 }
-const Edit: React.FC<IEdit> = ({ setOpen, open }: IEdit) => {
+const Edit: React.FC<EditProps> = ({ setOpen, open }: EditProps) => {
   const [loading, setLoading] = useState(false);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { control, errors, watch, handleSubmit } = useForm<IFormValue>();
+  const { control, errors, handleSubmit } = useForm<IFormValue>();
   const handleClose = () => setOpen(false);
   const onSubmit = (data: SubmitHandler<IFormValue>) => {
     console.log(data);
-    setLoading(true);
   };
-  const { composers, lyrists, band } = watch();
   return (
     <Dialog onClose={handleClose} open={open}>
       <Box m={3} width={500}>
         <DialogTitle>Edit Info</DialogTitle>
         <ControlAutocompleteTextField
+          name="composers"
+          defaultValue=""
           route={routes.ARTISTS}
-          query="name_cont"
-          inputValue={composers}
-          controlTextFieldProps={{
-            name: "composers",
+          property="name"
+          query="cont"
+          control={control}
+          errors={errors}
+          textFieldProps={{
             label: "Composers",
-            defaultValue: "",
-            control,
-            errors,
             variant: "outlined",
             margin: "normal",
           }}
           autocompleteProps={{ multiple: true }}
         />
         <ControlAutocompleteTextField
+          name="lyrists"
+          defaultValue=""
           route={routes.ARTISTS}
-          query="name_cont"
-          inputValue={lyrists}
-          controlTextFieldProps={{
-            name: "lyrists",
+          property="name"
+          query="cont"
+          control={control}
+          errors={errors}
+          textFieldProps={{
             label: "Lyrists",
-            defaultValue: "",
-            control,
-            errors,
             variant: "outlined",
             margin: "normal",
           }}
           autocompleteProps={{ multiple: true }}
         />
         <ControlAutocompleteTextField
+          name="band"
+          defaultValue=""
           route={routes.BANDS}
-          query="name_cont"
-          inputValue={band}
-          controlTextFieldProps={{
-            name: "band",
-            label: "band",
-            defaultValue: "",
-            control,
-            errors,
+          property="name"
+          query="cont"
+          control={control}
+          errors={errors}
+          textFieldProps={{
+            label: "Band",
             variant: "outlined",
             margin: "normal",
           }}

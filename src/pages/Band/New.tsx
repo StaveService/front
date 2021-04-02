@@ -13,14 +13,15 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import ControlTextField from "../../components/ControlTextField";
-import LoadingButton from "../../components/LoadingButton";
+import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import BandCard from "../../components/Card/Band";
+import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import { selectHeaders } from "../../slices/currentUser";
 import { IBand, IItunesArtist, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { itunes } from "../../axios";
-import { search } from "../common/search";
+import { search } from "../../common/search";
 
 interface IFormValues {
   name: string;
@@ -30,6 +31,7 @@ interface IFormValues {
 const New: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [itunesArtists, setItunesArtists] = useState<IItunesArtist[]>([]);
   const [itunesLoading, setItunesLoading] = useState(false);
   const [bands, setBands] = useState<IBand[]>([]);
@@ -50,7 +52,7 @@ const New: React.FC = () => {
       .finally(() => setLoading(false));
   };
   const searchBands = (value: string) =>
-    search<IBand>(routes.BANDS, { name_eq: value }, setBands);
+    search<IBand>(routes.BANDS, { name_eq: value }, setBands, setSearchLoading);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     searchBands(e.target.value);
@@ -150,6 +152,15 @@ const New: React.FC = () => {
             errors={errors}
             disabled={loading}
             fullWidth
+            InputProps={{
+              endAdornment: (
+                <LoadingCircularProgress
+                  color="inherit"
+                  size={20}
+                  loading={searchLoading}
+                />
+              ),
+            }}
             onKeyPress={handleKeyPress}
             onChange={handleChange}
           />

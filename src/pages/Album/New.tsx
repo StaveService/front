@@ -13,16 +13,16 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Image from "material-ui-image";
 import { useSelector } from "react-redux";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
-import LoadingButton from "../../components/LoadingButton";
+import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesAlbumCard from "../../components/Card/Itunes/Album";
 import AlbumCard from "../../components/Card/Album";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { selectHeaders } from "../../slices/currentUser";
-import { search } from "../common/search";
+import { search } from "../../common/search";
+import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 
 interface IFormValues {
   title: string;
@@ -31,11 +31,11 @@ interface IFormValues {
 
 const New: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [albums, setAlbums] = useState<IAlbum[]>([]);
+  const [itunesAlbums, setItunesAlbums] = useState<IItunesAlbum[]>([]);
+  const [loading, setLoading] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [itunesLoading, setItunesLoading] = useState(false);
-  const [itunesAlbums, setItunesAlbums] = useState<IItunesAlbum[]>([]);
   const [
     selectedItunesAlbum,
     setSelectedItunesAlbum,
@@ -53,7 +53,12 @@ const New: React.FC = () => {
       .finally(() => setLoading(false));
   };
   const searchAlbums = (value: string) =>
-    search<IAlbum>(routes.ALBUMS, { title_eq: value }, setAlbums);
+    search<IAlbum>(
+      routes.ALBUMS,
+      { title_eq: value },
+      setAlbums,
+      setSearchLoading
+    );
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     searchAlbums(e.target.value);
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -154,17 +159,17 @@ const New: React.FC = () => {
             errors={errors}
             disabled={loading}
             fullWidth
-            onKeyPress={handleKeyPress}
-            onChange={handleChange}
             InputProps={{
               endAdornment: (
-                <>
-                  {searchLoading ? (
-                    <CircularProgress color="inherit" size={20} />
-                  ) : null}
-                </>
+                <LoadingCircularProgress
+                  color="inherit"
+                  size={20}
+                  loading={searchLoading}
+                />
               ),
             }}
+            onKeyPress={handleKeyPress}
+            onChange={handleChange}
           />
           <SearchedArtistsCard />
           <LoadingButton

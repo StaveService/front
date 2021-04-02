@@ -8,7 +8,7 @@ import Box from "@material-ui/core/Box";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Grid from "@material-ui/core/Grid";
 import ControlTextField from "../../components/ControlTextField";
-import LoadingButton from "../../components/LoadingButton";
+import LoadingButton from "../../components/Loading/LoadingButton";
 import { ISignUpFormValues } from "../../interfaces";
 import { signUpSchema } from "../../schema";
 
