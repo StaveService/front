@@ -39,6 +39,7 @@ const SignUp: React.FC = () => {
               autoComplete="nickname"
               label="NickName"
               variant="outlined"
+              margin="normal"
               control={control}
               errors={errors}
               disabled={loading}
@@ -77,6 +78,7 @@ const SignUp: React.FC = () => {
               autoComplete="on"
               label="Email"
               variant="outlined"
+              margin="normal"
               control={control}
               errors={errors}
               disabled={loading}
@@ -89,6 +91,7 @@ const SignUp: React.FC = () => {
               autoComplete="new-password"
               label="Password"
               variant="outlined"
+              margin="normal"
               control={control}
               errors={errors}
               disabled={loading}
@@ -100,6 +103,7 @@ const SignUp: React.FC = () => {
               defaultValue=""
               label="PasswordConfirmation"
               variant="outlined"
+              margin="normal"
               control={control}
               errors={errors}
               disabled={loading}

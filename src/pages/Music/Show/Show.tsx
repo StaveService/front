@@ -15,6 +15,7 @@ import { selectCurrentUser } from "../../../slices/currentUser";
 import InfoTabPanel from "./TabPanel/Info/Info";
 import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issues";
+import MusicContext from "./context";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../../interfaces";
 import routes from "../../../router/routes.json";
 import { itunes } from "../../../axios";
@@ -51,38 +52,36 @@ const Show: React.FC = () => {
     }
   }, [music]);
   return (
-    <Container>
-      <Typography variant="h3">{music?.title}</Typography>
-      <Box height="100px" width="100px" m="auto">
-        <Image src={itunesMusic?.artworkUrl100 || "undefiend"} />
-      </Box>
-      <TabContext value={tabIndex}>
-        <Paper square>
-          <TabList onChange={handleChange}>
-            <Tab label="Info" value="1" />
-            <Tab label="Issues" value="2" />
-            <Tab
-              label="Setting"
-              value="3"
-              disabled={currentUser?.id !== Number(params.userId)}
-            />
-          </TabList>
-        </Paper>
-        <TabPanel value="1">
-          <InfoTabPanel
-            music={music}
-            itunesMusic={itunesMusic}
-            loading={loading}
-          />
-        </TabPanel>
-        <TabPanel value="2">
-          <IssuesTabPanel />
-        </TabPanel>
-        <TabPanel value="3">
-          <SettingTabPanel />
-        </TabPanel>
-      </TabContext>
-    </Container>
+    <MusicContext.Provider value={{ music, setMusic }}>
+      <Container>
+        <Typography variant="h3">{music?.title}</Typography>
+        <Box height="100px" width="100px" m="auto">
+          <Image src={itunesMusic?.artworkUrl100 || "undefiend"} />
+        </Box>
+        <TabContext value={tabIndex}>
+          <Paper square>
+            <TabList onChange={handleChange}>
+              <Tab label="Info" value="1" />
+              <Tab label="Issues" value="2" />
+              <Tab
+                label="Setting"
+                value="3"
+                disabled={currentUser?.id !== Number(params.userId)}
+              />
+            </TabList>
+          </Paper>
+          <TabPanel value="1">
+            <InfoTabPanel itunesMusic={itunesMusic} loading={loading} />
+          </TabPanel>
+          <TabPanel value="2">
+            <IssuesTabPanel />
+          </TabPanel>
+          <TabPanel value="3">
+            <SettingTabPanel />
+          </TabPanel>
+        </TabContext>
+      </Container>
+    </MusicContext.Provider>
   );
 };
 

@@ -6,6 +6,8 @@
   "ARTISTS": "/artists",
   "MUSICS": "/musics",
   "BANDS": "/bands",
+  "COMPOSERS": "/composers",
+  "LYRISTS": "/lyrists",
   "USERS" : "/users",
   "NEW": "/new"
 }

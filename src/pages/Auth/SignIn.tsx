@@ -55,6 +55,7 @@ const SignIn: React.FC = () => {
               autoComplete="on"
               label="Email"
               variant="outlined"
+              margin="normal"
               control={control}
               errors={errors}
               disabled={loading}
@@ -65,6 +66,7 @@ const SignIn: React.FC = () => {
               name="password"
               label="Password"
               variant="outlined"
+              margin="normal"
               control={control}
               defaultValue=""
               errors={errors}
