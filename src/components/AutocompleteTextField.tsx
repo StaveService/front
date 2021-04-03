@@ -38,6 +38,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
   const [options, setOptions] = useState<any[]>([]);
   const [tags, setTags] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleChange = (
@@ -45,6 +46,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
     value: any,
     reason: string
   ) => {
+    setLoading(true);
     switch (reason) {
       case "select-option":
         if (onSelectOption) onSelectOption(value[value.length - 1], value);
@@ -57,6 +59,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
       default:
         break;
     }
+    setLoading(false);
     setTags(value);
   };
   const handleInputChange = (
@@ -67,7 +70,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
       searchRoute,
       { [`${property}_${query}`]: value },
       setOptions,
-      setLoading
+      setSearchLoading
     );
   useEffect(() => {
     setTags(defaultValue);
@@ -83,6 +86,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       value={defaultValue}
       open={open}
+      disabled={loading}
       getOptionSelected={(option, selectedValue) =>
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         option[property] === selectedValue[property]
@@ -94,7 +98,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
         return tags.length > maxLength;
       }}
       options={options}
-      loading={loading}
+      loading={searchLoading}
       noOptionsText="No Results"
       onChange={handleChange}
       onOpen={handleOpen}
@@ -111,7 +115,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
             ...textFieldProps.InputProps,
             endAdornment: (
               <>
-                {loading ? (
+                {searchLoading ? (
                   <CircularProgress color="inherit" size={20} />
                 ) : null}
                 {params.InputProps.endAdornment}

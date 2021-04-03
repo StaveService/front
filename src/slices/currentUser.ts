@@ -23,10 +23,12 @@ const currentUserSlice = createSlice({
         client,
         uid,
       } = action.payload;
+      // Batch Request
+      const prevAccessToken = state.headers?.headers["access-token"] || "";
       state.headers = {
         headers: {
           "content-type": contentType,
-          "access-token": accessToken,
+          "access-token": accessToken || prevAccessToken,
           client,
           uid,
         },

@@ -39,10 +39,7 @@ const Edit: React.FC<EditProps> = ({ setOpen, open }: EditProps) => {
       .post(route, option, headers)
       .then((res) => {
         dispatch(setHeaders(res.headers));
-        setMusic((prev) => {
-          if (!prev) return prev;
-          return { ...prev, ...options };
-        });
+        setMusic((prev) => (prev ? { ...prev, ...options } : prev));
       })
       .catch((err) => console.log(err));
   };
@@ -54,12 +51,11 @@ const Edit: React.FC<EditProps> = ({ setOpen, open }: EditProps) => {
     if (!headers) return;
     axios
       .delete(`${route}/${option.id}`, headers)
-      .then(() =>
-        setMusic((prev) => {
-          if (!prev) return prev;
-          return { ...prev, ...options };
-        })
-      )
+      .then((res) => {
+        console.log(res.headers);
+        dispatch(setHeaders(res.headers));
+        setMusic((prev) => (prev ? { ...prev, ...options } : prev));
+      })
       .catch((err) => console.log(err));
   };
   const handleSelectOptionComposer = (option: IArtist, options: IArtist[]) =>
