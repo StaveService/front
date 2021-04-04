@@ -1,11 +1,11 @@
 import axios from "axios";
 import React, { SetStateAction } from "react";
 
-function sleep(delay = 0) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-}
+// function sleep(delay = 0) {
+// return new Promise((resolve) => {
+// setTimeout(resolve, delay);
+// });
+// }
 
 export function search<T>(
   route: string,

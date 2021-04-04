@@ -4,10 +4,10 @@
   "SIGNIN": "/signin",
   "ALBUMS": "/albums",
   "ARTISTS": "/artists",
-  "MUSICS": "/musics",
-  "BANDS": "/bands",
   "COMPOSERS": "/composers",
   "LYRISTS": "/lyrists",
+  "MUSICS": "/musics",
+  "BANDS": "/bands",
   "USERS" : "/users",
   "NEW": "/new"
 }

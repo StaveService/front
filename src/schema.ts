@@ -16,4 +16,9 @@ const signUpSchema = yup.object().shape({
   passwordConfirmation: yup.string().oneOf([yup.ref("password"), null]),
 });
 
-export { signInSchema, signUpSchema };
+const addRoleSchema = yup.object().shape({
+  artist_id: yup.number().required(),
+  role: yup.number().required(),
+});
+
+export { addRoleSchema, signInSchema, signUpSchema };

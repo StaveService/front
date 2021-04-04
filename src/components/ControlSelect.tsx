@@ -1,40 +1,36 @@
 import React, { ChangeEvent } from "react";
-import {
-  Control,
-  DeepMap,
-  FieldError,
-  RegisterOptions,
-  useController,
-} from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
-import TextField, { TextFieldProps } from "@material-ui/core/TextField";
+import { Control, RegisterOptions, useController } from "react-hook-form";
+import Select, { SelectProps } from "@material-ui/core/Select";
 
-export type IControlTextFieldProps = TextFieldProps & {
+type IControlSelectProps = SelectProps & {
   control: Control;
-  errors?: DeepMap<Record<string, any>, FieldError>;
   rules?: RegisterOptions;
 };
 
-const ControlTextField: React.FC<IControlTextFieldProps> = ({
+const ControlSelect: React.FC<IControlSelectProps> = ({
   name = "",
   defaultValue,
   onChange,
   onKeyPress,
   // react-hook-form props
-  errors,
   control,
   rules,
+  children,
   ...props
-}: IControlTextFieldProps) => {
+}: IControlSelectProps) => {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     field: { ref, value, onChange: onChangeController },
     meta: { invalid },
   } = useController({ name, control, rules, defaultValue });
   const handleChange = (
-    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    e: ChangeEvent<{
+      name?: string | undefined;
+      value: unknown;
+    }>,
+    child: React.ReactNode
   ) => {
-    if (onChange) onChange(e);
+    if (onChange) onChange(e, child);
     onChangeController(e.target.value);
   };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -42,21 +38,22 @@ const ControlTextField: React.FC<IControlTextFieldProps> = ({
   };
 
   return (
-    <TextField
+    <Select
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
       value={value as string}
       inputRef={ref}
       error={invalid}
-      helperText={errors && <ErrorMessage errors={errors} name={name} />}
       onChange={handleChange}
       onKeyPress={handleKeyPress}
-    />
+    >
+      {children}
+    </Select>
   );
 };
 
-ControlTextField.defaultProps = {
+ControlSelect.defaultProps = {
   rules: {},
 };
 
-export default ControlTextField;
+export default ControlSelect;

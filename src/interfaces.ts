@@ -64,7 +64,8 @@ export interface IAlbum {
 
 export interface IRole {
   id: number;
-  role: string;
+  ["artist_id"]: number;
+  role: string | number;
   artist: IArtist;
 }
 
