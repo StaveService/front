@@ -68,6 +68,11 @@ export interface IRole {
   role: string | number;
   artist: IArtist;
 }
+export interface IAlbumMusic {
+  id: number;
+  ["album_id"]: number;
+  ["music_id"]: number;
+}
 
 export interface ISignInFormValues {
   email: string;

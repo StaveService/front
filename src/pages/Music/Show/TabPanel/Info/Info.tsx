@@ -13,6 +13,7 @@ import Paper from "@material-ui/core/Paper";
 import AlbumsTable from "../../../../../components/Table/Album";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Role";
+import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../router/routes.json";
 import { IItunesMusic } from "../../../../../interfaces";
 import MusicContext from "../../context";
@@ -72,7 +73,7 @@ const Info: React.FC<IInfo> = ({ itunesMusic, loading }: IInfo) => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>BAND</TableCell>
+                <TableCell>Band</TableCell>
                 <TableCell>
                   <Link
                     component={RouterLink}
@@ -125,6 +126,7 @@ const Info: React.FC<IInfo> = ({ itunesMusic, loading }: IInfo) => {
           </Table>
         </TableContainer>
       </Box>
+      <AlbumDialog />
       <AlbumsTable albums={music?.albums || []} loading={loading} />
     </>
   );

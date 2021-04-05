@@ -8,11 +8,11 @@ import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import ControlTextField from "../../components/ControlTextField";
+import LoadingButton from "../../components/Loading/LoadingButton";
 import { ISignInFormValues, IUserSuccessResponse } from "../../interfaces";
 import { signInSchema } from "../../schema";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
-import ControlTextField from "../../components/ControlTextField";
-import LoadingButton from "../../components/Loading/LoadingButton";
 
 const SignIn: React.FC = () => {
   const [loading, setLoading] = useState(false);

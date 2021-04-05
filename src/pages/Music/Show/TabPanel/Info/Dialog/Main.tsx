@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Container from "@material-ui/core/Container";
+import { Box } from "@material-ui/core";
 import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
 import routes from "../../../../../../router/routes.json";
 import MusicContext from "../../../context";
@@ -37,7 +38,7 @@ const Edit: React.FC = () => {
         .post(route, option, headers)
         .then((res) => {
           dispatch(setHeaders(res.headers));
-          setMusic((prev) => (prev ? { ...prev, ...options } : prev));
+          setMusic((prev) => prev && { ...prev, ...options });
         })
         .catch((err) => console.log(err));
   };
@@ -51,7 +52,7 @@ const Edit: React.FC = () => {
         .delete(`${route}/${option.id}`, headers)
         .then((res) => {
           dispatch(setHeaders(res.headers));
-          setMusic((prev) => (prev ? { ...prev, ...options } : prev));
+          setMusic((prev) => prev && { ...prev, ...options });
         })
         .catch((err) => console.log(err));
   };
@@ -73,52 +74,54 @@ const Edit: React.FC = () => {
       <Button onClick={handleOpen}>Edit</Button>
       <Dialog onClose={handleClose} open={open} fullWidth>
         <Container>
-          <DialogTitle>Edit Info</DialogTitle>
-          <AutocompleteTextField
-            defaultValue={music?.music_composers}
-            searchRoute={routes.ARTISTS}
-            property="name"
-            query="cont"
-            onSelectOption={handleSelectOptionComposer}
-            onRemoveOption={handleRemoveOptionComposer}
-            textFieldProps={{
-              label: "Composers",
-              variant: "outlined",
-              margin: "normal",
-            }}
-            autocompleteProps={{ multiple: true }}
-          />
-          <AutocompleteTextField
-            searchRoute={routes.ARTISTS}
-            property="name"
-            query="cont"
-            defaultValue={music?.music_lyrists}
-            onSelectOption={handleSelectOptionLyrist}
-            onRemoveOption={handleRemoveOptionLyrist}
-            textFieldProps={{
-              label: "Lyrists",
-              variant: "outlined",
-              margin: "normal",
-            }}
-            autocompleteProps={{ multiple: true }}
-          />
-          <AutocompleteTextField
-            defaultValue={music?.band ? [music.band] : []}
-            searchRoute={routes.BANDS}
-            property="name"
-            query="cont"
-            maxLength={1}
-            onSelectOption={handleSelectOptionBand}
-            onRemoveOption={handleRemoveOptionBand}
-            textFieldProps={{
-              label: "Band",
-              variant: "outlined",
-              margin: "normal",
-            }}
-            autocompleteProps={{
-              multiple: true,
-            }}
-          />
+          <Box mb={3}>
+            <DialogTitle>Edit Info</DialogTitle>
+            <AutocompleteTextField
+              defaultValue={music?.music_composers}
+              searchRoute={routes.ARTISTS}
+              property="name"
+              query="cont"
+              onSelectOption={handleSelectOptionComposer}
+              onRemoveOption={handleRemoveOptionComposer}
+              textFieldProps={{
+                label: "Composers",
+                variant: "outlined",
+                margin: "normal",
+              }}
+              autocompleteProps={{ multiple: true }}
+            />
+            <AutocompleteTextField
+              searchRoute={routes.ARTISTS}
+              property="name"
+              query="cont"
+              defaultValue={music?.music_lyrists}
+              onSelectOption={handleSelectOptionLyrist}
+              onRemoveOption={handleRemoveOptionLyrist}
+              textFieldProps={{
+                label: "Lyrists",
+                variant: "outlined",
+                margin: "normal",
+              }}
+              autocompleteProps={{ multiple: true }}
+            />
+            <AutocompleteTextField
+              defaultValue={music?.band ? [music.band] : []}
+              searchRoute={routes.BANDS}
+              property="name"
+              query="cont"
+              maxLength={1}
+              onSelectOption={handleSelectOptionBand}
+              onRemoveOption={handleRemoveOptionBand}
+              textFieldProps={{
+                label: "Band",
+                variant: "outlined",
+                margin: "normal",
+              }}
+              autocompleteProps={{
+                multiple: true,
+              }}
+            />
+          </Box>
         </Container>
       </Dialog>
     </>

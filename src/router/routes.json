@@ -8,6 +8,7 @@
   "LYRISTS": "/lyrists",
   "MUSICS": "/musics",
   "BANDS": "/bands",
+  "ROLES": "/roles",
   "USERS" : "/users",
   "NEW": "/new"
 }
