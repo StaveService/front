@@ -27,7 +27,7 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../slices/currentUser";
-import { IAlbum } from "../../../../../../interfaces";
+import { IAlbum, IAlbumMusic } from "../../../../../../interfaces";
 
 const Album: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,7 @@ const Album: React.FC = () => {
   const params = useParams<{ userId: string; id: string }>();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
-  const route = `${routes.USERS}/${params.userId}${routes.MUSICS}/${params.id}${routes.ALBUMS}`;
+  const route = `${routes.USERS}/${params.userId}${routes.MUSICS}/${params.id}${routes.ALBUM_MUSICS}`;
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
   const handleClose = () => setOpen(false);
@@ -48,13 +48,16 @@ const Album: React.FC = () => {
     if (!headers) return;
     setLoading(true);
     axios
-      .post(route, data, headers)
+      .post<IAlbumMusic>(route, data, headers)
       .then((res) => {
         dispatch(setHeaders(res.headers));
-        // setMusic(
-        // (prev) =>
-        // prev && { ...prev, roles: [...(prev.roles || []), res.data] }
-        // );
+        setMusic(
+          (prev) =>
+            prev && {
+              ...prev,
+              albums: [...(prev.albums || []), res.data.album],
+            }
+        );
       })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
@@ -76,25 +79,25 @@ const Album: React.FC = () => {
               <TableBody>
                 {music?.albums?.map((album) => {
                   const handleClick = () => {
-                    // if (headers)
-                    // axios
-                    // .delete(`${route}/${role.id}`, headers)
-                    // .then((res) => {
-                    // dispatch(setHeaders(res.headers));
-                    // setMusic(
-                    // (prev) =>
-                    // prev && {
-                    // ...prev,
-                    // roles:
-                    // prev.roles &&
-                    // prev.roles.filter(
-                    // (prevRole) => prevRole !== role
-                    // ),
-                    // }
-                    // );
-                    // })
-                    // .catch((err) => console.log(err))
-                    // .finally(() => setLoading(false));
+                    if (headers)
+                      axios
+                        .delete(`${route}/${album.id}`, headers)
+                        .then((res) => {
+                          dispatch(setHeaders(res.headers));
+                          setMusic(
+                            (prev) =>
+                              prev && {
+                                ...prev,
+                                albums:
+                                  prev.albums &&
+                                  prev.albums.filter(
+                                    (prevAlbum) => prevAlbum !== album
+                                  ),
+                              }
+                          );
+                        })
+                        .catch((err) => console.log(err))
+                        .finally(() => setLoading(false));
                   };
                   return (
                     <TableRow key={album.id}>
@@ -103,14 +106,7 @@ const Album: React.FC = () => {
                           {album.title}
                         </Link>
                       </TableCell>
-                      <TableCell>
-                        <Link
-                          component={RouterLink}
-                          to={`${routes.ALBUMS}/${album.id}`}
-                        >
-                          {album.title}
-                        </Link>
-                      </TableCell>
+
                       <TableCell align="right">
                         <IconButton onClick={handleClick}>
                           <CloseIcon />
@@ -126,7 +122,7 @@ const Album: React.FC = () => {
             defaultValue=""
             type="hidden"
             control={control}
-            name="artist_id"
+            name="album_id"
           />
           <Box mb={3}>
             <AutocompleteTextField

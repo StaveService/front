@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import Typography from "@material-ui/core/Typography";
 import Tab from "@material-ui/core/Tab";
 import TabContext from "@material-ui/lab/TabContext";
 import TabList from "@material-ui/lab/TabList";
 import TabPanel from "@material-ui/lab/TabPanel";
 import Image from "material-ui-image";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../../slices/currentUser";
 import InfoTabPanel from "./TabPanel/Info/Info";
 import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issues";
 import MusicContext from "./context";
+import Footer from "../../../components/Footer";
+import { selectCurrentUser } from "../../../slices/currentUser";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../../interfaces";
 import routes from "../../../router/routes.json";
 import { itunes } from "../../../axios";
@@ -42,14 +43,13 @@ const Show: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
   useEffect(() => {
-    if (music) {
+    if (music)
       itunes
         .get<IItunesResponse<IItunesMusic>>("/lookup", {
           params: { id: music.itunes_track_id, entity: "song" },
         })
         .then((res) => setItunesMusic(res.data.results[0]))
         .catch((err) => console.log(err));
-    }
   }, [music]);
   return (
     <MusicContext.Provider value={{ music, setMusic }}>
@@ -80,6 +80,7 @@ const Show: React.FC = () => {
             <SettingTabPanel />
           </TabPanel>
         </TabContext>
+        <Footer src={itunesMusic?.previewUrl} />
       </Container>
     </MusicContext.Provider>
   );

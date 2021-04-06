@@ -6,6 +6,7 @@
   "ARTISTS": "/artists",
   "COMPOSERS": "/composers",
   "LYRISTS": "/lyrists",
+  "ALBUM_MUSICS": "/album_musics",
   "MUSICS": "/musics",
   "BANDS": "/bands",
   "ROLES": "/roles",

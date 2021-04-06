@@ -72,6 +72,7 @@ export interface IAlbumMusic {
   id: number;
   ["album_id"]: number;
   ["music_id"]: number;
+  album: IAlbum;
 }
 
 export interface ISignInFormValues {

@@ -2,7 +2,7 @@ import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
@@ -16,14 +16,12 @@ import {
   setHeaders,
 } from "../../../../slices/currentUser";
 import routes from "../../../../router/routes.json";
-import { IMusic } from "../../../../interfaces";
+import MusicContext from "../context";
 
-interface ISetting {
-  music?: IMusic;
-}
-const Setting: React.FC<ISetting> = ({ music }: ISetting) => {
+const Setting: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { music } = useContext(MusicContext);
   const history = useHistory();
   const params = useParams<{ id: string; userId: string }>();
   const dispatch = useDispatch();
