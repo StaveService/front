@@ -34,11 +34,11 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
   textFieldProps,
   autocompleteProps,
 }: ControlAutocompleteTextFieldProps) => {
+  const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState<any[]>([]);
   const [tags, setTags] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleChange = (
@@ -87,16 +87,13 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
       value={defaultValue}
       open={open}
       disabled={loading}
-      getOptionSelected={(option, selectedValue) =>
+      getOptionSelected={(option, value) =>
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        option[property] === selectedValue[property]
+        option.id === value.id
       }
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       getOptionLabel={(option) => option[property]}
-      getOptionDisabled={() => {
-        if (!maxLength) return false;
-        return tags.length > maxLength;
-      }}
+      getOptionDisabled={() => (maxLength ? tags.length >= maxLength : false)}
       options={options}
       loading={searchLoading}
       noOptionsText="No Results"

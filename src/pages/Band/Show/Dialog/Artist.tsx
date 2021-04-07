@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useParams } from "react-router-dom";
@@ -18,44 +18,43 @@ import Box from "@material-ui/core/Box";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import { SubmitHandler, useForm } from "react-hook-form";
-import LoadingButton from "../../../../../../components/Loading/LoadingButton";
-import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
-import ControlTextField from "../../../../../../components/ControlTextField";
-import routes from "../../../../../../router/routes.json";
-import MusicContext from "../../../context";
-import {
-  selectHeaders,
-  setHeaders,
-} from "../../../../../../slices/currentUser";
-import { IAlbum, IAlbumMusic } from "../../../../../../interfaces";
+import LoadingButton from "../../../../components/Loading/LoadingButton";
+import AutocompleteTextField from "../../../../components/AutocompleteTextField";
+import ControlTextField from "../../../../components/ControlTextField";
+import routes from "../../../../router/routes.json";
+import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
+import { IAlbum, IArtistBand, IBand } from "../../../../interfaces";
 
-const Album: React.FC = () => {
+interface ArtistProps {
+  band?: IBand;
+  setBand: Dispatch<SetStateAction<IBand | undefined>>;
+}
+const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const { music, setMusic } = useContext(MusicContext);
-  const params = useParams<{ userId: string; id: string }>();
+  const params = useParams<{ id: string }>();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
-  const route = `${routes.USERS}/${params.userId}${routes.MUSICS}/${params.id}${routes.ALBUM_MUSICS}`;
+  const route = `${routes.BANDS}/${params.id}${routes.ARTIST_BANDS}`;
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
-  const handleRemoveOption = () => setValue("album_id", "");
+  const handleRemoveOption = () => setValue("artist_id", "");
   const handleSelectOption = (option: IAlbum) =>
-    setValue("album_id", option.id);
+    setValue("artist_id", option.id);
   const onSubmit = (data: SubmitHandler<IAlbum>) => {
     if (!headers) return;
     setLoading(true);
     axios
-      .post<IAlbumMusic>(route, data, headers)
+      .post<IArtistBand>(route, data, headers)
       .then((res) => {
         dispatch(setHeaders(res.headers));
-        setMusic(
+        setBand(
           (prev) =>
             prev && {
               ...prev,
-              albums: [...(prev.albums || []), res.data.album],
+              artists: [...(prev.artists || []), res.data.artist],
             }
         );
       })
@@ -72,26 +71,26 @@ const Album: React.FC = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Album</TableCell>
+                  <TableCell>Artist</TableCell>
                   <TableCell align="right">Delete</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {music?.albums?.map((album) => {
+                {band?.artists?.map((artist) => {
                   const handleClick = () => {
                     if (headers)
                       axios
-                        .delete(`${route}/${album.id}`, headers)
+                        .delete(`${route}/${artist.id}`, headers)
                         .then((res) => {
                           dispatch(setHeaders(res.headers));
-                          setMusic(
+                          setBand(
                             (prev) =>
                               prev && {
                                 ...prev,
-                                albums:
-                                  prev.albums &&
-                                  prev.albums.filter(
-                                    (prevAlbum) => prevAlbum !== album
+                                artists:
+                                  prev.artists &&
+                                  prev.artists.filter(
+                                    (prevAlbum) => prevAlbum !== artist
                                   ),
                               }
                           );
@@ -100,10 +99,10 @@ const Album: React.FC = () => {
                         .finally(() => setLoading(false));
                   };
                   return (
-                    <TableRow key={album.id}>
+                    <TableRow key={artist.id}>
                       <TableCell>
                         <Link component={RouterLink} to="/">
-                          {album.title}
+                          {artist.name}
                         </Link>
                       </TableCell>
 
@@ -122,17 +121,17 @@ const Album: React.FC = () => {
             defaultValue=""
             type="hidden"
             control={control}
-            name="album_id"
+            name="artist_id"
           />
           <Box mb={3}>
             <AutocompleteTextField
-              searchRoute={routes.ALBUMS}
-              property="title"
+              searchRoute={routes.ARTISTS}
+              property="name"
               query="cont"
               onSelectOption={handleSelectOption}
               onRemoveOption={handleRemoveOption}
               textFieldProps={{
-                label: "Albums",
+                label: "Artist",
                 variant: "outlined",
               }}
               autocompleteProps={{ multiple: true }}
@@ -149,4 +148,7 @@ const Album: React.FC = () => {
   );
 };
 
-export default Album;
+Artist.defaultProps = {
+  band: undefined,
+};
+export default Artist;

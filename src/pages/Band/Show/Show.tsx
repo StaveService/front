@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
-import { IBand } from "../../interfaces";
-import routes from "../../router/routes.json";
-import ArtistsTable from "../../components/Table/Artist";
-import MusicsTable from "../../components/Table/Music";
-import AlbumsTable from "../../components/Table/Album";
+import ArtistDialog from "./Dialog/Artist";
+import { IBand } from "../../../interfaces";
+import routes from "../../../router/routes.json";
+import ArtistsTable from "../../../components/Table/Artist";
+import MusicsTable from "../../../components/Table/Music";
+import AlbumsTable from "../../../components/Table/Album";
 
 const Show: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -28,6 +28,7 @@ const Show: React.FC = () => {
     <Container>
       <Typography variant="h3">{band?.name}</Typography>
       <Box mb={3}>
+        <ArtistDialog band={band} setBand={setBand} />
         <ArtistsTable artists={band?.artists || []} loading={loading} />
       </Box>
       <Box mb={3}>

@@ -68,11 +68,18 @@ export interface IRole {
   role: string | number;
   artist: IArtist;
 }
+
 export interface IAlbumMusic {
   id: number;
   ["album_id"]: number;
   ["music_id"]: number;
   album: IAlbum;
+}
+export interface IArtistBand {
+  id: number;
+  ["artist_id"]: number;
+  ["band_id"]: number;
+  artist: IArtist;
 }
 
 export interface ISignInFormValues {
