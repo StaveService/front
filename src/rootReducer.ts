@@ -1,5 +1,7 @@
+/* eslint-disable import/no-cycle */
 import { combineReducers } from "redux";
-// eslint-disable-next-line import/no-cycle
 import currentUserReducer from "./slices/currentUser";
 
-export default combineReducers({ currentUser: currentUserReducer });
+export default combineReducers({
+  currentUser: currentUserReducer,
+});

@@ -18,3 +18,4 @@
 - [redux-persist](https://github.com/rt2zz/redux-persist)
 - [redux-logger](https://github.com/LogRocket/redux-logger)
 - [date-fns](https://github.com/date-fns/date-fns)
+- [notistack](https://github.com/iamhosseindhv/notistack)
