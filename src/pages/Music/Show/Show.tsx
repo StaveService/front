@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
@@ -28,6 +29,7 @@ const Show: React.FC = () => {
   const [tabIndex, setTabIndex] = useState("1");
   const currentUser = useSelector(selectCurrentUser);
   const params = useParams<{ id: string; userId: string }>();
+  const { enqueueSnackbar } = useSnackbar();
   const handleChange = (
     _event: React.ChangeEvent<Record<string, unknown>>,
     newValue: string
@@ -39,7 +41,7 @@ const Show: React.FC = () => {
         `${routes.USERS}/${params.userId}${routes.MUSICS}/${params.id}`
       )
       .then((res) => setMusic(res.data))
-      .catch((err) => console.log(err))
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   }, []);
   useEffect(() => {

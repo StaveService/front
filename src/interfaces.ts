@@ -98,6 +98,10 @@ export interface ISignUpFormValues extends ISignInFormValues {
 export interface IUserSuccessResponse {
   data: IUser;
 }
+export interface ISignErrorResponse {
+  errors: string[];
+  success: false;
+}
 
 interface IItunesArtwork {
   artworkUrl30: string;

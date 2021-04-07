@@ -2,12 +2,12 @@ import React, { ChangeEvent } from "react";
 import { Control, RegisterOptions, useController } from "react-hook-form";
 import Select, { SelectProps } from "@material-ui/core/Select";
 
-type IControlSelectProps = SelectProps & {
+type ControlSelectProps = SelectProps & {
   control: Control;
   rules?: RegisterOptions;
 };
 
-const ControlSelect: React.FC<IControlSelectProps> = ({
+const ControlSelect: React.FC<ControlSelectProps> = ({
   name = "",
   defaultValue,
   onChange,
@@ -17,7 +17,7 @@ const ControlSelect: React.FC<IControlSelectProps> = ({
   rules,
   children,
   ...props
-}: IControlSelectProps) => {
+}: ControlSelectProps) => {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     field: { ref, value, onChange: onChangeController },

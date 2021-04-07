@@ -1,8 +1,9 @@
-import axios from "axios";
 import React, { KeyboardEvent, ChangeEvent, useEffect, useState } from "react";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink, useHistory } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import Image from "material-ui-image";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
@@ -45,6 +46,7 @@ const New: React.FC = () => {
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
   const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
   const onSubmit = (data: SubmitHandler<IMusic>) => {
     if (!headers) return;
     setLoading(true);
@@ -58,7 +60,7 @@ const New: React.FC = () => {
         dispatch(setHeaders(res.headers));
         history.push(routes.ROOT);
       })
-      .catch((err) => console.log(err))
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   };
   const searchMusics = (value: string) =>
@@ -82,7 +84,7 @@ const New: React.FC = () => {
           },
         })
         .then((res) => setItunesMusics(res.data.results))
-        .catch((err) => console.log(err))
+        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
         .finally(() => setItunesLoading(false));
     }
   };

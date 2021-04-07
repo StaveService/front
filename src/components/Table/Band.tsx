@@ -12,12 +12,12 @@ import Link from "@material-ui/core/Link";
 import { IBand } from "../../interfaces";
 import routes from "../../router/routes.json";
 
-interface IIndex {
+interface BandProps {
   bands: IBand[];
   loading: boolean;
 }
 
-const Band: React.FC<IIndex> = ({ bands, loading }: IIndex) => {
+const Band: React.FC<BandProps> = ({ bands, loading }: BandProps) => {
   return (
     <TableContainer component={Paper}>
       <Table>

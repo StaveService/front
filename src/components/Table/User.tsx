@@ -13,40 +13,32 @@ import Link from "@material-ui/core/Link";
 import { IUser } from "../../interfaces";
 import routes from "../../router/routes.json";
 
-const User: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState<IUser[]>([]);
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get<IUser[]>(routes.USERS)
-      .then((res) => setRows(res.data))
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, []);
-  return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
+interface UserProps {
+  users: IUser[];
+  loading: boolean;
+}
+const User: React.FC<UserProps> = ({ users, loading }: UserProps) => (
+  <TableContainer component={Paper}>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Name</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {users.map((user) => (
+          <TableRow key={user.id}>
+            <TableCell>
+              <Link component={RouterLink} to={`${routes.USERS}/${user.id}`}>
+                {user.nickname}
+              </Link>
+            </TableCell>
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>
-                <Link component={RouterLink} to={`${routes.USERS}/${row.id}`}>
-                  {row.nickname}
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      {loading && <LinearProgress />}
-    </TableContainer>
-  );
-};
+        ))}
+      </TableBody>
+    </Table>
+    {loading && <LinearProgress />}
+  </TableContainer>
+);
 
 export default User;

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Dialog from "@material-ui/core/Dialog";
@@ -39,6 +40,7 @@ const New: React.FC = () => {
     selectedItunesArtist,
     setSelectedItunesArtist,
   ] = useState<IItunesArtist>();
+  const { enqueueSnackbar } = useSnackbar();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
   const headers = useSelector(selectHeaders);
@@ -48,7 +50,7 @@ const New: React.FC = () => {
     axios
       .post(routes.BANDS, data, headers)
       .then((res) => console.log(res))
-      .catch((err) => console.log(err))
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   };
   const searchBands = (value: string) =>
@@ -69,7 +71,7 @@ const New: React.FC = () => {
           },
         })
         .then((res) => setItunesArtists(res.data.results))
-        .catch((err) => console.log(err))
+        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
         .finally(() => setItunesLoading(false));
     }
   };

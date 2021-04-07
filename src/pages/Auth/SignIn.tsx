@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
-import { ISignInFormValues, IUserSuccessResponse } from "../../interfaces";
+import {
+  ISignErrorResponse,
+  ISignInFormValues,
+  IUserSuccessResponse,
+} from "../../interfaces";
 import { signInSchema } from "../../schema";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
 
 const SignIn: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const history = useHistory();
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -36,8 +42,33 @@ const SignIn: React.FC = () => {
         dispatch(setCurrentUser(res.data.data));
         dispatch(setHeaders(res.headers));
         history.push("/");
+        enqueueSnackbar("SignIn successful", {
+          variant: "success",
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "center",
+          },
+        });
       })
-      .catch((err) => console.log(err))
+      .catch((err: AxiosError<ISignErrorResponse>) => {
+        if (err.response) {
+          enqueueSnackbar(err.response?.data.errors, {
+            variant: "error",
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "center",
+            },
+          });
+        } else {
+          enqueueSnackbar(String(err), {
+            variant: "error",
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "center",
+            },
+          });
+        }
+      })
       .finally(() => setLoading(false));
   };
   return (

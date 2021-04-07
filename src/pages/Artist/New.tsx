@@ -1,14 +1,15 @@
+import React, { ChangeEvent, useEffect, useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Link as RouterLink } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
-import axios from "axios";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Link as RouterLink } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
@@ -39,6 +40,7 @@ const New: React.FC = () => {
     selectedItunesArtist,
     setSelectedItunesArtist,
   ] = useState<IItunesArtist>();
+  const { enqueueSnackbar } = useSnackbar();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
   const headers = useSelector(selectHeaders);
@@ -55,7 +57,7 @@ const New: React.FC = () => {
     axios
       .post(routes.ARTISTS, data, headers)
       .then((res) => console.log(res))
-      .catch((err) => console.log(err))
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
@@ -72,7 +74,7 @@ const New: React.FC = () => {
           },
         })
         .then((res) => setItunesArtists(res.data.results))
-        .catch((err) => console.log(err))
+        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
         .finally(() => setItunesLoading(false));
     }
   };

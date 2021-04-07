@@ -1,5 +1,9 @@
 import React, { useContext, useState } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink, useParams } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -17,10 +21,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Link from "@material-ui/core/Link";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
 import ControlSelect from "../../../../../../components/ControlSelect";
 import LoadingButton from "../../../../../../components/Loading/LoadingButton";
@@ -37,6 +38,7 @@ import {
 const Role: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const { music, setMusic } = useContext(MusicContext);
   const params = useParams<{ userId: string; id: string }>();
   const dispatch = useDispatch();
@@ -64,7 +66,7 @@ const Role: React.FC = () => {
             prev && { ...prev, roles: [...(prev.roles || []), res.data] }
         );
       })
-      .catch((err) => console.log(err))
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   };
   return (
@@ -103,7 +105,9 @@ const Role: React.FC = () => {
                                 }
                             );
                           })
-                          .catch((err) => console.log(err))
+                          .catch((err) =>
+                            enqueueSnackbar(String(err), { variant: "error" })
+                          )
                           .finally(() => setLoading(false));
                     };
                     return (

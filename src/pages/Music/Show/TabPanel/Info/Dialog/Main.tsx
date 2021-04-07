@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
@@ -19,6 +20,7 @@ import { IArtist, IBand } from "../../../../../../interfaces";
 const Edit: React.FC = () => {
   const [open, setOpen] = useState(false);
   const { music, setMusic } = useContext(MusicContext);
+  const { enqueueSnackbar } = useSnackbar();
   const headers = useSelector(selectHeaders);
   const params = useParams<{ id: string; userId: string }>();
   const baseRoute = `${routes.USERS}/${params.userId}${routes.MUSICS}/${params.id}`;
@@ -40,7 +42,7 @@ const Edit: React.FC = () => {
           dispatch(setHeaders(res.headers));
           setMusic((prev) => prev && { ...prev, ...options });
         })
-        .catch((err) => console.log(err));
+        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
   };
   const handleRemoveOption = (
     option: IArtist,
@@ -54,7 +56,7 @@ const Edit: React.FC = () => {
           dispatch(setHeaders(res.headers));
           setMusic((prev) => prev && { ...prev, ...options });
         })
-        .catch((err) => console.log(err));
+        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
   };
   const handleSelectOptionComposer = (option: IArtist, options: IArtist[]) =>
     handleSelectOption(option, { music_composers: options }, composerRoute);

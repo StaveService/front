@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -14,6 +15,7 @@ import { signUpSchema } from "../../schema";
 
 const SignUp: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(signUpSchema),
   });
@@ -22,7 +24,7 @@ const SignUp: React.FC = () => {
     axios
       .post("/auth", data)
       .then((res) => console.log(res))
-      .catch((err) => console.log(err))
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   };
   return (
@@ -36,7 +38,6 @@ const SignUp: React.FC = () => {
             <ControlTextField
               name="nickname"
               defaultValue=""
-              autoComplete="nickname"
               label="NickName"
               variant="outlined"
               margin="normal"
@@ -50,7 +51,6 @@ const SignUp: React.FC = () => {
                 <ControlTextField
                   name="familyname"
                   defaultValue=""
-                  autoComplete="family-name"
                   label="FamilyName"
                   variant="outlined"
                   control={control}
@@ -62,7 +62,6 @@ const SignUp: React.FC = () => {
                 <ControlTextField
                   name="givenname"
                   defaultValue=""
-                  autoComplete="given-name"
                   label="GivenName"
                   variant="outlined"
                   control={control}
@@ -75,7 +74,6 @@ const SignUp: React.FC = () => {
               type="email"
               name="email"
               defaultValue=""
-              autoComplete="on"
               label="Email"
               variant="outlined"
               margin="normal"
@@ -88,7 +86,6 @@ const SignUp: React.FC = () => {
               type="password"
               name="password"
               defaultValue=""
-              autoComplete="new-password"
               label="Password"
               variant="outlined"
               margin="normal"

@@ -9,9 +9,9 @@ const signInSchema = yup.object().shape({
 });
 const signUpSchema = yup.object().shape({
   email,
-  nickname: required,
-  familyname: required,
-  givenname: required,
+  nickname: yup.string().required().min(4).max(30),
+  familyname: yup.string().required().max(35),
+  givenname: yup.string().required().max(35),
   password,
   passwordConfirmation: yup.string().oneOf([yup.ref("password"), null]),
 });

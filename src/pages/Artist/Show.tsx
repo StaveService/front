@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -14,13 +15,14 @@ const Show: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [artist, setArtist] = useState<IArtist>();
   const params = useParams<{ id: string }>();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     setLoading(true);
     axios
       .get(`${routes.ARTISTS}/${params.id}`)
       .then((res) => setArtist(res.data))
-      .catch((err) => console.log(err))
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   }, [params]);
 

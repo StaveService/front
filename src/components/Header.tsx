@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Link as RouterLink, useHistory } from "react-router-dom";
 import axios, { AxiosError } from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -9,7 +11,6 @@ import Box from "@material-ui/core/Box";
 import Link from "@material-ui/core/Link";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import { useDispatch, useSelector } from "react-redux";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import routes from "../router/routes.json";
@@ -21,6 +22,7 @@ import {
 
 const Header: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
@@ -32,7 +34,9 @@ const Header: React.FC = () => {
     if (!headers) return;
     axios
       .delete("/auth/sign_out", headers)
-      .catch((err: AxiosError) => console.log(err.response))
+      .catch((err: AxiosError) =>
+        enqueueSnackbar(String(err), { variant: "error" })
+      )
       .finally(() => {
         dispatch(remove());
         history.push({

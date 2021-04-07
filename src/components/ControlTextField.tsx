@@ -9,13 +9,13 @@ import {
 import { ErrorMessage } from "@hookform/error-message";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 
-export type IControlTextFieldProps = TextFieldProps & {
+export type ControlTextFieldProps = TextFieldProps & {
   control: Control;
   errors?: DeepMap<Record<string, any>, FieldError>;
   rules?: RegisterOptions;
 };
 
-const ControlTextField: React.FC<IControlTextFieldProps> = ({
+const ControlTextField: React.FC<ControlTextFieldProps> = ({
   name = "",
   defaultValue,
   onChange,
@@ -25,7 +25,7 @@ const ControlTextField: React.FC<IControlTextFieldProps> = ({
   control,
   rules,
   ...props
-}: IControlTextFieldProps) => {
+}: ControlTextFieldProps) => {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     field: { ref, value, onChange: onChangeController },

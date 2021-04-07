@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
@@ -12,12 +13,13 @@ const Show: React.FC = () => {
   const [user, setUser] = useState<IUser>();
   const [loading, setLoading] = useState(false);
   const params = useParams<{ id: string }>();
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     setLoading(true);
     axios
       .get<IUser>(`${routes.USERS}/${params.id}`)
       .then((res) => setUser(res.data))
-      .catch((err) => console.log(err))
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   }, []);
   if (!user?.id) return <CircularProgress />;

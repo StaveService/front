@@ -12,12 +12,12 @@ import Link from "@material-ui/core/Link";
 import { IArtist } from "../../interfaces";
 import routes from "../../router/routes.json";
 
-interface IIndex {
+interface ArtistProps {
   artists: IArtist[];
   loading: boolean;
 }
 
-const Artist: React.FC<IIndex> = ({ artists, loading }: IIndex) => {
+const Artist: React.FC<ArtistProps> = ({ artists, loading }: ArtistProps) => {
   return (
     <TableContainer component={Paper}>
       <Table>

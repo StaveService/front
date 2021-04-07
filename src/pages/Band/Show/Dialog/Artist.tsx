@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useParams } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Table from "@material-ui/core/Table";
@@ -32,6 +33,7 @@ interface ArtistProps {
 const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const params = useParams<{ id: string }>();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
@@ -58,7 +60,7 @@ const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
             }
         );
       })
-      .catch((err) => console.log(err))
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   };
   return (
@@ -95,7 +97,9 @@ const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
                               }
                           );
                         })
-                        .catch((err) => console.log(err))
+                        .catch((err) =>
+                          enqueueSnackbar(String(err), { variant: "error" })
+                        )
                         .finally(() => setLoading(false));
                   };
                   return (

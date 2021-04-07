@@ -12,11 +12,11 @@ import { Link as RouterLink } from "react-router-dom";
 import { IAlbum } from "../../interfaces";
 import routes from "../../router/routes.json";
 
-interface IAlbumTable {
+interface AlbumProps {
   albums: IAlbum[];
   loading: boolean;
 }
-const Album: React.FC<IAlbumTable> = ({ albums, loading }: IAlbumTable) => {
+const Album: React.FC<AlbumProps> = ({ albums, loading }: AlbumProps) => {
   return (
     <TableContainer component={Paper}>
       <Table>

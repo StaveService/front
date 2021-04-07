@@ -14,7 +14,7 @@ import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { itunes } from "../../axios";
 
-interface IIndex {
+interface MusicProps {
   musics: IMusic[];
   loading: boolean;
 }
@@ -22,7 +22,7 @@ interface IIndex {
 interface IMergedMusic extends IMusic {
   itunesArtworkUrl: string;
 }
-const Music: React.FC<IIndex> = ({ musics, loading }: IIndex) => {
+const Music: React.FC<MusicProps> = ({ musics, loading }: MusicProps) => {
   const [mergedMusics, setMergedMusics] = useState<IMergedMusic[]>([]);
 
   useEffect(() => {
