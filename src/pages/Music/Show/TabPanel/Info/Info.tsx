@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import { format } from "date-fns";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -10,6 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
+import { useSelector } from "react-redux";
 import AlbumsTable from "../../../../../components/Table/Album";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Role";
@@ -17,6 +18,7 @@ import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../router/routes.json";
 import { IItunesMusic } from "../../../../../interfaces";
 import MusicContext from "../../context";
+import { selectCurrentUser } from "../../../../../slices/currentUser";
 
 interface IInfo {
   itunesMusic?: IItunesMusic;
@@ -24,10 +26,12 @@ interface IInfo {
 }
 const Info: React.FC<IInfo> = ({ itunesMusic, loading }: IInfo) => {
   const { music } = useContext(MusicContext);
+  const params = useParams<{ userId: string; id: string }>();
+  const currentUser = useSelector(selectCurrentUser);
   return (
     <>
       <Box mb={3}>
-        <MainDialog />
+        {currentUser?.id === Number(params.userId) && <MainDialog />}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -99,7 +103,7 @@ const Info: React.FC<IInfo> = ({ itunesMusic, loading }: IInfo) => {
         </TableContainer>
       </Box>
       <Box mb={3}>
-        <RoleDialog />
+        {currentUser?.id === Number(params.userId) && <RoleDialog />}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -126,7 +130,7 @@ const Info: React.FC<IInfo> = ({ itunesMusic, loading }: IInfo) => {
           </Table>
         </TableContainer>
       </Box>
-      <AlbumDialog />
+      {currentUser?.id === Number(params.userId) && <AlbumDialog />}
       <AlbumsTable albums={music?.albums || []} loading={loading} />
     </>
   );

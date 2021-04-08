@@ -87,7 +87,7 @@ const New: React.FC = () => {
   const ItunesMusicsDialog = () => {
     const handleClose = () => setOpen(false);
     return (
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Choose Artist</DialogTitle>
         {itunesLoading && <LinearProgress />}
         <Box p={2}>
