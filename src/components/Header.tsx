@@ -34,8 +34,23 @@ const Header: React.FC = () => {
     if (!headers) return;
     axios
       .delete("/auth/sign_out", headers)
+      .then(() => {
+        enqueueSnackbar("SignOut successful", {
+          variant: "success",
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "center",
+          },
+        });
+      })
       .catch((err: AxiosError) =>
-        enqueueSnackbar(String(err), { variant: "error" })
+        enqueueSnackbar(String(err), {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "center",
+          },
+        })
       )
       .finally(() => {
         dispatch(remove());

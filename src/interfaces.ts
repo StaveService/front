@@ -95,11 +95,11 @@ export interface ISignUpFormValues extends ISignInFormValues {
   password_confirmation: string;
 }
 
-export interface IUserSuccessResponse {
+export interface ISignSuccessResponse {
   data: IUser;
 }
-export interface ISignErrorResponse {
-  errors: string[];
+export interface ISignErrorResponse<T> {
+  errors: T;
   success: false;
 }
 

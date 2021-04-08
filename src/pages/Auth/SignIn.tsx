@@ -14,7 +14,7 @@ import LoadingButton from "../../components/Loading/LoadingButton";
 import {
   ISignErrorResponse,
   ISignInFormValues,
-  IUserSuccessResponse,
+  ISignSuccessResponse,
 } from "../../interfaces";
 import { signInSchema } from "../../schema";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
@@ -37,11 +37,10 @@ const SignIn: React.FC = () => {
   const onSubmit = (data: SubmitHandler<ISignInFormValues>) => {
     setLoading(true);
     axios
-      .post<IUserSuccessResponse>("/auth/sign_in", data)
+      .post<ISignSuccessResponse>("/auth/sign_in", data)
       .then((res) => {
         dispatch(setCurrentUser(res.data.data));
         dispatch(setHeaders(res.headers));
-        history.push("/");
         enqueueSnackbar("SignIn successful", {
           variant: "success",
           anchorOrigin: {
@@ -49,10 +48,11 @@ const SignIn: React.FC = () => {
             horizontal: "center",
           },
         });
+        history.push("/");
       })
-      .catch((err: AxiosError<ISignErrorResponse>) => {
+      .catch((err: AxiosError<ISignErrorResponse<string[]>>) => {
         if (err.response) {
-          enqueueSnackbar(err.response?.data.errors, {
+          enqueueSnackbar(err.response.data.errors, {
             variant: "error",
             anchorOrigin: {
               vertical: "bottom",
