@@ -89,7 +89,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
       disabled={loading}
       getOptionSelected={(option, value) =>
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        option.id === value.id
+        option[property] === value[property]
       }
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       getOptionLabel={(option) => option[property]}

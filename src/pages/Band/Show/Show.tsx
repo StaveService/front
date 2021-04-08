@@ -6,11 +6,12 @@ import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import ArtistDialog from "./Dialog/Artist";
-import { IBand } from "../../../interfaces";
-import routes from "../../../router/routes.json";
+import AlbumDialog from "./Dialog/Album";
 import ArtistsTable from "../../../components/Table/Artist";
 import MusicsTable from "../../../components/Table/Music";
 import AlbumsTable from "../../../components/Table/Album";
+import { IBand } from "../../../interfaces";
+import routes from "../../../router/routes.json";
 
 const Show: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,6 @@ const Show: React.FC = () => {
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   }, []);
-
   return (
     <Container>
       <Typography variant="h3">{band?.name}</Typography>
@@ -37,6 +37,7 @@ const Show: React.FC = () => {
         <MusicsTable musics={band?.musics || []} loading={loading} />
       </Box>
       <Box mb={3}>
+        <AlbumDialog band={band} setBand={setBand} />
         <AlbumsTable albums={band?.albums || []} loading={loading} />
       </Box>
     </Container>

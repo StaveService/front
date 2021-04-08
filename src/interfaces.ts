@@ -1,12 +1,10 @@
 export type MenuCardType = "Artist" | "Album" | "Music" | "Band";
-
 export interface ITokenHeaders {
   ["content-type"]: string;
   ["access-token"]: string;
   client: string;
   uid: string;
 }
-
 export interface IUser {
   ["allow_password_change"]?: false;
   email: string;
@@ -21,7 +19,6 @@ export interface IUser {
   ["created_at"]: string;
   musics?: IMusic[];
 }
-
 export interface IBand {
   id: number;
   name: string;
@@ -30,7 +27,6 @@ export interface IBand {
   albums?: IAlbum[];
   musics?: IMusic[];
 }
-
 export interface IMusic {
   id: number;
   title: string;
@@ -44,7 +40,6 @@ export interface IMusic {
   ["music_composers"]?: IArtist[];
   ["music_lyrists"]?: IArtist[];
 }
-
 export interface IArtist {
   id: number;
   name: string;
@@ -53,7 +48,6 @@ export interface IArtist {
   albums?: IAlbum[];
   bands?: IBand[];
 }
-
 export interface IAlbum {
   id: number;
   title: string;
@@ -61,18 +55,22 @@ export interface IAlbum {
   ["release_date"]: string;
   musics?: IMusic[];
 }
-
 export interface IRole {
   id: number;
   ["artist_id"]: number;
   role: string | number;
   artist: IArtist;
 }
-
 export interface IAlbumMusic {
   id: number;
   ["album_id"]: number;
   ["music_id"]: number;
+  album: IAlbum;
+}
+export interface IBandAlbum {
+  id: number;
+  ["band_id"]: number;
+  ["album_id"]: number;
   album: IAlbum;
 }
 export interface IArtistBand {
@@ -81,20 +79,16 @@ export interface IArtistBand {
   ["band_id"]: number;
   artist: IArtist;
 }
-
 export interface ISignInFormValues {
   email: string;
   password: string;
 }
-
 export interface ISignUpFormValues extends ISignInFormValues {
   nickname: string;
   familyname: string;
   givenname: string;
-  // eslint-disable-next-line camelcase
-  password_confirmation: string;
+  ["password_confirmation"]: string;
 }
-
 export interface ISignSuccessResponse {
   data: IUser;
 }
@@ -102,13 +96,11 @@ export interface ISignErrorResponse<T> {
   errors: T;
   success: false;
 }
-
 interface IItunesArtwork {
   artworkUrl30: string;
   artworkUrl60: string;
   artworkUrl100: string;
 }
-
 export interface IItunesMusic extends IItunesArtwork {
   artistName: string;
   collectionArtistId: number;
@@ -120,7 +112,6 @@ export interface IItunesMusic extends IItunesArtwork {
   previewUrl: string;
   releaseDate: string;
 }
-
 export interface IItunesArtist {
   amgArtistId: number;
   artistId: number;
@@ -130,7 +121,6 @@ export interface IItunesArtist {
   primaryGenreId: 21;
   wrapperType: string;
 }
-
 export interface IItunesAlbum extends IItunesArtwork {
   amgArtistId: number;
   artistId: number;
@@ -151,7 +141,6 @@ export interface IItunesAlbum extends IItunesArtwork {
   trackCount: number;
   wrapperType: "collection";
 }
-
 export interface IItunesResponse<T> {
   resultCount: number;
   results: T[];

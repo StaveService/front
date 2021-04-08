@@ -61,7 +61,6 @@ const SignUp: React.FC = () => {
           } else {
             enqueueSnackbar(String(err), {
               variant: "error",
-
               anchorOrigin: {
                 vertical: "bottom",
                 horizontal: "center",
