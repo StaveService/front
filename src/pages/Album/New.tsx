@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
@@ -41,16 +41,17 @@ const New: React.FC = () => {
     selectedItunesAlbum,
     setSelectedItunesAlbum,
   ] = useState<IItunesAlbum>();
-  const { enqueueSnackbar } = useSnackbar();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
+  const { enqueueSnackbar } = useSnackbar();
+  const history = useHistory();
   const headers = useSelector(selectHeaders);
   const onSubmit = (data: SubmitHandler<IFormValues>) => {
     if (!headers) return;
     setLoading(true);
     axios
-      .post(routes.ALBUMS, data, headers)
-      .then((res) => console.log(res))
+      .post<IAlbum>(routes.ALBUMS, data, headers)
+      .then((res) => history.push(`${routes.ALBUMS}/${res.data.id}`))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   };

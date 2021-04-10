@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import CardMedia from "@material-ui/core/CardMedia";
 import { makeStyles } from "@material-ui/core/styles";
+import { useSnackbar } from "notistack";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
 import { itunes } from "../../axios";
 
@@ -28,6 +29,7 @@ const MusicCard: React.FC<IMusicCard> = ({
 }: IMusicCard) => {
   const classes = useStyles();
   const [artworkUrl, setArtworkUrl] = useState<string>("");
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (!itunesTrackId) return;
     itunes
@@ -35,7 +37,7 @@ const MusicCard: React.FC<IMusicCard> = ({
         params: { id: itunesTrackId, entity: "song" },
       })
       .then((res) => setArtworkUrl(res.data.results[0].artworkUrl100))
-      .catch((err) => console.log(err));
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
   }, []);
   return (
     <Card>

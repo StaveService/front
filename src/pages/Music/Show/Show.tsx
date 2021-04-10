@@ -15,7 +15,7 @@ import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import Grid from "@material-ui/core/Grid";
 import InfoTabPanel from "./TabPanel/Info/Info";
 import SettingTabPanel from "./TabPanel/Setting";
-import IssuesTabPanel from "./TabPanel/Issues";
+import IssuesTabPanel from "./TabPanel/Issue/Index";
 import MusicContext from "./context";
 import Footer from "../../../components/Footer";
 import { selectCurrentUser } from "../../../slices/currentUser";
