@@ -54,6 +54,7 @@ export interface IAlbum {
   ["itunes_collection_id"]: number;
   ["release_date"]: string;
   musics?: IMusic[];
+  artists?: IArtist[];
 }
 export interface IRole {
   id: number;

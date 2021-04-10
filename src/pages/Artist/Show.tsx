@@ -5,6 +5,7 @@ import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
 import { IArtist } from "../../interfaces";
 import routes from "../../router/routes.json";
 import MusicsTable from "../../components/Table/Music";
@@ -28,7 +29,10 @@ const Show: React.FC = () => {
 
   return (
     <Container>
-      <Typography variant="h3">{artist?.name}</Typography>
+      <Typography variant="h5">
+        <AccessibilityNewIcon />
+        {artist?.name}
+      </Typography>
 
       <Box pb={3}>
         <BandsTable bands={artist?.bands || []} loading={loading} />

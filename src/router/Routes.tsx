@@ -22,7 +22,7 @@ import Users from "../pages/User/Index";
 import User from "../pages/User/Show";
 
 import Albums from "../pages/Album/Index";
-import Album from "../pages/Album/Show";
+import Album from "../pages/Album/Show/Show";
 import NewAlbum from "../pages/Album/New";
 
 const Routes: React.FC = () => (

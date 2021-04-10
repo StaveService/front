@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -24,7 +25,7 @@ interface IMergedMusic extends IMusic {
 }
 const Music: React.FC<MusicProps> = ({ musics, loading }: MusicProps) => {
   const [mergedMusics, setMergedMusics] = useState<IMergedMusic[]>([]);
-
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (!musics.length) return;
     itunes
@@ -51,7 +52,7 @@ const Music: React.FC<MusicProps> = ({ musics, loading }: MusicProps) => {
           })
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
   }, [musics]);
   const columns = [
     {

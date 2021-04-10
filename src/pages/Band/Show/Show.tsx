@@ -5,6 +5,7 @@ import { useSnackbar } from "notistack";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
+import GroupIcon from "@material-ui/icons/Group";
 import ArtistDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
 import ArtistsTable from "../../../components/Table/Artist";
@@ -28,7 +29,10 @@ const Show: React.FC = () => {
   }, []);
   return (
     <Container>
-      <Typography variant="h3">{band?.name}</Typography>
+      <Typography variant="h5">
+        <GroupIcon />
+        {band?.name}
+      </Typography>
       <Box mb={3}>
         <ArtistDialog band={band} setBand={setBand} />
         <ArtistsTable artists={band?.artists || []} loading={loading} />

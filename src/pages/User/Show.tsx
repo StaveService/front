@@ -25,7 +25,7 @@ const Show: React.FC = () => {
   if (!user?.id) return <CircularProgress />;
   return (
     <Container>
-      <Typography variant="h3">{user.nickname}</Typography>
+      <Typography variant="h5">{user.nickname}</Typography>
       <MusicsTable musics={user.musics || []} loading={loading} />
     </Container>
   );
