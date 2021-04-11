@@ -3,7 +3,7 @@ import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Container from "@material-ui/core/Container";
@@ -20,13 +20,9 @@ import { IArtist, IBand } from "../../../../../../interfaces";
 const Edit: React.FC = () => {
   const [open, setOpen] = useState(false);
   const { music, setMusic } = useContext(MusicContext);
-  const { enqueueSnackbar } = useSnackbar();
   const headers = useSelector(selectHeaders);
-  const params = useParams<{ id: string; userId: string }>();
-  const baseRoute = `${routes.USERS}/${params.userId}${routes.MUSICS}/${params.id}`;
-  const composerRoute = baseRoute + routes.COMPOSERS;
-  const lyristRoute = baseRoute + routes.LYRISTS;
-  const bandRoute = baseRoute + routes.BANDS;
+  const location = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
@@ -51,7 +47,7 @@ const Edit: React.FC = () => {
   ) => {
     if (headers)
       axios
-        .delete(`${route}/${option.id}`, headers)
+        .delete(`${location.pathname}${route}/${option.id}`, headers)
         .then((res) => {
           dispatch(setHeaders(res.headers));
           setMusic((prev) => prev && { ...prev, ...options });
@@ -59,17 +55,17 @@ const Edit: React.FC = () => {
         .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
   };
   const handleSelectOptionComposer = (option: IArtist, options: IArtist[]) =>
-    handleSelectOption(option, { music_composers: options }, composerRoute);
+    handleSelectOption(option, { music_composers: options }, routes.COMPOSERS);
   const handleRemoveOptionComposer = (option: IArtist, options: IArtist[]) =>
-    handleRemoveOption(option, { music_composers: options }, composerRoute);
+    handleRemoveOption(option, { music_composers: options }, routes.COMPOSERS);
   const handleSelectOptionLyrist = (option: IArtist, options: IArtist[]) =>
-    handleSelectOption(option, { music_lyrists: options }, lyristRoute);
+    handleSelectOption(option, { music_lyrists: options }, routes.LYRISTS);
   const handleRemoveOptionLyrist = (option: IArtist, options: IArtist[]) =>
-    handleRemoveOption(option, { music_lyrists: options }, lyristRoute);
+    handleRemoveOption(option, { music_lyrists: options }, routes.LYRISTS);
   const handleSelectOptionBand = (option: IBand, options: IBand[]) =>
-    handleSelectOption(option, { band: options[0] }, bandRoute);
+    handleSelectOption(option, { band: options[0] }, routes.BANDS);
   const handleRemoveOptionBand = (option: IBand, options: IBand[]) =>
-    handleRemoveOption(option, { band: options[0] }, bandRoute);
+    handleRemoveOption(option, { band: options[0] }, routes.BANDS);
 
   return (
     <>

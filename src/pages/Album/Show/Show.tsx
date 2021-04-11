@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
@@ -8,7 +8,6 @@ import Box from "@material-ui/core/Box";
 import AlbumIcon from "@material-ui/icons/Album";
 import Image from "material-ui-image";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../../interfaces";
-import routes from "../../../router/routes.json";
 import MusicsTable from "../../../components/Table/Music";
 import ArtistTable from "../../../components/Table/Artist";
 import ArtistDialog from "./Dialog/Artist";
@@ -18,12 +17,12 @@ const Show: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [album, setAlbum] = useState<IAlbum>();
   const [itunesMusic, setItunesMusic] = useState<IItunesAlbum>();
+  const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  const params = useParams<{ id: string }>();
   useEffect(() => {
     setLoading(true);
     axios
-      .get<IAlbum>(`${routes.ALBUMS}/${params.id}`)
+      .get<IAlbum>(location.pathname)
       .then((res) => setAlbum(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));

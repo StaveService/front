@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
@@ -20,7 +20,6 @@ import MusicContext from "./context";
 import Footer from "../../../components/Footer";
 import { selectCurrentUser } from "../../../slices/currentUser";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../../interfaces";
-import routes from "../../../router/routes.json";
 import { itunes } from "../../../axios";
 
 const Show: React.FC = () => {
@@ -30,6 +29,7 @@ const Show: React.FC = () => {
   const [tabIndex, setTabIndex] = useState("1");
   const currentUser = useSelector(selectCurrentUser);
   const params = useParams<{ id: string; userId: string }>();
+  const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const handleChange = (
     _event: React.ChangeEvent<Record<string, unknown>>,
@@ -38,9 +38,7 @@ const Show: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get<IMusic>(
-        `${routes.USERS}/${params.userId}${routes.MUSICS}/${params.id}`
-      )
+      .get<IMusic>(location.pathname)
       .then((res) => setMusic(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));

@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
@@ -38,17 +38,17 @@ import {
 const Role: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const { music, setMusic } = useContext(MusicContext);
-  const params = useParams<{ userId: string; id: string }>();
-  const dispatch = useDispatch();
-  const headers = useSelector(selectHeaders);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IRole>({
     defaultValues: { artist_id: undefined },
     resolver: yupResolver(addRoleSchema),
   });
-  const route = `${routes.USERS}/${params.userId}${routes.MUSICS}/${params.id}${routes.ROLES}`;
+  const location = useLocation();
+  const headers = useSelector(selectHeaders);
+  const route = location.pathname + routes.ROLES;
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
   const handleSelectOption = (option: IArtist) =>

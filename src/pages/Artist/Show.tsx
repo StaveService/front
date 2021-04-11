@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
@@ -7,7 +7,6 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
 import { IArtist } from "../../interfaces";
-import routes from "../../router/routes.json";
 import MusicsTable from "../../components/Table/Music";
 import BandsTable from "../../components/Table/Band";
 import AlbumsTable from "../../components/Table/Album";
@@ -15,17 +14,17 @@ import AlbumsTable from "../../components/Table/Album";
 const Show: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [artist, setArtist] = useState<IArtist>();
-  const params = useParams<{ id: string }>();
+  const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`${routes.ARTISTS}/${params.id}`)
+      .get(location.pathname)
       .then((res) => setArtist(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
-  }, [params]);
+  }, []);
 
   return (
     <Container>

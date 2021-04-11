@@ -39,18 +39,6 @@ const Routes: React.FC = () => (
       component={Music}
     />
 
-    {/* ISSUE */}
-    <Route
-      exact
-      path={`${routes.USERS}/:userId${routes.MUSICS}/:musicId${routes.ISSUES}/:id`}
-      component={Issue}
-    />
-    <Route
-      exact
-      path={`${routes.USERS}/:userId${routes.MUSICS}/:musicId${routes.ISSUES}/:id${routes.NEW}`}
-      component={IssueNew}
-    />
-
     {/* USER */}
     <Route exact path={routes.USERS} component={Users} />
     <Route exact path={`${routes.USERS}/:id`} component={User} />

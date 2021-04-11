@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import MusicsTable from "../../components/Table/Music";
 import { IUser } from "../../interfaces";
-import routes from "../../router/routes.json";
 
 const Show: React.FC = () => {
   const [user, setUser] = useState<IUser>();
   const [loading, setLoading] = useState(false);
-  const params = useParams<{ id: string }>();
+  const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     setLoading(true);
     axios
-      .get<IUser>(`${routes.USERS}/${params.id}`)
+      .get<IUser>(location.pathname)
       .then((res) => setUser(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));

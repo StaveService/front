@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -33,13 +33,13 @@ interface ArtistProps {
 const Artist: React.FC<ArtistProps> = ({ album, setAlbum }: ArtistProps) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
-  const params = useParams<{ id: string }>();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
-  const route = `${routes.ALBUMS}/${params.id}${routes.ARTIST_ALBUMS}`;
-  const dispatch = useDispatch();
+  const location = useLocation();
   const headers = useSelector(selectHeaders);
+  const route = location.pathname + routes.ARTIST_ALBUMS;
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
   const handleRemoveOption = () => setValue("artist_id", "");

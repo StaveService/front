@@ -40,10 +40,10 @@ const New: React.FC = () => {
     selectedItunesArtist,
     setSelectedItunesArtist,
   ] = useState<IItunesArtist>();
-  const history = useHistory();
-  const { enqueueSnackbar } = useSnackbar();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
+  const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
   const headers = useSelector(selectHeaders);
   const onSubmit = (data: SubmitHandler<IFormValues>) => {
     if (!headers) return;
