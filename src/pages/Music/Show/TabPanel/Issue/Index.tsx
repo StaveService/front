@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from "react";
-import {
-  Link as RouterLink,
-  Route,
-  Switch,
-  useParams,
-  useRouteMatch,
-} from "react-router-dom";
+import axios from "axios";
+import { Link as RouterLink, useRouteMatch } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import axios from "axios";
 import routes from "../../../../../router/routes.json";
+import { IIssue } from "../../../../../interfaces";
 
 const Index: React.FC = () => {
-  const [issues, setIssues] = useState([]);
-  const params = useParams<{ userId: string; id: string }>();
+  const [issues, setIssues] = useState<IIssue[]>([]);
   const match = useRouteMatch();
-  const route = `${routes.USERS}/${params.userId}${routes.MUSICS}/${params.id}${routes.ISSUES}`;
+  const { enqueueSnackbar } = useSnackbar();
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" && (e.target as HTMLInputElement).value)
       console.log(e);
@@ -23,8 +18,8 @@ const Index: React.FC = () => {
   useEffect(() => {
     axios
       .get(match.url)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .then((res) => setIssues(res.data))
+      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
   }, []);
   return (
     <>

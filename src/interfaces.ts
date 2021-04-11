@@ -56,6 +56,13 @@ export interface IAlbum {
   musics?: IMusic[];
   artists?: IArtist[];
 }
+export interface IIssue {
+  id: number;
+  title: string;
+  description: string;
+  music?: IMusic;
+  user?: IUser;
+}
 export interface IRole {
   id: number;
   ["artist_id"]: number;
