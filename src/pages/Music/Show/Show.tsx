@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
@@ -16,10 +16,11 @@ import Grid from "@material-ui/core/Grid";
 import InfoTabPanel from "./TabPanel/Info/Info";
 import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issue/Index";
-import MusicContext from "./context";
 import Footer from "../../../components/Footer";
+import MusicContext from "./context";
 import { selectCurrentUser } from "../../../slices/currentUser";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../../interfaces";
+import routes from "../../../router/routes.json";
 import { itunes } from "../../../axios";
 
 const Show: React.FC = () => {
@@ -28,8 +29,7 @@ const Show: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [tabIndex, setTabIndex] = useState("1");
   const currentUser = useSelector(selectCurrentUser);
-  const params = useParams<{ id: string; userId: string }>();
-  const location = useLocation();
+  const match = useRouteMatch<{ id: string; userId: string }>();
   const { enqueueSnackbar } = useSnackbar();
   const handleChange = (
     _event: React.ChangeEvent<Record<string, unknown>>,
@@ -38,7 +38,7 @@ const Show: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get<IMusic>(location.pathname)
+      .get<IMusic>(match.url)
       .then((res) => setMusic(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
@@ -66,11 +66,16 @@ const Show: React.FC = () => {
           </Grid>
           <TabList onChange={handleChange}>
             <Tab label="Info" value="1" />
-            <Tab label="Issues" value="2" />
+            <Tab
+              label="Issues"
+              value="2"
+              component={RouterLink}
+              to={match.url + routes.ISSUES}
+            />
             <Tab
               label="Setting"
               value="3"
-              disabled={currentUser?.id !== Number(params.userId)}
+              disabled={currentUser?.id !== Number(match.params.userId)}
             />
           </TabList>
           <Box height="100px" width="100px" m="auto">
