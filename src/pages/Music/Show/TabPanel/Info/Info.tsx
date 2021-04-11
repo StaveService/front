@@ -16,16 +16,11 @@ import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Role";
 import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../router/routes.json";
-import { IItunesMusic } from "../../../../../interfaces";
 import MusicContext from "../../context";
 import { selectCurrentUser } from "../../../../../slices/currentUser";
 
-interface IInfo {
-  itunesMusic?: IItunesMusic;
-  loading: boolean;
-}
-const Info: React.FC<IInfo> = ({ itunesMusic, loading }: IInfo) => {
-  const { music } = useContext(MusicContext);
+const Info: React.FC = () => {
+  const { music, itunesMusic, loading } = useContext(MusicContext);
   const params = useParams<{ userId: string; id: string }>();
   const currentUser = useSelector(selectCurrentUser);
   return (
