@@ -21,10 +21,10 @@ const Index: React.FC = () => {
       .then((res) => setIssues(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
   }, []);
+  console.log(issues);
   return (
     <>
-      <p>Issues</p>
-      <TextField variant="outlined" onKeyPress={handleKeyPress} />
+      <TextField variant="outlined" onKeyPress={handleKeyPress} fullWidth />
       <Button
         variant="contained"
         component={RouterLink}

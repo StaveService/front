@@ -1,7 +1,11 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link as RouterLink, useHistory } from "react-router-dom";
+import {
+  Link as RouterLink,
+  useHistory,
+  useRouteMatch,
+} from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
@@ -20,7 +24,6 @@ import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesAlbumCard from "../../components/Card/Itunes/Album";
 import AlbumCard from "../../components/Card/Album";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
-import routes from "../../router/routes.json";
 import { selectHeaders } from "../../slices/currentUser";
 import { search } from "../../common/search";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
@@ -43,25 +46,22 @@ const New: React.FC = () => {
   ] = useState<IItunesAlbum>();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
-  const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
+  const match = useRouteMatch();
   const headers = useSelector(selectHeaders);
+  const route = match.url.replace("/new", "");
+  const { enqueueSnackbar } = useSnackbar();
   const onSubmit = (data: SubmitHandler<IFormValues>) => {
     if (!headers) return;
     setLoading(true);
     axios
-      .post<IAlbum>(routes.ALBUMS, data, headers)
-      .then((res) => history.push(`${routes.ALBUMS}/${res.data.id}`))
+      .post<IAlbum>(route, data, headers)
+      .then((res) => history.push(`${route}/${res.data.id}`))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   };
   const searchAlbums = (value: string) =>
-    search<IAlbum>(
-      routes.ALBUMS,
-      { title_eq: value },
-      setAlbums,
-      setSearchLoading
-    );
+    search<IAlbum>(route, { title_eq: value }, setAlbums, setSearchLoading);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     searchAlbums(e.target.value);
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -122,7 +122,7 @@ const New: React.FC = () => {
             underline="none"
             key={album.id}
             component={RouterLink}
-            to={`${routes.ARTISTS}/${album.id}`}
+            to={`${route}/${album.id}`}
           >
             <AlbumCard album={album} />
           </Link>

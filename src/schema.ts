@@ -20,5 +20,9 @@ const addRoleSchema = yup.object().shape({
   artist_id: yup.number().required(),
   role: yup.number().required(),
 });
+const issueSchema = yup.object().shape({
+  title: yup.string().required(),
+  description: yup.string().required(),
+});
 
-export { addRoleSchema, signInSchema, signUpSchema };
+export { issueSchema, addRoleSchema, signInSchema, signUpSchema };

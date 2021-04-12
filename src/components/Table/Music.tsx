@@ -25,6 +25,22 @@ interface IMergedMusic extends IMusic {
 }
 const Music: React.FC<MusicProps> = ({ musics, loading }: MusicProps) => {
   const [mergedMusics, setMergedMusics] = useState<IMergedMusic[]>([]);
+  const columns = [
+    {
+      route: routes.MUSICS,
+      name: "Musics",
+    },
+    { route: routes.BANDS, name: "Bands" },
+    {
+      route: routes.ARTISTS,
+      name: "Composers",
+    },
+    {
+      route: routes.ARTISTS,
+      name: "Lyrists",
+    },
+    { route: routes.USERS, name: "Users" },
+  ];
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (!musics.length) return;
@@ -54,22 +70,6 @@ const Music: React.FC<MusicProps> = ({ musics, loading }: MusicProps) => {
       })
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
   }, [musics]);
-  const columns = [
-    {
-      route: routes.MUSICS,
-      name: "Musics",
-    },
-    { route: routes.BANDS, name: "Bands" },
-    {
-      route: routes.ARTISTS,
-      name: "Composers",
-    },
-    {
-      route: routes.ARTISTS,
-      name: "Lyrists",
-    },
-    { route: routes.USERS, name: "Users" },
-  ];
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -112,12 +112,14 @@ const Music: React.FC<MusicProps> = ({ musics, loading }: MusicProps) => {
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <Link
-                      component={RouterLink}
-                      to={`${routes.BANDS}/${band?.id || "undefined"}`}
-                    >
-                      {band?.name}
-                    </Link>
+                    {band && (
+                      <Link
+                        component={RouterLink}
+                        to={`${routes.BANDS}/${band?.id || "undefined"}`}
+                      >
+                        {band?.name}
+                      </Link>
+                    )}
                   </TableCell>
                   <TableCell>
                     {composers?.map((composer) => (

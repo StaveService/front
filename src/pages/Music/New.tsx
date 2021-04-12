@@ -42,11 +42,11 @@ const New: React.FC = () => {
   const [musics, setMusics] = useState<IMusic[]>([]);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IMusic>();
-  const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
   const onSubmit = (data: SubmitHandler<IMusic>) => {
     if (!headers) return;
     setLoading(true);

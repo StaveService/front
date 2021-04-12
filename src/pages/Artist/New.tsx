@@ -2,7 +2,11 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link as RouterLink, useHistory } from "react-router-dom";
+import {
+  Link as RouterLink,
+  useHistory,
+  useRouteMatch,
+} from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
@@ -22,7 +26,6 @@ import ArtistCard from "../../components/Card/Artist";
 import { selectHeaders } from "../../slices/currentUser";
 import { search } from "../../common/search";
 import { IArtist, IItunesArtist, IItunesResponse } from "../../interfaces";
-import routes from "../../router/routes.json";
 
 interface IFormValues {
   name: string;
@@ -43,21 +46,18 @@ const New: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
   const history = useHistory();
-  const { enqueueSnackbar } = useSnackbar();
+  const match = useRouteMatch();
   const headers = useSelector(selectHeaders);
+  const route = match.url.replace("/new", "");
+  const { enqueueSnackbar } = useSnackbar();
   const searchArtists = (value: string) =>
-    search<IArtist>(
-      routes.ARTISTS,
-      { name_eq: value },
-      setArtists,
-      setSearchLoading
-    );
+    search<IArtist>(route, { name_eq: value }, setArtists, setSearchLoading);
   const onSubmit = (data: SubmitHandler<IFormValues>) => {
     if (!headers) return;
     setLoading(true);
     axios
-      .post<IArtist>(routes.ARTISTS, data, headers)
-      .then((res) => history.push(`${routes.ARTISTS}/${res.data.id}`))
+      .post<IArtist>(route, data, headers)
+      .then((res) => history.push(`${route}/${res.data.id}`))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   };
@@ -121,7 +121,7 @@ const New: React.FC = () => {
             underline="none"
             key={artist.id}
             component={RouterLink}
-            to={`${routes.ARTISTS}/${artist.id}`}
+            to={`${route}/${artist.id}`}
           >
             <ArtistCard artist={artist} />
           </Link>
