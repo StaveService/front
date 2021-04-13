@@ -68,7 +68,13 @@ const Show: React.FC = () => {
             </Typography>
           </Grid>
         </Grid>
-        <Tabs value={location.pathname}>
+        <Tabs
+          value={
+            location.pathname.includes("issues")
+              ? match.url + routes.ISSUES
+              : location.pathname
+          }
+        >
           <Tab
             label="Info"
             value={match.url}

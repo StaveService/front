@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSelector } from "react-redux";
@@ -8,7 +8,8 @@ import { useSnackbar } from "notistack";
 import ControlTextField from "../../../../../components/ControlTextField";
 import LoadingButton from "../../../../../components/Loading/LoadingButton";
 import { issueSchema } from "../../../../../schema";
-import { selectHeaders } from "../../../../../slices/currentUser";
+import { selectHeaders, setHeaders } from "../../../../../slices/currentUser";
+import { IIssue } from "../../../../../interfaces";
 
 interface IIssueFormValues {
   title: string;
@@ -22,13 +23,17 @@ const New: React.FC = () => {
   });
   const match = useRouteMatch();
   const headers = useSelector(selectHeaders);
+  const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const onSubmit = (data: SubmitHandler<IIssueFormValues>) => {
     if (!headers) return;
     setLoading(true);
     axios
-      .post(match.url.replace("/new", ""), data, headers)
-      .then((res) => console.log(res))
+      .post<IIssue>(match.url.replace("/new", ""), data, headers)
+      .then((res) => {
+        setHeaders(res.headers);
+        history.push(`${match.url.replace("new", "")}${res.data.id}`);
+      })
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
       .finally(() => setLoading(false));
   };

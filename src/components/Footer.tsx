@@ -1,4 +1,5 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, MouseEvent } from "react";
+import { useAudio } from "react-use";
 import Toolbar from "@material-ui/core/Toolbar";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
@@ -30,8 +31,8 @@ const VolumeIcon: React.FC<VolumeIconProps> = ({
   muted,
 }: VolumeIconProps) => {
   if (muted) return <VolumeOffIcon />;
-  if (value >= 60) return <VolumeUpIcon />;
-  if (value >= 30) return <VolumeDownIcon />;
+  if (value >= 0.6) return <VolumeUpIcon />;
+  if (value >= 0.3) return <VolumeDownIcon />;
   return <VolumeMuteIcon />;
 };
 interface FooterProps {
@@ -39,90 +40,49 @@ interface FooterProps {
 }
 const Footer: React.FC<FooterProps> = ({ src }: FooterProps) => {
   if (!src) return null;
-  const SLIDER_VALUE = 200;
-  const [paused, setPaused] = useState(true);
-  const [disabled, setDisabled] = useState(false);
-  const [selected, setSelected] = useState(false);
-  const [value, setValue] = useState(SLIDER_VALUE);
-  const [audio, setAudio] = useState<HTMLAudioElement>();
-  const [currentTime, setCurrentTime] = useState(0);
+  const [audio, state, controls] = useAudio({
+    src,
+  });
   const classes = useStyles();
-  const handleEnded = () => setPaused(true);
   const handleClickValue = (e: MouseEvent<HTMLSpanElement, MouseEvent>) =>
     e.stopPropagation();
-
-  const handleTimeUpdate = () =>
-    audio && setCurrentTime((audio.currentTime / audio.duration) * 100);
-  const handleChangeValue = (
+  const handleChangeSelected = () =>
+    state.muted ? controls.unmute() : controls.mute();
+  const handleClick = async () =>
+    state.paused ? controls.play() : controls.pause();
+  const handleVolume = (
     _e: ChangeEvent<Record<string, unknown>>,
     newValue: number | number[]
   ) => {
-    if (Array.isArray(newValue)) return;
-    setValue(newValue);
+    if (!Array.isArray(newValue)) controls.volume(newValue / 100);
   };
-  const handleChangeSelected = () => {
-    setSelected(!selected);
-    setDisabled(!disabled);
-    if (audio) audio.muted = !disabled;
-  };
-  const handleClick = async () => {
-    if (audio)
-      if (paused) {
-        await audio.play();
-        setPaused(false);
-      } else {
-        audio.pause();
-        setPaused(true);
-      }
-  };
-  // set Audio
-  useEffect(() => {
-    if (src) setAudio(new Audio(src));
-  }, [src]);
-  // set Events
-  useEffect(() => {
-    if (audio) {
-      audio.addEventListener("ended", handleEnded);
-      audio.addEventListener("timeupdate", handleTimeUpdate);
-    }
-    return () => {
-      if (audio) {
-        audio.removeEventListener("ended", handleEnded);
-        audio.removeEventListener("timeupdate", handleTimeUpdate);
-        audio.pause();
-        setAudio(undefined);
-      }
-    };
-  }, [audio]);
-
-  // update Volume
-  useEffect(() => {
-    if (audio) audio.volume = value / SLIDER_VALUE;
-  }, [value]);
-
   return (
     <AppBar position="fixed" color="inherit" className={classes.appBar}>
-      <LinearProgress variant="determinate" value={currentTime} />
+      {audio}
+      <LinearProgress
+        variant="determinate"
+        value={state.time / state.duration}
+      />
       <Toolbar>
         <ToggleButton
           value=""
-          selected={selected}
+          selected={state.muted}
           onChange={handleChangeSelected}
         >
-          <Box width={SLIDER_VALUE} display="flex" alignItems="center">
-            <VolumeIcon value={value} muted={selected} />
+          <Box width={200} display="flex" alignItems="center">
+            <VolumeIcon value={state.volume} muted={state.muted} />
             {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
             {/* @ts-ignore */}
             <Slider
-              disabled={disabled}
-              value={value}
+              disabled={state.muted}
+              value={state.volume * 100}
               onClick={handleClickValue}
-              onChange={handleChangeValue}
+              onChange={handleVolume}
             />
           </Box>
         </ToggleButton>
         <ToggleButton value="" onClick={handleClick}>
-          {paused ? <PlayArrowIcon /> : <PauseIcon />}
+          {state.paused ? <PlayArrowIcon /> : <PauseIcon />}
         </ToggleButton>
       </Toolbar>
     </AppBar>
