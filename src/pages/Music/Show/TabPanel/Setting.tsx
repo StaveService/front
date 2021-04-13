@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
 import axios from "axios";
+import React, { useContext, useState } from "react";
+import { useToggle } from "react-use";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
@@ -21,7 +22,7 @@ import MusicContext from "../context";
 
 const Setting: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
   const { music } = useContext(MusicContext);
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
@@ -35,7 +36,7 @@ const Setting: React.FC = () => {
   const handleClose = () => setOpen(false);
   const onSubmit = () => {
     if (!headers) return;
-    setLoading(true);
+    toggleLoading();
     axios
       .delete(
         `${routes.USERS}/${currentUser?.id || "undefiend"}${routes.MUSICS}/${
@@ -48,7 +49,7 @@ const Setting: React.FC = () => {
         history.push(routes.ROOT);
       })
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   };
   return (
     <>

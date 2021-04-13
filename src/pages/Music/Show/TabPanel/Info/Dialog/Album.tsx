@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
 import axios from "axios";
+import React, { useContext, useState } from "react";
+import { useToggle } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -31,7 +32,7 @@ import {
 import { IAlbum, IAlbumMusic } from "../../../../../../interfaces";
 
 const Album: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoding] = useToggle(false);
   const [open, setOpen] = useState(false);
   const { music, setMusic } = useContext(MusicContext);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -48,7 +49,7 @@ const Album: React.FC = () => {
     setValue("album_id", option.id);
   const onSubmit = (data: SubmitHandler<IAlbum>) => {
     if (!headers) return;
-    setLoading(true);
+    toggleLoding();
     axios
       .post<IAlbumMusic>(route, data, headers)
       .then((res) => {
@@ -62,7 +63,7 @@ const Album: React.FC = () => {
         );
       })
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoding);
   };
   return (
     <>
@@ -100,8 +101,7 @@ const Album: React.FC = () => {
                         })
                         .catch((err) =>
                           enqueueSnackbar(String(err), { variant: "error" })
-                        )
-                        .finally(() => setLoading(false));
+                        );
                   };
                   return (
                     <TableRow key={album.id}>

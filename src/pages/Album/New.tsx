@@ -1,5 +1,7 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useToggle } from "react-use";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   Link as RouterLink,
@@ -17,7 +19,6 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Image from "material-ui-image";
-import { useSelector } from "react-redux";
 import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
@@ -37,9 +38,9 @@ const New: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [albums, setAlbums] = useState<IAlbum[]>([]);
   const [itunesAlbums, setItunesAlbums] = useState<IItunesAlbum[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [itunesLoading, setItunesLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
+  const [searching, toggleSearching] = useToggle(false);
+  const [itunesSearching, toggleItunesSearching] = useToggle(false);
   const [
     selectedItunesAlbum,
     setSelectedItunesAlbum,
@@ -53,21 +54,21 @@ const New: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const onSubmit = (data: SubmitHandler<IFormValues>) => {
     if (!headers) return;
-    setLoading(true);
+    toggleLoading();
     axios
       .post<IAlbum>(route, data, headers)
       .then((res) => history.push(`${route}/${res.data.id}`))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   };
   const searchAlbums = (value: string) =>
-    search<IAlbum>(route, { title_eq: value }, setAlbums, setSearchLoading);
+    search<IAlbum>(route, { title_eq: value }, setAlbums, toggleSearching);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     searchAlbums(e.target.value);
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setOpen(true);
-      setItunesLoading(true);
+      toggleItunesSearching();
       itunes
         .get<IItunesResponse<IItunesAlbum>>("/search", {
           params: {
@@ -77,7 +78,7 @@ const New: React.FC = () => {
         })
         .then((res) => setItunesAlbums(res.data.results))
         .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-        .finally(() => setItunesLoading(false));
+        .finally(toggleItunesSearching);
     }
   };
   useEffect(() => {
@@ -94,7 +95,7 @@ const New: React.FC = () => {
     return (
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Choose Album</DialogTitle>
-        {itunesLoading && <LinearProgress />}
+        {itunesSearching && <LinearProgress />}
         <Box p={2}>
           {itunesAlbums.map((itunesAlbum) => {
             const handleClick = () => {
@@ -167,7 +168,7 @@ const New: React.FC = () => {
                 <LoadingCircularProgress
                   color="inherit"
                   size={20}
-                  loading={searchLoading}
+                  loading={searching}
                 />
               ),
             }}

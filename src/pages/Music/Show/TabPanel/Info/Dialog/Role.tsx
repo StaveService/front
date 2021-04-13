@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
+import { useBoolean } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink, useLocation } from "react-router-dom";
@@ -36,7 +37,7 @@ import {
 } from "../../../../../../slices/currentUser";
 
 const Role: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const [on, toggle] = useBoolean(true);
   const [loading, setLoading] = useState(false);
   const { music, setMusic } = useContext(MusicContext);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -49,8 +50,8 @@ const Role: React.FC = () => {
   const route = location.pathname + routes.ROLES;
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const handleClose = () => setOpen(false);
-  const handleOpen = () => setOpen(true);
+  const handleClose = () => toggle(false);
+  const handleOpen = () => toggle(true);
   const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
   const handleRemoveOption = () => setValue("artist_id", "");
@@ -72,7 +73,7 @@ const Role: React.FC = () => {
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>
-      <Dialog onClose={handleClose} open={open} fullWidth>
+      <Dialog onClose={handleClose} open={on} fullWidth>
         <DialogTitle>Role</DialogTitle>
         <Container>
           <Box mb={3}>

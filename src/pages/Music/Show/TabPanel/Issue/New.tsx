@@ -1,5 +1,6 @@
-import React, { useState } from "react";
 import axios from "axios";
+import React from "react";
+import { useToggle } from "react-use";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,7 +17,7 @@ interface IIssueFormValues {
   description: string;
 }
 const New: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoadiing] = useToggle(false);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(issueSchema),
@@ -27,7 +28,7 @@ const New: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const onSubmit = (data: SubmitHandler<IIssueFormValues>) => {
     if (!headers) return;
-    setLoading(true);
+    toggleLoadiing();
     axios
       .post<IIssue>(match.url.replace("/new", ""), data, headers)
       .then((res) => {
@@ -35,7 +36,7 @@ const New: React.FC = () => {
         history.push(`${match.url.replace("new", "")}${res.data.id}`);
       })
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoadiing);
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

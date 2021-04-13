@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useToggle } from "react-use";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Button from "@material-ui/core/Button";
@@ -12,7 +13,7 @@ import { IIssue } from "../../../../../interfaces";
 import { search } from "../../../../../common/search";
 
 const Index: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
   const [issues, setIssues] = useState<IIssue[]>([]);
   const match = useRouteMatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -23,17 +24,17 @@ const Index: React.FC = () => {
         match.url,
         { title_eq: (e.target as HTMLInputElement).value },
         setIssues,
-        setLoading
+        toggleLoading
       );
     }
   };
   useEffect(() => {
-    setLoading(true);
+    toggleLoading();
     axios
       .get(match.url)
       .then((res) => setIssues(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   }, []);
   return (
     <>

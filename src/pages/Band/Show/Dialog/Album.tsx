@@ -1,5 +1,6 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
 import axios from "axios";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { useToggle } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -31,10 +32,10 @@ interface AlbumProps {
   setBand: Dispatch<SetStateAction<IBand | undefined>>;
 }
 const Album: React.FC<AlbumProps> = ({ band, setBand }: AlbumProps) => {
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
+  const [loading, toggleLoading] = useToggle(false);
   const location = useLocation();
   const headers = useSelector(selectHeaders);
   const route = location.pathname + routes.BAND_ALBUMS;
@@ -47,7 +48,7 @@ const Album: React.FC<AlbumProps> = ({ band, setBand }: AlbumProps) => {
     setValue("album_id", option.id);
   const onSubmit = (data: SubmitHandler<IAlbum>) => {
     if (!headers) return;
-    setLoading(true);
+    toggleLoading();
     axios
       .post<IBandAlbum>(route, data, headers)
       .then((res) => {
@@ -61,7 +62,7 @@ const Album: React.FC<AlbumProps> = ({ band, setBand }: AlbumProps) => {
         );
       })
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   };
   return (
     <>
@@ -99,8 +100,7 @@ const Album: React.FC<AlbumProps> = ({ band, setBand }: AlbumProps) => {
                         })
                         .catch((err) =>
                           enqueueSnackbar(String(err), { variant: "error" })
-                        )
-                        .finally(() => setLoading(false));
+                        );
                   };
                   return (
                     <TableRow key={album.id}>

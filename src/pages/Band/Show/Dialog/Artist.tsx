@@ -1,5 +1,6 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
 import axios from "axios";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { useToggle } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -31,7 +32,7 @@ interface ArtistProps {
   setBand: Dispatch<SetStateAction<IBand | undefined>>;
 }
 const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
   const [open, setOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
@@ -47,7 +48,7 @@ const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
     setValue("artist_id", option.id);
   const onSubmit = (data: SubmitHandler<IAlbum>) => {
     if (!headers) return;
-    setLoading(true);
+    toggleLoading();
     axios
       .post<IArtistBand>(route, data, headers)
       .then((res) => {
@@ -61,7 +62,7 @@ const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
         );
       })
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   };
   return (
     <>
@@ -99,8 +100,7 @@ const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
                         })
                         .catch((err) =>
                           enqueueSnackbar(String(err), { variant: "error" })
-                        )
-                        .finally(() => setLoading(false));
+                        );
                   };
                   return (
                     <TableRow key={artist.id}>

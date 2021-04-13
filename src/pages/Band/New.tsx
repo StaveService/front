@@ -1,5 +1,6 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useToggle } from "react-use";
 import { useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink, useHistory } from "react-router-dom";
@@ -31,10 +32,10 @@ interface IFormValues {
 
 const New: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
+  const [searching, toggleSearching] = useToggle(false);
+  const [itunesSearching, toggleItunesSearching] = useToggle(false);
   const [itunesArtists, setItunesArtists] = useState<IItunesArtist[]>([]);
-  const [itunesLoading, setItunesLoading] = useState(false);
   const [bands, setBands] = useState<IBand[]>([]);
   const [
     selectedItunesArtist,
@@ -47,15 +48,15 @@ const New: React.FC = () => {
   const headers = useSelector(selectHeaders);
   const onSubmit = (data: SubmitHandler<IFormValues>) => {
     if (!headers) return;
-    setLoading(true);
+    toggleLoading();
     axios
       .post<IBand>(routes.BANDS, data, headers)
       .then((res) => history.push(`${routes.BANDS}/${res.data.id}`))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   };
   const searchBands = (value: string) =>
-    search<IBand>(routes.BANDS, { name_eq: value }, setBands, setSearchLoading);
+    search<IBand>(routes.BANDS, { name_eq: value }, setBands, toggleSearching);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     searchBands(e.target.value);
@@ -63,7 +64,7 @@ const New: React.FC = () => {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setOpen(true);
-      setItunesLoading(true);
+      toggleItunesSearching();
       itunes
         .get<IItunesResponse<IItunesArtist>>("/search", {
           params: {
@@ -73,7 +74,7 @@ const New: React.FC = () => {
         })
         .then((res) => setItunesArtists(res.data.results))
         .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-        .finally(() => setItunesLoading(false));
+        .finally(toggleItunesSearching);
     }
   };
   useEffect(() => {
@@ -90,7 +91,7 @@ const New: React.FC = () => {
     return (
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Choose Artist</DialogTitle>
-        {itunesLoading && <LinearProgress />}
+        {itunesSearching && <LinearProgress />}
         <Box p={2}>
           {itunesArtists.map((itunesArtist) => {
             const handleClick = () => {
@@ -160,7 +161,7 @@ const New: React.FC = () => {
                 <LoadingCircularProgress
                   color="inherit"
                   size={20}
-                  loading={searchLoading}
+                  loading={searching}
                 />
               ),
             }}

@@ -1,23 +1,24 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useToggle } from "react-use";
+import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
-import axios from "axios";
-import { useLocation } from "react-router-dom";
 import BandsTable from "../../components/Table/Band";
 import { IBand } from "../../interfaces";
 
 const Index: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
   const [bands, setBands] = useState<IBand[]>([]);
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    setLoading(true);
+    toggleLoading();
     axios
       .get<IBand[]>(location.pathname)
       .then((res) => setBands(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   }, []);
   return (
     <Container>

@@ -1,5 +1,6 @@
-import React, { KeyboardEvent, ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
+import React, { KeyboardEvent, ChangeEvent, useEffect, useState } from "react";
+import { useToggle } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link as RouterLink, useHistory } from "react-router-dom";
@@ -31,9 +32,6 @@ import { search } from "../../common/search";
 
 const New: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [itunesLoading, setItunesLoading] = useState(false);
   const [itunesMusics, setItunesMusics] = useState<IItunesMusic[]>([]);
   const [
     selectedItunesMusic,
@@ -42,6 +40,9 @@ const New: React.FC = () => {
   const [musics, setMusics] = useState<IMusic[]>([]);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IMusic>();
+  const [loading, toggleLoading] = useToggle(false);
+  const [searching, toggleSearching] = useToggle(false);
+  const [itunesSearching, toggleItunesSearching] = useToggle(false);
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
   const history = useHistory();
@@ -49,7 +50,7 @@ const New: React.FC = () => {
   const dispatch = useDispatch();
   const onSubmit = (data: SubmitHandler<IMusic>) => {
     if (!headers) return;
-    setLoading(true);
+    toggleLoading();
     axios
       .post(
         `${routes.USERS}/${currentUser?.id || "undefiend"}${routes.MUSICS}`,
@@ -61,21 +62,21 @@ const New: React.FC = () => {
         history.push(routes.ROOT);
       })
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   };
   const searchMusics = (value: string) =>
     search<IMusic>(
       routes.MUSICS,
       { title_eq: value },
       setMusics,
-      setSearchLoading
+      toggleSearching
     );
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     searchMusics(e.target.value);
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setOpen(true);
-      setItunesLoading(true);
+      toggleItunesSearching();
       itunes
         .get<IItunesResponse<IItunesMusic>>("/search", {
           params: {
@@ -85,7 +86,7 @@ const New: React.FC = () => {
         })
         .then((res) => setItunesMusics(res.data.results))
         .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-        .finally(() => setItunesLoading(false));
+        .finally(toggleItunesSearching);
     }
   };
   useEffect(() => {
@@ -101,7 +102,7 @@ const New: React.FC = () => {
     return (
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Choose Music</DialogTitle>
-        {itunesLoading && <LinearProgress />}
+        {itunesSearching && <LinearProgress />}
         <Box p={2}>
           {itunesMusics.map((itunesMusic) => {
             const handleClick = () => {
@@ -175,7 +176,7 @@ const New: React.FC = () => {
                 <LoadingCircularProgress
                   color="inherit"
                   size={20}
-                  loading={searchLoading}
+                  loading={searching}
                 />
               ),
             }}

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useToggle } from "react-use";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -10,16 +11,16 @@ import { IMusic } from "../interfaces";
 import routes from "../router/routes.json";
 
 const Root: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
   const [musics, setMusics] = useState<IMusic[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    setLoading(true);
+    toggleLoading();
     axios
       .get<IMusic[]>(routes.MUSICS)
       .then((res) => setMusics(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   }, []);
   return (
     <Container>

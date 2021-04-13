@@ -1,6 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect, useState } from "react";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useToggle } from "react-use";
 import { useSelector } from "react-redux";
 import {
   Link as RouterLink,
@@ -33,18 +33,18 @@ import { itunes } from "../../../axios";
 const Show: React.FC = () => {
   const [music, setMusic] = useState<IMusic>();
   const [itunesMusic, setItunesMusic] = useState<IItunesMusic>();
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
   const currentUser = useSelector(selectCurrentUser);
   const match = useRouteMatch<{ id: string; userId: string }>();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    setLoading(true);
+    toggleLoading();
     axios
       .get<IMusic>(match.url)
       .then((res) => setMusic(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   }, []);
   useEffect(() => {
     if (music)

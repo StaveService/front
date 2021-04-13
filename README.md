@@ -14,6 +14,7 @@
 - [@material-ui](https://material-ui.com/getting-started/installation/)
 - [material-ui-image](https://github.com/TeamWertarbyte/material-ui-image)
 - [notistack](https://github.com/iamhosseindhv/notistack)
+- [react-use](https://github.com/streamich/react-use)
 - [react-router-dom](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-dom)
 - [redux-toolkit](https://redux-toolkit.js.org/)
 - [redux-persist](https://github.com/rt2zz/redux-persist)

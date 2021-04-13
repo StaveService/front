@@ -1,5 +1,6 @@
-import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
+import React from "react";
+import { useToggle } from "react-use";
 import { useDispatch } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSnackbar } from "notistack";
@@ -21,7 +22,7 @@ import { signUpSchema } from "../../schema";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
 
 const SignUp: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const SignUp: React.FC = () => {
     resolver: yupResolver(signUpSchema),
   });
   const onSubmit = (data: SubmitHandler<ISignUpFormValues>) => {
-    setLoading(true);
+    toggleLoading();
     axios
       .post<ISignSuccessResponse>("/auth", data)
       .then((res) => {
@@ -69,7 +70,7 @@ const SignUp: React.FC = () => {
           }
         }
       )
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   };
   return (
     <Container maxWidth="xs">

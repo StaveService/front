@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useToggle } from "react-use";
+import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
@@ -14,18 +15,18 @@ import ArtistDialog from "./Dialog/Artist";
 import { itunes } from "../../../axios";
 
 const Show: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
   const [album, setAlbum] = useState<IAlbum>();
   const [itunesMusic, setItunesMusic] = useState<IItunesAlbum>();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    setLoading(true);
+    toggleLoading();
     axios
       .get<IAlbum>(location.pathname)
       .then((res) => setAlbum(res.data))
       .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   }, []);
   useEffect(() => {
     if (album)

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -9,6 +9,7 @@ import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import { useToggle } from "react-use";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import {
@@ -20,7 +21,7 @@ import { signInSchema } from "../../schema";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
 
 const SignIn: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, toggleLoading] = useToggle(false);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -35,7 +36,7 @@ const SignIn: React.FC = () => {
     }, []);
   }
   const onSubmit = (data: SubmitHandler<ISignInFormValues>) => {
-    setLoading(true);
+    toggleLoading();
     axios
       .post<ISignSuccessResponse>("/auth/sign_in", data)
       .then((res) => {
@@ -69,7 +70,7 @@ const SignIn: React.FC = () => {
           });
         }
       })
-      .finally(() => setLoading(false));
+      .finally(toggleLoading);
   };
   return (
     <Container maxWidth="xs">
