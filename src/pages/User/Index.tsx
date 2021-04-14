@@ -1,6 +1,6 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useToggle } from "react-use";
+import React from "react";
+import { useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import { useLocation } from "react-router-dom";
@@ -8,22 +8,18 @@ import UsersTable from "../../components/Table/User";
 import { IUser } from "../../interfaces";
 
 const Index: React.FC = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
-  const [loading, toggleLoading] = useToggle(false);
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  useEffect(() => {
-    toggleLoading();
-    axios
-      .get<IUser[]>(location.pathname)
-      .then((res) => setUsers(res.data))
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
-  }, []);
-
+  const handleError = (err: unknown) =>
+    enqueueSnackbar(String(err), { variant: "error" });
+  const { isLoading, data } = useQuery<IUser[]>(
+    location.pathname,
+    () => axios.get<IUser[]>(location.pathname).then((res) => res.data),
+    { onError: handleError }
+  );
   return (
     <Container>
-      <UsersTable users={users} loading={loading} />
+      <UsersTable users={data || []} loading={isLoading} />
     </Container>
   );
 };

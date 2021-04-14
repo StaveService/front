@@ -1,6 +1,6 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useToggle } from "react-use";
+import React from "react";
+import { useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import { useLocation } from "react-router-dom";
@@ -8,22 +8,18 @@ import ArtistsTable from "../../components/Table/Artist";
 import { IArtist } from "../../interfaces";
 
 const Index: React.FC = () => {
-  const [loading, toggleLoading] = useToggle(false);
-  const [artists, setArtists] = useState<IArtist[]>([]);
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  useEffect(() => {
-    toggleLoading();
-    axios
-      .get<IArtist[]>(location.pathname)
-      .then((res) => setArtists(res.data))
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
-  }, []);
-
+  const handleError = (err: unknown) =>
+    enqueueSnackbar(String(err), { variant: "error" });
+  const { isLoading, data } = useQuery<IArtist[]>(
+    location.pathname,
+    () => axios.get<IArtist[]>(location.pathname).then((res) => res.data),
+    { onError: handleError }
+  );
   return (
     <Container>
-      <ArtistsTable artists={artists} loading={loading} />
+      <ArtistsTable artists={data || []} loading={isLoading} />
     </Container>
   );
 };

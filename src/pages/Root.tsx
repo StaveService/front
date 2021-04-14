@@ -1,6 +1,6 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useToggle } from "react-use";
+import React from "react";
+import { useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -11,17 +11,14 @@ import { IMusic } from "../interfaces";
 import routes from "../router/routes.json";
 
 const Root: React.FC = () => {
-  const [loading, toggleLoading] = useToggle(false);
-  const [musics, setMusics] = useState<IMusic[]>([]);
   const { enqueueSnackbar } = useSnackbar();
-  useEffect(() => {
-    toggleLoading();
-    axios
-      .get<IMusic[]>(routes.MUSICS)
-      .then((res) => setMusics(res.data))
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
-  }, []);
+  const handleError = (err: unknown) =>
+    enqueueSnackbar(String(err), { variant: "error" });
+  const { isLoading, data } = useQuery<IMusic[]>(
+    "musics",
+    () => axios.get<IMusic[]>(routes.MUSICS).then((res) => res.data),
+    { onError: handleError }
+  );
   return (
     <Container>
       <Box mb={3}>
@@ -40,7 +37,7 @@ const Root: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
-      <MusicsTable musics={musics} loading={loading} />
+      <MusicsTable musics={data || []} loading={isLoading} />
     </Container>
   );
 };

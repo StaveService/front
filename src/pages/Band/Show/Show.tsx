@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { useToggle } from "react-use";
 import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -19,6 +20,13 @@ const Show: React.FC = () => {
   const [band, setBand] = useState<IBand>();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
+  // const handleError = (err: unknown) =>
+  // enqueueSnackbar(String(err), { variant: "error" });
+  // const { isLoading, data } = useQuery<IBand>(
+  // "user",
+  // () => axios.get<IBand>(location.pathname).then((res) => res.data),
+  // { onError: handleError }
+  // );
   useEffect(() => {
     toggleLoading();
     axios

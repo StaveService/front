@@ -4,10 +4,13 @@ import { ITokenHeaders, IUser } from "../interfaces";
 import { RootState } from "../store";
 
 interface ICurrentUser {
-  currentUser: null | IUser;
-  headers: null | { headers: ITokenHeaders };
+  currentUser?: IUser;
+  headers?: { headers: ITokenHeaders };
 }
-const initialState: ICurrentUser = { currentUser: null, headers: null };
+const initialState: ICurrentUser = {
+  currentUser: undefined,
+  headers: undefined,
+};
 
 const currentUserSlice = createSlice({
   name: "currentUser",
@@ -35,16 +38,16 @@ const currentUserSlice = createSlice({
       };
     },
     remove: (state) => {
-      state.currentUser = null;
-      state.headers = null;
+      state.currentUser = undefined;
+      state.headers = undefined;
     },
   },
 });
 
-export const selectCurrentUser = (state: RootState): null | IUser =>
+export const selectCurrentUser = (state: RootState): undefined | IUser =>
   state.currentUser.currentUser;
 export const selectHeaders = (
   state: RootState
-): null | { headers: ITokenHeaders } => state.currentUser.headers;
+): undefined | { headers: ITokenHeaders } => state.currentUser.headers;
 export const { setCurrentUser, setHeaders, remove } = currentUserSlice.actions;
 export default currentUserSlice.reducer;

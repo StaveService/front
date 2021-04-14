@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useToggle } from "react-use";
+import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import {
   Link as RouterLink,
@@ -33,19 +33,18 @@ import { itunes } from "../../../axios";
 const Show: React.FC = () => {
   const [music, setMusic] = useState<IMusic>();
   const [itunesMusic, setItunesMusic] = useState<IItunesMusic>();
-  const [loading, toggleLoading] = useToggle(false);
   const currentUser = useSelector(selectCurrentUser);
   const match = useRouteMatch<{ id: string; userId: string }>();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  useEffect(() => {
-    toggleLoading();
-    axios
-      .get<IMusic>(match.url)
-      .then((res) => setMusic(res.data))
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
-  }, []);
+  const handleError = (err: unknown) =>
+    enqueueSnackbar(String(err), { variant: "error" });
+  const handleSuccess = (data: IMusic) => setMusic(data);
+  const { isLoading } = useQuery<IMusic>(
+    location.pathname,
+    () => axios.get<IMusic>(location.pathname).then((res) => res.data),
+    { onError: handleError, onSuccess: handleSuccess }
+  );
   useEffect(() => {
     if (music)
       itunes
@@ -57,7 +56,13 @@ const Show: React.FC = () => {
   }, [music]);
   return (
     <MusicContext.Provider
-      value={{ loading, music, itunesMusic, setMusic, setItunesMusic }}
+      value={{
+        loading: isLoading,
+        music,
+        itunesMusic,
+        setMusic,
+        setItunesMusic,
+      }}
     >
       <Container>
         <Grid container>

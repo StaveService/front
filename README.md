@@ -15,6 +15,8 @@
 - [material-ui-image](https://github.com/TeamWertarbyte/material-ui-image)
 - [notistack](https://github.com/iamhosseindhv/notistack)
 - [react-use](https://github.com/streamich/react-use)
+~~ - [use-http](https://github.com/ava/use-http) ~~ can't use multiple url
+- [react-query](https://react-query.tanstack.com/installation)
 - [react-router-dom](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-dom)
 - [redux-toolkit](https://redux-toolkit.js.org/)
 - [redux-persist](https://github.com/rt2zz/redux-persist)
