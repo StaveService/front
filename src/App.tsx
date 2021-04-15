@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { SnackbarProvider } from "notistack";
@@ -26,6 +27,7 @@ const App: React.FC = () => (
     <SnackbarProvider maxSnack={3}>
       <QueryClientProvider client={queryClient}>
         <PersistGate loading={null} persistor={persistor}>
+          <ReactQueryDevtools initialIsOpen />
           <Router>
             <Header />
             <Box m={5}>

@@ -14,7 +14,7 @@ const Show: React.FC = () => {
   const handleError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
   const { isLoading, data } = useQuery<IUser>(
-    location.pathname,
+    location.pathname.replace("/", "").split("/"),
     () => axios.get<IUser>(location.pathname).then((res) => res.data),
     { onError: handleError }
   );
@@ -25,5 +25,4 @@ const Show: React.FC = () => {
     </Container>
   );
 };
-
 export default Show;

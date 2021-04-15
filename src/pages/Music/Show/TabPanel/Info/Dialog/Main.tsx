@@ -1,27 +1,28 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
-import { useLocation } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import Container from "@material-ui/core/Container";
 import { Box } from "@material-ui/core";
+import { useMutation, useQueryClient } from "react-query";
 import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
 import routes from "../../../../../../router/routes.json";
-import MusicContext from "../../../context";
 import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../slices/currentUser";
-import { IArtist, IBand } from "../../../../../../interfaces";
+import { IArtist, IBand, IMusic } from "../../../../../../interfaces";
 
 const Edit: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const { music, setMusic } = useContext(MusicContext);
+  const match = useRouteMatch<{ id: string }>();
   const headers = useSelector(selectHeaders);
-  const location = useLocation();
+  const queryClient = useQueryClient();
+  const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const handleClose = () => setOpen(false);
@@ -31,29 +32,70 @@ const Edit: React.FC = () => {
     options: Record<string, unknown>,
     route: string
   ) => {
-    if (headers)
-      axios
-        .post(route, option, headers)
-        .then((res) => {
-          dispatch(setHeaders(res.headers));
-          setMusic((prev) => prev && { ...prev, ...options });
-        })
-        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
+    createMutation.mutate({ option, options, route });
   };
   const handleRemoveOption = (
     option: IArtist,
     options: Record<string, unknown>,
     route: string
+  ) => destroyMutation.mutate({ option, options, route });
+  const handleCreateSuccess = (
+    res: AxiosResponse<IArtist>,
+    {
+      options,
+    }: {
+      option: IArtist;
+      options: Record<string, unknown>;
+      route: string;
+    }
   ) => {
-    if (headers)
-      axios
-        .delete(`${location.pathname}${route}/${option.id}`, headers)
-        .then((res) => {
-          dispatch(setHeaders(res.headers));
-          setMusic((prev) => prev && { ...prev, ...options });
-        })
-        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IMusic | undefined>(
+      ["musics", match.params.id],
+      (prev) => prev && { ...prev, ...options }
+    );
   };
+  const handleDestroySuccess = (
+    res: AxiosResponse<IArtist>,
+    {
+      options,
+    }: {
+      option: IArtist;
+      options: Record<string, unknown>;
+      route: string;
+    }
+  ) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IMusic | undefined>(
+      ["musics", match.params.id],
+      (prev) => prev && { ...prev, ...options }
+    );
+  };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const createMutation = useMutation(
+    ({
+      option,
+      route,
+    }: {
+      option: IArtist;
+      options: Record<string, unknown>;
+      route: string;
+    }) => axios.post<IArtist>(match.url + route, option, headers),
+    { onSuccess: handleCreateSuccess, onError }
+  );
+  const destroyMutation = useMutation(
+    ({
+      option,
+      route,
+    }: {
+      option: IArtist;
+      options: Record<string, unknown>;
+      route: string;
+    }) => axios.delete<IArtist>(`${match.url + route}/${option.id}`, headers),
+    { onSuccess: handleDestroySuccess, onError }
+  );
   const handleSelectOptionComposer = (option: IArtist, options: IArtist[]) =>
     handleSelectOption(option, { music_composers: options }, routes.COMPOSERS);
   const handleRemoveOptionComposer = (option: IArtist, options: IArtist[]) =>

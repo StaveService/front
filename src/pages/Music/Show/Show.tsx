@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import {
@@ -24,52 +24,40 @@ import IssuesTabPanel from "./TabPanel/Issue/Index";
 import IssueNew from "./TabPanel/Issue/New";
 import Issue from "./TabPanel/Issue/Show";
 import Footer from "../../../components/Footer";
-import MusicContext from "./context";
 import { selectCurrentUser } from "../../../slices/currentUser";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../../interfaces";
 import routes from "../../../router/routes.json";
 import { itunes } from "../../../axios";
 
 const Show: React.FC = () => {
-  const [music, setMusic] = useState<IMusic>();
-  const [itunesMusic, setItunesMusic] = useState<IItunesMusic>();
   const currentUser = useSelector(selectCurrentUser);
   const match = useRouteMatch<{ id: string; userId: string }>();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const handleError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
-  const handleSuccess = (data: IMusic) => setMusic(data);
-  const { isLoading } = useQuery<IMusic>(
-    location.pathname,
+  const music = useQuery<IMusic>(
+    ["musics", match.params.id],
     () => axios.get<IMusic>(location.pathname).then((res) => res.data),
-    { onError: handleError, onSuccess: handleSuccess }
+    { onError: handleError }
   );
-  useEffect(() => {
-    if (music)
+  const itunesMusic = useQuery<IItunesMusic>(
+    ["itunesMusics", music.data?.itunes_track_id],
+    () =>
       itunes
         .get<IItunesResponse<IItunesMusic>>("/lookup", {
-          params: { id: music.itunes_track_id, entity: "song" },
+          params: { id: music.data?.itunes_track_id, entity: "song" },
         })
-        .then((res) => setItunesMusic(res.data.results[0]))
-        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
-  }, [music]);
+        .then((res) => res.data.results[0])
+  );
   return (
-    <MusicContext.Provider
-      value={{
-        loading: isLoading,
-        music,
-        itunesMusic,
-        setMusic,
-        setItunesMusic,
-      }}
-    >
+    <>
       <Container>
         <Grid container>
           <Grid item xs={8}>
             <Typography variant="h5">
               <MusicNoteIcon />
-              {music?.title}
+              {music.data?.title}
             </Typography>
           </Grid>
         </Grid>
@@ -101,7 +89,7 @@ const Show: React.FC = () => {
           />
         </Tabs>
         <Box height="100px" width="100px" m="auto">
-          <Image src={itunesMusic?.artworkUrl100 || "undefiend"} />
+          <Image src={itunesMusic?.data?.artworkUrl100 || "undefiend"} />
         </Box>
         <Switch>
           <Route exact path={match.path} component={InfoTabPanel} />
@@ -127,9 +115,8 @@ const Show: React.FC = () => {
           />
         </Switch>
       </Container>
-      <Footer src={itunesMusic?.previewUrl} />
-    </MusicContext.Provider>
+      <Footer src={itunesMusic?.data?.previewUrl} />
+    </>
   );
 };
-
 export default Show;

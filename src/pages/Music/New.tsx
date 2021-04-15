@@ -49,7 +49,6 @@ const New: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const onSubmit = (data: SubmitHandler<IMusic>) => {
-    if (!headers) return;
     toggleLoading();
     axios
       .post(

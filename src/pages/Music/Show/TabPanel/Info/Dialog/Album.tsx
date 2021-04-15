@@ -1,8 +1,13 @@
-import axios from "axios";
-import React, { useContext, useState } from "react";
-import { useToggle } from "react-use";
+import axios, { AxiosResponse } from "axios";
+import React, { useState } from "react";
+import {
+  Link as RouterLink,
+  useRouteMatch,
+  useLocation,
+} from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -19,27 +24,26 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
-import { SubmitHandler, useForm } from "react-hook-form";
 import LoadingButton from "../../../../../../components/Loading/LoadingButton";
 import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
 import ControlTextField from "../../../../../../components/ControlTextField";
 import routes from "../../../../../../router/routes.json";
-import MusicContext from "../../../context";
 import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../slices/currentUser";
-import { IAlbum, IAlbumMusic } from "../../../../../../interfaces";
+import { IAlbum, IAlbumMusic, IMusic } from "../../../../../../interfaces";
 
 const Album: React.FC = () => {
-  const [loading, toggleLoding] = useToggle(false);
   const [open, setOpen] = useState(false);
-  const { music, setMusic } = useContext(MusicContext);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
   const location = useLocation();
+  const match = useRouteMatch<{ id: string }>();
   const route = location.pathname + routes.ALBUM_MUSICS;
   const headers = useSelector(selectHeaders);
+  const queryClient = useQueryClient();
+  const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const handleClose = () => setOpen(false);
@@ -47,24 +51,48 @@ const Album: React.FC = () => {
   const handleRemoveOption = () => setValue("album_id", "");
   const handleSelectOption = (option: IAlbum) =>
     setValue("album_id", option.id);
-  const onSubmit = (data: SubmitHandler<IAlbum>) => {
-    if (!headers) return;
-    toggleLoding();
-    axios
-      .post<IAlbumMusic>(route, data, headers)
-      .then((res) => {
-        dispatch(setHeaders(res.headers));
-        setMusic(
-          (prev) =>
-            prev && {
-              ...prev,
-              albums: [...(prev.albums || []), res.data.album],
-            }
-        );
-      })
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoding);
+  const handleCreateSuccess = (res: AxiosResponse<IAlbumMusic>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IMusic | undefined>(
+      ["musics", match.params.id],
+      (prev) =>
+        prev && {
+          ...prev,
+          albums: [...(prev.albums || []), res.data.album],
+        }
+    );
   };
+  const handleDestroySuccess = (
+    res: AxiosResponse<IAlbumMusic>,
+    album: IAlbum
+  ) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IMusic | undefined>(
+      ["musics", match.params.id],
+      (prev) =>
+        prev && {
+          ...prev,
+          albums:
+            prev.albums &&
+            prev.albums.filter((prevAlbum) => prevAlbum !== album),
+        }
+    );
+  };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const createAlbumMutation = useMutation(
+    (newAlbumMusic: IAlbum) =>
+      axios.post<IAlbumMusic>(route, newAlbumMusic, headers),
+    { onSuccess: handleCreateSuccess, onError }
+  );
+  const destroyAlbumMutation = useMutation(
+    (album: IAlbum) =>
+      axios.delete<IAlbumMusic>(`${route}/${album.id}`, headers),
+    { onSuccess: handleDestroySuccess, onError }
+  );
+  const onSubmit = (data: IAlbum) => createAlbumMutation.mutate(data);
+
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>
@@ -81,28 +109,7 @@ const Album: React.FC = () => {
               </TableHead>
               <TableBody>
                 {music?.albums?.map((album) => {
-                  const handleClick = () => {
-                    if (headers)
-                      axios
-                        .delete(`${route}/${album.id}`, headers)
-                        .then((res) => {
-                          dispatch(setHeaders(res.headers));
-                          setMusic(
-                            (prev) =>
-                              prev && {
-                                ...prev,
-                                albums:
-                                  prev.albums &&
-                                  prev.albums.filter(
-                                    (prevAlbum) => prevAlbum !== album
-                                  ),
-                              }
-                          );
-                        })
-                        .catch((err) =>
-                          enqueueSnackbar(String(err), { variant: "error" })
-                        );
-                  };
+                  const handleClick = () => destroyAlbumMutation.mutate(album);
                   return (
                     <TableRow key={album.id}>
                       <TableCell>
@@ -143,7 +150,10 @@ const Album: React.FC = () => {
             />
           </Box>
           <Box mb={3}>
-            <LoadingButton loading={loading} onClick={handleSubmit(onSubmit)}>
+            <LoadingButton
+              loading={createAlbumMutation.isLoading}
+              onClick={handleSubmit(onSubmit)}
+            >
               Add Artist
             </LoadingButton>
           </Box>

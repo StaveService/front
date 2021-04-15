@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useQueryClient } from "react-query";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { format } from "date-fns";
 import Table from "@material-ui/core/Table";
@@ -18,11 +19,18 @@ import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../router/routes.json";
 import MusicContext from "../../context";
 import { selectCurrentUser } from "../../../../../slices/currentUser";
+import { IItunesMusic, IMusic } from "../../../../../interfaces";
 
 const Info: React.FC = () => {
-  const { music, itunesMusic, loading } = useContext(MusicContext);
+  const { loading } = useContext(MusicContext);
   const params = useParams<{ userId: string; id: string }>();
   const currentUser = useSelector(selectCurrentUser);
+  const queryClient = useQueryClient();
+  const music = queryClient.getQueryData<IMusic>(["musics", params.id]);
+  const itunesMusic = queryClient.getQueryData<IItunesMusic>([
+    "itunesMusics",
+    music?.itunes_track_id,
+  ]);
   return (
     <>
       <Box mb={3}>

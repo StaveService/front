@@ -1,56 +1,46 @@
-import axios from "axios";
-import React, { useContext, useState } from "react";
-import { useToggle } from "react-use";
+import axios, { AxiosResponse } from "axios";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
+import { useMutation, useQueryClient } from "react-query";
 import ControlTextField from "../../../../components/ControlTextField";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
-import {
-  selectCurrentUser,
-  selectHeaders,
-  setHeaders,
-} from "../../../../slices/currentUser";
+import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import routes from "../../../../router/routes.json";
-import MusicContext from "../context";
+import { IMusic } from "../../../../interfaces";
 
 const Setting: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [loading, toggleLoading] = useToggle(false);
-  const { music } = useContext(MusicContext);
-  const { enqueueSnackbar } = useSnackbar();
-  const history = useHistory();
-  const params = useParams<{ id: string; userId: string }>();
-  const dispatch = useDispatch();
-  const headers = useSelector(selectHeaders);
-  const currentUser = useSelector(selectCurrentUser);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm();
+  const history = useHistory();
+  const match = useRouteMatch<{ id: string }>();
+  const headers = useSelector(selectHeaders);
+  const queryClient = useQueryClient();
+  const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const onSubmit = () => {
-    if (!headers) return;
-    toggleLoading();
-    axios
-      .delete(
-        `${routes.USERS}/${currentUser?.id || "undefiend"}${routes.MUSICS}/${
-          params.id
-        }`,
-        headers
-      )
-      .then((res) => {
-        dispatch(setHeaders(res.headers));
-        history.push(routes.ROOT);
-      })
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
+  const onSuccess = (res: AxiosResponse) => {
+    dispatch(setHeaders(res.headers));
+    history.push(routes.ROOT);
   };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const destroyMusicMutation = useMutation(
+    () => axios.delete(match.url, headers),
+    { onSuccess, onError }
+  );
+  const onSubmit = () => destroyMusicMutation.mutate();
   return (
     <>
       <Dialog onClose={handleClose} open={open}>
@@ -71,13 +61,13 @@ const Setting: React.FC = () => {
             variant="outlined"
             control={control}
             errors={errors}
-            disabled={loading}
+            disabled={destroyMusicMutation.isLoading}
             fullWidth
             rules={{ validate: (value) => value === music?.title }}
           />
           <LoadingButton
             type="button"
-            loading={loading}
+            loading={destroyMusicMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >
             Delete Music

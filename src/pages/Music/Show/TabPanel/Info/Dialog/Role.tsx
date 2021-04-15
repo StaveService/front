@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import React, { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
@@ -27,8 +28,7 @@ import ControlSelect from "../../../../../../components/ControlSelect";
 import LoadingButton from "../../../../../../components/Loading/LoadingButton";
 import ControlTextField from "../../../../../../components/ControlTextField";
 import routes from "../../../../../../router/routes.json";
-import MusicContext from "../../../context";
-import { IArtist, IRole } from "../../../../../../interfaces";
+import { IArtist, IMusic, IRole } from "../../../../../../interfaces";
 import { addRoleSchema } from "../../../../../../schema";
 import {
   selectHeaders,
@@ -37,16 +37,16 @@ import {
 
 const Role: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const { music, setMusic } = useContext(MusicContext);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IRole>({
     defaultValues: { artist_id: undefined },
     resolver: yupResolver(addRoleSchema),
   });
-  const location = useLocation();
+  const match = useRouteMatch<{ id: string }>();
+  const route = match.url + routes.ROLES;
   const headers = useSelector(selectHeaders);
-  const route = location.pathname + routes.ROLES;
+  const queryClient = useQueryClient();
+  const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const handleClose = () => setOpen(false);
@@ -54,21 +54,41 @@ const Role: React.FC = () => {
   const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
   const handleRemoveOption = () => setValue("artist_id", "");
-  const onSubmit = (data: SubmitHandler<IRole>) => {
-    if (!headers) return;
-    setLoading(true);
-    axios
-      .post(route, data, headers)
-      .then((res) => {
-        dispatch(setHeaders(res.headers));
-        setMusic(
-          (prev) =>
-            prev && { ...prev, roles: [...(prev.roles || []), res.data] }
-        );
-      })
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(() => setLoading(false));
+  const handleCreateSuccess = (res: AxiosResponse<IRole>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IMusic | undefined>(
+      ["musics", match.params.id],
+      (prev) =>
+        prev && {
+          ...prev,
+          roles: [...(prev.roles || []), res.data],
+        }
+    );
   };
+  const handleDestroySuccess = (res: AxiosResponse<IRole>, role: IRole) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IMusic | undefined>(
+      ["musics", match.params.id],
+      (prev) =>
+        prev && {
+          ...prev,
+          roles:
+            prev.roles && prev.roles.filter((prevRole) => prevRole !== role),
+        }
+    );
+  };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const createRoleMutation = useMutation(
+    (newRole: IRole) => axios.post<IRole>(route, newRole, headers),
+    { onSuccess: handleCreateSuccess, onError }
+  );
+  const destroyRoleMutation = useMutation(
+    (role: IRole) => axios.delete<IRole>(`${route}/${role.id}`, headers),
+    { onSuccess: handleDestroySuccess, onError }
+  );
+  const onSubmit = (data: IRole) => createRoleMutation.mutate(data);
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>
@@ -87,29 +107,7 @@ const Role: React.FC = () => {
                 </TableHead>
                 <TableBody>
                   {music?.roles?.map((role) => {
-                    const handleClick = () => {
-                      if (headers)
-                        axios
-                          .delete(`${route}/${role.id}`, headers)
-                          .then((res) => {
-                            dispatch(setHeaders(res.headers));
-                            setMusic(
-                              (prev) =>
-                                prev && {
-                                  ...prev,
-                                  roles:
-                                    prev.roles &&
-                                    prev.roles.filter(
-                                      (prevRole) => prevRole !== role
-                                    ),
-                                }
-                            );
-                          })
-                          .catch((err) =>
-                            enqueueSnackbar(String(err), { variant: "error" })
-                          )
-                          .finally(() => setLoading(false));
-                    };
+                    const handleClick = () => destroyRoleMutation.mutate(role);
                     return (
                       <TableRow key={role.id}>
                         <TableCell>
@@ -178,7 +176,10 @@ const Role: React.FC = () => {
             </Grid>
           </Box>
           <Box mb={3}>
-            <LoadingButton loading={loading} onClick={handleSubmit(onSubmit)}>
+            <LoadingButton
+              loading={createRoleMutation.isLoading}
+              onClick={handleSubmit(onSubmit)}
+            >
               Add Artist
             </LoadingButton>
           </Box>
