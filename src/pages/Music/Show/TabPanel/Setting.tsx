@@ -74,7 +74,6 @@ const Setting: React.FC = () => {
           </LoadingButton>
         </Box>
       </Dialog>
-
       <Button variant="contained" color="secondary" onClick={handleClickOpen}>
         Delete this music
       </Button>

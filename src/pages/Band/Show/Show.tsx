@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
 import { useToggle } from "react-use";
 import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";

@@ -17,7 +17,7 @@ import { itunes } from "../../axios";
 
 interface MusicProps {
   musics: IMusic[];
-  loading: boolean;
+  loading?: boolean;
 }
 
 interface IMergedMusic extends IMusic {
@@ -161,5 +161,5 @@ const Music: React.FC<MusicProps> = ({ musics, loading }: MusicProps) => {
     </TableContainer>
   );
 };
-
+Music.defaultProps = { loading: false };
 export default Music;

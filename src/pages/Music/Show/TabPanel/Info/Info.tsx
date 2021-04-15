@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useQueryClient } from "react-query";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { format } from "date-fns";
@@ -17,12 +17,10 @@ import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Role";
 import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../router/routes.json";
-import MusicContext from "../../context";
 import { selectCurrentUser } from "../../../../../slices/currentUser";
 import { IItunesMusic, IMusic } from "../../../../../interfaces";
 
 const Info: React.FC = () => {
-  const { loading } = useContext(MusicContext);
   const params = useParams<{ userId: string; id: string }>();
   const currentUser = useSelector(selectCurrentUser);
   const queryClient = useQueryClient();
@@ -134,7 +132,7 @@ const Info: React.FC = () => {
         </TableContainer>
       </Box>
       {currentUser?.id === Number(params.userId) && <AlbumDialog />}
-      <AlbumsTable albums={music?.albums || []} loading={loading} />
+      <AlbumsTable albums={music?.albums || []} />
     </>
   );
 };

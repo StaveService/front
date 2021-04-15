@@ -14,9 +14,8 @@ import routes from "../../router/routes.json";
 
 interface BandProps {
   bands: IBand[];
-  loading: boolean;
+  loading?: boolean;
 }
-
 const Band: React.FC<BandProps> = ({ bands, loading }: BandProps) => {
   return (
     <TableContainer component={Paper}>
@@ -46,5 +45,5 @@ const Band: React.FC<BandProps> = ({ bands, loading }: BandProps) => {
     </TableContainer>
   );
 };
-
+Band.defaultProps = { loading: false };
 export default Band;

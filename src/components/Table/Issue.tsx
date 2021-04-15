@@ -13,7 +13,7 @@ import { IIssue } from "../../interfaces";
 
 interface IssueProps {
   issues: IIssue[];
-  loading: boolean;
+  loading?: boolean;
 }
 const Issue: React.FC<IssueProps> = ({ issues, loading }: IssueProps) => {
   const match = useRouteMatch();
@@ -41,4 +41,5 @@ const Issue: React.FC<IssueProps> = ({ issues, loading }: IssueProps) => {
     </TableContainer>
   );
 };
+Issue.defaultProps = { loading: false };
 export default Issue;

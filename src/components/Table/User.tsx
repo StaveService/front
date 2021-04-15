@@ -14,7 +14,7 @@ import routes from "../../router/routes.json";
 
 interface UserProps {
   users: IUser[];
-  loading: boolean;
+  loading?: boolean;
 }
 const User: React.FC<UserProps> = ({ users, loading }: UserProps) => (
   <TableContainer component={Paper}>
@@ -39,5 +39,6 @@ const User: React.FC<UserProps> = ({ users, loading }: UserProps) => (
     {loading && <LinearProgress />}
   </TableContainer>
 );
+User.defaultProps = { loading: false };
 
 export default User;

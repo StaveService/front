@@ -14,9 +14,8 @@ import routes from "../../router/routes.json";
 
 interface ArtistProps {
   artists: IArtist[];
-  loading: boolean;
+  loading?: boolean;
 }
-
 const Artist: React.FC<ArtistProps> = ({ artists, loading }: ArtistProps) => {
   return (
     <TableContainer component={Paper}>
@@ -49,5 +48,7 @@ const Artist: React.FC<ArtistProps> = ({ artists, loading }: ArtistProps) => {
     </TableContainer>
   );
 };
-
+Artist.defaultProps = {
+  loading: false,
+};
 export default Artist;

@@ -14,7 +14,7 @@ import routes from "../../router/routes.json";
 
 interface AlbumProps {
   albums: IAlbum[];
-  loading: boolean;
+  loading?: boolean;
 }
 const Album: React.FC<AlbumProps> = ({ albums, loading }: AlbumProps) => {
   return (
@@ -48,5 +48,7 @@ const Album: React.FC<AlbumProps> = ({ albums, loading }: AlbumProps) => {
     </TableContainer>
   );
 };
-
+Album.defaultProps = {
+  loading: false,
+};
 export default Album;
