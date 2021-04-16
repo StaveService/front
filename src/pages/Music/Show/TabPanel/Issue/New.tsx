@@ -1,43 +1,40 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import React from "react";
-import { useToggle } from "react-use";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
+import { useMutation } from "react-query";
 import ControlTextField from "../../../../../components/ControlTextField";
 import LoadingButton from "../../../../../components/Loading/LoadingButton";
 import { issueSchema } from "../../../../../schema";
 import { selectHeaders, setHeaders } from "../../../../../slices/currentUser";
 import { IIssue } from "../../../../../interfaces";
 
-interface IIssueFormValues {
-  title: string;
-  description: string;
-}
 const New: React.FC = () => {
-  const [loading, toggleLoadiing] = useToggle(false);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(issueSchema),
   });
   const match = useRouteMatch();
+  const route = match.url.replace("/new", "");
   const headers = useSelector(selectHeaders);
   const history = useHistory();
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const onSubmit = (data: SubmitHandler<IIssueFormValues>) => {
-    if (!headers) return;
-    toggleLoadiing();
-    axios
-      .post<IIssue>(match.url.replace("/new", ""), data, headers)
-      .then((res) => {
-        setHeaders(res.headers);
-        history.push(`${match.url.replace("new", "")}${res.data.id}`);
-      })
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoadiing);
+  const onSuccess = (res: AxiosResponse<IIssue>) => {
+    dispatch(setHeaders(res.headers));
+    history.push(`${route}/${res.data.id}`);
   };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const { isLoading, mutate } = useMutation(
+    (newIssue: IIssue) => axios.post<IIssue>(route, newIssue, headers),
+    { onSuccess, onError }
+  );
+  const onSubmit = (data: IIssue) => mutate(data);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <ControlTextField
@@ -49,7 +46,7 @@ const New: React.FC = () => {
         margin="normal"
         control={control}
         errors={errors}
-        disabled={loading}
+        disabled={isLoading}
         fullWidth
       />
       <ControlTextField
@@ -61,11 +58,11 @@ const New: React.FC = () => {
         margin="normal"
         control={control}
         errors={errors}
-        disabled={loading}
+        disabled={isLoading}
         fullWidth
         multiline
       />
-      <LoadingButton loading={loading}>create issue</LoadingButton>
+      <LoadingButton loading={isLoading}>create issue</LoadingButton>
     </form>
   );
 };

@@ -139,5 +139,4 @@ const Info: React.FC = () => {
 Info.defaultProps = {
   itunesMusic: undefined,
 };
-
 export default Info;

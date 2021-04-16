@@ -1,7 +1,7 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useToggle } from "react-use";
+import React, { useState } from "react";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
+import { useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -10,32 +10,28 @@ import Box from "@material-ui/core/Box";
 import routes from "../../../../../router/routes.json";
 import IssueTable from "../../../../../components/Table/Issue";
 import { IIssue } from "../../../../../interfaces";
-import { search } from "../../../../../common/search";
 
 const Index: React.FC = () => {
-  const [loading, toggleLoading] = useToggle(false);
-  const [issues, setIssues] = useState<IIssue[]>([]);
+  const [searchValue, setSearchValue] = useState("");
   const match = useRouteMatch();
+  const ISSUES = match.url.split("/").pop() || "";
   const { enqueueSnackbar } = useSnackbar();
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter") {
-      setIssues([]);
-      search<IIssue>(
-        match.url,
-        { title_eq: (e.target as HTMLInputElement).value },
-        setIssues,
-        toggleLoading
-      );
-    }
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
   };
-  useEffect(() => {
-    toggleLoading();
-    axios
-      .get(match.url)
-      .then((res) => setIssues(res.data))
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
-  }, []);
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") setSearchValue((e.target as HTMLInputElement).value);
+  };
+  const { data, isLoading } = useQuery<IIssue[]>(
+    searchValue ? [ISSUES, searchValue] : ISSUES,
+    () =>
+      axios
+        .get<IIssue[]>(match.url, {
+          params: { q: { title_cont: searchValue } },
+        })
+        .then((res) => res.data),
+    { onError }
+  );
   return (
     <>
       <Box mb={3}>
@@ -59,7 +55,7 @@ const Index: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
-      <IssueTable issues={issues} loading={loading} />
+      <IssueTable issues={data || []} loading={isLoading} />
     </>
   );
 };

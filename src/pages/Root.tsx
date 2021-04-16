@@ -12,12 +12,12 @@ import routes from "../router/routes.json";
 
 const Root: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const handleError = (err: unknown) =>
+  const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
   const { isLoading, data } = useQuery<IMusic[]>(
     "musics",
     () => axios.get<IMusic[]>(routes.MUSICS).then((res) => res.data),
-    { onError: handleError }
+    { onError }
   );
   return (
     <Container>
