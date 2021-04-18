@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-type Return = {
+interface UseOpenReturn {
   open: boolean;
   handleOpen: () => void;
   handleClose: () => void;
-};
-export const useOpen = (): Return => {
+}
+export const useOpen = (): UseOpenReturn => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
