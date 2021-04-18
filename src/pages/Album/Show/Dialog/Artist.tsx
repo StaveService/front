@@ -1,8 +1,9 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import React, { Dispatch, SetStateAction } from "react";
-import { useToggle } from "react-use";
+import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -19,50 +20,69 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
-import { SubmitHandler, useForm } from "react-hook-form";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
 import AutocompleteTextField from "../../../../components/AutocompleteTextField";
 import ControlTextField from "../../../../components/ControlTextField";
 import routes from "../../../../router/routes.json";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
-import { IAlbum, IArtistBand } from "../../../../interfaces";
+import { IAlbum, IArtist, IArtistAlbum } from "../../../../interfaces";
 import { useOpen } from "../../../../common/useOpen";
 
-interface ArtistProps {
-  album?: IAlbum;
-  setAlbum: Dispatch<SetStateAction<IAlbum | undefined>>;
-}
-const Artist: React.FC<ArtistProps> = ({ album, setAlbum }: ArtistProps) => {
-  const [loading, toggleLoading] = useToggle(false);
+const Artist: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
-  const location = useLocation();
-  const headers = useSelector(selectHeaders);
-  const route = location.pathname + routes.ARTIST_ALBUMS;
+  // react-redux
   const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
+  // notistack
   const { enqueueSnackbar } = useSnackbar();
+  // react-router-dom
+  const match = useRouteMatch<{ id: string }>();
+  const route = match.url + routes.ARTIST_ALBUMS;
+  // react-query
+  const queryClient = useQueryClient();
+  const album = queryClient.getQueryData<IAlbum>(["albums", match.params.id]);
+  const handleCreateSuccess = (res: AxiosResponse<IArtistAlbum>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IAlbum | undefined>(
+      ["albums", match.params.id],
+      (prev) =>
+        prev && {
+          ...prev,
+          artists: [...(prev.artists || []), res.data.artist],
+        }
+    );
+  };
+  const handleDestorySuccess = (res: AxiosResponse, artist: IArtist) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IAlbum | undefined>(
+      ["albums", match.params.id],
+      (prev) =>
+        prev && {
+          ...prev,
+          artists:
+            prev.artists &&
+            prev.artists.filter((prevAlbum) => prevAlbum !== artist),
+        }
+    );
+  };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const createMutation = useMutation(
+    (newArtistBand: IArtistAlbum) =>
+      axios.post<IArtistAlbum>(route, newArtistBand, headers),
+    { onSuccess: handleCreateSuccess, onError }
+  );
+  const destroyMutation = useMutation(
+    (artist: IArtist) => axios.delete(`${route}/${artist.id}`, headers),
+    { onSuccess: handleDestorySuccess, onError }
+  );
   const handleRemoveOption = () => setValue("artist_id", "");
   const handleSelectOption = (option: IAlbum) =>
     setValue("artist_id", option.id);
-  const onSubmit = (data: SubmitHandler<IAlbum>) => {
-    if (!headers) return;
-    toggleLoading();
-    axios
-      .post<IArtistBand>(route, data, headers)
-      .then((res) => {
-        dispatch(setHeaders(res.headers));
-        setAlbum(
-          (prev) =>
-            prev && {
-              ...prev,
-              artists: [...(prev.artists || []), res.data.artist],
-            }
-        );
-      })
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
-  };
+  const onSubmit = (data: IArtistAlbum) => createMutation.mutate(data);
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>
@@ -79,28 +99,7 @@ const Artist: React.FC<ArtistProps> = ({ album, setAlbum }: ArtistProps) => {
               </TableHead>
               <TableBody>
                 {album?.artists?.map((artist) => {
-                  const handleClick = () => {
-                    if (headers)
-                      axios
-                        .delete(`${route}/${artist.id}`, headers)
-                        .then((res) => {
-                          dispatch(setHeaders(res.headers));
-                          setAlbum(
-                            (prev) =>
-                              prev && {
-                                ...prev,
-                                artists:
-                                  prev.artists &&
-                                  prev.artists.filter(
-                                    (prevAlbum) => prevAlbum !== artist
-                                  ),
-                              }
-                          );
-                        })
-                        .catch((err) =>
-                          enqueueSnackbar(String(err), { variant: "error" })
-                        );
-                  };
+                  const handleClick = () => destroyMutation.mutate(artist);
                   return (
                     <TableRow key={artist.id}>
                       <TableCell>
@@ -141,7 +140,10 @@ const Artist: React.FC<ArtistProps> = ({ album, setAlbum }: ArtistProps) => {
             />
           </Box>
           <Box mb={3}>
-            <LoadingButton loading={loading} onClick={handleSubmit(onSubmit)}>
+            <LoadingButton
+              loading={createMutation.isLoading}
+              onClick={handleSubmit(onSubmit)}
+            >
               Add Artist
             </LoadingButton>
           </Box>
@@ -151,7 +153,4 @@ const Artist: React.FC<ArtistProps> = ({ album, setAlbum }: ArtistProps) => {
   );
 };
 
-Artist.defaultProps = {
-  album: undefined,
-};
 export default Artist;

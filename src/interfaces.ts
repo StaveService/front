@@ -87,6 +87,12 @@ export interface IArtistBand {
   ["band_id"]: number;
   artist: IArtist;
 }
+export interface IArtistAlbum {
+  id: number;
+  ["artist_id"]: number;
+  ["album_id"]: number;
+  artist: IArtist;
+}
 export interface ISignInFormValues {
   email: string;
   password: string;

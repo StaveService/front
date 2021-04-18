@@ -1,13 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useToggle } from "react-use";
-import { useLocation } from "react-router-dom";
+import { useLocation, useRouteMatch } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import AlbumIcon from "@material-ui/icons/Album";
 import Image from "material-ui-image";
+import { useQuery } from "react-query";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../../interfaces";
 import MusicsTable from "../../../components/Table/Music";
 import ArtistTable from "../../../components/Table/Artist";
@@ -15,42 +15,47 @@ import ArtistDialog from "./Dialog/Artist";
 import { itunes } from "../../../axios";
 
 const Show: React.FC = () => {
-  const [loading, toggleLoading] = useToggle(false);
-  const [album, setAlbum] = useState<IAlbum>();
-  const [itunesMusic, setItunesMusic] = useState<IItunesAlbum>();
   const location = useLocation();
+  const match = useRouteMatch<{ id: string }>();
   const { enqueueSnackbar } = useSnackbar();
-  useEffect(() => {
-    toggleLoading();
-    axios
-      .get<IAlbum>(location.pathname)
-      .then((res) => setAlbum(res.data))
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
-  }, []);
-  useEffect(() => {
-    if (album)
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const album = useQuery<IAlbum>(
+    ["albums", match.params.id],
+    () => axios.get<IAlbum>(location.pathname).then((res) => res.data),
+    { onError }
+  );
+  const itunesAlbum = useQuery<IItunesAlbum>(
+    ["itunesAlbums", album.data?.itunes_collection_id],
+    () =>
       itunes
         .get<IItunesResponse<IItunesAlbum>>("/lookup", {
-          params: { id: album.itunes_collection_id, entity: "album" },
+          params: { id: album.data?.itunes_collection_id, entity: "album" },
         })
-        .then((res) => setItunesMusic(res.data.results[0]))
-        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
-  }, [album]);
+        .then((res) => res.data.results[0]),
+    { onError }
+  );
   return (
     <Container>
       <Typography variant="h5">
         <AlbumIcon />
-        {album?.title}
+        {album.data?.title}
       </Typography>
       <Box height="100px" width="100px" m="auto">
-        <Image src={itunesMusic?.artworkUrl100 || "undefiend"} />
+        <Image src={itunesAlbum.data?.artworkUrl100 || "undefiend"} />
       </Box>
       <Box mb={3}>
-        <MusicsTable musics={album?.musics || []} loading={loading} />
+        <MusicsTable
+          musics={album.data?.musics || []}
+          loading={album.isLoading}
+        />
       </Box>
-      <ArtistDialog album={album} setAlbum={setAlbum} />
-      <ArtistTable artists={album?.artists || []} loading={loading} />
+      <ArtistDialog />
+      <ArtistTable
+        artists={album.data?.artists || []}
+        loading={album.isLoading}
+      />
     </Container>
   );
 };
