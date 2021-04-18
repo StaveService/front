@@ -1,9 +1,13 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import React, { KeyboardEvent, ChangeEvent, useEffect, useState } from "react";
 import { useToggle } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Link as RouterLink, useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import {
+  Link as RouterLink,
+  useHistory,
+  useRouteMatch,
+} from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Image from "material-ui-image";
 import Container from "@material-ui/core/Container";
@@ -15,6 +19,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
+import { useMutation, useQueryClient } from "react-query";
 import ControlTextField from "../../components/ControlTextField";
 import ItunesMusicCard from "../../components/Card/Itunes/Music";
 import MusicCard from "../../components/Card/Music";
@@ -40,29 +45,34 @@ const New: React.FC = () => {
   const [musics, setMusics] = useState<IMusic[]>([]);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IMusic>();
-  const [loading, toggleLoading] = useToggle(false);
   const [searching, toggleSearching] = useToggle(false);
   const [itunesSearching, toggleItunesSearching] = useToggle(false);
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
   const history = useHistory();
+  const match = useRouteMatch<{ id: string }>();
+  const queryClient = useQueryClient();
+  const route = `${routes.USERS}/${currentUser?.id || "undefinde"}${
+    routes.MUSICS
+  }`;
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-  const onSubmit = (data: SubmitHandler<IMusic>) => {
-    toggleLoading();
-    axios
-      .post(
-        `${routes.USERS}/${currentUser?.id || "undefiend"}${routes.MUSICS}`,
-        data,
-        headers
-      )
-      .then((res) => {
-        dispatch(setHeaders(res.headers));
-        history.push(routes.ROOT);
-      })
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
+  const onSuccess = (res: AxiosResponse<IMusic>) => {
+    dispatch(setHeaders(res.headers));
+    history.push(`${route}/${res.data.id}`);
+    queryClient.setQueryData<IMusic | undefined>(
+      ["musics", match.params.id],
+      res.data
+    );
   };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const createMusicMutation = useMutation(
+    (newMusic: IMusic) => axios.post<IMusic>(route, newMusic, headers),
+    { onSuccess, onError }
+  );
+  const onSubmit = (data: IMusic) => createMusicMutation.mutate(data);
   const searchMusics = (value: string) =>
     search<IMusic>(
       routes.MUSICS,
@@ -156,7 +166,7 @@ const New: React.FC = () => {
               variant="outlined"
               control={control}
               errors={errors}
-              disabled={loading}
+              disabled={createMusicMutation.isLoading}
               fullWidth
             />
           </Box>
@@ -168,7 +178,7 @@ const New: React.FC = () => {
             variant="outlined"
             control={control}
             errors={errors}
-            disabled={loading}
+            disabled={createMusicMutation.isLoading}
             fullWidth
             InputProps={{
               endAdornment: (
@@ -185,7 +195,7 @@ const New: React.FC = () => {
           <SearchedMusicCards />
           <LoadingButton
             type="button"
-            loading={loading}
+            loading={createMusicMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >
             Create Music

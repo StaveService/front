@@ -13,7 +13,7 @@ const Index: React.FC = () => {
   const handleError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
   const { isLoading, data } = useQuery<IAlbum[]>(
-    location.pathname,
+    location.pathname.replace("/", ""),
     () => axios.get<IAlbum[]>(location.pathname).then((res) => res.data),
     { onError: handleError }
   );

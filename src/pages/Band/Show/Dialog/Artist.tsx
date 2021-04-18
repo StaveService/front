@@ -1,8 +1,7 @@
-import axios from "axios";
-import React, { Dispatch, SetStateAction, useState } from "react";
-import { useToggle } from "react-use";
+import axios, { AxiosResponse } from "axios";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -19,51 +18,77 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "react-query";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
 import AutocompleteTextField from "../../../../components/AutocompleteTextField";
 import ControlTextField from "../../../../components/ControlTextField";
 import routes from "../../../../router/routes.json";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
-import { IAlbum, IArtistBand, IBand } from "../../../../interfaces";
+import { IAlbum, IArtist, IArtistBand, IBand } from "../../../../interfaces";
 
-interface ArtistProps {
-  band?: IBand;
-  setBand: Dispatch<SetStateAction<IBand | undefined>>;
-}
-const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
-  const [loading, toggleLoading] = useToggle(false);
+const Artist: React.FC = () => {
   const [open, setOpen] = useState(false);
+  // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
-  const location = useLocation();
-  const route = location.pathname + routes.ARTIST_BANDS;
-  const headers = useSelector(selectHeaders);
+  // react-router-dom
+  const match = useRouteMatch<{ id: string }>();
+  const route = match.url + routes.ARTIST_BANDS;
+  // react-redux
   const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
+  // notistack
   const { enqueueSnackbar } = useSnackbar();
+  // react-query
+  const queryClient = useQueryClient();
+  const band = queryClient.getQueryData<IBand>(["bands", match.params.id]);
+  const handleCreateSuccess = (res: AxiosResponse<IArtistBand>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IBand | undefined>(
+      ["bands", match.params.id],
+      (prev) =>
+        prev && {
+          ...prev,
+          artists: [...(prev.artists || []), res.data.artist],
+        }
+    );
+  };
+  const handleDestroySuccess = (res: AxiosResponse<IBand>, artist: IArtist) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IBand | undefined>(
+      ["bands", match.params.id],
+      (prev) =>
+        prev && {
+          ...prev,
+          artists:
+            prev.artists &&
+            prev.artists.filter((prevArtists) => prevArtists !== artist),
+        }
+    );
+  };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const createMutation = useMutation(
+    (newArtistBand: IArtistBand) =>
+      axios.post<IArtistBand>(route, newArtistBand, headers),
+    {
+      onSuccess: handleCreateSuccess,
+      onError,
+    }
+  );
+  const destroyMutation = useMutation(
+    (artist) => axios.delete<IBand>(`${route}/${artist.id}`, headers),
+    { onSuccess: handleDestroySuccess, onError }
+  );
+  // handlers
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
   const handleRemoveOption = () => setValue("artist_id", "");
   const handleSelectOption = (option: IAlbum) =>
     setValue("artist_id", option.id);
-  const onSubmit = (data: SubmitHandler<IAlbum>) => {
-    if (!headers) return;
-    toggleLoading();
-    axios
-      .post<IArtistBand>(route, data, headers)
-      .then((res) => {
-        dispatch(setHeaders(res.headers));
-        setBand(
-          (prev) =>
-            prev && {
-              ...prev,
-              artists: [...(prev.artists || []), res.data.artist],
-            }
-        );
-      })
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
-  };
+  const onSubmit = (data: IArtistBand) => createMutation.mutate(data);
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>
@@ -80,28 +105,7 @@ const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
               </TableHead>
               <TableBody>
                 {band?.artists?.map((artist) => {
-                  const handleClick = () => {
-                    if (headers)
-                      axios
-                        .delete(`${route}/${artist.id}`, headers)
-                        .then((res) => {
-                          dispatch(setHeaders(res.headers));
-                          setBand(
-                            (prev) =>
-                              prev && {
-                                ...prev,
-                                artists:
-                                  prev.artists &&
-                                  prev.artists.filter(
-                                    (prevAlbum) => prevAlbum !== artist
-                                  ),
-                              }
-                          );
-                        })
-                        .catch((err) =>
-                          enqueueSnackbar(String(err), { variant: "error" })
-                        );
-                  };
+                  const handleClick = () => destroyMutation.mutate(artist);
                   return (
                     <TableRow key={artist.id}>
                       <TableCell>
@@ -142,7 +146,10 @@ const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
             />
           </Box>
           <Box mb={3}>
-            <LoadingButton loading={loading} onClick={handleSubmit(onSubmit)}>
+            <LoadingButton
+              loading={createMutation.isLoading}
+              onClick={handleSubmit(onSubmit)}
+            >
               Add Artist
             </LoadingButton>
           </Box>
@@ -152,7 +159,4 @@ const Artist: React.FC<ArtistProps> = ({ band, setBand }: ArtistProps) => {
   );
 };
 
-Artist.defaultProps = {
-  band: undefined,
-};
 export default Artist;

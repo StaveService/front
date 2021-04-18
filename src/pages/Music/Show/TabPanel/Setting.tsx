@@ -31,13 +31,14 @@ const Setting: React.FC = () => {
   const handleClose = () => setOpen(false);
   const onSuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
+    queryClient.removeQueries(["musics", match.params.id]);
     history.push(routes.ROOT);
   };
   const onError = (err: unknown) => {
     enqueueSnackbar(String(err), { variant: "error" });
   };
   const destroyMusicMutation = useMutation(
-    () => axios.delete(match.url, headers),
+    () => axios.delete(match.url.replace("/setting", ""), headers),
     { onSuccess, onError }
   );
   const onSubmit = () => destroyMusicMutation.mutate();
