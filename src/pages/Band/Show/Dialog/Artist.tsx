@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -26,9 +26,10 @@ import ControlTextField from "../../../../components/ControlTextField";
 import routes from "../../../../router/routes.json";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import { IAlbum, IArtist, IArtistBand, IBand } from "../../../../interfaces";
+import { useOpen } from "../../../../common/useOpen";
 
 const Artist: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const { open, handleOpen, handleClose } = useOpen();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
@@ -83,8 +84,6 @@ const Artist: React.FC = () => {
     { onSuccess: handleDestroySuccess, onError }
   );
   // handlers
-  const handleClose = () => setOpen(false);
-  const handleOpen = () => setOpen(true);
   const handleRemoveOption = () => setValue("artist_id", "");
   const handleSelectOption = (option: IAlbum) =>
     setValue("artist_id", option.id);

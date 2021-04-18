@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -16,17 +16,16 @@ import {
   setHeaders,
 } from "../../../../../../slices/currentUser";
 import { IArtist, IBand, IMusic } from "../../../../../../interfaces";
+import { useOpen } from "../../../../../../common/useOpen";
 
 const Edit: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const { open, handleOpen, handleClose } = useOpen();
   const match = useRouteMatch<{ id: string }>();
   const headers = useSelector(selectHeaders);
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-  const handleClose = () => setOpen(false);
-  const handleOpen = () => setOpen(true);
   const handleSelectOption = (
     option: IArtist,
     options: Record<string, unknown>,

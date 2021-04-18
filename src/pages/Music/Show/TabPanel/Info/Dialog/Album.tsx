@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React, { useState } from "react";
+import React from "react";
 import {
   Link as RouterLink,
   useRouteMatch,
@@ -33,9 +33,10 @@ import {
   setHeaders,
 } from "../../../../../../slices/currentUser";
 import { IAlbum, IAlbumMusic, IMusic } from "../../../../../../interfaces";
+import { useOpen } from "../../../../../../common/useOpen";
 
 const Album: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const { open, handleOpen, handleClose } = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
   const location = useLocation();
@@ -46,8 +47,6 @@ const Album: React.FC = () => {
   const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const handleClose = () => setOpen(false);
-  const handleOpen = () => setOpen(true);
   const handleRemoveOption = () => setValue("album_id", "");
   const handleSelectOption = (option: IAlbum) =>
     setValue("album_id", option.id);

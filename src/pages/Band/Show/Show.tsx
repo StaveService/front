@@ -1,12 +1,12 @@
 import axios from "axios";
 import React from "react";
+import { useQuery } from "react-query";
 import { useRouteMatch } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import GroupIcon from "@material-ui/icons/Group";
-import { useQuery } from "react-query";
 import ArtistDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
 import ArtistsTable from "../../../components/Table/Artist";

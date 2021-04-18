@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -15,9 +15,10 @@ import LoadingButton from "../../../../components/Loading/LoadingButton";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import routes from "../../../../router/routes.json";
 import { IMusic } from "../../../../interfaces";
+import { useOpen } from "../../../../common/useOpen";
 
 const Setting: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const { open, handleOpen, handleClose } = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm();
   const history = useHistory();
@@ -27,8 +28,6 @@ const Setting: React.FC = () => {
   const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-  const handleClickOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const onSuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.removeQueries(["musics", match.params.id]);
@@ -75,7 +74,7 @@ const Setting: React.FC = () => {
           </LoadingButton>
         </Box>
       </Dialog>
-      <Button variant="contained" color="secondary" onClick={handleClickOpen}>
+      <Button variant="contained" color="secondary" onClick={handleOpen}>
         Delete this music
       </Button>
     </>

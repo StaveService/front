@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { useToggle } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useLocation } from "react-router-dom";
@@ -26,6 +26,7 @@ import ControlTextField from "../../../../components/ControlTextField";
 import routes from "../../../../router/routes.json";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import { IAlbum, IArtistBand } from "../../../../interfaces";
+import { useOpen } from "../../../../common/useOpen";
 
 interface ArtistProps {
   album?: IAlbum;
@@ -33,7 +34,7 @@ interface ArtistProps {
 }
 const Artist: React.FC<ArtistProps> = ({ album, setAlbum }: ArtistProps) => {
   const [loading, toggleLoading] = useToggle(false);
-  const [open, setOpen] = useState(false);
+  const { open, handleOpen, handleClose } = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
   const location = useLocation();
@@ -41,8 +42,6 @@ const Artist: React.FC<ArtistProps> = ({ album, setAlbum }: ArtistProps) => {
   const route = location.pathname + routes.ARTIST_ALBUMS;
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const handleClose = () => setOpen(false);
-  const handleOpen = () => setOpen(true);
   const handleRemoveOption = () => setValue("artist_id", "");
   const handleSelectOption = (option: IAlbum) =>
     setValue("artist_id", option.id);

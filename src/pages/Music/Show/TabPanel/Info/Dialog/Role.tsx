@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React, { useState } from "react";
+import React from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -34,9 +34,10 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../slices/currentUser";
+import { useOpen } from "../../../../../../common/useOpen";
 
 const Role: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const { open, handleOpen, handleClose } = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IRole>({
     defaultValues: { artist_id: undefined },
@@ -49,8 +50,6 @@ const Role: React.FC = () => {
   const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const handleClose = () => setOpen(false);
-  const handleOpen = () => setOpen(true);
   const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
   const handleRemoveOption = () => setValue("artist_id", "");
