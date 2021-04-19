@@ -17,9 +17,8 @@ import { IBand } from "../../../interfaces";
 const Show: React.FC = () => {
   const match = useRouteMatch<{ id: string }>();
   const { enqueueSnackbar } = useSnackbar();
-  const onError = (err: unknown) => {
+  const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
-  };
   const { isLoading, data } = useQuery<IBand>(
     ["bands", match.params.id],
     () => axios.get<IBand>(match.url).then((res) => res.data),

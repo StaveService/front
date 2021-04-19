@@ -10,12 +10,12 @@ import { IMusic } from "../../interfaces";
 const Index: React.FC = () => {
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  const handleError = (err: unknown) =>
+  const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
   const { isLoading, data } = useQuery<IMusic[]>(
     location.pathname.replace("/", ""),
     () => axios.get<IMusic[]>(location.pathname).then((res) => res.data),
-    { onError: handleError }
+    { onError }
   );
   return (
     <Container>

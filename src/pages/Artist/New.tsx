@@ -152,23 +152,10 @@ const New: React.FC = () => {
   return (
     <Container>
       <Paper>
-        <Box p={3}>
-          <Box visibility="hidden">
-            <ControlTextField
-              type="hidden"
-              name="itunes_artist_id"
-              defaultValue=""
-              autoComplete="on"
-              label="Name"
-              variant="outlined"
-              control={control}
-              errors={errors}
-              disabled={createMutation.isLoading}
-              fullWidth
-            />
-          </Box>
+        <Box visibility="hidden">
           <ControlTextField
-            name="name"
+            type="hidden"
+            name="itunes_artist_id"
             defaultValue=""
             autoComplete="on"
             label="Name"
@@ -177,27 +164,39 @@ const New: React.FC = () => {
             errors={errors}
             disabled={createMutation.isLoading}
             fullWidth
-            InputProps={{
-              endAdornment: (
-                <LoadingCircularProgress
-                  color="inherit"
-                  size={20}
-                  loading={searchMutation.isLoading}
-                />
-              ),
-            }}
-            onKeyPress={handleKeyPress}
-            onChange={handleChange}
           />
-          <SearchedArtistsCard />
-          <LoadingButton
-            type="button"
-            loading={createMutation.isLoading}
-            onClick={handleSubmit(onSubmit)}
-          >
-            Create Artist
-          </LoadingButton>
         </Box>
+        <ControlTextField
+          name="name"
+          defaultValue=""
+          autoComplete="on"
+          label="Name"
+          variant="outlined"
+          control={control}
+          errors={errors}
+          disabled={createMutation.isLoading}
+          fullWidth
+          InputProps={{
+            endAdornment: (
+              <LoadingCircularProgress
+                color="inherit"
+                size={20}
+                loading={searchMutation.isLoading}
+              />
+            ),
+          }}
+          onKeyPress={handleKeyPress}
+          onChange={handleChange}
+        />
+        <SearchedArtistsCard />
+        <LoadingButton
+          type="button"
+          loading={createMutation.isLoading}
+          onClick={handleSubmit(onSubmit)}
+        >
+          Create Artist
+        </LoadingButton>
+        <Box p={3} />
       </Paper>
       <ItunesMusicsDialog />
     </Container>

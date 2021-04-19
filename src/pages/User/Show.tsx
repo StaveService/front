@@ -11,12 +11,12 @@ import { IUser } from "../../interfaces";
 const Show: React.FC = () => {
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  const handleError = (err: unknown) =>
+  const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
   const { isLoading, data } = useQuery<IUser>(
     location.pathname.replace("/", "").split("/"),
     () => axios.get<IUser>(location.pathname).then((res) => res.data),
-    { onError: handleError }
+    { onError }
   );
   return (
     <Container>

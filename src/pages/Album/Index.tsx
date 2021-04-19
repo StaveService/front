@@ -10,12 +10,12 @@ import { IAlbum } from "../../interfaces";
 const Index: React.FC = () => {
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  const handleError = (err: unknown) =>
+  const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
   const { isLoading, data } = useQuery<IAlbum[]>(
     location.pathname.replace("/", ""),
     () => axios.get<IAlbum[]>(location.pathname).then((res) => res.data),
-    { onError: handleError }
+    { onError }
   );
   return (
     <Container>
