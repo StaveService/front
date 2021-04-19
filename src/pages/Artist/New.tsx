@@ -58,15 +58,6 @@ const New: React.FC = () => {
     history.push(`${route}/${res.data.id}`);
     queryClient.setQueryData(["artists", res.data.id], res.data);
   };
-  const handleSearchSuccess = (res: AxiosResponse<IArtist[]>) => {
-    queryClient.setQueryData(["artists", ""], res.data);
-  };
-  const handleSearchItunesSuccess = (
-    res: AxiosResponse<IItunesResponse<IItunesArtist>>,
-    term: string
-  ) => {
-    queryClient.setQueryData(["itunesArtists", term], res.data.results);
-  };
   const onError = (err: unknown) => {
     enqueueSnackbar(String(err), { variant: "error" });
   };
@@ -79,7 +70,7 @@ const New: React.FC = () => {
       axios.get<IArtist[]>(route, {
         params: { q: { name_eq: term } },
       }),
-    { onSuccess: handleSearchSuccess, onError }
+    { onError }
   );
   const searchItunesMutation = useMutation(
     (term: string) =>
@@ -89,16 +80,23 @@ const New: React.FC = () => {
           term,
         },
       }),
-    { onSuccess: handleSearchItunesSuccess, onError }
+    { onError }
   );
   // handlers
   const onSubmit = (data: IArtist) => createMutation.mutate(data);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
-    searchMutation.mutate(e.target.value);
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+  const handleChange = ({
+    target: { value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    if (value) searchMutation.mutate(value);
+  };
+  const handleKeyPress = ({
+    target,
+    key,
+  }: React.KeyboardEvent<HTMLInputElement>) => {
+    const { value } = target as HTMLInputElement;
+    if (key === "Enter" && value) {
       handleOpen();
-      searchItunesMutation.mutate((e.target as HTMLInputElement).value);
+      searchItunesMutation.mutate(value);
     }
   };
   useEffect(() => {

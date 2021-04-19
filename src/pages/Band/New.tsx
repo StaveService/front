@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import {
   Link as RouterLink,
@@ -23,7 +23,7 @@ import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import BandCard from "../../components/Card/Band";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
-import { selectHeaders } from "../../slices/currentUser";
+import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { IBand, IItunesArtist, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { itunes } from "../../axios";
@@ -43,21 +43,21 @@ const New: React.FC = () => {
   const match = useRouteMatch<{ id: string }>();
   const route = match.url.replace("/new", "");
   // react-redux
+  const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
   // notistack
   const { enqueueSnackbar } = useSnackbar();
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IBand>) => {
+    dispatch(setHeaders(res.headers));
     history.push(`${routes.BANDS}/${res.data.id}`);
-  };
-  const handleSearchSuccess = (res: AxiosResponse<IBand[]>) => {
-    queryClient.setQueryData(["bands", match.params.id], res.data);
-  };
-  const handleItunesSearchSuccess = (
-    res: AxiosResponse<IItunesResponse<IItunesArtist>>
-  ) => {
-    queryClient.setQueryData(["musicArtist"], res.data);
+    queryClient.setQueryData(["musics", match.params.id], res.data);
+    if (selectedItunesArtist)
+      queryClient.setQueryData(
+        ["itunesMusics", selectedItunesArtist.artistId],
+        selectedItunesArtist
+      );
   };
   const onError = (err: unknown) => {
     enqueueSnackbar(String(err), { variant: "error" });
@@ -71,7 +71,7 @@ const New: React.FC = () => {
       axios.get<IBand[]>(route, {
         params: { name_eq: term },
       }),
-    { onSuccess: handleSearchSuccess, onError }
+    { onError }
   );
   const searchItunesMusicArtistMutation = useMutation(
     (term: string) =>
@@ -81,18 +81,23 @@ const New: React.FC = () => {
           term,
         },
       }),
-    { onSuccess: handleItunesSearchSuccess, onError }
+    { onError }
   );
   // handlers
   const onSubmit = (data: IBand) => createMutation.mutate(data);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
-    searchMutation.mutate((e.target as HTMLInputElement).value);
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && (e.target as HTMLInputElement).value) {
+  const handleChange = ({
+    target: { value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    if (value) searchMutation.mutate(value);
+  };
+  const handleKeyPress = ({
+    target,
+    key,
+  }: React.KeyboardEvent<HTMLInputElement>) => {
+    const { value } = target as HTMLInputElement;
+    if (key === "Enter" && value) {
       handleOpen();
-      searchItunesMusicArtistMutation.mutate(
-        (e.target as HTMLInputElement).value
-      );
+      searchItunesMusicArtistMutation.mutate(value);
     }
   };
   useEffect(() => {

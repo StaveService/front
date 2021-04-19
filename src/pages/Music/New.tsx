@@ -61,16 +61,13 @@ const New: React.FC = () => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
     queryClient.setQueryData(["musics", match.params.id], res.data);
+    if (selectedItunesMusic)
+      queryClient.setQueryData(
+        ["itunesMusic", selectedItunesMusic.trackId],
+        selectedItunesMusic
+      );
   };
-  const handleSearchSuccess = (res: AxiosResponse<IMusic[]>, term: string) => {
-    queryClient.setQueryData(["musics", term], res.data);
-  };
-  const handleItunesSearchSuccess = (
-    res: AxiosResponse<IItunesResponse<IItunesMusic>>,
-    term: string
-  ) => {
-    queryClient.setQueryData(["itunesMusics", term], res.data.results);
-  };
+
   const onError = (err: unknown) => {
     enqueueSnackbar(String(err), { variant: "error" });
   };
@@ -80,8 +77,8 @@ const New: React.FC = () => {
   );
   const searchMutation = useMutation(
     (term: string) =>
-      axios.get<IMusic[]>(route, { params: { q: { title_eq: term } } }),
-    { onSuccess: handleSearchSuccess, onError }
+      axios.get<IMusic[]>(routes.MUSICS, { params: { q: { title_eq: term } } }),
+    { onError }
   );
   const searchItunesMutation = useMutation(
     (term: string) =>
@@ -91,12 +88,14 @@ const New: React.FC = () => {
           term,
         },
       }),
-    { onSuccess: handleItunesSearchSuccess, onError }
+    { onError }
   );
   // handlers
   const onSubmit = (data: IMusic) => createMusicMutation.mutate(data);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value) searchMutation.mutate(e.target.value);
+  const handleChange = ({
+    target: { value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    if (value) searchMutation.mutate(value);
   };
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     const { value } = e.target as HTMLInputElement;
