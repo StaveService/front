@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import React from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
@@ -19,7 +20,6 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
-import { useMutation, useQueryClient } from "react-query";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
 import AutocompleteTextField from "../../../../components/AutocompleteTextField";
 import ControlTextField from "../../../../components/ControlTextField";
@@ -146,7 +146,7 @@ const Album: React.FC = () => {
               loading={createMutation.isLoading}
               onClick={handleSubmit(onSubmit)}
             >
-              Add Artist
+              Add Album
             </LoadingButton>
           </Box>
         </Container>

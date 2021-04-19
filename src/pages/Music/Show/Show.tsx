@@ -34,12 +34,12 @@ const Show: React.FC = () => {
   const match = useRouteMatch<{ id: string; userId: string }>();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  const handleError = (err: unknown) =>
+  const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
   const music = useQuery<IMusic>(
     ["musics", match.params.id],
     () => axios.get<IMusic>(location.pathname).then((res) => res.data),
-    { onError: handleError }
+    { onError }
   );
   const itunesMusic = useQuery<IItunesMusic>(
     ["itunesMusics", music.data?.itunes_track_id],
@@ -48,7 +48,8 @@ const Show: React.FC = () => {
         .get<IItunesResponse<IItunesMusic>>("/lookup", {
           params: { id: music.data?.itunes_track_id, entity: "song" },
         })
-        .then((res) => res.data.results[0])
+        .then((res) => res.data.results[0]),
+    { enabled: !!music.data?.itunes_track_id, onError }
   );
   return (
     <>

@@ -1,10 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import React from "react";
-import {
-  Link as RouterLink,
-  useRouteMatch,
-  useLocation,
-} from "react-router-dom";
+import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,19 +33,20 @@ import { useOpen } from "../../../../../../common/useOpen";
 
 const Album: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
+  // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IAlbum>();
-  const location = useLocation();
+  // react-router-dom
   const match = useRouteMatch<{ id: string }>();
-  const route = location.pathname + routes.ALBUM_MUSICS;
+  const route = match.url + routes.ALBUM_MUSICS;
+  // react-redux
+  const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
+  // notistack
+  const { enqueueSnackbar } = useSnackbar();
+  // react-query
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
-  const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
-  const handleRemoveOption = () => setValue("album_id", "");
-  const handleSelectOption = (option: IAlbum) =>
-    setValue("album_id", option.id);
   const handleCreateSuccess = (res: AxiosResponse<IAlbumMusic>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
@@ -90,6 +87,10 @@ const Album: React.FC = () => {
       axios.delete<IAlbumMusic>(`${route}/${album.id}`, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
+  // handlers
+  const handleRemoveOption = () => setValue("album_id", "");
+  const handleSelectOption = (option: IAlbum) =>
+    setValue("album_id", option.id);
   const onSubmit = (data: IAlbum) => createAlbumMutation.mutate(data);
 
   return (

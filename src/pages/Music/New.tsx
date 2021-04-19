@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from "axios";
 import React, { KeyboardEvent, ChangeEvent, useEffect, useState } from "react";
-import { useToggle } from "react-use";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import {
@@ -33,69 +32,77 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../slices/currentUser";
-import { search } from "../../common/search";
+import { useOpen } from "../../common/useOpen";
 
 const New: React.FC = () => {
-  const [open, setOpen] = useState(false);
-  const [itunesMusics, setItunesMusics] = useState<IItunesMusic[]>([]);
+  const { open, handleOpen, handleClose } = useOpen();
   const [
     selectedItunesMusic,
     setSelectedItunesMusic,
   ] = useState<IItunesMusic>();
-  const [musics, setMusics] = useState<IMusic[]>([]);
+  // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IMusic>();
-  const [searching, toggleSearching] = useToggle(false);
-  const [itunesSearching, toggleItunesSearching] = useToggle(false);
+  // react-redux
+  const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
+  // react-router-dom
   const history = useHistory();
   const match = useRouteMatch<{ id: string }>();
-  const queryClient = useQueryClient();
   const route = `${routes.USERS}/${currentUser?.id || "undefinde"}${
     routes.MUSICS
   }`;
+  // notistack
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
-  const onSuccess = (res: AxiosResponse<IMusic>) => {
+  // react-query
+  const queryClient = useQueryClient();
+  const handleCreateSuccess = (res: AxiosResponse<IMusic>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
-    queryClient.setQueryData<IMusic | undefined>(
-      ["musics", match.params.id],
-      res.data
-    );
+    queryClient.setQueryData(["musics", match.params.id], res.data);
+  };
+  const handleSearchSuccess = (res: AxiosResponse<IMusic[]>, term: string) => {
+    queryClient.setQueryData(["musics", term], res.data);
+  };
+  const handleItunesSearchSuccess = (
+    res: AxiosResponse<IItunesResponse<IItunesMusic>>,
+    term: string
+  ) => {
+    queryClient.setQueryData(["itunesMusics", term], res.data.results);
   };
   const onError = (err: unknown) => {
     enqueueSnackbar(String(err), { variant: "error" });
   };
   const createMusicMutation = useMutation(
     (newMusic: IMusic) => axios.post<IMusic>(route, newMusic, headers),
-    { onSuccess, onError }
+    { onSuccess: handleCreateSuccess, onError }
   );
+  const searchMutation = useMutation(
+    (term: string) =>
+      axios.get<IMusic[]>(route, { params: { q: { title_eq: term } } }),
+    { onSuccess: handleSearchSuccess, onError }
+  );
+  const searchItunesMutation = useMutation(
+    (term: string) =>
+      itunes.get<IItunesResponse<IItunesMusic>>("/search", {
+        params: {
+          entity: "song",
+          term,
+        },
+      }),
+    { onSuccess: handleItunesSearchSuccess, onError }
+  );
+  // handlers
   const onSubmit = (data: IMusic) => createMusicMutation.mutate(data);
-  const searchMusics = (value: string) =>
-    search<IMusic>(
-      routes.MUSICS,
-      { title_eq: value },
-      setMusics,
-      toggleSearching
-    );
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
-    searchMusics(e.target.value);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value) searchMutation.mutate(e.target.value);
+  };
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setOpen(true);
-      toggleItunesSearching();
-      itunes
-        .get<IItunesResponse<IItunesMusic>>("/search", {
-          params: {
-            entity: "song",
-            term: (e.target as HTMLInputElement).value,
-          },
-        })
-        .then((res) => setItunesMusics(res.data.results))
-        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-        .finally(toggleItunesSearching);
+    const { value } = e.target as HTMLInputElement;
+    if (e.key === "Enter" && value) {
+      handleOpen();
+      searchItunesMutation.mutate(value);
     }
   };
   useEffect(() => {
@@ -103,17 +110,16 @@ const New: React.FC = () => {
       const { trackCensoredName, trackId } = selectedItunesMusic;
       setValue("title", trackCensoredName);
       setValue("itunes_track_id", trackId);
-      searchMusics(trackCensoredName);
+      searchMutation.mutate(trackCensoredName);
     }
   }, [selectedItunesMusic]);
   const ItunesMusicsDialog = () => {
-    const handleClose = () => setOpen(false);
     return (
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Choose Music</DialogTitle>
-        {itunesSearching && <LinearProgress />}
+        {searchItunesMutation.isLoading && <LinearProgress />}
         <Box p={2}>
-          {itunesMusics.map((itunesMusic) => {
+          {searchItunesMutation.data?.data.results.map((itunesMusic) => {
             const handleClick = () => {
               handleClose();
               setSelectedItunesMusic(itunesMusic);
@@ -130,18 +136,16 @@ const New: React.FC = () => {
     );
   };
   const SearchedMusicCards: React.FC = () => {
-    if (!musics.length) return <></>;
+    if (!searchMutation.data?.data.length) return null;
     return (
       <Box>
         <Typography>Music already exists</Typography>
-        {musics.map((music) => (
+        {searchMutation.data?.data.map((music) => (
           <Link
             underline="none"
             key={music.id}
             component={RouterLink}
-            to={`${routes.USERS}/${music.user?.id || "undefined"}${
-              routes.MUSICS
-            }/${music.id}`}
+            to={`${route}/${music.id}`}
           >
             <MusicCard music={music} />
           </Link>
@@ -185,7 +189,7 @@ const New: React.FC = () => {
                 <LoadingCircularProgress
                   color="inherit"
                   size={20}
-                  loading={searching}
+                  loading={searchMutation.isLoading}
                 />
               ),
             }}

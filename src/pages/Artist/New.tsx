@@ -1,8 +1,7 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { useToggle } from "react-use";
-import { useSelector } from "react-redux";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
 import {
   Link as RouterLink,
   useHistory,
@@ -18,15 +17,16 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
+import { useMutation, useQueryClient } from "react-query";
 import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import ArtistCard from "../../components/Card/Artist";
-import { selectHeaders } from "../../slices/currentUser";
-import { search } from "../../common/search";
+import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { IArtist, IItunesArtist, IItunesResponse } from "../../interfaces";
+import { useOpen } from "../../common/useOpen";
 
 interface IFormValues {
   name: string;
@@ -34,50 +34,71 @@ interface IFormValues {
 }
 
 const New: React.FC = () => {
-  const [open, setOpen] = useState(false);
-  const [loading, toggleLoading] = useToggle(false);
-  const [searching, toggleSearching] = useToggle(false);
-  const [itunesSearching, toggleItunesSearching] = useToggle(false);
-  const [artists, setArtists] = useState<IArtist[]>([]);
-  const [itunesArtists, setItunesArtists] = useState<IItunesArtist[]>([]);
+  const { open, handleOpen, handleClose } = useOpen();
   const [
     selectedItunesArtist,
     setSelectedItunesArtist,
   ] = useState<IItunesArtist>();
+  // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
+  // react-router-dom
   const history = useHistory();
   const match = useRouteMatch();
-  const headers = useSelector(selectHeaders);
   const route = match.url.replace("/new", "");
+  // react-redux
+  const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
+  // notistack
   const { enqueueSnackbar } = useSnackbar();
-  const searchArtists = (value: string) =>
-    search<IArtist>(route, { name_eq: value }, setArtists, toggleSearching);
-  const onSubmit = (data: SubmitHandler<IFormValues>) => {
-    if (!headers) return;
-    toggleLoading();
-    axios
-      .post<IArtist>(route, data, headers)
-      .then((res) => history.push(`${route}/${res.data.id}`))
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-      .finally(toggleLoading);
+  // react-query
+  const queryClient = useQueryClient();
+  const handleCreateSuccess = (res: AxiosResponse<IArtist>) => {
+    dispatch(setHeaders(res.headers));
+    history.push(`${route}/${res.data.id}`);
+    queryClient.setQueryData(["artists", res.data.id], res.data);
   };
+  const handleSearchSuccess = (res: AxiosResponse<IArtist[]>) => {
+    queryClient.setQueryData(["artists", ""], res.data);
+  };
+  const handleSearchItunesSuccess = (
+    res: AxiosResponse<IItunesResponse<IItunesArtist>>,
+    term: string
+  ) => {
+    queryClient.setQueryData(["itunesArtists", term], res.data.results);
+  };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const createMutation = useMutation(
+    (newArtist: IArtist) => axios.post<IArtist>(route, newArtist, headers),
+    { onSuccess: handleCreateSuccess, onError }
+  );
+  const searchMutation = useMutation(
+    (term: string) =>
+      axios.get<IArtist[]>(route, {
+        params: { q: { name_eq: term } },
+      }),
+    { onSuccess: handleSearchSuccess, onError }
+  );
+  const searchItunesMutation = useMutation(
+    (term: string) =>
+      itunes.get<IItunesResponse<IItunesArtist>>("/search", {
+        params: {
+          entity: "musicArtist",
+          term,
+        },
+      }),
+    { onSuccess: handleSearchItunesSuccess, onError }
+  );
+  // handlers
+  const onSubmit = (data: IArtist) => createMutation.mutate(data);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
-    searchArtists(e.target.value);
+    searchMutation.mutate(e.target.value);
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setOpen(true);
-      toggleItunesSearching();
-      itunes
-        .get<IItunesResponse<IItunesArtist>>("/search", {
-          params: {
-            entity: "musicArtist",
-            term: (e.target as HTMLInputElement).value,
-          },
-        })
-        .then((res) => setItunesArtists(res.data.results))
-        .catch((err) => enqueueSnackbar(String(err), { variant: "error" }))
-        .finally(toggleItunesSearching);
+      handleOpen();
+      searchItunesMutation.mutate((e.target as HTMLInputElement).value);
     }
   };
   useEffect(() => {
@@ -85,18 +106,17 @@ const New: React.FC = () => {
       const { artistName, artistId } = selectedItunesArtist;
       setValue("name", artistName);
       setValue("itunes_artist_id", artistId);
-      searchArtists(artistName);
+      searchMutation.mutate(artistName);
     }
   }, [selectedItunesArtist]);
 
   const ItunesMusicsDialog = () => {
-    const handleClose = () => setOpen(false);
     return (
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Choose Artist</DialogTitle>
-        {itunesSearching && <LinearProgress />}
+        {searchItunesMutation.isLoading && <LinearProgress />}
         <Box p={2}>
-          {itunesArtists.map((itunesArtist) => {
+          {searchItunesMutation.data?.data.results.map((itunesArtist) => {
             const handleClick = () => {
               handleClose();
               setSelectedItunesArtist(itunesArtist);
@@ -113,11 +133,11 @@ const New: React.FC = () => {
     );
   };
   const SearchedArtistsCard = () => {
-    if (!artists.length) return <></>;
+    if (!searchMutation.data?.data.length) return <></>;
     return (
       <Box>
         <Typography>Artist already exists</Typography>
-        {artists.map((artist) => (
+        {searchMutation.data?.data.map((artist) => (
           <Link
             underline="none"
             key={artist.id}
@@ -145,7 +165,7 @@ const New: React.FC = () => {
               variant="outlined"
               control={control}
               errors={errors}
-              disabled={loading}
+              disabled={createMutation.isLoading}
               fullWidth
             />
           </Box>
@@ -157,14 +177,14 @@ const New: React.FC = () => {
             variant="outlined"
             control={control}
             errors={errors}
-            disabled={loading}
+            disabled={createMutation.isLoading}
             fullWidth
             InputProps={{
               endAdornment: (
                 <LoadingCircularProgress
                   color="inherit"
                   size={20}
-                  loading={searching}
+                  loading={searchMutation.isLoading}
                 />
               ),
             }}
@@ -174,7 +194,7 @@ const New: React.FC = () => {
           <SearchedArtistsCard />
           <LoadingButton
             type="button"
-            loading={loading}
+            loading={createMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >
             Create Artist

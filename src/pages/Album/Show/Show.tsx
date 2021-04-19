@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useLocation, useRouteMatch } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
@@ -18,9 +18,8 @@ const Show: React.FC = () => {
   const location = useLocation();
   const match = useRouteMatch<{ id: string }>();
   const { enqueueSnackbar } = useSnackbar();
-  const onError = (err: unknown) => {
+  const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
-  };
   const album = useQuery<IAlbum>(
     ["albums", match.params.id],
     () => axios.get<IAlbum>(location.pathname).then((res) => res.data),
@@ -34,7 +33,7 @@ const Show: React.FC = () => {
           params: { id: album.data?.itunes_collection_id, entity: "album" },
         })
         .then((res) => res.data.results[0]),
-    { onError }
+    { enabled: !!album.data?.itunes_collection_id, onError }
   );
   return (
     <Container>
