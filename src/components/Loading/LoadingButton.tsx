@@ -1,45 +1,23 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
+import Button, { ButtonProps } from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-interface ILoadingButton {
-  type?: "submit" | "button";
-  loading: boolean;
-  children: React.ReactNode;
-  color?: "primary" | "secondary";
-  fullWidth?: boolean;
-  onClick?: () => void;
-  onKeyDown?: (e?: React.KeyboardEvent<HTMLButtonElement>) => void;
-}
+type ILoadingButton = ButtonProps & { loading: boolean };
 const LoadingButton: React.FC<ILoadingButton> = ({
-  type,
+  disabled,
   loading,
   children,
-  color,
-  fullWidth,
-  onClick,
-  onKeyDown,
+  ...props
 }: ILoadingButton) => (
   <Button
-    type={type}
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    {...props}
     variant="contained"
-    color={color}
     startIcon={loading && <CircularProgress size={20} />}
-    disabled={loading}
+    disabled={loading || disabled}
     disableElevation
-    fullWidth={fullWidth}
-    onClick={onClick}
-    onKeyDown={onKeyDown}
   >
     {children}
   </Button>
 );
-LoadingButton.defaultProps = {
-  type: "submit",
-  color: "primary",
-  fullWidth: true,
-  onClick: undefined,
-  onKeyDown: undefined,
-};
-
 export default LoadingButton;

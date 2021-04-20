@@ -18,7 +18,10 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import { useMutation, useQueryClient } from "react-query";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 import { itunes } from "../../axios";
+import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
@@ -41,7 +44,15 @@ const New: React.FC = () => {
   ] = useState<IItunesArtist>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
+  const {
+    errors,
+    control,
+    setValue,
+    getValues,
+    watch,
+    handleSubmit,
+  } = useForm<IFormValues>();
+  const { name } = watch();
   // react-router-dom
   const history = useHistory();
   const match = useRouteMatch();
@@ -89,15 +100,9 @@ const New: React.FC = () => {
   }: ChangeEvent<HTMLInputElement>) => {
     if (value) searchMutation.mutate(value);
   };
-  const handleKeyPress = ({
-    target,
-    key,
-  }: React.KeyboardEvent<HTMLInputElement>) => {
-    const { value } = target as HTMLInputElement;
-    if (key === "Enter" && value) {
-      handleOpen();
-      searchItunesMutation.mutate(value);
-    }
+  const handleClick = () => {
+    handleOpen();
+    searchItunesMutation.mutate(getValues("name"));
   };
   useEffect(() => {
     if (selectedItunesArtist) {
@@ -115,14 +120,14 @@ const New: React.FC = () => {
         {searchItunesMutation.isLoading && <LinearProgress />}
         <Box p={2}>
           {searchItunesMutation.data?.data.results.map((itunesArtist) => {
-            const handleClick = () => {
+            const handleSelect = () => {
               handleClose();
               setSelectedItunesArtist(itunesArtist);
             };
             return (
               <Box key={itunesArtist.artistId} mb={2}>
                 <ItunesArtistCard artist={itunesArtist} />
-                <Button onClick={handleClick}>select this Artist</Button>
+                <Button onClick={handleSelect}>select this Artist</Button>
               </Box>
             );
           })}
@@ -133,7 +138,11 @@ const New: React.FC = () => {
   const SearchedArtistsCard = () => {
     if (!searchMutation.data?.data.length) return <></>;
     return (
-      <Box>
+      <>
+        <Alert severity="warning">
+          <AlertTitle>Warning</AlertTitle>
+          Album Already Existed — <strong>check it out!</strong>
+        </Alert>
         <Typography>Artist already exists</Typography>
         {searchMutation.data?.data.map((artist) => (
           <Link
@@ -145,17 +154,30 @@ const New: React.FC = () => {
             <ArtistCard artist={artist} />
           </Link>
         ))}
-      </Box>
+      </>
     );
   };
 
   return (
     <Container>
       <Paper>
-        <Box visibility="hidden">
+        <Box p={3}>
+          <Box visibility="hidden">
+            <ControlTextField
+              type="hidden"
+              name="itunes_artist_id"
+              defaultValue=""
+              autoComplete="on"
+              label="Name"
+              variant="outlined"
+              control={control}
+              errors={errors}
+              disabled={createMutation.isLoading}
+              fullWidth
+            />
+          </Box>
           <ControlTextField
-            type="hidden"
-            name="itunes_artist_id"
+            name="name"
             defaultValue=""
             autoComplete="on"
             label="Name"
@@ -164,41 +186,32 @@ const New: React.FC = () => {
             errors={errors}
             disabled={createMutation.isLoading}
             fullWidth
+            InputProps={{
+              endAdornment: (
+                <LoadingCircularProgress
+                  color="inherit"
+                  size={20}
+                  loading={searchMutation.isLoading}
+                />
+              ),
+            }}
+            onChange={handleChange}
           />
+          <SearchItunesButton onClick={handleClick} disabled={!name} />
+          <ItunesMusicsDialog />
+          <SearchedArtistsCard />
+          <LoadingButton
+            type="button"
+            color="primary"
+            disabled={!name}
+            loading={createMutation.isLoading}
+            onClick={handleSubmit(onSubmit)}
+            fullWidth
+          >
+            Create Artist
+          </LoadingButton>
         </Box>
-        <ControlTextField
-          name="name"
-          defaultValue=""
-          autoComplete="on"
-          label="Name"
-          variant="outlined"
-          control={control}
-          errors={errors}
-          disabled={createMutation.isLoading}
-          fullWidth
-          InputProps={{
-            endAdornment: (
-              <LoadingCircularProgress
-                color="inherit"
-                size={20}
-                loading={searchMutation.isLoading}
-              />
-            ),
-          }}
-          onKeyPress={handleKeyPress}
-          onChange={handleChange}
-        />
-        <SearchedArtistsCard />
-        <LoadingButton
-          type="button"
-          loading={createMutation.isLoading}
-          onClick={handleSubmit(onSubmit)}
-        >
-          Create Artist
-        </LoadingButton>
-        <Box p={3} />
       </Paper>
-      <ItunesMusicsDialog />
     </Container>
   );
 };

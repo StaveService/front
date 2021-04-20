@@ -15,18 +15,20 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Image from "material-ui-image";
 import { useMutation, useQueryClient } from "react-query";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesAlbumCard from "../../components/Card/Itunes/Album";
 import AlbumCard from "../../components/Card/Album";
+import SearchItunesButton from "../../components/Button/Search/Itunes";
+import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import { useOpen } from "../../common/useOpen";
 
 interface IFormValues {
@@ -42,7 +44,15 @@ const New: React.FC = () => {
   ] = useState<IItunesAlbum>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { errors, control, setValue, handleSubmit } = useForm<IFormValues>();
+  const {
+    errors,
+    control,
+    setValue,
+    getValues,
+    watch,
+    handleSubmit,
+  } = useForm<IFormValues>();
+  const { title } = watch();
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
@@ -69,7 +79,7 @@ const New: React.FC = () => {
   const searchMutation = useMutation(
     (term: string) =>
       axios.get<IAlbum[]>(route, {
-        params: { q: { name_eq: term } },
+        params: { q: { title_eq: term } },
       }),
     { onError }
   );
@@ -90,15 +100,9 @@ const New: React.FC = () => {
   }: ChangeEvent<HTMLInputElement>) => {
     if (value) searchMutation.mutate(value);
   };
-  const handleKeyPress = ({
-    target,
-    key,
-  }: React.KeyboardEvent<HTMLInputElement>) => {
-    const { value } = target as HTMLInputElement;
-    if (key === "Enter" && value) {
-      handleOpen();
-      searchItunesMutation.mutate(value);
-    }
+  const handleClick = () => {
+    handleOpen();
+    searchItunesMutation.mutate(getValues("title"));
   };
   useEffect(() => {
     if (selectedItunesAlbum) {
@@ -116,14 +120,14 @@ const New: React.FC = () => {
         {searchItunesMutation.isLoading && <LinearProgress />}
         <Box p={2}>
           {searchItunesMutation.data?.data.results.map((itunesAlbum) => {
-            const handleClick = () => {
+            const handleSelect = () => {
               handleClose();
               setSelectedItunesAlbum(itunesAlbum);
             };
             return (
               <Box key={itunesAlbum.collectionId} mb={2}>
                 <ItunesAlbumCard album={itunesAlbum} />
-                <Button onClick={handleClick}>select this Album</Button>
+                <Button onClick={handleSelect}>select this Album</Button>
               </Box>
             );
           })}
@@ -131,11 +135,14 @@ const New: React.FC = () => {
       </Dialog>
     );
   };
-  const SearchedArtistsCard = () => {
+  const SearchedArtistCards = () => {
     if (!searchMutation.data?.data.length) return null;
     return (
-      <Box>
-        <Typography>Album already exists</Typography>
+      <>
+        <Alert severity="warning">
+          <AlertTitle>Warning</AlertTitle>
+          Album Already Existed — <strong>check it out!</strong>
+        </Alert>
         {searchMutation.data?.data.map((album) => (
           <Link
             underline="none"
@@ -146,7 +153,7 @@ const New: React.FC = () => {
             <AlbumCard album={album} />
           </Link>
         ))}
-      </Box>
+      </>
     );
   };
 
@@ -190,20 +197,23 @@ const New: React.FC = () => {
                 />
               ),
             }}
-            onKeyPress={handleKeyPress}
             onChange={handleChange}
           />
-          <SearchedArtistsCard />
+          <SearchItunesButton onClick={handleClick} disabled={!title} />
+          <ItunesAlbumsDialog />
+          <SearchedArtistCards />
           <LoadingButton
             type="button"
+            color="primary"
             loading={createMutation.isLoading}
+            disabled={!title}
             onClick={handleSubmit(onSubmit)}
+            fullWidth
           >
             Create Album
           </LoadingButton>
         </Box>
       </Paper>
-      <ItunesAlbumsDialog />
     </Container>
   );
 };

@@ -61,7 +61,7 @@ const Footer: React.FC<FooterProps> = ({ src }: FooterProps) => {
       {audio}
       <LinearProgress
         variant="determinate"
-        value={state.time / state.duration}
+        value={(state.time / state.duration) * 100}
       />
       <Toolbar>
         <ToggleButton

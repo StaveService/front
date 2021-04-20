@@ -7,6 +7,7 @@ import {
   useHistory,
   useRouteMatch,
 } from "react-router-dom";
+import { useMutation, useQueryClient } from "react-query";
 import { useSnackbar } from "notistack";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
@@ -15,9 +16,10 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import { useMutation, useQueryClient } from "react-query";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
+import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
@@ -37,7 +39,15 @@ const New: React.FC = () => {
   ] = useState<IItunesArtist>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { errors, control, setValue, handleSubmit } = useForm();
+  const {
+    errors,
+    control,
+    setValue,
+    getValues,
+    watch,
+    handleSubmit,
+  } = useForm();
+  const { name } = watch();
   // react-router-dom
   const history = useHistory();
   const match = useRouteMatch<{ id: string }>();
@@ -69,7 +79,7 @@ const New: React.FC = () => {
   const searchMutation = useMutation(
     (term: string) =>
       axios.get<IBand[]>(route, {
-        params: { name_eq: term },
+        params: { q: { name_eq: term } },
       }),
     { onError }
   );
@@ -90,15 +100,9 @@ const New: React.FC = () => {
   }: ChangeEvent<HTMLInputElement>) => {
     if (value) searchMutation.mutate(value);
   };
-  const handleKeyPress = ({
-    target,
-    key,
-  }: React.KeyboardEvent<HTMLInputElement>) => {
-    const { value } = target as HTMLInputElement;
-    if (key === "Enter" && value) {
-      handleOpen();
-      searchItunesMusicArtistMutation.mutate(value);
-    }
+  const handleClick = () => {
+    handleOpen();
+    searchItunesMusicArtistMutation.mutate(getValues("name"));
   };
   useEffect(() => {
     if (selectedItunesArtist) {
@@ -117,14 +121,14 @@ const New: React.FC = () => {
         <Box p={2}>
           {searchItunesMusicArtistMutation.data?.data.results.map(
             (itunesArtist) => {
-              const handleClick = () => {
+              const handleSelect = () => {
                 handleClose();
                 setSelectedItunesArtist(itunesArtist);
               };
               return (
                 <Box key={itunesArtist.artistId} mb={2}>
                   <ItunesArtistCard artist={itunesArtist} />
-                  <Button onClick={handleClick}>select this Artist</Button>
+                  <Button onClick={handleSelect}>select this Artist</Button>
                 </Box>
               );
             }
@@ -133,11 +137,14 @@ const New: React.FC = () => {
       </Dialog>
     );
   };
-  const SearchedArtistsCard = () => {
+  const SearchedBandCards = () => {
     if (!searchMutation.data?.data.length) return null;
     return (
-      <Box>
-        <Typography>Band already exists</Typography>
+      <>
+        <Alert severity="warning">
+          <AlertTitle>Warning</AlertTitle>
+          Band Already Existed — <strong>check it out!</strong>
+        </Alert>
         {searchMutation.data?.data.map((band) => (
           <Link
             underline="none"
@@ -148,17 +155,30 @@ const New: React.FC = () => {
             <BandCard band={band} />
           </Link>
         ))}
-      </Box>
+      </>
     );
   };
 
   return (
     <Container>
       <Paper>
-        <Box visibility="hidden">
+        <Box p={3}>
+          <Box visibility="hidden">
+            <ControlTextField
+              type="hidden"
+              name="itunes_artist_id"
+              defaultValue=""
+              autoComplete="on"
+              label="Name"
+              variant="outlined"
+              control={control}
+              errors={errors}
+              disabled={createMutation.isLoading}
+              fullWidth
+            />
+          </Box>
           <ControlTextField
-            type="hidden"
-            name="itunes_artist_id"
+            name="name"
             defaultValue=""
             autoComplete="on"
             label="Name"
@@ -167,41 +187,32 @@ const New: React.FC = () => {
             errors={errors}
             disabled={createMutation.isLoading}
             fullWidth
+            InputProps={{
+              endAdornment: (
+                <LoadingCircularProgress
+                  color="inherit"
+                  size={20}
+                  loading={createMutation.isLoading}
+                />
+              ),
+            }}
+            onChange={handleChange}
           />
+          <SearchItunesButton onClick={handleClick} disabled={!name} />
+          <ItunesMusicsDialog />
+          <SearchedBandCards />
+          <LoadingButton
+            type="button"
+            color="primary"
+            loading={createMutation.isLoading}
+            disabled={!name}
+            onClick={handleSubmit(onSubmit)}
+            fullWidth
+          >
+            Create Band
+          </LoadingButton>
         </Box>
-        <ControlTextField
-          name="name"
-          defaultValue=""
-          autoComplete="on"
-          label="Name"
-          variant="outlined"
-          control={control}
-          errors={errors}
-          disabled={createMutation.isLoading}
-          fullWidth
-          InputProps={{
-            endAdornment: (
-              <LoadingCircularProgress
-                color="inherit"
-                size={20}
-                loading={createMutation.isLoading}
-              />
-            ),
-          }}
-          onKeyPress={handleKeyPress}
-          onChange={handleChange}
-        />
-        <SearchedArtistsCard />
-        <LoadingButton
-          type="button"
-          loading={createMutation.isLoading}
-          onClick={handleSubmit(onSubmit)}
-        >
-          Create Band
-        </LoadingButton>
-        <Box p={3} />
       </Paper>
-      <ItunesMusicsDialog />
     </Container>
   );
 };

@@ -6,6 +6,7 @@ import {
   Link as RouterLink,
   Route,
   Switch,
+  useLocation,
   useRouteMatch,
 } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -31,6 +32,7 @@ import { itunes } from "../../../axios";
 const Show: React.FC = () => {
   const currentUser = useSelector(selectCurrentUser);
   const match = useRouteMatch<{ id: string; userId: string }>();
+  const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
@@ -62,7 +64,9 @@ const Show: React.FC = () => {
         </Grid>
         <Tabs
           value={
-            match.url.includes("issues") ? match.url + routes.ISSUES : match.url
+            location.pathname.includes("issues")
+              ? match.url + routes.ISSUES
+              : location.pathname
           }
         >
           <Tab

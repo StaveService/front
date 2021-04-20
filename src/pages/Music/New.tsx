@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React, { KeyboardEvent, ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import {
@@ -15,12 +15,13 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import Button from "@material-ui/core/Button";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 import { useMutation, useQueryClient } from "react-query";
 import ControlTextField from "../../components/ControlTextField";
 import ItunesMusicCard from "../../components/Card/Itunes/Music";
+import SearchItunesButton from "../../components/Button/Search/Itunes";
 import MusicCard from "../../components/Card/Music";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
@@ -42,7 +43,15 @@ const New: React.FC = () => {
   ] = useState<IItunesMusic>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { errors, control, setValue, handleSubmit } = useForm<IMusic>();
+  const {
+    errors,
+    control,
+    watch,
+    setValue,
+    getValues,
+    handleSubmit,
+  } = useForm<IMusic>();
+  const { title } = watch();
   // react-redux
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
@@ -96,12 +105,9 @@ const New: React.FC = () => {
   }: ChangeEvent<HTMLInputElement>) => {
     if (value) searchMutation.mutate(value);
   };
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    const { value } = e.target as HTMLInputElement;
-    if (e.key === "Enter" && value) {
-      handleOpen();
-      searchItunesMutation.mutate(value);
-    }
+  const handleClick = () => {
+    handleOpen();
+    searchItunesMutation.mutate(getValues("title"));
   };
   useEffect(() => {
     if (selectedItunesMusic) {
@@ -118,14 +124,13 @@ const New: React.FC = () => {
         {searchItunesMutation.isLoading && <LinearProgress />}
         <Box p={2}>
           {searchItunesMutation.data?.data.results.map((itunesMusic) => {
-            const handleClick = () => {
+            const handleSelect = () => {
               handleClose();
               setSelectedItunesMusic(itunesMusic);
             };
             return (
-              <Box key={itunesMusic.trackId} mb={2}>
+              <Box key={itunesMusic.trackId} mb={2} onClick={handleSelect}>
                 <ItunesMusicCard music={itunesMusic} />
-                <Button onClick={handleClick}>select this Music</Button>
               </Box>
             );
           })}
@@ -136,19 +141,23 @@ const New: React.FC = () => {
   const SearchedMusicCards: React.FC = () => {
     if (!searchMutation.data?.data.length) return null;
     return (
-      <Box>
-        <Typography>Music already exists</Typography>
+      <>
+        <Alert severity="warning">
+          <AlertTitle>Warning</AlertTitle>
+          Music Already Existed — <strong>check it out!</strong>
+        </Alert>
         {searchMutation.data?.data.map((music) => (
-          <Link
-            underline="none"
-            key={music.id}
-            component={RouterLink}
-            to={`${route}/${music.id}`}
-          >
-            <MusicCard music={music} />
-          </Link>
+          <Box mb={3} key={music.id}>
+            <Link
+              underline="none"
+              component={RouterLink}
+              to={`${route}/${music.id}`}
+            >
+              <MusicCard music={music} />
+            </Link>
+          </Box>
         ))}
-      </Box>
+      </>
     );
   };
   return (
@@ -191,19 +200,22 @@ const New: React.FC = () => {
                 />
               ),
             }}
-            onKeyPress={handleKeyPress}
             onChange={handleChange}
           />
+          <SearchItunesButton onClick={handleClick} disabled={!title} />
+          <ItunesMusicsDialog />
           <SearchedMusicCards />
           <LoadingButton
             type="button"
+            color="primary"
             loading={createMusicMutation.isLoading}
+            disabled={!title}
             onClick={handleSubmit(onSubmit)}
+            fullWidth
           >
             Create Music
           </LoadingButton>
         </Box>
-        <ItunesMusicsDialog />
       </Paper>
     </Container>
   );
