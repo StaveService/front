@@ -11,18 +11,18 @@ import Artist from "../pages/Artist/Show";
 import NewArtist from "../pages/Artist/New";
 
 import Musics from "../pages/Music/Index";
-import Music from "../pages/Music/Show/Show";
+import Music from "../pages/Music/Show";
 import NewMusic from "../pages/Music/New";
 
 import Bands from "../pages/Band/Index";
-import Band from "../pages/Band/Show/Show";
+import Band from "../pages/Band/Show";
 import NewBand from "../pages/Band/New";
 
 import Users from "../pages/User/Index";
 import User from "../pages/User/Show";
 
 import Albums from "../pages/Album/Index";
-import Album from "../pages/Album/Show/Show";
+import Album from "../pages/Album/Show";
 import NewAlbum from "../pages/Album/New";
 
 const Routes: React.FC = () => (

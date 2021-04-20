@@ -6,7 +6,6 @@ import {
   Link as RouterLink,
   Route,
   Switch,
-  useLocation,
   useRouteMatch,
 } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -18,7 +17,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Image from "material-ui-image";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import Grid from "@material-ui/core/Grid";
-import InfoTabPanel from "./TabPanel/Info/Info";
+import InfoTabPanel from "./TabPanel/Info";
 import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issue/Index";
 import IssueNew from "./TabPanel/Issue/New";
@@ -32,13 +31,12 @@ import { itunes } from "../../../axios";
 const Show: React.FC = () => {
   const currentUser = useSelector(selectCurrentUser);
   const match = useRouteMatch<{ id: string; userId: string }>();
-  const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
   const music = useQuery<IMusic>(
     ["musics", match.params.id],
-    () => axios.get<IMusic>(location.pathname).then((res) => res.data),
+    () => axios.get<IMusic>(match.url).then((res) => res.data),
     { onError }
   );
   const itunesMusic = useQuery<IItunesMusic>(
@@ -64,9 +62,7 @@ const Show: React.FC = () => {
         </Grid>
         <Tabs
           value={
-            location.pathname.includes("issues")
-              ? match.url + routes.ISSUES
-              : location.pathname
+            match.url.includes("issues") ? match.url + routes.ISSUES : match.url
           }
         >
           <Tab

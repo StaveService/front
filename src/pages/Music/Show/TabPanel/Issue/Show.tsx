@@ -10,9 +10,8 @@ import LoadingCircularProgress from "../../../../../components/Loading/LoadingCi
 const Show: React.FC = () => {
   const match = useRouteMatch<{ id: string }>();
   const { enqueueSnackbar } = useSnackbar();
-  const onError = (err: unknown) => {
+  const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
-  };
   const { data, isLoading } = useQuery<IIssue>(
     ["issues", match.params.id],
     () => axios.get<IIssue>(match.url).then((res) => res.data),
