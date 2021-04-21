@@ -206,7 +206,6 @@ const New: React.FC = () => {
           <ItunesMusicsDialog />
           <SearchedMusicCards />
           <LoadingButton
-            type="button"
             color="primary"
             loading={createMusicMutation.isLoading}
             disabled={!title}

@@ -1,8 +1,8 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import React from "react";
-import { useToggle } from "react-use";
+import { useMutation } from "react-query";
 import { useDispatch } from "react-redux";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
@@ -22,56 +22,53 @@ import { signUpSchema } from "../../schema";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
 
 const SignUp: React.FC = () => {
-  const [loading, toggleLoading] = useToggle(false);
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
   const dispatch = useDispatch();
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(signUpSchema),
   });
-  const onSubmit = (data: SubmitHandler<ISignUpFormValues>) => {
-    toggleLoading();
-    axios
-      .post<ISignSuccessResponse>("/auth", data)
-      .then((res) => {
-        dispatch(setCurrentUser(res.data.data));
-        dispatch(setHeaders(res.headers));
-        enqueueSnackbar("SignUp successful", {
-          variant: "success",
+  const onSuccess = (res: AxiosResponse<ISignSuccessResponse>) => {
+    dispatch(setCurrentUser(res.data.data));
+    dispatch(setHeaders(res.headers));
+    enqueueSnackbar("SignUp successful", {
+      variant: "success",
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "center",
+      },
+    });
+    history.push("/");
+  };
+  const onError = (
+    err: AxiosError<ISignErrorResponse<{ ["full_messages"]: string[] }>>
+  ) => {
+    if (err.response) {
+      err.response.data.errors.full_messages.forEach((message) =>
+        enqueueSnackbar(message, {
+          variant: "error",
           anchorOrigin: {
             vertical: "bottom",
             horizontal: "center",
           },
-        });
-        history.push("/");
-      })
-      .catch(
-        (
-          err: AxiosError<ISignErrorResponse<{ ["full_messages"]: string[] }>>
-        ) => {
-          if (err.response) {
-            err.response.data.errors.full_messages.forEach((message) =>
-              enqueueSnackbar(message, {
-                variant: "error",
-                anchorOrigin: {
-                  vertical: "bottom",
-                  horizontal: "center",
-                },
-              })
-            );
-          } else {
-            enqueueSnackbar(String(err), {
-              variant: "error",
-              anchorOrigin: {
-                vertical: "bottom",
-                horizontal: "center",
-              },
-            });
-          }
-        }
-      )
-      .finally(toggleLoading);
+        })
+      );
+    } else {
+      enqueueSnackbar(String(err), {
+        variant: "error",
+        anchorOrigin: {
+          vertical: "bottom",
+          horizontal: "center",
+        },
+      });
+    }
   };
+  const { isLoading, mutate } = useMutation(
+    (newUser: ISignUpFormValues) =>
+      axios.post<ISignSuccessResponse>("/auth", newUser),
+    { onSuccess, onError }
+  );
+  const onSubmit = (data: ISignUpFormValues) => mutate(data);
   return (
     <Container maxWidth="xs">
       <Paper variant="outlined">
@@ -88,7 +85,7 @@ const SignUp: React.FC = () => {
               margin="normal"
               control={control}
               errors={errors}
-              disabled={loading}
+              disabled={isLoading}
               fullWidth
             />
             <Grid container spacing={2}>
@@ -100,7 +97,7 @@ const SignUp: React.FC = () => {
                   variant="outlined"
                   control={control}
                   errors={errors}
-                  disabled={loading}
+                  disabled={isLoading}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -111,7 +108,7 @@ const SignUp: React.FC = () => {
                   variant="outlined"
                   control={control}
                   errors={errors}
-                  disabled={loading}
+                  disabled={isLoading}
                 />
               </Grid>
             </Grid>
@@ -124,7 +121,7 @@ const SignUp: React.FC = () => {
               margin="normal"
               control={control}
               errors={errors}
-              disabled={loading}
+              disabled={isLoading}
               fullWidth
             />
             <ControlTextField
@@ -136,7 +133,7 @@ const SignUp: React.FC = () => {
               margin="normal"
               control={control}
               errors={errors}
-              disabled={loading}
+              disabled={isLoading}
               fullWidth
             />
             <ControlTextField
@@ -148,10 +145,10 @@ const SignUp: React.FC = () => {
               margin="normal"
               control={control}
               errors={errors}
-              disabled={loading}
+              disabled={isLoading}
               fullWidth
             />
-            <LoadingButton loading={loading}>SignUp</LoadingButton>
+            <LoadingButton loading={isLoading}>SignUp</LoadingButton>
           </form>
         </Box>
       </Paper>

@@ -155,7 +155,7 @@ const Role: React.FC = () => {
                   <MenuItem value={2}>Base</MenuItem>
                   <MenuItem value={3}>Drum</MenuItem>
                   <MenuItem value={4}>Vocal&Guitar</MenuItem>
-                  <MenuItem value={4}>Vocal&Base</MenuItem>
+                  <MenuItem value={5}>Vocal&Base</MenuItem>
                 </ControlSelect>
               </Grid>
               <Grid item xs={9}>
@@ -176,8 +176,10 @@ const Role: React.FC = () => {
           </Box>
           <Box mb={3}>
             <LoadingButton
+              color="primary"
               loading={createRoleMutation.isLoading}
               onClick={handleSubmit(onSubmit)}
+              fullWidth
             >
               Add Artist
             </LoadingButton>

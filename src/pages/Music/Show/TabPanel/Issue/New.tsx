@@ -62,7 +62,9 @@ const New: React.FC = () => {
         fullWidth
         multiline
       />
-      <LoadingButton loading={isLoading}>create issue</LoadingButton>
+      <LoadingButton type="submit" loading={isLoading}>
+        create issue
+      </LoadingButton>
     </form>
   );
 };

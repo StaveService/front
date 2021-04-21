@@ -143,8 +143,10 @@ const Album: React.FC = () => {
           </Box>
           <Box mb={3}>
             <LoadingButton
+              color="primary"
               loading={createMutation.isLoading}
               onClick={handleSubmit(onSubmit)}
+              fullWidth
             >
               Add Album
             </LoadingButton>

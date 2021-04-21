@@ -203,7 +203,6 @@ const New: React.FC = () => {
           <ItunesAlbumsDialog />
           <SearchedArtistCards />
           <LoadingButton
-            type="button"
             color="primary"
             loading={createMutation.isLoading}
             disabled={!title}
