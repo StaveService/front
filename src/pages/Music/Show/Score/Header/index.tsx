@@ -8,7 +8,7 @@ import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import { AlphaTabApi } from "@coderline/alphatab";
 import SongInfo from "../../../../../ui/SongInfo";
 import Volume from "../../../../../ui/Volume";
-import Paused from "../../../../../ui/Paused";
+import Pause from "../../../../../ui/Pause";
 import Stop from "../../../../../ui/Stop";
 import CountIn from "../../../../../ui/CountIn";
 import Loop from "../../../../../ui/Loop";
@@ -92,7 +92,7 @@ const Header: React.FC<HeaderProps> = ({ alphaTabApi }: HeaderProps) => {
             <Box display="flex" justifyContent="center">
               <ToggleButtonGroup>
                 <Stop onStop={handleStop} />
-                <Paused
+                <Pause
                   paused={paused}
                   disabled={playerReady}
                   onPause={handlePause}
