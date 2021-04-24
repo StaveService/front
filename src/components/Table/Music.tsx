@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Table from "@material-ui/core/Table";
@@ -11,6 +11,7 @@ import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import { useQuery } from "react-query";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { itunes } from "../../axios";
@@ -19,7 +20,6 @@ interface MusicProps {
   musics: IMusic[];
   loading?: boolean;
 }
-
 interface IMergedMusic extends IMusic {
   itunesArtworkUrl: string;
 }
@@ -42,34 +42,38 @@ const Music: React.FC<MusicProps> = ({ musics, loading }: MusicProps) => {
     { route: routes.USERS, name: "Users" },
   ];
   const { enqueueSnackbar } = useSnackbar();
-  useEffect(() => {
-    if (!musics.length) return;
-    itunes
-      .get<IItunesResponse<IItunesMusic>>("/lookup", {
-        params: {
-          id: musics.map((music) => music.itunes_track_id).join(","),
-          entity: "song",
-        },
+  // react-query
+  const onSuccess = (results: IItunesMusic[]) => {
+    let i = 0;
+    setMergedMusics(
+      musics.map((music) => {
+        if (music.itunes_track_id === results[i]?.trackId) {
+          const mergedMusic = {
+            ...music,
+            itunesArtworkUrl: results[i].artworkUrl60,
+          };
+          i += 1;
+          return mergedMusic;
+        }
+        return { ...music, itunesArtworkUrl: "undefiend" };
       })
-      .then((res) => {
-        let i = 0;
-        const { results } = res.data;
-        setMergedMusics(
-          musics.map((music) => {
-            if (music.itunes_track_id === results[i]?.trackId) {
-              const mergedMusic = {
-                ...music,
-                itunesArtworkUrl: results[i].artworkUrl60,
-              };
-              i += 1;
-              return mergedMusic;
-            }
-            return { ...music, itunesArtworkUrl: "undefiend" };
-          })
-        );
-      })
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
-  }, [musics]);
+    );
+  };
+  const onError = (err: unknown) =>
+    enqueueSnackbar(String(err), { variant: "error" });
+  useQuery(
+    ["itunesMusics", musics.map((music) => music.itunes_track_id).join(",")],
+    () =>
+      itunes
+        .get<IItunesResponse<IItunesMusic>>("/lookup", {
+          params: {
+            id: musics.map((music) => music.itunes_track_id).join(","),
+            entity: "song",
+          },
+        })
+        .then((res) => res.data.results),
+    { onSuccess, onError }
+  );
   return (
     <TableContainer component={Paper}>
       <Table>

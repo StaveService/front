@@ -1,3 +1,5 @@
+import { AlphaTabApi, synth } from "@coderline/alphatab";
+
 export type MenuCardType = "Artist" | "Album" | "Music" | "Band";
 export interface ITokenHeaders {
   ["content-type"]: string;
@@ -158,4 +160,8 @@ export interface IItunesAlbum extends IItunesArtwork {
 export interface IItunesResponse<T> {
   resultCount: number;
   results: T[];
+}
+export interface IAlphaTab {
+  AlphaTabApi: typeof AlphaTabApi;
+  synth: typeof synth;
 }

@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import useScript from "react-script-hook";
 import { useSnackbar } from "notistack";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { AlphaTabApi, synth } from "@coderline/alphatab";
+import { AlphaTabApi } from "@coderline/alphatab";
 import Header from "./Header";
+import { IAlphaTab } from "../../../../interfaces";
 
 const settings = {
   file: "https://www.alphatab.net/files/canon.gp",
@@ -27,10 +28,11 @@ const Tab: React.FC = () => {
   }, [error]);
   // init alphaTab
   useEffect(() => {
-    if (!loading && ref.current) {
-      const { alphaTab } = window;
-      setAlphaTabApi(new alphaTab.AlphaTabApi(ref.current, settings));
-    }
+    if (!loading && ref.current)
+      setAlphaTabApi(new window.alphaTab.AlphaTabApi(ref.current, settings));
+    return () => {
+      alphaTabApi?.destroy();
+    };
   }, [loading]);
   if (loading) return <CircularProgress />;
   return (
@@ -48,10 +50,7 @@ const Tab: React.FC = () => {
 };
 declare global {
   interface Window {
-    alphaTab: {
-      AlphaTabApi: typeof AlphaTabApi;
-      synth: typeof synth;
-    };
+    alphaTab: IAlphaTab;
   }
 }
 

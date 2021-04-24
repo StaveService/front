@@ -6,13 +6,13 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import { AlphaTabApi } from "@coderline/alphatab";
-import SongInfo from "../../../../../ui/SongInfo";
-import Volume from "../../../../../ui/Volume";
-import Pause from "../../../../../ui/Pause";
-import Stop from "../../../../../ui/Stop";
-import CountIn from "../../../../../ui/CountIn";
-import Loop from "../../../../../ui/Loop";
-import Metronome from "../../../../../ui/Metronome";
+import SongInfo from "../../../../ui/SongInfo";
+import Volume from "../../../../ui/Volume";
+import Pause from "../../../../ui/Pause";
+import Stop from "../../../../ui/Stop";
+import CountIn from "../../../../ui/CountIn";
+import Loop from "../../../../ui/Loop";
+import Metronome from "../../../../ui/Metronome";
 
 interface HeaderProps {
   alphaTabApi?: AlphaTabApi;
@@ -22,8 +22,8 @@ const Header: React.FC<HeaderProps> = ({ alphaTabApi }: HeaderProps) => {
   const [artist, setArtist] = useState("");
   const [masterVolume, setMasterVolume] = useState(100);
   const [paused, setPaused] = useState(true);
-  const [muted, toggleMuted] = useToggle(false);
   const [playerReady, setPlayerReady] = useState(true);
+  const [muted, toggleMuted] = useToggle(false);
   const [countIn, toggleCountIn] = useToggle(false);
   const [loop, toggleLoop] = useToggle(false);
   const [metronome, toggleMetronome] = useToggle(false);
