@@ -148,7 +148,9 @@ const SignUp: React.FC = () => {
               disabled={isLoading}
               fullWidth
             />
-            <LoadingButton loading={isLoading}>SignUp</LoadingButton>
+            <LoadingButton type="submit" loading={isLoading}>
+              SignUp
+            </LoadingButton>
           </form>
         </Box>
       </Paper>

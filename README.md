@@ -14,11 +14,16 @@
 - [@material-ui](https://material-ui.com/getting-started/installation/)
 - [material-ui-image](https://github.com/TeamWertarbyte/material-ui-image)
 - [notistack](https://github.com/iamhosseindhv/notistack)
-- [react-use](https://github.com/streamich/react-use)
-- ~~[use-http](https://github.com/ava/use-http)~~ can't use multiple url
 - [react-query](https://react-query.tanstack.com/installation)
 - [react-router-dom](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-dom)
 - [redux-toolkit](https://redux-toolkit.js.org/)
 - [redux-persist](https://github.com/rt2zz/redux-persist)
 - [redux-logger](https://github.com/LogRocket/redux-logger)
 - [date-fns](https://github.com/date-fns/date-fns)
+- [@coderline/alphatab](https://github.com/coderline/alphaTab)
+
+custom-hooks
+
+- [react-use](https://github.com/streamich/react-use)
+- [react-script-hook](https://github.com/hupe1980/react-script-hook)
+- ~~[use-http](https://github.com/ava/use-http)~~ can't use multiple url

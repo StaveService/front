@@ -6,7 +6,10 @@ import React, { ChangeEvent, FC, useEffect, useState } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
-import { search } from "../common/search";
+import { useMutation } from "react-query";
+import axios from "axios";
+import { useSnackbar } from "notistack";
+import { useOpen } from "../common/useOpen";
 
 type ControlAutocompleteTextFieldProps = {
   searchRoute: string;
@@ -35,12 +38,26 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
   autocompleteProps,
 }: ControlAutocompleteTextFieldProps) => {
   const [loading, setLoading] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [open, setOpen] = useState(false);
   const [options, setOptions] = useState<any[]>([]);
   const [tags, setTags] = useState<any[]>([]);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const { enqueueSnackbar } = useSnackbar();
+  // useOpen
+  const { open, handleOpen, handleClose } = useOpen();
+  // react-query
+  const onSuccess = (res: any) => {
+    setOptions(res.data);
+  };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), { variant: "error" });
+  };
+  const mutation = useMutation(
+    (value: string) =>
+      axios.get(searchRoute, {
+        params: { q: { [`${property}_${query}`]: value } },
+      }),
+    { onSuccess, onError }
+  );
+  // handlers
   const handleChange = (
     _e: ChangeEvent<Record<string, unknown>>,
     value: any,
@@ -65,19 +82,10 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
   const handleInputChange = (
     _e: ChangeEvent<Record<string, unknown>>,
     value: string
-  ) =>
-    search<any>(
-      searchRoute,
-      { [`${property}_${query}`]: value },
-      setOptions,
-      setSearchLoading
-    );
+  ) => mutation.mutate(value);
   useEffect(() => {
     setTags(defaultValue);
   }, [defaultValue]);
-  useEffect(() => {
-    if (!open) setOptions([]);
-  }, [open]);
 
   return (
     <Autocomplete
@@ -95,7 +103,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
       getOptionLabel={(option) => option[property]}
       getOptionDisabled={() => (maxLength ? tags.length >= maxLength : false)}
       options={options}
-      loading={searchLoading}
+      loading={mutation.isLoading}
       noOptionsText="No Results"
       onChange={handleChange}
       onOpen={handleOpen}
@@ -112,7 +120,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
             ...textFieldProps.InputProps,
             endAdornment: (
               <>
-                {searchLoading ? (
+                {mutation.isLoading ? (
                   <CircularProgress color="inherit" size={20} />
                 ) : null}
                 {params.InputProps.endAdornment}

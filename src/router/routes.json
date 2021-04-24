@@ -17,5 +17,6 @@
   "ARTIST_BANDS": "/artist_bands",
   "ARTIST_ALBUMS": "/artist_albums",
   "BAND_ALBUMS": "/band_albums",
+  "TAB":"/tab",
   "NEW": "/new"
 }

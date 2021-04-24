@@ -44,12 +44,12 @@ const Footer: React.FC<FooterProps> = ({ src }: FooterProps) => {
     src,
   });
   const classes = useStyles();
-  const handleClickValue = (e: MouseEvent<HTMLSpanElement, MouseEvent>) =>
-    e.stopPropagation();
   const handleChangeSelected = () =>
     state.muted ? controls.unmute() : controls.mute();
   const handleClick = async () =>
     state.paused ? controls.play() : controls.pause();
+  const handleClickValue = (e: MouseEvent<HTMLSpanElement, MouseEvent>) =>
+    e.stopPropagation();
   const handleVolume = (
     _e: ChangeEvent<Record<string, unknown>>,
     newValue: number | number[]

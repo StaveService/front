@@ -18,6 +18,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Image from "material-ui-image";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 import InfoTabPanel from "./TabPanel/Info";
 import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issue/Index";
@@ -62,6 +63,15 @@ const Show: React.FC = () => {
             </Typography>
           </Grid>
         </Grid>
+        <Button
+          variant="contained"
+          color="primary"
+          component={RouterLink}
+          to={match.url + routes.TAB}
+          fullWidth
+        >
+          Watch Tab
+        </Button>
         <Tabs
           value={
             location.pathname.includes("issues")

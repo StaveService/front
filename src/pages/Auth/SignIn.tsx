@@ -3,13 +3,13 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { useMutation } from "react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import { useMutation } from "react-query";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import {
@@ -104,7 +104,12 @@ const SignIn: React.FC = () => {
               disabled={isLoading}
               fullWidth
             />
-            <LoadingButton color="primary" loading={isLoading} fullWidth>
+            <LoadingButton
+              type="submit"
+              color="primary"
+              loading={isLoading}
+              fullWidth
+            >
               SignIn
             </LoadingButton>
           </form>
