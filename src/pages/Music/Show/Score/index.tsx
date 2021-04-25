@@ -3,8 +3,11 @@ import useScript from "react-script-hook";
 import { useSnackbar } from "notistack";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { AlphaTabApi } from "@coderline/alphatab";
+import Box from "@material-ui/core/Box";
 import Header from "./Header";
+import Tracks, { Track } from "../../../../ui/Tracks";
 import { IAlphaTab } from "../../../../interfaces";
+import styles from "./index.module.css";
 
 const settings = {
   file: "https://www.alphatab.net/files/canon.gp",
@@ -15,6 +18,8 @@ const settings = {
   },
 };
 const Tab: React.FC = () => {
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [alphaTabApi, setAlphaTabApi] = useState<AlphaTabApi>();
   const ref = useRef<HTMLDivElement>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -22,6 +27,18 @@ const Tab: React.FC = () => {
     src:
       "https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js",
   });
+  // handlers
+  const handleListItemClick = (track: Track, i: number) => {
+    setSelectedIndex(i);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    alphaTabApi?.renderTracks([track]);
+  };
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const scoreLoaded = (score: any) => setTracks(score.tracks);
+  const renderStarted = () => {
+    if (alphaTabApi) setSelectedIndex(alphaTabApi?.tracks[0].index);
+  };
   // useScript handleError
   useEffect(() => {
     if (error) enqueueSnackbar(error.type, { variant: "error" });
@@ -34,18 +51,70 @@ const Tab: React.FC = () => {
       alphaTabApi?.destroy();
     };
   }, [loading]);
+  // mount
+  useEffect(() => {
+    alphaTabApi?.renderStarted.on(renderStarted);
+    alphaTabApi?.scoreLoaded.on(scoreLoaded);
+    return () => {
+      alphaTabApi?.renderStarted.off(renderStarted);
+      alphaTabApi?.scoreLoaded.off(scoreLoaded);
+    };
+  }, [alphaTabApi]);
   if (loading) return <CircularProgress />;
   return (
-    <div className="atWrap">
+    <Box
+      className="at-wrap"
+      position="relative"
+      display="flex"
+      flexDirection="column"
+      height="80vh"
+      overflow="hidden"
+    >
       <Header alphaTabApi={alphaTabApi} />
-      <div className="atContent">
-        <div className="atSidebar">Track selector will go here</div>
-        <div className="atViewport">
-          <div ref={ref} className="atMain" />
-        </div>
-      </div>
-      <div className="atControls">Player controls will go here</div>
-    </div>
+      <Box
+        className="at-content"
+        position="relative"
+        overflow="hidden"
+        flexGrow={1}
+      >
+        <Box
+          className={styles.atSidebar}
+          position="absolute"
+          top="0"
+          left="0"
+          bottom="0"
+          zIndex={1001}
+          display="flex"
+          alignContent="stretch"
+          width="auto"
+          maxWidth="60px"
+          overflow="hidden"
+          border={1}
+          borderLeft={0}
+          borderTop={0}
+          borderBottom={0}
+          borderColor="divider"
+        >
+          <Tracks
+            tracks={tracks}
+            selectedIndex={selectedIndex}
+            onListItemClick={handleListItemClick}
+          />
+        </Box>
+        <Box
+          className="at-viewport"
+          overflow="auto"
+          position="absolute"
+          top={0}
+          left={70}
+          right={0}
+          bottom={0}
+          pr={3}
+        >
+          <div ref={ref} className="at-main" />
+        </Box>
+      </Box>
+    </Box>
   );
 };
 declare global {
