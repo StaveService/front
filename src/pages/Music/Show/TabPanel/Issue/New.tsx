@@ -4,13 +4,13 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
-import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import ControlTextField from "../../../../../components/ControlTextField";
 import LoadingButton from "../../../../../components/Loading/LoadingButton";
 import { issueSchema } from "../../../../../schema";
 import { selectHeaders, setHeaders } from "../../../../../slices/currentUser";
 import { IIssue } from "../../../../../interfaces";
+import { useQuerySnackbar } from "../../../../../common/useQuerySnackbar";
 
 const New: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -22,13 +22,10 @@ const New: React.FC = () => {
   const headers = useSelector(selectHeaders);
   const history = useHistory();
   const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   const onSuccess = (res: AxiosResponse<IIssue>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const { isLoading, mutate } = useMutation(
     (newIssue: IIssue) => axios.post<IIssue>(route, newIssue, headers),

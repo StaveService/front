@@ -8,8 +8,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import { useMutation } from "react-query";
 import axios from "axios";
-import { useSnackbar } from "notistack";
 import { useOpen } from "../common/useOpen";
+import { useQuerySnackbar } from "../common/useQuerySnackbar";
 
 type ControlAutocompleteTextFieldProps = {
   searchRoute: string;
@@ -40,15 +40,12 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState<any[]>([]);
   const [tags, setTags] = useState<any[]>([]);
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   // useOpen
   const { open, handleOpen, handleClose } = useOpen();
   // react-query
   const onSuccess = (res: any) => {
     setOptions(res.data);
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const mutation = useMutation(
     (value: string) =>

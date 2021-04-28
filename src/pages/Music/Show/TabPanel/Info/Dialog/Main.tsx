@@ -1,5 +1,4 @@
 import React from "react";
-import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
@@ -17,6 +16,7 @@ import {
 } from "../../../../../../slices/currentUser";
 import { IArtist, IBand, IMusic } from "../../../../../../interfaces";
 import { useOpen } from "../../../../../../common/useOpen";
+import { useQuerySnackbar } from "../../../../../../common/useQuerySnackbar";
 
 const Edit: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
@@ -24,7 +24,7 @@ const Edit: React.FC = () => {
   const headers = useSelector(selectHeaders);
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const handleSelectOption = (
     option: IArtist,
@@ -69,9 +69,6 @@ const Edit: React.FC = () => {
       ["musics", match.params.id],
       (prev) => prev && { ...prev, ...options }
     );
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const createMutation = useMutation(
     ({

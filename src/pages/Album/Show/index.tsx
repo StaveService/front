@@ -1,7 +1,6 @@
 import axios from "axios";
 import React from "react";
 import { useLocation, useRouteMatch } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -13,13 +12,12 @@ import MusicsTable from "../../../components/Table/Music";
 import ArtistTable from "../../../components/Table/Artist";
 import ArtistDialog from "./Dialog/Artist";
 import { itunes } from "../../../axios";
+import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
 
 const Show: React.FC = () => {
   const location = useLocation();
   const match = useRouteMatch<{ id: string }>();
-  const { enqueueSnackbar } = useSnackbar();
-  const onError = (err: unknown) =>
-    enqueueSnackbar(String(err), { variant: "error" });
+  const { onError } = useQuerySnackbar();
   const album = useQuery<IAlbum>(
     ["albums", match.params.id],
     () => axios.get<IAlbum>(location.pathname).then((res) => res.data),

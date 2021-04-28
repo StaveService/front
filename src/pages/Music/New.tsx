@@ -34,6 +34,7 @@ import {
   setHeaders,
 } from "../../slices/currentUser";
 import { useOpen } from "../../common/useOpen";
+import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
 const New: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
@@ -63,7 +64,7 @@ const New: React.FC = () => {
     routes.MUSICS
   }`;
   // notistack
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IMusic>) => {
@@ -75,9 +76,6 @@ const New: React.FC = () => {
         ["itunesMusic", selectedItunesMusic.trackId],
         selectedItunesMusic
       );
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const createMusicMutation = useMutation(
     (newMusic: IMusic) => axios.post<IMusic>(route, newMusic, headers),

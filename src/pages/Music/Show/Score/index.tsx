@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import useScript from "react-script-hook";
 import { useSnackbar } from "notistack";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { AlphaTabApi } from "@coderline/alphatab";
 import Box from "@material-ui/core/Box";
 import Header from "./Header";
@@ -37,12 +36,8 @@ const Tab: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const scoreLoaded = (score: any) => setTracks(score.tracks);
   const renderStarted = () => {
-    if (alphaTabApi) setSelectedIndex(alphaTabApi?.tracks[0].index);
+    if (alphaTabApi) setSelectedIndex(alphaTabApi.tracks[0].index);
   };
-  // useScript handleError
-  useEffect(() => {
-    if (error) enqueueSnackbar(error.type, { variant: "error" });
-  }, [error]);
   // init alphaTab
   useEffect(() => {
     if (!loading && ref.current)
@@ -60,7 +55,10 @@ const Tab: React.FC = () => {
       alphaTabApi?.scoreLoaded.off(scoreLoaded);
     };
   }, [alphaTabApi]);
-  if (loading) return <CircularProgress />;
+  // useScript handleError
+  useEffect(() => {
+    if (error) enqueueSnackbar(error.type, { variant: "error" });
+  }, [error]);
   return (
     <Box
       className="at-wrap"

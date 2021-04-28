@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useQuery } from "react-query";
-import { useSnackbar } from "notistack";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
@@ -10,15 +9,13 @@ import Box from "@material-ui/core/Box";
 import routes from "../../../../../router/routes.json";
 import IssueTable from "../../../../../components/Table/Issue";
 import { IIssue } from "../../../../../interfaces";
+import { useQuerySnackbar } from "../../../../../common/useQuerySnackbar";
 
 const Index: React.FC = () => {
   const [searchValue, setSearchValue] = useState("");
   const match = useRouteMatch();
   const ISSUES = match.url.split("/").pop() || "";
-  const { enqueueSnackbar } = useSnackbar();
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
-  };
+  const { onError } = useQuerySnackbar();
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") setSearchValue((e.target as HTMLInputElement).value);
   };

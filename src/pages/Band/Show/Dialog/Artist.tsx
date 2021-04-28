@@ -2,7 +2,6 @@ import axios, { AxiosResponse } from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Table from "@material-ui/core/Table";
@@ -27,6 +26,7 @@ import routes from "../../../../router/routes.json";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import { IAlbum, IArtist, IArtistBand, IBand } from "../../../../interfaces";
 import { useOpen } from "../../../../common/useOpen";
+import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
 
 const Artist: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
@@ -40,7 +40,7 @@ const Artist: React.FC = () => {
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
   // notistack
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
   const band = queryClient.getQueryData<IBand>(["bands", match.params.id]);
@@ -67,9 +67,6 @@ const Artist: React.FC = () => {
             prev.artists.filter((prevArtists) => prevArtists !== artist),
         }
     );
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const createMutation = useMutation(
     (newArtistBand: IArtistBand) =>

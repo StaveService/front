@@ -56,8 +56,8 @@ const Header: React.FC<HeaderProps> = ({ alphaTabApi }: HeaderProps) => {
       alphaTabApi.masterVolume = 0;
     }
   };
-  const handlePlayerState = ({ stopped }: { stopped: boolean }) =>
-    setPaused(stopped);
+  const handlePlayerState = ({ state }: { state: 0 | 1 }) =>
+    setPaused(state === 0);
   const handleCountIn = () => {
     if (!alphaTabApi) return;
     toggleCountIn();

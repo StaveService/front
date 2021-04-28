@@ -7,7 +7,6 @@ import {
   useHistory,
   useRouteMatch,
 } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Dialog from "@material-ui/core/Dialog";
@@ -30,6 +29,7 @@ import ArtistCard from "../../components/Card/Artist";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { IArtist, IItunesArtist, IItunesResponse } from "../../interfaces";
 import { useOpen } from "../../common/useOpen";
+import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
 interface IFormValues {
   name: string;
@@ -61,16 +61,13 @@ const New: React.FC = () => {
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
   // notistack
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IArtist>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
     queryClient.setQueryData(["artists", res.data.id], res.data);
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const createMutation = useMutation(
     (newArtist: IArtist) => axios.post<IArtist>(route, newArtist, headers),

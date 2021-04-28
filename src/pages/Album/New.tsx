@@ -7,7 +7,6 @@ import {
   useHistory,
   useRouteMatch,
 } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
@@ -30,6 +29,7 @@ import LoadingCircularProgress from "../../components/Loading/LoadingCircularPro
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { useOpen } from "../../common/useOpen";
+import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
 interface IFormValues {
   title: string;
@@ -61,16 +61,13 @@ const New: React.FC = () => {
   const match = useRouteMatch();
   const route = match.url.replace("/new", "");
   // notistack
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IAlbum>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
     queryClient.setQueryData(["artists", res.data.id], res.data);
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const createMutation = useMutation(
     (newAlbum: IAlbum) => axios.post<IAlbum>(route, newAlbum, headers),

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -15,6 +14,7 @@ import { useQuery } from "react-query";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { itunes } from "../../axios";
+import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
 interface MusicProps {
   musics: IMusic[];
@@ -41,7 +41,7 @@ const Music: React.FC<MusicProps> = ({ musics, loading }: MusicProps) => {
     },
     { route: routes.USERS, name: "Users" },
   ];
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   // react-query
   const onSuccess = (results: IItunesMusic[]) => {
     let i = 0;
@@ -59,8 +59,6 @@ const Music: React.FC<MusicProps> = ({ musics, loading }: MusicProps) => {
       })
     );
   };
-  const onError = (err: unknown) =>
-    enqueueSnackbar(String(err), { variant: "error" });
   useQuery(
     ["itunesMusics", musics.map((music) => music.itunes_track_id).join(",")],
     () =>

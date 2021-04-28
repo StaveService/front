@@ -3,7 +3,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -16,6 +15,7 @@ import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import routes from "../../../../router/routes.json";
 import { IMusic } from "../../../../interfaces";
 import { useOpen } from "../../../../common/useOpen";
+import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
 
 const Setting: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
@@ -26,15 +26,12 @@ const Setting: React.FC = () => {
   const headers = useSelector(selectHeaders);
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const onSuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.removeQueries(["musics", match.params.id]);
     history.push(routes.ROOT);
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const destroyMusicMutation = useMutation(
     () => axios.delete(match.url.replace("/setting", ""), headers),

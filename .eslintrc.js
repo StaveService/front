@@ -29,7 +29,7 @@ module.exports = {
     "prettier/prettier": [
       "error",
       {
-        "endOfLine": "auto"
+        "endOfLine": "auto",
       },
     ],
     "arrow-body-style": "off",

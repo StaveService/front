@@ -8,7 +8,6 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
-import { useSnackbar } from "notistack";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Dialog from "@material-ui/core/Dialog";
@@ -30,6 +29,7 @@ import { IBand, IItunesArtist, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { itunes } from "../../axios";
 import { useOpen } from "../../common/useOpen";
+import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
 const New: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
@@ -56,7 +56,7 @@ const New: React.FC = () => {
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
   // notistack
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IBand>) => {
@@ -68,9 +68,6 @@ const New: React.FC = () => {
         ["itunesMusics", selectedItunesArtist.artistId],
         selectedItunesArtist
       );
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const createMutation = useMutation(
     (newBand: IBand) => axios.post<IBand>(route, newBand, headers),

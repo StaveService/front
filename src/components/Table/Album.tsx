@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { Link as RouterLink } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Image from "material-ui-image";
 import Link from "@material-ui/core/Link";
@@ -15,6 +14,7 @@ import TableRow from "@material-ui/core/TableRow";
 import { itunes } from "../../axios";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
+import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
 interface AlbumProps {
   albums: IAlbum[];
@@ -25,7 +25,7 @@ interface IMergedAlbum extends IAlbum {
 }
 const Album: React.FC<AlbumProps> = ({ albums, loading }: AlbumProps) => {
   const [mergedAlbums, setMergedAlbums] = useState<IMergedAlbum[]>([]);
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   // react-query
   const onSuccess = (results: IItunesAlbum[]) => {
     let i = 0;
@@ -43,8 +43,6 @@ const Album: React.FC<AlbumProps> = ({ albums, loading }: AlbumProps) => {
       })
     );
   };
-  const onError = (err: unknown) =>
-    enqueueSnackbar(String(err), { variant: "error" });
   useQuery(
     [
       "itunesMusics",

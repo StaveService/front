@@ -4,7 +4,6 @@ import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -35,6 +34,7 @@ import {
   setHeaders,
 } from "../../../../../../slices/currentUser";
 import { useOpen } from "../../../../../../common/useOpen";
+import { useQuerySnackbar } from "../../../../../../common/useQuerySnackbar";
 
 const Role: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
@@ -49,7 +49,7 @@ const Role: React.FC = () => {
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
   const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
   const handleRemoveOption = () => setValue("artist_id", "");
@@ -75,9 +75,6 @@ const Role: React.FC = () => {
             prev.roles && prev.roles.filter((prevRole) => prevRole !== role),
         }
     );
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const createRoleMutation = useMutation(
     (newRole: IRole) => axios.post<IRole>(route, newRole, headers),

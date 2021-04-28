@@ -4,7 +4,6 @@ import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
-import { useSnackbar } from "notistack";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Table from "@material-ui/core/Table";
@@ -30,6 +29,7 @@ import {
 } from "../../../../../../slices/currentUser";
 import { IAlbum, IAlbumMusic, IMusic } from "../../../../../../interfaces";
 import { useOpen } from "../../../../../../common/useOpen";
+import { useQuerySnackbar } from "../../../../../../common/useQuerySnackbar";
 
 const Album: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
@@ -43,7 +43,7 @@ const Album: React.FC = () => {
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
   // notistack
-  const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
@@ -73,9 +73,6 @@ const Album: React.FC = () => {
             prev.albums.filter((prevAlbum) => prevAlbum !== album),
         }
     );
-  };
-  const onError = (err: unknown) => {
-    enqueueSnackbar(String(err), { variant: "error" });
   };
   const createAlbumMutation = useMutation(
     (newAlbumMusic: IAlbum) =>
