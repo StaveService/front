@@ -7,7 +7,6 @@ import {
   useHistory,
   useRouteMatch,
 } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import Image from "material-ui-image";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";

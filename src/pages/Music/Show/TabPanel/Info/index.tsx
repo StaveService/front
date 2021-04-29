@@ -12,7 +12,9 @@ import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { useSelector } from "react-redux";
+import Button from "@material-ui/core/Button";
 import AlbumsTable from "../../../../../components/Table/Album";
+import ItunesIcon from "../../../../../components/Icon/Itunes";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Role";
 import AlbumDialog from "./Dialog/Album";
@@ -32,6 +34,15 @@ const Info: React.FC = () => {
   return (
     <>
       <Box mb={3}>
+        <Button
+          startIcon={<ItunesIcon />}
+          component={Link}
+          href={itunesMusic?.artistViewUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Itunes
+        </Button>
         {currentUser?.id === Number(params.userId) && <MainDialog />}
         <TableContainer component={Paper}>
           <Table>
@@ -135,8 +146,5 @@ const Info: React.FC = () => {
       <AlbumsTable albums={music?.albums || []} />
     </>
   );
-};
-Info.defaultProps = {
-  itunesMusic: undefined,
 };
 export default Info;

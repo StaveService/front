@@ -119,6 +119,7 @@ interface IItunesArtwork {
 }
 export interface IItunesMusic extends IItunesArtwork {
   artistName: string;
+  artistViewUrl: string;
   collectionArtistId: number;
   collectionArtistViewUrl: string;
   collectionCensoredName: string;
@@ -126,6 +127,7 @@ export interface IItunesMusic extends IItunesArtwork {
   trackViewUrl: string;
   trackCensoredName: string;
   previewUrl: string;
+  viewURL: string;
   releaseDate: string;
 }
 export interface IItunesArtist {

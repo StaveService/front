@@ -34,24 +34,27 @@ const Footer: React.FC<FooterProps> = ({ src }: FooterProps) => {
     if (!Array.isArray(newValue)) controls.volume(newValue / 100);
   };
   return (
-    <AppBar position="fixed" color="inherit" className={classes.appBar}>
-      {audio}
-      <LinearProgress
-        variant="determinate"
-        value={(state.time / state.duration) * 100}
-      />
-      <Toolbar>
-        <ToggleButtonGroup>
-          <Volume
-            muted={state.muted}
-            volume={state.volume * 100}
-            onVolume={handleVolume}
-            onMute={handleMute}
-          />
-          <Pause paused={state.paused} onPause={handleClick} />
-        </ToggleButtonGroup>
-      </Toolbar>
-    </AppBar>
+    <>
+      <AppBar position="fixed" color="inherit" className={classes.appBar}>
+        {audio}
+        <LinearProgress
+          variant="determinate"
+          value={(state.time / state.duration) * 100}
+        />
+        <Toolbar>
+          <ToggleButtonGroup>
+            <Volume
+              muted={state.muted}
+              volume={state.volume * 100}
+              onVolume={handleVolume}
+              onMute={handleMute}
+            />
+            <Pause paused={state.paused} onPause={handleClick} />
+          </ToggleButtonGroup>
+        </Toolbar>
+      </AppBar>
+      <Toolbar />
+    </>
   );
 };
 

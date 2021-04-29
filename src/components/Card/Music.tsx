@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "react-query";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import CardMedia from "@material-ui/core/CardMedia";
 import { makeStyles } from "@material-ui/core/styles";
-import { useSnackbar } from "notistack";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
 import { itunes } from "../../axios";
+import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
 const useStyles = makeStyles({
   media: {
@@ -28,17 +29,15 @@ const MusicCard: React.FC<IMusicCard> = ({
   },
 }: IMusicCard) => {
   const classes = useStyles();
-  const [artworkUrl, setArtworkUrl] = useState<string>("");
-  const { enqueueSnackbar } = useSnackbar();
-  useEffect(() => {
-    if (!itunesTrackId) return;
-    itunes
-      .get<IItunesResponse<IItunesMusic>>("/lookup", {
+  const { onError } = useQuerySnackbar();
+  const { data } = useQuery(
+    ["itunesMusic", itunesTrackId],
+    () =>
+      itunes.get<IItunesResponse<IItunesMusic>>("/lookup", {
         params: { id: itunesTrackId, entity: "song" },
-      })
-      .then((res) => setArtworkUrl(res.data.results[0].artworkUrl100))
-      .catch((err) => enqueueSnackbar(String(err), { variant: "error" }));
-  }, []);
+      }),
+    { onError }
+  );
   return (
     <Card>
       <Box display="flex">
@@ -63,7 +62,10 @@ const MusicCard: React.FC<IMusicCard> = ({
           </CardContent>
         </Box>
         <Box display="flex" justifyItems="center" alignItems="center" mx={1}>
-          <CardMedia image={artworkUrl} className={classes.media} />
+          <CardMedia
+            image={data?.data.results[0].artworkUrl100}
+            className={classes.media}
+          />
         </Box>
       </Box>
     </Card>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -13,6 +13,7 @@ import IconButton from "@material-ui/core/IconButton";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import { useMutation } from "react-query";
 import routes from "../router/routes.json";
 import {
   remove,
@@ -30,88 +31,98 @@ const Header: React.FC = () => {
   const handleClose = () => setAnchorEl(null);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) =>
     setAnchorEl(event.currentTarget);
-  const handleSignOut = () => {
-    if (!headers) return;
-    axios
-      .delete("/auth/sign_out", headers)
-      .then(() => {
-        enqueueSnackbar("SignOut successful", {
-          variant: "success",
-          anchorOrigin: {
-            vertical: "bottom",
-            horizontal: "center",
-          },
-        });
-      })
-      .catch((err: AxiosError) =>
-        enqueueSnackbar(String(err), {
-          variant: "error",
-          anchorOrigin: {
-            vertical: "bottom",
-            horizontal: "center",
-          },
-        })
-      )
-      .finally(() => {
-        dispatch(remove());
-        history.push({
-          pathname: routes.SIGNIN,
-        });
-        handleClose();
-      });
+  const onMutate = () => {
+    dispatch(remove());
+    history.push({
+      pathname: routes.SIGNIN,
+    });
+    handleClose();
   };
+  const onSuccess = () => {
+    enqueueSnackbar("SignOut successful", {
+      variant: "success",
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "center",
+      },
+    });
+  };
+  const onError = (err: unknown) => {
+    enqueueSnackbar(String(err), {
+      variant: "error",
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "center",
+      },
+    });
+  };
+  const { isLoading, mutate } = useMutation(
+    () => axios.delete("/auth/sign_out", headers),
+    { onMutate, onSuccess, onError }
+  );
+  const handleSignOut = () => mutate();
   return (
-    <AppBar position="static" color="default">
-      <Toolbar>
-        <Typography variant="h6">
-          <Link underline="none" color="inherit" component={RouterLink} to="/">
-            Stave
-          </Link>
-        </Typography>
-        <Box ml="auto">
-          {!currentUser?.id ? (
-            <>
-              <Button
-                color="inherit"
-                variant="contained"
-                component={RouterLink}
-                to={routes.SIGNIN}
-              >
-                SignIn
-              </Button>
-              <Button
-                color="inherit"
-                variant="contained"
-                component={RouterLink}
-                to={routes.SIGNUP}
-              >
-                SignUp
-              </Button>
-            </>
-          ) : (
-            <Box>
-              <IconButton onClick={handleClick}>
-                <AccountCircleIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem
+    <>
+      <AppBar position="fixed" color="default">
+        <Toolbar>
+          <Typography variant="h6">
+            <Link
+              underline="none"
+              color="inherit"
+              component={RouterLink}
+              to="/"
+            >
+              Stave
+            </Link>
+          </Typography>
+          <Box ml="auto">
+            {!currentUser?.id ? (
+              <>
+                <Button
+                  color="inherit"
+                  variant="contained"
                   component={RouterLink}
-                  to={`${routes.USERS}/${currentUser.id}`}
+                  to={routes.SIGNIN}
                 >
-                  Account
-                </MenuItem>
-                <MenuItem onClick={handleSignOut}>Logout</MenuItem>
-              </Menu>
-            </Box>
-          )}
-        </Box>
-      </Toolbar>
-    </AppBar>
+                  SignIn
+                </Button>
+                <Button
+                  color="inherit"
+                  variant="contained"
+                  component={RouterLink}
+                  to={routes.SIGNUP}
+                >
+                  SignUp
+                </Button>
+              </>
+            ) : (
+              <Box>
+                <IconButton onClick={handleClick}>
+                  <AccountCircleIcon />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem
+                    component={RouterLink}
+                    to={`${routes.USERS}/${currentUser.id}`}
+                  >
+                    Account
+                  </MenuItem>
+                  <MenuItem disabled={isLoading} onClick={handleSignOut}>
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </Box>
+            )}
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Toolbar />
+    </>
   );
 };
 

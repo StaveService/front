@@ -61,15 +61,17 @@ const Show: React.FC = () => {
             </Typography>
           </Grid>
         </Grid>
-        <Button
-          variant="contained"
-          color="primary"
-          component={RouterLink}
-          to={match.url + routes.TAB}
-          fullWidth
-        >
-          Watch Tab
-        </Button>
+        <Box my={3}>
+          <Button
+            variant="contained"
+            color="primary"
+            component={RouterLink}
+            to={match.url + routes.TAB}
+            fullWidth
+          >
+            Watch Tab
+          </Button>
+        </Box>
         <Tabs
           value={
             location.pathname.includes("issues")
