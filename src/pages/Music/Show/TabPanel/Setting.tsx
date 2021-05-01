@@ -66,6 +66,7 @@ const Setting: React.FC = () => {
             type="button"
             loading={destroyMusicMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
+            fullWidth
           >
             Delete Music
           </LoadingButton>

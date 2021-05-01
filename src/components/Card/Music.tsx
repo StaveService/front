@@ -63,7 +63,7 @@ const MusicCard: React.FC<IMusicCard> = ({
         </Box>
         <Box display="flex" justifyItems="center" alignItems="center" mx={1}>
           <CardMedia
-            image={data?.data.results[0].artworkUrl100}
+            image={data?.data.results[0]?.artworkUrl100}
             className={classes.media}
           />
         </Box>

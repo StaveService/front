@@ -73,17 +73,14 @@ const Album: React.FC<AlbumProps> = ({ albums, loading }: AlbumProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {mergedAlbums.map((album) => (
-            <TableRow key={album.id}>
+          {mergedAlbums.map(({ id, itunesArtworkUrl, title }) => (
+            <TableRow key={id}>
               <TableCell>
-                <Image src={album.itunesArtworkUrl} />
+                <Image src={itunesArtworkUrl} />
               </TableCell>
               <TableCell>
-                <Link
-                  component={RouterLink}
-                  to={`${routes.ALBUMS}/${album.id}`}
-                >
-                  {album.title}
+                <Link component={RouterLink} to={`${routes.ALBUMS}/${id}`}>
+                  {title}
                 </Link>
               </TableCell>
             </TableRow>

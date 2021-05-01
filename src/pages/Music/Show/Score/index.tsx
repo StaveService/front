@@ -3,13 +3,15 @@ import useScript from "react-script-hook";
 import { useSnackbar } from "notistack";
 import { AlphaTabApi } from "@coderline/alphatab";
 import Box from "@material-ui/core/Box";
+import { useQueryClient } from "react-query";
+import { useParams } from "react-router-dom";
 import Header from "./Header";
 import Tracks, { Track } from "../../../../ui/Tracks";
-import { IAlphaTab } from "../../../../interfaces";
+import { IAlphaTab, IMusic } from "../../../../interfaces";
 import styles from "./index.module.css";
 
 const settings = {
-  file: "https://www.alphatab.net/files/canon.gp",
+  tex: true,
   player: {
     enablePlayer: true,
     soundFont:
@@ -26,6 +28,9 @@ const Tab: React.FC = () => {
     src:
       "https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js",
   });
+  const params = useParams<{ id: string }>();
+  // react-query
+  const queryClient = useQueryClient();
   // handlers
   const handleListItemClick = (track: Track, i: number) => {
     setSelectedIndex(i);
@@ -50,6 +55,9 @@ const Tab: React.FC = () => {
   useEffect(() => {
     alphaTabApi?.renderStarted.on(renderStarted);
     alphaTabApi?.scoreLoaded.on(scoreLoaded);
+    alphaTabApi?.tex(
+      queryClient.getQueryData<IMusic>(["musics", params.id])?.tab || ""
+    );
     return () => {
       alphaTabApi?.renderStarted.off(renderStarted);
       alphaTabApi?.scoreLoaded.off(scoreLoaded);

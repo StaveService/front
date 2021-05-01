@@ -19,6 +19,7 @@ import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import { useMutation, useQueryClient } from "react-query";
 import ControlTextField from "../../components/ControlTextField";
+import ControlDropzone from "../../components/ControlDropzone";
 import ItunesMusicCard from "../../components/Card/Itunes/Music";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import MusicCard from "../../components/Card/Music";
@@ -96,7 +97,9 @@ const New: React.FC = () => {
     { onError }
   );
   // handlers
-  const onSubmit = (data: IMusic) => createMusicMutation.mutate(data);
+  const onSubmit = (data: IMusic) => {
+    createMusicMutation.mutate(data);
+  };
   const handleChange = ({
     target: { value },
   }: ChangeEvent<HTMLInputElement>) => {
@@ -105,6 +108,11 @@ const New: React.FC = () => {
   const handleClick = () => {
     handleOpen();
     searchItunesMutation.mutate(getValues("title"));
+  };
+  const handleDrop = (acceptedFiles: File[]) => {
+    const reader = new FileReader();
+    reader.onload = (e) => setValue("tab", e.target?.result);
+    reader.readAsText(acceptedFiles[0]);
   };
   useEffect(() => {
     if (selectedItunesMusic) {
@@ -199,7 +207,16 @@ const New: React.FC = () => {
             }}
             onChange={handleChange}
           />
-          <SearchItunesButton onClick={handleClick} disabled={!title} />
+          <ControlDropzone
+            name="tab"
+            defaultValue=""
+            control={control}
+            errors={errors}
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            onDrop={handleDrop}
+          />
+          <SearchItunesButton disabled={!title} onClick={handleClick} />
           <ItunesMusicsDialog />
           <SearchedMusicCards />
           <LoadingButton
