@@ -1,9 +1,9 @@
 import axios from "axios";
 import React from "react";
 import { useQuery } from "react-query";
-import Container from "@material-ui/core/Container";
 import { useLocation } from "react-router-dom";
 import UsersTable from "../../components/Table/User";
+import DefaultLayout from "../../layout/Default";
 import { IUser } from "../../interfaces";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
@@ -16,9 +16,9 @@ const Index: React.FC = () => {
     { onError }
   );
   return (
-    <Container>
+    <DefaultLayout>
       <UsersTable users={data || []} loading={isLoading} />
-    </Container>
+    </DefaultLayout>
   );
 };
 

@@ -9,7 +9,6 @@ import {
   useLocation,
   useRouteMatch,
 } from "react-router-dom";
-import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Tab from "@material-ui/core/Tab";
@@ -24,6 +23,7 @@ import IssuesTabPanel from "./TabPanel/Issue/Index";
 import IssueNew from "./TabPanel/Issue/New";
 import Issue from "./TabPanel/Issue/Show";
 import Footer from "./Footer";
+import DefaultLayout from "../../../layout/Default";
 import { selectCurrentUser } from "../../../slices/currentUser";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../../interfaces";
 import routes from "../../../router/routes.json";
@@ -52,7 +52,7 @@ const Show: React.FC = () => {
   );
   return (
     <>
-      <Container>
+      <DefaultLayout>
         <Grid container>
           <Grid item xs={8}>
             <Typography variant="h5">
@@ -125,7 +125,7 @@ const Show: React.FC = () => {
             component={Issue}
           />
         </Switch>
-      </Container>
+      </DefaultLayout>
       <Footer src={itunesMusic?.data?.previewUrl} />
     </>
   );

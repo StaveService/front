@@ -2,11 +2,11 @@ import axios from "axios";
 import React from "react";
 import { useQuery } from "react-query";
 import { useSnackbar } from "notistack";
-import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import MusicsTable from "../components/Table/Music";
 import MenuCard from "../components/Card/Menu";
+import DefaultLayout from "../layout/Default";
 import { IMusic } from "../interfaces";
 import routes from "../router/routes.json";
 
@@ -20,7 +20,7 @@ const Root: React.FC = () => {
     { onError }
   );
   return (
-    <Container>
+    <DefaultLayout>
       <Box mb={3}>
         <Grid container spacing={2}>
           <Grid item xs={3}>
@@ -38,7 +38,7 @@ const Root: React.FC = () => {
         </Grid>
       </Box>
       <MusicsTable musics={data || []} loading={isLoading} />
-    </Container>
+    </DefaultLayout>
   );
 };
 

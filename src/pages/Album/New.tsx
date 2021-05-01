@@ -9,7 +9,6 @@ import {
 } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
-import Container from "@material-ui/core/Container";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -26,6 +25,7 @@ import ItunesAlbumCard from "../../components/Card/Itunes/Album";
 import AlbumCard from "../../components/Card/Album";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
+import DefaultLayout from "../../layout/Default";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { useOpen } from "../../common/useOpen";
@@ -155,7 +155,7 @@ const New: React.FC = () => {
   };
 
   return (
-    <Container>
+    <DefaultLayout>
       <Paper>
         <Box p={2}>
           <Box height="100px" width="100px" m="auto">
@@ -210,7 +210,7 @@ const New: React.FC = () => {
           </LoadingButton>
         </Box>
       </Paper>
-    </Container>
+    </DefaultLayout>
   );
 };
 

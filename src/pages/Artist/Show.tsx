@@ -1,7 +1,6 @@
 import axios from "axios";
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
-import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
@@ -10,6 +9,7 @@ import { IArtist } from "../../interfaces";
 import MusicsTable from "../../components/Table/Music";
 import BandsTable from "../../components/Table/Band";
 import AlbumsTable from "../../components/Table/Album";
+import DefaultLayout from "../../layout/Default";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
 const Show: React.FC = () => {
@@ -22,7 +22,7 @@ const Show: React.FC = () => {
   );
 
   return (
-    <Container>
+    <DefaultLayout>
       <Typography variant="h5">
         <AccessibilityNewIcon />
         {data?.name}
@@ -32,7 +32,7 @@ const Show: React.FC = () => {
       <AlbumsTable albums={data?.albums || []} loading={isLoading} />
       <Box pb={3} />
       <MusicsTable musics={data?.musics || []} loading={isLoading} />
-    </Container>
+    </DefaultLayout>
   );
 };
 

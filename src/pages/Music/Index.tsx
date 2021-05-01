@@ -1,9 +1,9 @@
 import axios from "axios";
 import React from "react";
 import { useQuery } from "react-query";
-import Container from "@material-ui/core/Container";
 import { useLocation } from "react-router-dom";
 import MusicsTable from "../../components/Table/Music";
+import DefaultLayout from "../../layout/Default";
 import { IMusic } from "../../interfaces";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
@@ -16,9 +16,9 @@ const Index: React.FC = () => {
     { onError }
   );
   return (
-    <Container>
+    <DefaultLayout>
       <MusicsTable musics={data || []} loading={isLoading} />
-    </Container>
+    </DefaultLayout>
   );
 };
 

@@ -2,8 +2,8 @@ import axios from "axios";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
-import Container from "@material-ui/core/Container";
 import BandsTable from "../../components/Table/Band";
+import DefaultLayout from "../../layout/Default";
 import { IBand } from "../../interfaces";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
@@ -16,9 +16,9 @@ const Index: React.FC = () => {
     { onError }
   );
   return (
-    <Container>
+    <DefaultLayout>
       <BandsTable bands={data || []} loading={isLoading} />
-    </Container>
+    </DefaultLayout>
   );
 };
 export default Index;

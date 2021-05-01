@@ -3,7 +3,6 @@ import React from "react";
 import { useQuery } from "react-query";
 import { useRouteMatch } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import GroupIcon from "@material-ui/icons/Group";
 import ArtistDialog from "./Dialog/Artist";
@@ -11,6 +10,7 @@ import AlbumDialog from "./Dialog/Album";
 import ArtistsTable from "../../../components/Table/Artist";
 import MusicsTable from "../../../components/Table/Music";
 import AlbumsTable from "../../../components/Table/Album";
+import DefaultLayout from "../../../layout/Default";
 import { IBand } from "../../../interfaces";
 import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
 
@@ -23,7 +23,7 @@ const Show: React.FC = () => {
     { onError }
   );
   return (
-    <Container>
+    <DefaultLayout>
       <Typography variant="h5">
         <GroupIcon />
         {data?.name}
@@ -39,7 +39,7 @@ const Show: React.FC = () => {
         <AlbumDialog />
         <AlbumsTable albums={data?.albums || []} loading={isLoading} />
       </Box>
-    </Container>
+    </DefaultLayout>
   );
 };
 

@@ -9,7 +9,6 @@ import {
 } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -24,6 +23,7 @@ import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import BandCard from "../../components/Card/Band";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
+import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { IBand, IItunesArtist, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
@@ -157,7 +157,7 @@ const New: React.FC = () => {
   };
 
   return (
-    <Container>
+    <DefaultLayout>
       <Paper>
         <Box p={3}>
           <Box visibility="hidden">
@@ -209,7 +209,7 @@ const New: React.FC = () => {
           </LoadingButton>
         </Box>
       </Paper>
-    </Container>
+    </DefaultLayout>
   );
 };
 

@@ -6,7 +6,6 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { SnackbarProvider } from "notistack";
-import Box from "@material-ui/core/Box";
 import { store, persistor } from "./store";
 import Routes from "./router/Routes";
 import Header from "./components/Header";
@@ -30,9 +29,7 @@ const App: React.FC = () => (
           <ReactQueryDevtools initialIsOpen />
           <Router>
             <Header />
-            <Box m={5}>
-              <Routes />
-            </Box>
+            <Routes />
           </Router>
         </PersistGate>
       </QueryClientProvider>

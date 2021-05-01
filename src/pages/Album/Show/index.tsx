@@ -1,7 +1,6 @@
 import axios from "axios";
 import React from "react";
 import { useLocation, useRouteMatch } from "react-router-dom";
-import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import AlbumIcon from "@material-ui/icons/Album";
@@ -10,6 +9,7 @@ import { useQuery } from "react-query";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../../interfaces";
 import MusicsTable from "../../../components/Table/Music";
 import ArtistTable from "../../../components/Table/Artist";
+import DefaultLayout from "../../../layout/Default";
 import ArtistDialog from "./Dialog/Artist";
 import { itunes } from "../../../axios";
 import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
@@ -34,7 +34,7 @@ const Show: React.FC = () => {
     { enabled: !!album.data?.itunes_collection_id, onError }
   );
   return (
-    <Container>
+    <DefaultLayout>
       <Typography variant="h5">
         <AlbumIcon />
         {album.data?.title}
@@ -53,7 +53,7 @@ const Show: React.FC = () => {
         artists={album.data?.artists || []}
         loading={album.isLoading}
       />
-    </Container>
+    </DefaultLayout>
   );
 };
 
