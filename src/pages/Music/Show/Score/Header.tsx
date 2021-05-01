@@ -6,7 +6,10 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import { AlphaTabApi, LayoutMode } from "@coderline/alphatab";
+import { IconButton } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 import SongInfo from "../../../../ui/SongInfo";
 import Volume from "../../../../ui/Volume";
 import Pause from "../../../../ui/Pause";
@@ -33,7 +36,9 @@ const Header: React.FC<HeaderProps> = ({ alphaTabApi }: HeaderProps) => {
   const [metronome, toggleMetronome] = useToggle(false);
   const [layout, setLayout] = useState<typeof Horizontal | typeof Page>(Page);
   const [zoom, setZoom] = useState(100);
+  const history = useHistory();
   // handlers
+  const handleClick = () => history.goBack();
   const handlePlayerReadySetFalse = () => setPlayerReady(false);
   const handlePause = () => alphaTabApi?.playPause();
   const handleStop = () => alphaTabApi?.stop();
@@ -117,7 +122,12 @@ const Header: React.FC<HeaderProps> = ({ alphaTabApi }: HeaderProps) => {
       <AppBar className="Header" position="fixed" color="default">
         <Toolbar>
           <Grid container>
-            <Grid className="at-controls-left" item xs={4}>
+            <Grid item xs={1}>
+              <IconButton>
+                <ArrowBackIosIcon onClick={handleClick} />
+              </IconButton>
+            </Grid>
+            <Grid className="at-controls-left" item xs={3}>
               <SongInfo title={title} artist={artist} />
             </Grid>
             <Grid item xs={5}>
