@@ -36,6 +36,7 @@ export interface IMusic {
   ["itunes_track_id"]: number;
   ["created_at"]?: string;
   ["updated_at"]?: string;
+  bookmark: IMusicBookmark | undefined;
   user?: IUser;
   band?: IBand;
   roles?: IRole[];
@@ -95,6 +96,11 @@ export interface IArtistAlbum {
   ["artist_id"]: number;
   ["album_id"]: number;
   artist: IArtist;
+}
+export interface IMusicBookmark {
+  id: number;
+  ["user_id"]: number;
+  ["music_id"]: number;
 }
 export interface ISignInFormValues {
   email: string;

@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import React from "react";
-import { useQuery } from "react-query";
-import { useSelector } from "react-redux";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Link as RouterLink,
   Route,
@@ -23,21 +23,52 @@ import IssuesTabPanel from "./TabPanel/Issue/Index";
 import IssueNew from "./TabPanel/Issue/New";
 import Issue from "./TabPanel/Issue/Show";
 import Footer from "./Footer";
+import BookmarkButton from "../../../components/Button/Bookmark";
 import DefaultLayout from "../../../layout/Default";
-import { selectCurrentUser } from "../../../slices/currentUser";
-import { IItunesMusic, IItunesResponse, IMusic } from "../../../interfaces";
+import {
+  selectCurrentUser,
+  selectHeaders,
+  setHeaders,
+} from "../../../slices/currentUser";
+import {
+  IItunesMusic,
+  IItunesResponse,
+  IMusic,
+  IMusicBookmark,
+} from "../../../interfaces";
 import routes from "../../../router/routes.json";
 import { itunes } from "../../../axios";
 import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
 
 const Show: React.FC = () => {
-  const currentUser = useSelector(selectCurrentUser);
+  // react-hook-form
   const match = useRouteMatch<{ id: string; userId: string }>();
   const location = useLocation();
+  // notistack
   const { onError } = useQuerySnackbar();
+  // react-redux
+  const currentUser = useSelector(selectCurrentUser);
+  const headers = useSelector(selectHeaders);
+  const dispatch = useDispatch();
+  // react-query
+  const queryClient = useQueryClient();
+  const handleCreateSuccess = (res: AxiosResponse<IMusicBookmark>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IMusic | undefined>(
+      ["musics", match.params.id],
+      (prev) => prev && { ...prev, bookmark: res.data }
+    );
+  };
+  const handleDestroySuccess = (res: AxiosResponse) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IMusic | undefined>(
+      ["musics", match.params.id],
+      (prev) => prev && { ...prev, bookmark: undefined }
+    );
+  };
   const music = useQuery<IMusic>(
     ["musics", match.params.id],
-    () => axios.get<IMusic>(match.url).then((res) => res.data),
+    () => axios.get<IMusic>(match.url, headers).then((res) => res.data),
     { onError }
   );
   const itunesMusic = useQuery<IItunesMusic>(
@@ -50,15 +81,43 @@ const Show: React.FC = () => {
         .then((res) => res.data.results[0]),
     { enabled: !!music.data?.itunes_track_id, onError }
   );
+  const createMutation = useMutation(
+    () =>
+      axios.post<IMusicBookmark>(
+        match.url + routes.MUSIC_BOOKMARKS,
+        undefined,
+        headers
+      ),
+    { onSuccess: handleCreateSuccess, onError }
+  );
+  const destroyMutation = useMutation(
+    () =>
+      axios.delete(
+        `${match.url + routes.MUSIC_BOOKMARKS}/${
+          music.data?.bookmark?.id || "undefined"
+        }`,
+        headers
+      ),
+    { onSuccess: handleDestroySuccess, onError }
+  );
+  const handleCreateMutation = () => createMutation.mutate();
+  const handleDestroyMutation = () => destroyMutation.mutate();
   return (
     <>
       <DefaultLayout>
         <Grid container>
-          <Grid item xs={8}>
+          <Grid item xs={11}>
             <Typography variant="h5">
               <MusicNoteIcon />
               {music.data?.title}
             </Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <BookmarkButton
+              bookmarked={!!music.data?.bookmark || false}
+              onCreate={handleCreateMutation}
+              onDestroy={handleDestroyMutation}
+            />
           </Grid>
         </Grid>
         <Box my={3}>

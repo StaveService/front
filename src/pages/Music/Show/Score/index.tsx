@@ -3,12 +3,14 @@ import useScript from "react-script-hook";
 import { useSnackbar } from "notistack";
 import { AlphaTabApi, model } from "@coderline/alphatab";
 import Box from "@material-ui/core/Box";
-import { useQueryClient } from "react-query";
-import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
+import { useParams, useRouteMatch } from "react-router-dom";
+import axios from "axios";
 import Header from "./Header";
 import Tracks, { Track } from "../../../../ui/Tracks";
 import { IAlphaTab, IMusic } from "../../../../interfaces";
 import styles from "./index.module.css";
+import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
 
 const settings = {
   tex: true,
@@ -25,13 +27,20 @@ const Tab: React.FC = () => {
   const [alphaTabApi, setAlphaTabApi] = useState<AlphaTabApi>();
   const ref = useRef<HTMLDivElement>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const { onError } = useQuerySnackbar();
   const [loading, error] = useScript({
     src:
       "https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js",
   });
   const params = useParams<{ id: string }>();
+  const match = useRouteMatch();
   // react-query
-  const queryClient = useQueryClient();
+  const { data } = useQuery(
+    ["musics", params.id],
+    () =>
+      axios.get<IMusic>(match.url.replace("/tab", "")).then((res) => res.data),
+    { onError }
+  );
   // handlers
   const handleListItemClick = (track: typeof Track, i: number) => {
     setSelectedIndex(i);
@@ -57,9 +66,7 @@ const Tab: React.FC = () => {
   useEffect(() => {
     alphaTabApi?.renderStarted.on(renderStarted);
     alphaTabApi?.scoreLoaded.on(scoreLoaded);
-    alphaTabApi?.tex(
-      queryClient.getQueryData<IMusic>(["musics", params.id])?.tab || ""
-    );
+    alphaTabApi?.tex(data?.tab || "");
     return () => {
       alphaTabApi?.renderStarted.off(renderStarted);
       alphaTabApi?.scoreLoaded.off(scoreLoaded);
@@ -75,7 +82,7 @@ const Tab: React.FC = () => {
       position="relative"
       display="flex"
       flexDirection="column"
-      height="80vh"
+      height="93vh"
       overflow="hidden"
     >
       <Header alphaTabApi={alphaTabApi} />

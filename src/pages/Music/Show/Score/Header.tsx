@@ -123,8 +123,8 @@ const Header: React.FC<HeaderProps> = ({ alphaTabApi }: HeaderProps) => {
         <Toolbar>
           <Grid container>
             <Grid item xs={1}>
-              <IconButton>
-                <ArrowBackIosIcon onClick={handleClick} />
+              <IconButton onClick={handleClick}>
+                <ArrowBackIosIcon />
               </IconButton>
             </Grid>
             <Grid className="at-controls-left" item xs={3}>

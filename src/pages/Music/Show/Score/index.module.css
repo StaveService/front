@@ -2,6 +2,6 @@
   transition: max-width 0.2s;
 }
 .atSidebar:hover{
-    max-width: 400px;
-    overflow-y: auto;
+  max-width: 500px;
+  overflow-y: auto;
 }
