@@ -194,7 +194,12 @@ const New: React.FC = () => {
             }}
             onChange={handleChange}
           />
-          <SearchItunesButton onClick={handleClick} disabled={!name} />
+          <SearchItunesButton
+            onClick={handleClick}
+            disabled={!name}
+            fullWidth
+            disableElevation
+          />
           <ItunesMusicsDialog />
           <SearchedArtistsCard />
           <LoadingButton

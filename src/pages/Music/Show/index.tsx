@@ -68,6 +68,7 @@ const Show: React.FC = () => {
             component={RouterLink}
             to={match.url + routes.TAB}
             fullWidth
+            disableElevation
           >
             Watch Tab
           </Button>

@@ -216,7 +216,12 @@ const New: React.FC = () => {
             // @ts-ignore
             onDrop={handleDrop}
           />
-          <SearchItunesButton disabled={!title} onClick={handleClick} />
+          <SearchItunesButton
+            disabled={!title}
+            onClick={handleClick}
+            fullWidth
+            disableElevation
+          />
           <ItunesMusicsDialog />
           <SearchedMusicCards />
           <LoadingButton

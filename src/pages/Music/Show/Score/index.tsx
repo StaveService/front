@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import useScript from "react-script-hook";
 import { useSnackbar } from "notistack";
-import { AlphaTabApi } from "@coderline/alphatab";
+import { AlphaTabApi, model } from "@coderline/alphatab";
 import Box from "@material-ui/core/Box";
 import { useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
@@ -18,8 +18,9 @@ const settings = {
       "https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/soundfont/sonivox.sf2",
   },
 };
+const Score = new model.Score();
 const Tab: React.FC = () => {
-  const [tracks, setTracks] = useState<Track[]>([]);
+  const [tracks, setTracks] = useState<typeof Track[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [alphaTabApi, setAlphaTabApi] = useState<AlphaTabApi>();
   const ref = useRef<HTMLDivElement>(null);
@@ -32,18 +33,19 @@ const Tab: React.FC = () => {
   // react-query
   const queryClient = useQueryClient();
   // handlers
-  const handleListItemClick = (track: Track, i: number) => {
+  const handleListItemClick = (track: typeof Track, i: number) => {
     setSelectedIndex(i);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     alphaTabApi?.renderTracks([track]);
   };
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const scoreLoaded = (score: any) => setTracks(score.tracks);
+  const handleMute = (mute: boolean, track: typeof Track) =>
+    alphaTabApi?.changeTrackMute([track], !mute);
+  const handleSolo = (solo: boolean, track: typeof Track) =>
+    alphaTabApi?.changeTrackSolo([track], !solo);
+  const scoreLoaded = (score: typeof Score) => setTracks(score.tracks);
   const renderStarted = () => {
     if (alphaTabApi) setSelectedIndex(alphaTabApi.tracks[0].index);
   };
-  // init alphaTab
+  // init alphaTabApi
   useEffect(() => {
     if (!loading && ref.current)
       setAlphaTabApi(new window.alphaTab.AlphaTabApi(ref.current, settings));
@@ -104,6 +106,8 @@ const Tab: React.FC = () => {
           <Tracks
             tracks={tracks}
             selectedIndex={selectedIndex}
+            onMute={handleMute}
+            onSolo={handleSolo}
             onListItemClick={handleListItemClick}
           />
         </Box>
