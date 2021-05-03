@@ -100,9 +100,9 @@ const Edit: React.FC = () => {
     handleSelectOption(option, { music_lyrists: options }, routes.LYRISTS);
   const handleRemoveOptionLyrist = (option: IArtist, options: IArtist[]) =>
     handleRemoveOption(option, { music_lyrists: options }, routes.LYRISTS);
-  const handleSelectOptionBand = (option: IBand, options: IBand[]) =>
+  const handleSelectOptionBand = (option: IArtist, options: IBand[]) =>
     handleSelectOption(option, { band: options[0] }, routes.BANDS);
-  const handleRemoveOptionBand = (option: IBand, options: IBand[]) =>
+  const handleRemoveOptionBand = (option: IArtist, options: IBand[]) =>
     handleRemoveOption(option, { band: options[0] }, routes.BANDS);
 
   return (

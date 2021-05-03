@@ -25,6 +25,7 @@ export interface IBand {
   id: number;
   name: string;
   ["itunes_artist_id"]: number;
+  bookmark?: IBandBookmark;
   artists?: IArtist[];
   albums?: IAlbum[];
   musics?: IMusic[];
@@ -36,7 +37,7 @@ export interface IMusic {
   ["itunes_track_id"]: number;
   ["created_at"]?: string;
   ["updated_at"]?: string;
-  bookmark: IMusicBookmark | undefined;
+  bookmark?: IMusicBookmark;
   user?: IUser;
   band?: IBand;
   roles?: IRole[];
@@ -47,6 +48,7 @@ export interface IMusic {
 export interface IArtist {
   id: number;
   name: string;
+  bookmark?: IArtistBookmark;
   ["itunes_artist_id"]: number;
   musics?: IMusic[];
   albums?: IAlbum[];
@@ -101,6 +103,16 @@ export interface IMusicBookmark {
   id: number;
   ["user_id"]: number;
   ["music_id"]: number;
+}
+export interface IBandBookmark {
+  id: number;
+  ["user_id"]: number;
+  ["band_id"]: number;
+}
+export interface IArtistBookmark {
+  id: number;
+  ["user_id"]: number;
+  ["artist_id"]: number;
 }
 export interface ISignInFormValues {
   email: string;

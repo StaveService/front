@@ -68,7 +68,11 @@ const Show: React.FC = () => {
   };
   const music = useQuery<IMusic>(
     ["musics", match.params.id],
-    () => axios.get<IMusic>(match.url, headers).then((res) => res.data),
+    () =>
+      axios.get<IMusic>(match.url, headers).then((res) => {
+        dispatch(setHeaders(res.headers));
+        return res.data;
+      }),
     { onError }
   );
   const itunesMusic = useQuery<IItunesMusic>(
@@ -100,6 +104,7 @@ const Show: React.FC = () => {
       ),
     { onSuccess: handleDestroySuccess, onError }
   );
+  // handlers
   const handleCreateMutation = () => createMutation.mutate();
   const handleDestroyMutation = () => destroyMutation.mutate();
   return (
