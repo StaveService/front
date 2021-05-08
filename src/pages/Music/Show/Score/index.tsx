@@ -36,7 +36,7 @@ const Tab: React.FC = () => {
   const match = useRouteMatch();
   // react-query
   const { data } = useQuery(
-    ["musics", params.id],
+    ["music", params.id],
     () =>
       axios.get<IMusic>(match.url.replace("/tab", "")).then((res) => res.data),
     { onError }

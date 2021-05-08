@@ -20,12 +20,16 @@ import { useQuerySnackbar } from "../../../../../../common/useQuerySnackbar";
 
 const Edit: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
-  const match = useRouteMatch<{ id: string }>();
-  const headers = useSelector(selectHeaders);
-  const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
+  // notistack
   const { onError } = useQuerySnackbar();
+  // react-router-dom
+  const match = useRouteMatch<{ id: string }>();
+  // react-redux
   const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
+  // react-query
+  const queryClient = useQueryClient();
+  const music = queryClient.getQueryData<IMusic>(["music", match.params.id]);
   const handleSelectOption = (
     option: IArtist,
     options: Record<string, unknown>,
@@ -50,7 +54,7 @@ const Edit: React.FC = () => {
   ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["musics", match.params.id],
+      ["music", match.params.id],
       (prev) => prev && { ...prev, ...options }
     );
   };
@@ -66,7 +70,7 @@ const Edit: React.FC = () => {
   ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["musics", match.params.id],
+      ["music", match.params.id],
       (prev) => prev && { ...prev, ...options }
     );
   };
@@ -113,7 +117,7 @@ const Edit: React.FC = () => {
           <Box mb={3}>
             <DialogTitle>Edit Info</DialogTitle>
             <AutocompleteTextField
-              defaultValue={music?.music_composers}
+              defaultValue={music?.composers}
               searchRoute={routes.ARTISTS}
               property="name"
               query="cont"
@@ -130,7 +134,7 @@ const Edit: React.FC = () => {
               searchRoute={routes.ARTISTS}
               property="name"
               query="cont"
-              defaultValue={music?.music_lyrists}
+              defaultValue={music?.lyrists}
               onSelectOption={handleSelectOptionLyrist}
               onRemoveOption={handleRemoveOptionLyrist}
               textFieldProps={{

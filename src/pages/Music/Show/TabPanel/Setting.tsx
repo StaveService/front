@@ -25,12 +25,12 @@ const Setting: React.FC = () => {
   const match = useRouteMatch<{ id: string }>();
   const headers = useSelector(selectHeaders);
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
+  const music = queryClient.getQueryData<IMusic>(["music", match.params.id]);
   const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const onSuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
-    queryClient.removeQueries(["musics", match.params.id]);
+    queryClient.removeQueries(["music", match.params.id]);
     history.push(routes.ROOT);
   };
   const destroyMusicMutation = useMutation(

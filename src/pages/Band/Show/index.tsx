@@ -93,7 +93,7 @@ const Show: React.FC = () => {
         <ArtistsTable artists={data?.artists || []} loading={isLoading} />
       </Box>
       <Box mb={3}>
-        <MusicsTable musics={data?.musics || []} loading={isLoading} />
+        <MusicsTable data={data?.musics} loading={isLoading} />
       </Box>
       <Box mb={3}>
         <AlbumDialog />

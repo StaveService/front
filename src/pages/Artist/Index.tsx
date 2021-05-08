@@ -11,7 +11,7 @@ const Index: React.FC = () => {
   const location = useLocation();
   const { onError } = useQuerySnackbar();
   const { isLoading, data } = useQuery<IArtist[]>(
-    location.pathname,
+    location.pathname.replace("/", ""),
     () => axios.get<IArtist[]>(location.pathname).then((res) => res.data),
     { onError }
   );

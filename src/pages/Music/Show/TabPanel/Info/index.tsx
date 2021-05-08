@@ -13,10 +13,12 @@ import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { useSelector } from "react-redux";
 import AlbumsTable from "../../../../../components/Table/Album";
+import LinkTable from "../../../../../components/Table/Link";
 import ItunesButton from "../../../../../components/Button/Itunes";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Role";
 import AlbumDialog from "./Dialog/Album";
+import LinkDialog from "./Dialog/Link";
 import routes from "../../../../../router/routes.json";
 import { selectCurrentUser } from "../../../../../slices/currentUser";
 import { IItunesMusic, IMusic } from "../../../../../interfaces";
@@ -24,10 +26,11 @@ import { IItunesMusic, IMusic } from "../../../../../interfaces";
 const Info: React.FC = () => {
   const params = useParams<{ userId: string; id: string }>();
   const currentUser = useSelector(selectCurrentUser);
+  const isSignedIn = currentUser?.id === Number(params.userId);
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>(["musics", params.id]);
+  const music = queryClient.getQueryData<IMusic>(["music", params.id]);
   const itunesMusic = queryClient.getQueryData<IItunesMusic>([
-    "itunesMusics",
+    "itunesMusic",
     music?.itunes_track_id,
   ]);
   return (
@@ -36,7 +39,7 @@ const Info: React.FC = () => {
         <Box>
           <ItunesButton itunesUrl={itunesMusic?.trackViewUrl} />
         </Box>
-        {currentUser?.id === Number(params.userId) && <MainDialog />}
+        {isSignedIn && <MainDialog />}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -56,7 +59,7 @@ const Info: React.FC = () => {
               <TableRow>
                 <TableCell>Composer</TableCell>
                 <TableCell>
-                  {music?.music_composers?.map((composer) => (
+                  {music?.composers?.map((composer) => (
                     <Link
                       key={composer.id}
                       component={RouterLink}
@@ -70,7 +73,7 @@ const Info: React.FC = () => {
               <TableRow>
                 <TableCell>Lyrists</TableCell>
                 <TableCell>
-                  {music?.music_lyrists?.map((lyrists) => (
+                  {music?.lyrists?.map((lyrists) => (
                     <Link
                       key={lyrists.id}
                       component={RouterLink}
@@ -107,36 +110,40 @@ const Info: React.FC = () => {
           </Table>
         </TableContainer>
       </Box>
-      <Box mb={3}>
-        {currentUser?.id === Number(params.userId) && <RoleDialog />}
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Role</TableCell>
-                <TableCell>Artist</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {music?.roles?.map((role) => (
-                <TableRow key={role.id}>
-                  <TableCell>{role.role}</TableCell>
-                  <TableCell>
-                    <Link
-                      component={RouterLink}
-                      to={`${routes.ARTISTS}/${role.artist.id}`}
-                    >
-                      {role.artist.name}
-                    </Link>
-                  </TableCell>
+      {music?.roles?.length && (
+        <Box mb={3}>
+          {isSignedIn && <RoleDialog />}
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Role</TableCell>
+                  <TableCell>Artist</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-      {currentUser?.id === Number(params.userId) && <AlbumDialog />}
+              </TableHead>
+              <TableBody>
+                {music?.roles?.map((role) => (
+                  <TableRow key={role.id}>
+                    <TableCell>{role.role}</TableCell>
+                    <TableCell>
+                      <Link
+                        component={RouterLink}
+                        to={`${routes.ARTISTS}/${role.artist.id}`}
+                      >
+                        {role.artist.name}
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      )}
+      {isSignedIn && <AlbumDialog />}
       <AlbumsTable albums={music?.albums || []} />
+      {isSignedIn && <LinkDialog />}
+      <LinkTable data={music?.link} />
     </>
   );
 };

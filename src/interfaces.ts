@@ -1,6 +1,10 @@
 import { AlphaTabApi, model, synth } from "@coderline/alphatab";
 
 export type MenuCardType = "Artist" | "Album" | "Music" | "Band";
+export interface IApiPagination {
+  total: string;
+  ["per-page"]: string;
+}
 export interface ITokenHeaders {
   ["content-type"]: string;
   ["access-token"]: string;
@@ -30,6 +34,7 @@ export interface IBand {
   albums?: IAlbum[];
   musics?: IMusic[];
 }
+
 export interface IMusic {
   id: number;
   title: string;
@@ -40,10 +45,11 @@ export interface IMusic {
   bookmark?: IMusicBookmark;
   user?: IUser;
   band?: IBand;
-  roles?: IRole[];
+  roles?: IArtistMusic[];
   albums?: IAlbum[];
-  ["music_composers"]?: IArtist[];
-  ["music_lyrists"]?: IArtist[];
+  composers?: IArtist[];
+  lyrists?: IArtist[];
+  link?: ILink;
 }
 export interface IArtist {
   id: number;
@@ -69,7 +75,14 @@ export interface IIssue {
   music?: IMusic;
   user?: IUser;
 }
-export interface IRole {
+export interface ILink {
+  youtube: string;
+  twitter: string;
+  official: string;
+  itunes: number;
+  wikipedia: number;
+}
+export interface IArtistMusic {
   id: number;
   ["artist_id"]: number;
   role: string | number;

@@ -43,10 +43,7 @@ const Show: React.FC = () => {
         <Image src={itunesAlbum.data?.artworkUrl100 || "undefiend"} />
       </Box>
       <Box mb={3}>
-        <MusicsTable
-          musics={album.data?.musics || []}
-          loading={album.isLoading}
-        />
+        <MusicsTable data={album.data?.musics} loading={album.isLoading} />
       </Box>
       <ArtistDialog />
       <ArtistTable

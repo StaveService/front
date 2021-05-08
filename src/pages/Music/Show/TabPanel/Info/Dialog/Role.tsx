@@ -27,7 +27,7 @@ import ControlSelect from "../../../../../../components/ControlSelect";
 import LoadingButton from "../../../../../../components/Loading/LoadingButton";
 import ControlTextField from "../../../../../../components/ControlTextField";
 import routes from "../../../../../../router/routes.json";
-import { IArtist, IMusic, IRole } from "../../../../../../interfaces";
+import { IArtist, IMusic, IArtistMusic } from "../../../../../../interfaces";
 import { addRoleSchema } from "../../../../../../schema";
 import {
   selectHeaders,
@@ -39,21 +39,25 @@ import { useQuerySnackbar } from "../../../../../../common/useQuerySnackbar";
 const Role: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { control, handleSubmit, setValue } = useForm<IRole>({
+  const { control, handleSubmit, setValue } = useForm<IArtistMusic>({
     defaultValues: { artist_id: undefined },
     resolver: yupResolver(addRoleSchema),
   });
+  // notistack
+  const { onError } = useQuerySnackbar();
+  // react-router-dom
   const match = useRouteMatch<{ id: string }>();
-  const route = match.url + routes.ROLES;
+  const route = match.url + routes.ARTIST_MUSICS;
+  // react-redux
+  const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
+  // react-query
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
-  const dispatch = useDispatch();
-  const { onError } = useQuerySnackbar();
   const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
   const handleRemoveOption = () => setValue("artist_id", "");
-  const handleCreateSuccess = (res: AxiosResponse<IRole>) => {
+  const handleCreateSuccess = (res: AxiosResponse<IArtistMusic>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
       ["musics", match.params.id],
@@ -64,7 +68,10 @@ const Role: React.FC = () => {
         }
     );
   };
-  const handleDestroySuccess = (res: AxiosResponse<IRole>, role: IRole) => {
+  const handleDestroySuccess = (
+    res: AxiosResponse<IArtistMusic>,
+    role: IArtistMusic
+  ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
       ["musics", match.params.id],
@@ -77,14 +84,16 @@ const Role: React.FC = () => {
     );
   };
   const createRoleMutation = useMutation(
-    (newRole: IRole) => axios.post<IRole>(route, newRole, headers),
+    (newRole: IArtistMusic) =>
+      axios.post<IArtistMusic>(route, newRole, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const destroyRoleMutation = useMutation(
-    (role: IRole) => axios.delete<IRole>(`${route}/${role.id}`, headers),
+    (role: IArtistMusic) =>
+      axios.delete<IArtistMusic>(`${route}/${role.id}`, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
-  const onSubmit = (data: IRole) => createRoleMutation.mutate(data);
+  const onSubmit = (data: IArtistMusic) => createRoleMutation.mutate(data);
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>

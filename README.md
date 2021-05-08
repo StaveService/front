@@ -22,6 +22,8 @@
 - [redux-logger](https://github.com/LogRocket/redux-logger)
 - [date-fns](https://github.com/date-fns/date-fns)
 - [@coderline/alphatab](https://github.com/coderline/alphaTab)
+- [graphql](https://github.com/graphql/graphql-js)
+- [graphql-request](https://github.com/prisma-labs/graphql-request)
 
 custom-hooks
 

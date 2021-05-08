@@ -55,28 +55,29 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IMusicBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["musics", match.params.id],
+      ["music", match.params.id],
       (prev) => prev && { ...prev, bookmark: res.data }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["musics", match.params.id],
+      ["music", match.params.id],
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
   const music = useQuery<IMusic>(
-    ["musics", match.params.id],
+    ["music", match.params.id],
     () =>
       axios.get<IMusic>(match.url, headers).then((res) => {
+        console.log(res);
         dispatch(setHeaders(res.headers));
         return res.data;
       }),
     { onError }
   );
   const itunesMusic = useQuery<IItunesMusic>(
-    ["itunesMusics", music.data?.itunes_track_id],
+    ["itunesMusic", music.data?.itunes_track_id],
     () =>
       itunes
         .get<IItunesResponse<IItunesMusic>>("/lookup", {

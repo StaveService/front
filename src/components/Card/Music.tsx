@@ -20,13 +20,7 @@ interface IMusicCard {
   music: IMusic;
 }
 const MusicCard: React.FC<IMusicCard> = ({
-  music: {
-    title,
-    itunes_track_id: itunesTrackId,
-    music_composers: composers,
-    music_lyrists: lyrists,
-    band,
-  },
+  music: { title, itunes_track_id: itunesTrackId, composers, lyrists, band },
 }: IMusicCard) => {
   const classes = useStyles();
   const { onError } = useQuerySnackbar();

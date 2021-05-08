@@ -70,7 +70,7 @@ const New: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IMusic>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
-    queryClient.setQueryData(["musics", match.params.id], res.data);
+    queryClient.setQueryData(["music", match.params.id], res.data);
     if (selectedItunesMusic)
       queryClient.setQueryData(
         ["itunesMusic", selectedItunesMusic.trackId],

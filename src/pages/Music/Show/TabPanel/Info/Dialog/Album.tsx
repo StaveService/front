@@ -46,11 +46,11 @@ const Album: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
+  const music = queryClient.getQueryData<IMusic>(["music", match.params.id]);
   const handleCreateSuccess = (res: AxiosResponse<IAlbumMusic>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["musics", match.params.id],
+      ["music", match.params.id],
       (prev) =>
         prev && {
           ...prev,
@@ -64,7 +64,7 @@ const Album: React.FC = () => {
   ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["musics", match.params.id],
+      ["music", match.params.id],
       (prev) =>
         prev && {
           ...prev,
@@ -114,7 +114,6 @@ const Album: React.FC = () => {
                           {album.title}
                         </Link>
                       </TableCell>
-
                       <TableCell align="right">
                         <IconButton onClick={handleClick}>
                           <CloseIcon />

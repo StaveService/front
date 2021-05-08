@@ -8,7 +8,6 @@ type BookmarkProps = IconButtonProps & {
   onCreate: () => void;
   onDestroy: () => void;
 };
-
 const Bookmark: React.FC<BookmarkProps> = ({
   bookmarked,
   onCreate,
@@ -22,4 +21,5 @@ const Bookmark: React.FC<BookmarkProps> = ({
     </IconButton>
   );
 };
+
 export default Bookmark;

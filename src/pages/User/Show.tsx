@@ -19,7 +19,7 @@ const Show: React.FC = () => {
   return (
     <DefaultLayout>
       <Typography variant="h5">{data?.nickname}</Typography>
-      <MusicsTable musics={data?.musics || []} loading={isLoading} />
+      <MusicsTable data={data?.musics} loading={isLoading} />
     </DefaultLayout>
   );
 };
