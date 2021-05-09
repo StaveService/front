@@ -90,7 +90,7 @@ const Show: React.FC = () => {
       </Grid>
       <Box mb={3}>
         <ArtistDialog />
-        <ArtistsTable artists={data?.artists || []} loading={isLoading} />
+        <ArtistsTable data={data?.artists} loading={isLoading} />
       </Box>
       <Box mb={3}>
         <MusicsTable data={data?.musics} loading={isLoading} />
@@ -102,5 +102,4 @@ const Show: React.FC = () => {
     </DefaultLayout>
   );
 };
-
 export default Show;

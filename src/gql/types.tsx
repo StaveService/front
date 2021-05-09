@@ -1,4 +1,4 @@
-import { IMusic } from "../interfaces";
+import { IArtist, IMusic } from "../interfaces";
 
 export interface IPaginationType {
   currentPage: number;
@@ -14,4 +14,10 @@ export interface IMusicsType {
 }
 export interface IMusicType {
   music: IMusic;
+}
+export interface IArtistsType {
+  artists: {
+    data: IArtist[];
+    pagination: IPaginationType;
+  };
 }

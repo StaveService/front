@@ -33,5 +33,4 @@ export const musicsQuery = gql`
     }
   }
 `;
-
 export default undefined;

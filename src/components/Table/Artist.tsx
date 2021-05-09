@@ -9,46 +9,61 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
+import Pagination from "@material-ui/lab/Pagination";
 import { IArtist } from "../../interfaces";
 import routes from "../../router/routes.json";
 
 interface ArtistProps {
-  artists: IArtist[];
-  loading?: boolean;
+  data: IArtist[] | undefined;
+  page?: number;
+  pageCount?: number;
+  onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
+  loading: boolean | undefined;
 }
-const Artist: React.FC<ArtistProps> = ({ artists, loading }: ArtistProps) => {
+const Artist: React.FC<ArtistProps> = ({
+  data,
+  page,
+  pageCount,
+  onPage,
+  loading,
+}: ArtistProps) => {
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Link component={RouterLink} to={routes.ARTISTS}>
-                Artists
-              </Link>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {artists.map((artist) => (
-            <TableRow key={artist.id}>
+    <>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
               <TableCell>
-                <Link
-                  component={RouterLink}
-                  to={`${routes.ARTISTS}/${artist.id}`}
-                >
-                  {artist.name}
+                <Link component={RouterLink} to={routes.ARTISTS}>
+                  Artists
                 </Link>
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      {loading && <LinearProgress />}
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {data?.map((artist) => (
+              <TableRow key={artist.id}>
+                <TableCell>
+                  <Link
+                    component={RouterLink}
+                    to={`${routes.ARTISTS}/${artist.id}`}
+                  >
+                    {artist.name}
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        {loading && <LinearProgress />}
+      </TableContainer>
+      {page && <Pagination count={pageCount} page={page} onChange={onPage} />}
+    </>
   );
 };
 Artist.defaultProps = {
-  loading: false,
+  page: undefined,
+  pageCount: 10,
+  onPage: undefined,
 };
 export default Artist;

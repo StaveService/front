@@ -46,10 +46,7 @@ const Show: React.FC = () => {
         <MusicsTable data={album.data?.musics} loading={album.isLoading} />
       </Box>
       <ArtistDialog />
-      <ArtistTable
-        artists={album.data?.artists || []}
-        loading={album.isLoading}
-      />
+      <ArtistTable data={album.data?.artists || []} loading={album.isLoading} />
     </DefaultLayout>
   );
 };

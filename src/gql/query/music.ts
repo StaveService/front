@@ -35,5 +35,4 @@ export const musicQuery = gql`
     }
   }
 `;
-
 export default undefined;

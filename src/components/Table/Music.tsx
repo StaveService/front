@@ -23,7 +23,6 @@ interface MusicProps {
   pageCount?: number;
   onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
   loading: boolean | undefined;
-  caption?: React.ReactNode | null;
 }
 interface IMergedMusic extends IMusic {
   itunesArtworkUrl: string;
@@ -33,7 +32,6 @@ const Music: React.FC<MusicProps> = ({
   page,
   pageCount,
   onPage,
-  caption,
   loading,
 }: MusicProps) => {
   const [mergedMusics, setMergedMusics] = useState<IMergedMusic[]>([]);
@@ -88,7 +86,6 @@ const Music: React.FC<MusicProps> = ({
     <>
       <TableContainer component={Paper}>
         <Table>
-          {caption && <caption>{caption}</caption>}
           <TableHead>
             <TableRow>
               <TableCell />
@@ -180,9 +177,8 @@ const Music: React.FC<MusicProps> = ({
   );
 };
 Music.defaultProps = {
-  caption: null,
   page: undefined,
-  pageCount: 10,
+  pageCount: undefined,
   onPage: undefined,
 };
 export default Music;
