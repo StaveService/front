@@ -39,6 +39,9 @@ import {
 import routes from "../../../router/routes.json";
 import { itunes } from "../../../axios";
 import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
+import { musicQuery } from "../../../gql/query/music";
+import { graphQLClient } from "../../../gql/client";
+import { IMusicType } from "../../../gql/types";
 
 const Show: React.FC = () => {
   // react-hook-form
@@ -69,22 +72,20 @@ const Show: React.FC = () => {
   const music = useQuery<IMusic>(
     ["music", match.params.id],
     () =>
-      axios.get<IMusic>(match.url, headers).then((res) => {
-        console.log(res);
-        dispatch(setHeaders(res.headers));
-        return res.data;
-      }),
+      graphQLClient
+        .request<IMusicType>(musicQuery, { id: Number(match.params.id) })
+        .then((res) => res.music),
     { onError }
   );
   const itunesMusic = useQuery<IItunesMusic>(
-    ["itunesMusic", music.data?.itunes_track_id],
+    ["itunesMusic", music.data?.musicLink?.itunes],
     () =>
       itunes
         .get<IItunesResponse<IItunesMusic>>("/lookup", {
-          params: { id: music.data?.itunes_track_id, entity: "song" },
+          params: { id: music.data?.musicLink?.itunes, entity: "song" },
         })
         .then((res) => res.data.results[0]),
-    { enabled: !!music.data?.itunes_track_id, onError }
+    { enabled: !!music.data?.musicLink?.itunes, onError }
   );
   const createMutation = useMutation(
     () =>

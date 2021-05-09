@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { useSnackbar } from "notistack";
@@ -7,8 +6,6 @@ import Box from "@material-ui/core/Box";
 import MusicsTable from "../components/Table/Music";
 import MenuCard from "../components/Card/Menu";
 import DefaultLayout from "../layout/Default";
-import { IApiPagination, IMusic } from "../interfaces";
-import routes from "../router/routes.json";
 import queryKey from "../gql/queryKey.json";
 import { graphQLClient } from "../gql/client";
 import { musicsQuery } from "../gql/query/musics";
@@ -16,7 +13,6 @@ import { IMusicsType } from "../gql/types";
 
 const Root: React.FC = () => {
   const [page, setPage] = useState(1);
-  const [pagination, setPagenation] = useState<IApiPagination | undefined>();
   const { enqueueSnackbar } = useSnackbar();
   const onError = (err: unknown) =>
     enqueueSnackbar(String(err), { variant: "error" });
@@ -25,7 +21,6 @@ const Root: React.FC = () => {
     () => graphQLClient.request(musicsQuery, { page }),
     { onError }
   );
-  console.log(data);
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   return (
@@ -49,8 +44,8 @@ const Root: React.FC = () => {
       <MusicsTable
         data={data?.musics.data}
         loading={isLoading}
-        page={data?.musics.pagenation.totalPages}
-        pageCount={data?.musics.pagenation.totalCount}
+        page={data?.musics.pagination.currentPage}
+        pageCount={data?.musics.pagination.totalPages}
         onPage={handlePage}
       />
     </DefaultLayout>

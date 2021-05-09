@@ -34,22 +34,20 @@ export interface IBand {
   albums?: IAlbum[];
   musics?: IMusic[];
 }
-
 export interface IMusic {
   id: number;
   title: string;
   tab: string;
-  ["itunes_track_id"]: number;
   ["created_at"]?: string;
   ["updated_at"]?: string;
   bookmark?: IMusicBookmark;
   user?: IUser;
   band?: IBand;
-  roles?: IArtistMusic[];
+  artistMusics?: IArtistMusic[];
   albums?: IAlbum[];
   composers?: IArtist[];
   lyrists?: IArtist[];
-  link?: ILink;
+  musicLink?: IMusicLink;
 }
 export interface IArtist {
   id: number;
@@ -75,12 +73,9 @@ export interface IIssue {
   music?: IMusic;
   user?: IUser;
 }
-export interface ILink {
-  youtube: string;
-  twitter: string;
-  official: string;
+export interface IMusicLink {
   itunes: number;
-  wikipedia: number;
+  twitter: string;
 }
 export interface IArtistMusic {
   id: number;

@@ -1,24 +1,32 @@
-import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
-import { useLocation } from "react-router-dom";
 import MusicsTable from "../../components/Table/Music";
 import DefaultLayout from "../../layout/Default";
-import { IMusic } from "../../interfaces";
 import queryKey from "../../gql/queryKey.json";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { musicsQuery } from "../../gql/query/musics";
+import { IMusicsType } from "../../gql/types";
+import { graphQLClient } from "../../gql/client";
 
 const Index: React.FC = () => {
-  const location = useLocation();
+  const [page, setPage] = useState(1);
   const { onError } = useQuerySnackbar();
-  const { isLoading, data } = useQuery<IMusic[]>(
+  const { isLoading, data } = useQuery<IMusicsType>(
     queryKey.MUSICS,
-    () => axios.get<IMusic[]>(location.pathname).then((res) => res.data),
+    () => graphQLClient.request(musicsQuery, { page }),
     { onError }
   );
+  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setPage(value);
   return (
     <DefaultLayout>
-      <MusicsTable data={data} loading={isLoading} />
+      <MusicsTable
+        data={data?.musics.data}
+        loading={isLoading}
+        page={data?.musics.pagination.totalPages}
+        pageCount={data?.musics.pagination.totalPages}
+        onPage={handlePage}
+      />
     </DefaultLayout>
   );
 };

@@ -9,6 +9,9 @@ export interface IPaginationType {
 export interface IMusicsType {
   musics: {
     data: IMusic[];
-    pagenation: IPaginationType;
+    pagination: IPaginationType;
   };
+}
+export interface IMusicType {
+  music: IMusic;
 }

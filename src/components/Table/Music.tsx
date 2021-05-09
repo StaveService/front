@@ -59,10 +59,10 @@ const Music: React.FC<MusicProps> = ({
     let i = 0;
     setMergedMusics(
       data.map((music) => {
-        if (music.itunes_track_id === results[i]?.trackId) {
+        if (music.musicLink?.itunes === results[i]?.trackId) {
           const mergedMusic = {
             ...music,
-            itunesArtworkUrl: results[i].artworkUrl60,
+            itunesArtworkUrl: results[i]?.artworkUrl60,
           };
           i += 1;
           return mergedMusic;
@@ -72,12 +72,12 @@ const Music: React.FC<MusicProps> = ({
     );
   };
   useQuery(
-    ["itunesMusics", data?.map((music) => music.itunes_track_id).join(",")],
+    ["itunesMusics", data?.map((music) => music.musicLink?.itunes).join(",")],
     () =>
       itunes
         .get<IItunesResponse<IItunesMusic>>("/lookup", {
           params: {
-            id: data?.map((music) => music.itunes_track_id).join(","),
+            id: data?.map((music) => music.musicLink?.itunes).join(","),
             entity: "song",
           },
         })

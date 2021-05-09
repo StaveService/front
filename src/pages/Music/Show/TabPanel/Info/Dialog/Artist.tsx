@@ -36,7 +36,7 @@ import {
 import { useOpen } from "../../../../../../common/useOpen";
 import { useQuerySnackbar } from "../../../../../../common/useQuerySnackbar";
 
-const Role: React.FC = () => {
+const Artist: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { control, handleSubmit, setValue } = useForm<IArtistMusic>({
@@ -53,33 +53,34 @@ const Role: React.FC = () => {
   const headers = useSelector(selectHeaders);
   // react-query
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>(["musics", match.params.id]);
+  const music = queryClient.getQueryData<IMusic>(["music", match.params.id]);
   const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
   const handleRemoveOption = () => setValue("artist_id", "");
   const handleCreateSuccess = (res: AxiosResponse<IArtistMusic>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["musics", match.params.id],
+      ["music", match.params.id],
       (prev) =>
         prev && {
           ...prev,
-          roles: [...(prev.roles || []), res.data],
+          roles: [...(prev.artistMusics || []), res.data],
         }
     );
   };
   const handleDestroySuccess = (
     res: AxiosResponse<IArtistMusic>,
-    role: IArtistMusic
+    artist: IArtistMusic
   ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["musics", match.params.id],
+      ["music", match.params.id],
       (prev) =>
         prev && {
           ...prev,
           roles:
-            prev.roles && prev.roles.filter((prevRole) => prevRole !== role),
+            prev.artistMusics &&
+            prev.artistMusics.filter((prevArtist) => prevArtist !== artist),
         }
     );
   };
@@ -111,21 +112,22 @@ const Role: React.FC = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {music?.roles?.map((role) => {
-                    const handleClick = () => destroyRoleMutation.mutate(role);
+                  {music?.artistMusics?.map((artistMusic) => {
+                    const handleClick = () =>
+                      destroyRoleMutation.mutate(artistMusic);
                     return (
-                      <TableRow key={role.id}>
+                      <TableRow key={artistMusic.id}>
                         <TableCell>
                           <Link component={RouterLink} to="/">
-                            {role.role}
+                            {artistMusic.role}
                           </Link>
                         </TableCell>
                         <TableCell>
                           <Link
                             component={RouterLink}
-                            to={`${routes.ARTISTS}/${role.artist.id}`}
+                            to={`${routes.ARTISTS}/${artistMusic.artist.id}`}
                           >
-                            {role.artist.name}
+                            {artistMusic.artist.name}
                           </Link>
                         </TableCell>
                         <TableCell align="right">
@@ -196,4 +198,4 @@ const Role: React.FC = () => {
   );
 };
 
-export default Role;
+export default Artist;

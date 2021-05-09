@@ -13,12 +13,11 @@ import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { useSelector } from "react-redux";
 import AlbumsTable from "../../../../../components/Table/Album";
-import LinkTable from "../../../../../components/Table/Link";
-import ItunesButton from "../../../../../components/Button/Itunes";
+import ItunesButton from "../../../../../components/Button/Link/Itunes";
+import TwitterButton from "../../../../../components/Button/Link/Twitter";
 import MainDialog from "./Dialog/Main";
-import RoleDialog from "./Dialog/Role";
+import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
-import LinkDialog from "./Dialog/Link";
 import routes from "../../../../../router/routes.json";
 import { selectCurrentUser } from "../../../../../slices/currentUser";
 import { IItunesMusic, IMusic } from "../../../../../interfaces";
@@ -31,14 +30,35 @@ const Info: React.FC = () => {
   const music = queryClient.getQueryData<IMusic>(["music", params.id]);
   const itunesMusic = queryClient.getQueryData<IItunesMusic>([
     "itunesMusic",
-    music?.itunes_track_id,
+    music?.musicLink?.itunes,
   ]);
   return (
     <>
       <Box mb={3}>
-        <Box>
-          <ItunesButton itunesUrl={itunesMusic?.trackViewUrl} />
-        </Box>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Link</TableCell>
+                <TableCell>Edit</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <TwitterButton href={music?.musicLink?.twitter} />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <ItunesButton href={itunesMusic?.trackViewUrl} />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+      <Box mb={3}>
         {isSignedIn && <MainDialog />}
         <TableContainer component={Paper}>
           <Table>
@@ -110,40 +130,36 @@ const Info: React.FC = () => {
           </Table>
         </TableContainer>
       </Box>
-      {music?.roles?.length && (
-        <Box mb={3}>
-          {isSignedIn && <RoleDialog />}
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Role</TableCell>
-                  <TableCell>Artist</TableCell>
+      <Box mb={3}>
+        {isSignedIn && <RoleDialog />}
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Role</TableCell>
+                <TableCell>Artist</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {music?.artistMusics?.map((artistMusic) => (
+                <TableRow key={artistMusic.id}>
+                  <TableCell>{artistMusic.role}</TableCell>
+                  <TableCell>
+                    <Link
+                      component={RouterLink}
+                      to={`${routes.ARTISTS}/${artistMusic.artist.id}`}
+                    >
+                      {artistMusic.artist.name}
+                    </Link>
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {music?.roles?.map((role) => (
-                  <TableRow key={role.id}>
-                    <TableCell>{role.role}</TableCell>
-                    <TableCell>
-                      <Link
-                        component={RouterLink}
-                        to={`${routes.ARTISTS}/${role.artist.id}`}
-                      >
-                        {role.artist.name}
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      )}
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
       {isSignedIn && <AlbumDialog />}
       <AlbumsTable albums={music?.albums || []} />
-      {isSignedIn && <LinkDialog />}
-      <LinkTable data={music?.link} />
     </>
   );
 };

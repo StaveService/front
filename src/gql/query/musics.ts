@@ -5,13 +5,30 @@ export const musicsQuery = gql`
     musics(page: $page) {
       pagination {
         currentPage
-        limitValue
-        totalCount
         totalPages
       }
-      musics {
+      data {
         id
         title
+        musicLink {
+          itunes
+        }
+        user {
+          id
+          nickname
+        }
+        band {
+          id
+          name
+        }
+        composers {
+          id
+          name
+        }
+        lyrists {
+          id
+          name
+        }
       }
     }
   }

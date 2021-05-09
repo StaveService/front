@@ -20,15 +20,15 @@ interface IMusicCard {
   music: IMusic;
 }
 const MusicCard: React.FC<IMusicCard> = ({
-  music: { title, itunes_track_id: itunesTrackId, composers, lyrists, band },
+  music: { title, composers, lyrists, band, musicLink },
 }: IMusicCard) => {
   const classes = useStyles();
   const { onError } = useQuerySnackbar();
   const { data } = useQuery(
-    ["itunesMusic", itunesTrackId],
+    ["itunesMusic", itunes],
     () =>
       itunes.get<IItunesResponse<IItunesMusic>>("/lookup", {
-        params: { id: itunesTrackId, entity: "song" },
+        params: { id: musicLink?.itunes, entity: "song" },
       }),
     { onError }
   );
