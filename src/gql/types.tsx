@@ -1,10 +1,16 @@
-import { IArtist, IMusic } from "../interfaces";
+import { IArtist, IBand, IMusic, IUser } from "../interfaces";
 
 export interface IPaginationType {
   currentPage: number;
   limitValue: number;
   totalCount: number;
   totalPages: number;
+}
+export interface IUsersType {
+  users: {
+    data: IUser[];
+    pagination: IPaginationType;
+  };
 }
 export interface IMusicsType {
   musics: {
@@ -18,6 +24,12 @@ export interface IMusicType {
 export interface IArtistsType {
   artists: {
     data: IArtist[];
+    pagination: IPaginationType;
+  };
+}
+export interface IBandsType {
+  bands: {
+    data: IBand[];
     pagination: IPaginationType;
   };
 }

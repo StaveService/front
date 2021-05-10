@@ -1,23 +1,32 @@
-import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
-import { useLocation } from "react-router-dom";
 import UsersTable from "../../components/Table/User";
 import DefaultLayout from "../../layout/Default";
-import { IUser } from "../../interfaces";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { IUsersType } from "../../gql/types";
+import { graphQLClient } from "../../gql/client";
+import { usersQuery } from "../../gql/query/users";
+import queryKey from "../../gql/queryKey.json";
 
 const Index: React.FC = () => {
-  const location = useLocation();
+  const [page, setPage] = useState(1);
   const { onError } = useQuerySnackbar();
-  const { isLoading, data } = useQuery<IUser[]>(
-    location.pathname,
-    () => axios.get<IUser[]>(location.pathname).then((res) => res.data),
+  const { isLoading, data } = useQuery<IUsersType>(
+    [queryKey.USERS, page],
+    () => graphQLClient.request(usersQuery, { page }),
     { onError }
   );
+  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setPage(value);
   return (
     <DefaultLayout>
-      <UsersTable users={data || []} loading={isLoading} />
+      <UsersTable
+        data={data?.users.data}
+        loading={isLoading}
+        page={page}
+        pageCount={data?.users.pagination.totalPages}
+        onPage={handlePage}
+      />
     </DefaultLayout>
   );
 };

@@ -1,7 +1,7 @@
 import { gql } from "graphql-request";
 
 export const musicQuery = gql`
-  query getMusic($id: Int!) {
+  query getMusic($id: Int!, $currentUserId: Int!) {
     music(id: $id) {
       id
       title
@@ -31,6 +31,9 @@ export const musicQuery = gql`
       lyrists {
         id
         name
+      }
+      bookmark(currentUserId: $currentUserId) {
+        id
       }
     }
   }

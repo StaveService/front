@@ -73,7 +73,10 @@ const Show: React.FC = () => {
     ["music", match.params.id],
     () =>
       graphQLClient
-        .request<IMusicType>(musicQuery, { id: Number(match.params.id) })
+        .request<IMusicType>(musicQuery, {
+          id: Number(match.params.id),
+          currentUserId: currentUser?.id,
+        })
         .then((res) => res.music),
     { onError }
   );

@@ -1,5 +1,6 @@
 {
   "MUSICS": "musics",
   "ARTISTS": "artists",
-  "BANDS": "bands"
+  "BANDS": "bands",
+  "USERS": "users"
 }

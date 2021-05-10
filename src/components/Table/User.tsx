@@ -9,36 +9,52 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
+import Pagination from "@material-ui/lab/Pagination";
 import { IUser } from "../../interfaces";
 import routes from "../../router/routes.json";
 
 interface UserProps {
-  users: IUser[];
-  loading?: boolean;
+  data: IUser[] | undefined;
+  loading: boolean | undefined;
+  page?: number;
+  pageCount?: number;
+  onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
 }
-const User: React.FC<UserProps> = ({ users, loading }: UserProps) => (
-  <TableContainer component={Paper}>
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {users.map((user) => (
-          <TableRow key={user.id}>
-            <TableCell>
-              <Link component={RouterLink} to={`${routes.USERS}/${user.id}`}>
-                {user.nickname}
-              </Link>
-            </TableCell>
+const User: React.FC<UserProps> = ({
+  data,
+  loading,
+  page,
+  pageCount,
+  onPage,
+}: UserProps) => (
+  <>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-    {loading && <LinearProgress />}
-  </TableContainer>
+        </TableHead>
+        <TableBody>
+          {data?.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>
+                <Link component={RouterLink} to={`${routes.USERS}/${user.id}`}>
+                  {user.nickname}
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      {loading && <LinearProgress />}
+    </TableContainer>
+    {page && <Pagination count={pageCount} page={page} onChange={onPage} />}
+  </>
 );
-User.defaultProps = { loading: false };
-
+User.defaultProps = {
+  page: undefined,
+  pageCount: undefined,
+  onPage: undefined,
+};
 export default User;

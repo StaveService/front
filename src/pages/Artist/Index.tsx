@@ -23,7 +23,7 @@ const Index: React.FC = () => {
       <ArtistsTable
         data={data?.artists.data}
         loading={isLoading}
-        page={data?.artists.pagination.currentPage}
+        page={page}
         pageCount={data?.artists.pagination.totalPages}
         onPage={handlePage}
       />

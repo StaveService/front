@@ -9,41 +9,61 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
+import Pagination from "@material-ui/lab/Pagination";
 import { IBand } from "../../interfaces";
 import routes from "../../router/routes.json";
 
 interface BandProps {
-  bands: IBand[];
-  loading?: boolean;
+  data: IBand[] | undefined;
+  page?: number;
+  pageCount?: number;
+  onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
+  loading: boolean;
 }
-const Band: React.FC<BandProps> = ({ bands, loading }: BandProps) => {
+const Band: React.FC<BandProps> = ({
+  data,
+  page,
+  pageCount,
+  onPage,
+  loading,
+}: BandProps) => {
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Link component={RouterLink} to={`${routes.BANDS}`}>
-                Band
-              </Link>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {bands.map((band) => (
-            <TableRow key={band.id}>
+    <>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
               <TableCell>
-                <Link component={RouterLink} to={`${routes.BANDS}/${band.id}`}>
-                  {band.name}
+                <Link component={RouterLink} to={`${routes.BANDS}`}>
+                  Band
                 </Link>
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      {loading && <LinearProgress />}
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {data?.map((band) => (
+              <TableRow key={band.id}>
+                <TableCell>
+                  <Link
+                    component={RouterLink}
+                    to={`${routes.BANDS}/${band.id}`}
+                  >
+                    {band.name}
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        {loading && <LinearProgress />}
+      </TableContainer>
+      {page && <Pagination count={pageCount} page={page} onChange={onPage} />}
+    </>
   );
 };
-Band.defaultProps = { loading: false };
+Band.defaultProps = {
+  page: undefined,
+  pageCount: undefined,
+  onPage: undefined,
+};
 export default Band;
