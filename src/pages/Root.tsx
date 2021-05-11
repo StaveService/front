@@ -44,7 +44,7 @@ const Root: React.FC = () => {
       <MusicsTable
         data={data?.musics.data}
         loading={isLoading}
-        page={data?.musics.pagination.currentPage}
+        page={page}
         pageCount={data?.musics.pagination.totalPages}
         onPage={handlePage}
       />

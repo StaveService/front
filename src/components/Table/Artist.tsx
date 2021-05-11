@@ -18,7 +18,7 @@ interface ArtistProps {
   page?: number;
   pageCount?: number;
   onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
-  loading: boolean | undefined;
+  loading?: boolean;
 }
 const Artist: React.FC<ArtistProps> = ({
   data,
@@ -65,5 +65,6 @@ Artist.defaultProps = {
   page: undefined,
   pageCount: 10,
   onPage: undefined,
+  loading: false,
 };
 export default Artist;

@@ -22,7 +22,7 @@ interface MusicProps {
   page?: number;
   pageCount?: number;
   onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
-  loading: boolean | undefined;
+  loading?: boolean;
 }
 interface IMergedMusic extends IMusic {
   itunesArtworkUrl: string;
@@ -180,5 +180,6 @@ Music.defaultProps = {
   page: undefined,
   pageCount: undefined,
   onPage: undefined,
+  loading: false,
 };
 export default Music;

@@ -18,7 +18,7 @@ interface BandProps {
   page?: number;
   pageCount?: number;
   onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
-  loading: boolean;
+  loading?: boolean;
 }
 const Band: React.FC<BandProps> = ({
   data,
@@ -65,5 +65,6 @@ Band.defaultProps = {
   page: undefined,
   pageCount: undefined,
   onPage: undefined,
+  loading: false,
 };
 export default Band;

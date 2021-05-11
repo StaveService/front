@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
-import { useLocation } from "react-router-dom";
 import BandsTable from "../../components/Table/Band";
 import DefaultLayout from "../../layout/Default";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { bandsQuery } from "../../gql/query/bands";
 import { IBandsType } from "../../gql/types";
+import queryKey from "../../gql/queryKey.json";
 
 const Index: React.FC = () => {
   const [page, setPage] = useState(1);
-  const location = useLocation();
   const { onError } = useQuerySnackbar();
   const { isLoading, data } = useQuery<IBandsType>(
-    location.pathname.replace("/", ""),
+    [queryKey.BANDS, page],
     () => graphQLClient.request(bandsQuery, { page }),
     { onError }
   );
@@ -24,7 +23,7 @@ const Index: React.FC = () => {
       <BandsTable
         data={data?.bands.data}
         loading={isLoading}
-        page={data?.bands.pagination.currentPage}
+        page={page}
         pageCount={data?.bands.pagination.totalPages}
         onPage={handlePage}
       />

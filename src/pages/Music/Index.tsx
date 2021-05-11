@@ -12,7 +12,7 @@ const Index: React.FC = () => {
   const [page, setPage] = useState(1);
   const { onError } = useQuerySnackbar();
   const { isLoading, data } = useQuery<IMusicsType>(
-    queryKey.MUSICS,
+    [queryKey.MUSICS, page],
     () => graphQLClient.request(musicsQuery, { page }),
     { onError }
   );

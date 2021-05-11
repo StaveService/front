@@ -11,26 +11,37 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import Pagination from "@material-ui/lab/Pagination";
 import { itunes } from "../../axios";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 
 interface AlbumProps {
-  albums: IAlbum[];
+  data: IAlbum[] | undefined;
+  page?: number;
+  pageCount?: number;
+  onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
   loading?: boolean;
 }
 interface IMergedAlbum extends IAlbum {
   itunesArtworkUrl: string;
 }
-const Album: React.FC<AlbumProps> = ({ albums, loading }: AlbumProps) => {
+const Album: React.FC<AlbumProps> = ({
+  data,
+  loading,
+  page,
+  pageCount,
+  onPage,
+}: AlbumProps) => {
   const [mergedAlbums, setMergedAlbums] = useState<IMergedAlbum[]>([]);
   const { onError } = useQuerySnackbar();
   // react-query
   const onSuccess = (results: IItunesAlbum[]) => {
+    if (!data?.length) return;
     let i = 0;
     setMergedAlbums(
-      albums.map((album) => {
+      data.map((album) => {
         if (album.itunes_collection_id === results[i]?.collectionId) {
           const mergedMusic = {
             ...album,
@@ -46,13 +57,13 @@ const Album: React.FC<AlbumProps> = ({ albums, loading }: AlbumProps) => {
   useQuery(
     [
       "itunesMusics",
-      albums.map((album) => album.itunes_collection_id).join(","),
+      data?.map((album) => album.itunes_collection_id).join(","),
     ],
     () =>
       itunes
         .get<IItunesResponse<IItunesAlbum>>("/lookup", {
           params: {
-            id: albums.map((album) => album.itunes_collection_id).join(","),
+            id: data?.map((album) => album.itunes_collection_id).join(","),
             entity: "song",
           },
         })
@@ -60,38 +71,44 @@ const Album: React.FC<AlbumProps> = ({ albums, loading }: AlbumProps) => {
     { onSuccess, onError }
   );
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>
-              <Link component={RouterLink} to={routes.ALBUMS}>
-                Albums
-              </Link>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {mergedAlbums.map(({ id, itunesArtworkUrl, title }) => (
-            <TableRow key={id}>
+    <>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell />
               <TableCell>
-                <Image src={itunesArtworkUrl} />
-              </TableCell>
-              <TableCell>
-                <Link component={RouterLink} to={`${routes.ALBUMS}/${id}`}>
-                  {title}
+                <Link component={RouterLink} to={routes.ALBUMS}>
+                  Albums
                 </Link>
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      {loading && <LinearProgress />}
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {mergedAlbums.map(({ id, itunesArtworkUrl, title }) => (
+              <TableRow key={id}>
+                <TableCell>
+                  <Image src={itunesArtworkUrl} />
+                </TableCell>
+                <TableCell>
+                  <Link component={RouterLink} to={`${routes.ALBUMS}/${id}`}>
+                    {title}
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        {loading && <LinearProgress />}
+      </TableContainer>
+      {page && <Pagination count={pageCount} page={page} onChange={onPage} />}
+    </>
   );
 };
 Album.defaultProps = {
+  page: undefined,
+  pageCount: 10,
+  onPage: undefined,
   loading: false,
 };
 export default Album;

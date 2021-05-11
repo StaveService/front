@@ -4,7 +4,6 @@ export const musicsQuery = gql`
   query getMusics($page: Int) {
     musics(page: $page) {
       pagination {
-        currentPage
         totalPages
       }
       data {

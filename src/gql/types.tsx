@@ -1,4 +1,4 @@
-import { IArtist, IBand, IMusic, IUser } from "../interfaces";
+import { IAlbum, IArtist, IBand, IMusic, IUser } from "../interfaces";
 
 export interface IPaginationType {
   currentPage: number;
@@ -30,6 +30,15 @@ export interface IArtistsType {
 export interface IBandsType {
   bands: {
     data: IBand[];
+    pagination: IPaginationType;
+  };
+}
+export interface IBandType {
+  band: IBand;
+}
+export interface IAlbumsType {
+  albums: {
+    data: IAlbum[];
     pagination: IPaginationType;
   };
 }

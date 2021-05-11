@@ -15,10 +15,10 @@ import routes from "../../router/routes.json";
 
 interface UserProps {
   data: IUser[] | undefined;
-  loading: boolean | undefined;
   page?: number;
   pageCount?: number;
   onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
+  loading?: boolean;
 }
 const User: React.FC<UserProps> = ({
   data,
@@ -56,5 +56,6 @@ User.defaultProps = {
   page: undefined,
   pageCount: undefined,
   onPage: undefined,
+  loading: false,
 };
 export default User;

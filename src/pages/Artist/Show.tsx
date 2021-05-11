@@ -88,9 +88,9 @@ const Show: React.FC = () => {
           />
         </Grid>
       </Grid>
-      <BandsTable data={data?.bands || []} loading={isLoading} />
+      <BandsTable data={data?.bands} loading={isLoading} />
       <Box pb={3} />
-      <AlbumsTable albums={data?.albums || []} loading={isLoading} />
+      <AlbumsTable data={data?.albums} loading={isLoading} />
       <Box pb={3} />
       <MusicsTable data={data?.musics} loading={isLoading} />
     </DefaultLayout>

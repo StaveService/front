@@ -17,36 +17,44 @@ import DefaultLayout from "../../../layout/Default";
 import routes from "../../../router/routes.json";
 import { IBand, IBandBookmark } from "../../../interfaces";
 import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
-import { selectHeaders, setHeaders } from "../../../slices/currentUser";
+import {
+  selectCurrentUser,
+  selectHeaders,
+  setHeaders,
+} from "../../../slices/currentUser";
+import { graphQLClient } from "../../../gql/client";
+import { bandQuery } from "../../../gql/query/band";
+import { IBandType } from "../../../gql/types";
 
 const Show: React.FC = () => {
   const match = useRouteMatch<{ id: string }>();
+  const id = Number(match.params.id);
   const { onError } = useQuerySnackbar();
   const headers = useSelector(selectHeaders);
+  const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IBandBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      ["bands", match.params.id],
+      ["bands", id],
       (prev) => prev && { ...prev, bookmark: res.data }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      ["bands", match.params.id],
+      ["bands", id],
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
   const { isLoading, data } = useQuery<IBand>(
-    ["bands", match.params.id],
+    ["bands", id],
     () =>
-      axios.get<IBand>(match.url, headers).then((res) => {
-        dispatch(setHeaders(res.headers));
-        return res.data;
-      }),
+      graphQLClient
+        .request<IBandType>(bandQuery, { id, currentUserId: currentUser?.id })
+        .then((res) => res.band),
     { onError }
   );
   const createMutation = useMutation(
@@ -97,7 +105,7 @@ const Show: React.FC = () => {
       </Box>
       <Box mb={3}>
         <AlbumDialog />
-        <AlbumsTable albums={data?.albums || []} loading={isLoading} />
+        <AlbumsTable data={data?.albums} loading={isLoading} />
       </Box>
     </DefaultLayout>
   );
