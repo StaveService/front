@@ -42,10 +42,10 @@ const Root: React.FC = () => {
         </Grid>
       </Box>
       <MusicsTable
-        data={data?.musics.data}
+        data={data?.musics?.data}
         loading={isLoading}
         page={page}
-        pageCount={data?.musics.pagination.totalPages}
+        pageCount={data?.musics?.pagination?.totalPages}
         onPage={handlePage}
       />
     </DefaultLayout>

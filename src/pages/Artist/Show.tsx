@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRouteMatch } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
@@ -12,40 +12,55 @@ import BandsTable from "../../components/Table/Band";
 import AlbumsTable from "../../components/Table/Album";
 import BookmarkButton from "../../components/Button/Bookmark";
 import DefaultLayout from "../../layout/Default";
-import { IArtist, IArtistBookmark } from "../../interfaces";
+import { IArtist, IArtistBookmark, IArtistType } from "../../interfaces";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
-import { selectHeaders, setHeaders } from "../../slices/currentUser";
+import {
+  selectCurrentUser,
+  selectHeaders,
+  setHeaders,
+} from "../../slices/currentUser";
 import routes from "../../router/routes.json";
+import { graphQLClient } from "../../gql/client";
+import { artistQuery } from "../../gql/query/artist";
+import queryKey from "../../gql/queryKey.json";
 
 const Show: React.FC = () => {
+  const [albumPage, setAlbumPage] = useState(1);
+  const [musicPage, setMusicPage] = useState(1);
   const match = useRouteMatch<{ id: string }>();
+  const id = Number(match.params.id);
   const { onError } = useQuerySnackbar();
   // react-redux
   const headers = useSelector(selectHeaders);
+  const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IArtistBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      ["artists", match.params.id],
+      [queryKey.ARTIST, id, { musicPage, albumPage }],
       (prev) => prev && { ...prev, bookmark: res.data }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      ["artists", match.params.id],
+      [queryKey.ARTIST, id, { musicPage, albumPage }],
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
   const { isLoading, data } = useQuery<IArtist>(
-    ["artists", match.params.id],
+    [queryKey.ARTIST, id, { musicPage, albumPage }],
     () =>
-      axios.get<IArtist>(match.url, headers).then((res) => {
-        dispatch(setHeaders(res.headers));
-        return res.data;
-      }),
+      graphQLClient
+        .request<IArtistType>(artistQuery, {
+          id,
+          currentUserId: currentUser?.id,
+          musicPage,
+          albumPage,
+        })
+        .then((res) => res.artist),
     { onError }
   );
   const createMutation = useMutation(
@@ -70,6 +85,10 @@ const Show: React.FC = () => {
   // handlers
   const handleCreateMutation = () => createMutation.mutate();
   const handleDestroyMutation = () => destroyMutation.mutate();
+  const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setMusicPage(value);
+  const handleAlbumPage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setAlbumPage(value);
 
   return (
     <DefaultLayout>
@@ -90,9 +109,21 @@ const Show: React.FC = () => {
       </Grid>
       <BandsTable data={data?.bands} loading={isLoading} />
       <Box pb={3} />
-      <AlbumsTable data={data?.albums} loading={isLoading} />
+      <AlbumsTable
+        data={data?.albums?.data}
+        loading={isLoading}
+        page={albumPage}
+        pageCount={data?.albums?.pagination.totalPages}
+        onPage={handleAlbumPage}
+      />
       <Box pb={3} />
-      <MusicsTable data={data?.musics} loading={isLoading} />
+      <MusicsTable
+        data={data?.musics?.data}
+        loading={isLoading}
+        page={musicPage}
+        pageCount={data?.musics?.pagination.totalPages}
+        onPage={handleMusicPage}
+      />
     </DefaultLayout>
   );
 };

@@ -11,7 +11,7 @@ export interface ITokenHeaders {
   client: string;
   uid: string;
 }
-export interface IUser {
+export interface IUser extends IMusicsType {
   ["allow_password_change"]?: false;
   email: string;
   id: number;
@@ -23,7 +23,6 @@ export interface IUser {
   gender: number | null;
   introduction: string | null;
   ["created_at"]: string;
-  musics?: IMusic[];
 }
 export interface IBand extends IMusicsType, IAlbumsType {
   id: number;
@@ -47,13 +46,10 @@ export interface IMusic {
   lyrists?: IArtist[];
   musicLink?: IMusicLink;
 }
-export interface IArtist {
+export interface IArtist extends IMusicsType, IAlbumsType {
   id: number;
   name: string;
   bookmark?: IArtistBookmark;
-  ["itunes_artist_id"]: number;
-  musics?: IMusic[];
-  albums?: IAlbum[];
   bands?: IBand[];
 }
 export interface IAlbum {
@@ -109,18 +105,12 @@ export interface IArtistAlbum {
 }
 export interface IMusicBookmark {
   id: number;
-  ["user_id"]: number;
-  ["music_id"]: number;
 }
 export interface IBandBookmark {
   id: number;
-  ["user_id"]: number;
-  ["band_id"]: number;
 }
 export interface IArtistBookmark {
   id: number;
-  ["user_id"]: number;
-  ["artist_id"]: number;
 }
 export interface IPaginationType {
   currentPage: number;
@@ -128,11 +118,17 @@ export interface IPaginationType {
   totalCount: number;
   totalPages: number;
 }
+export interface IUserType {
+  user: IUser;
+}
 export interface IUsersType {
   users: {
     data: IUser[];
     pagination: IPaginationType;
   };
+}
+export interface IMusicType {
+  music: IMusic;
 }
 export interface IMusicsType {
   musics: {
@@ -140,8 +136,8 @@ export interface IMusicsType {
     pagination: IPaginationType;
   };
 }
-export interface IMusicType {
-  music: IMusic;
+export interface IArtistType {
+  artist: IArtist;
 }
 export interface IArtistsType {
   artists: {
@@ -149,14 +145,14 @@ export interface IArtistsType {
     pagination: IPaginationType;
   };
 }
+export interface IBandType {
+  band: IBand;
+}
 export interface IBandsType {
   bands: {
     data: IBand[];
     pagination: IPaginationType;
   };
-}
-export interface IBandType {
-  band: IBand;
 }
 export interface IAlbumsType {
   albums: {

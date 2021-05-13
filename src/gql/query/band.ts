@@ -3,7 +3,7 @@ import { gql } from "graphql-request";
 export const bandQuery = gql`
   query getBand(
     $id: Int!
-    $currentUserId: Int!
+    $currentUserId: Int
     $musicPage: Int!
     $albumPage: Int!
   ) {
