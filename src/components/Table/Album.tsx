@@ -42,7 +42,7 @@ const Album: React.FC<AlbumProps> = ({
     let i = 0;
     setMergedAlbums(
       data.map((album) => {
-        if (album.itunes_collection_id === results[i]?.collectionId) {
+        if (album.albumLink?.itunes === results[i]?.collectionId) {
           const mergedMusic = {
             ...album,
             itunesArtworkUrl: results[i].artworkUrl60,
@@ -55,16 +55,13 @@ const Album: React.FC<AlbumProps> = ({
     );
   };
   useQuery(
-    [
-      "itunesMusics",
-      data?.map((album) => album.itunes_collection_id).join(","),
-    ],
+    ["itunesAlbums", data?.map((album) => album.albumLink?.itunes).join(",")],
     () =>
       itunes
         .get<IItunesResponse<IItunesAlbum>>("/lookup", {
           params: {
-            id: data?.map((album) => album.itunes_collection_id).join(","),
-            entity: "song",
+            id: data?.map((album) => album.albumLink?.itunes).join(","),
+            entity: "album",
           },
         })
         .then((res) => res.data.results),

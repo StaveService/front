@@ -6,7 +6,7 @@ import DefaultLayout from "../../layout/Default";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { albumsQuery } from "../../gql/query/albums";
-import { IAlbumsType } from "../../gql/types";
+import { IAlbumsType } from "../../interfaces";
 
 const Index: React.FC = () => {
   const [page, setPage] = useState(1);

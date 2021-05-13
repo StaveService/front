@@ -8,6 +8,9 @@ export const albumsQuery = gql`
     albums(id: $id) {
       id
       name
+      albumLink {
+        itunes
+      }
     }
   }
 `;

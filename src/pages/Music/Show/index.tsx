@@ -35,17 +35,19 @@ import {
   IItunesResponse,
   IMusic,
   IMusicBookmark,
+  IMusicType,
 } from "../../../interfaces";
 import routes from "../../../router/routes.json";
 import { itunes } from "../../../axios";
 import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
 import { musicQuery } from "../../../gql/query/music";
 import { graphQLClient } from "../../../gql/client";
-import { IMusicType } from "../../../gql/types";
+import queryKey from "../../../gql/queryKey.json";
 
 const Show: React.FC = () => {
   // react-hook-form
   const match = useRouteMatch<{ id: string; userId: string }>();
+  const id = Number(match.params.id);
   const location = useLocation();
   // notistack
   const { onError } = useQuerySnackbar();
@@ -58,23 +60,23 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IMusicBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["music", match.params.id],
+      [queryKey.MUSICS, id],
       (prev) => prev && { ...prev, bookmark: res.data }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["music", match.params.id],
+      [queryKey.MUSICS, id],
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
   const music = useQuery<IMusic>(
-    ["music", match.params.id],
+    [queryKey.MUSICS, id],
     () =>
       graphQLClient
         .request<IMusicType>(musicQuery, {
-          id: Number(match.params.id),
+          id,
           currentUserId: currentUser?.id,
         })
         .then((res) => res.music),

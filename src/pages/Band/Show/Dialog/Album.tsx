@@ -27,6 +27,7 @@ import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import { IAlbum, IBand, IBandAlbum } from "../../../../interfaces";
 import { useOpen } from "../../../../common/useOpen";
 import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
+import queryKey from "../../../../gql/queryKey.json";
 
 const Album: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
@@ -37,34 +38,39 @@ const Album: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
+  const { id } = match.params;
   const route = match.url + routes.BAND_ALBUMS;
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
   // react-query
   const queryClient = useQueryClient();
-  const band = queryClient.getQueryData<IBand>(["bands", match.params.id]);
+  const band = queryClient.getQueryData<IBand>([queryKey.BANDS, id]);
   const handleCreateSuccess = (res: AxiosResponse<IBandAlbum>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      ["bands", match.params.id],
+      [queryKey.BANDS, id],
       (prev) =>
         prev && {
           ...prev,
-          albums: [...(prev.albums || []), res.data.album],
+          albums: {
+            data: [...prev.albums.data, res.data.album],
+            pagination: prev.albums.pagination,
+          },
         }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse<IBand>, album: IAlbum) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      ["bands", match.params.id],
+      [queryKey.BANDS, id],
       (prev) =>
         prev && {
           ...prev,
-          albums:
-            prev.albums &&
-            prev.albums.filter((prevAlbum) => prevAlbum !== album),
+          albums: {
+            data: prev.albums.data.filter((prevAlbum) => prevAlbum !== album),
+            pagination: prev.albums.pagination,
+          },
         }
     );
   };
@@ -97,7 +103,7 @@ const Album: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {band?.albums?.map((album) => {
+                {band?.albums?.data.map((album) => {
                   const handleClick = () => destroyMutation.mutate(album);
                   return (
                     <TableRow key={album.id}>
@@ -106,7 +112,6 @@ const Album: React.FC = () => {
                           {album.title}
                         </Link>
                       </TableCell>
-
                       <TableCell align="right">
                         <IconButton onClick={handleClick}>
                           <CloseIcon />

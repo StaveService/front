@@ -25,14 +25,12 @@ export interface IUser {
   ["created_at"]: string;
   musics?: IMusic[];
 }
-export interface IBand {
+export interface IBand extends IMusicsType, IAlbumsType {
   id: number;
   name: string;
   ["itunes_artist_id"]: number;
   bookmark?: IBandBookmark;
   artists?: IArtist[];
-  albums?: IAlbum[];
-  musics?: IMusic[];
 }
 export interface IMusic {
   id: number;
@@ -61,10 +59,9 @@ export interface IArtist {
 export interface IAlbum {
   id: number;
   title: string;
-  ["itunes_collection_id"]: number;
-  ["release_date"]: string;
   musics?: IMusic[];
   artists?: IArtist[];
+  albumLink?: IAlbumLink;
 }
 export interface IIssue {
   id: number;
@@ -76,6 +73,9 @@ export interface IIssue {
 export interface IMusicLink {
   itunes: number;
   twitter: string;
+}
+export interface IAlbumLink {
+  itunes: number;
 }
 export interface IArtistMusic {
   id: number;
@@ -121,6 +121,48 @@ export interface IArtistBookmark {
   id: number;
   ["user_id"]: number;
   ["artist_id"]: number;
+}
+export interface IPaginationType {
+  currentPage: number;
+  limitValue: number;
+  totalCount: number;
+  totalPages: number;
+}
+export interface IUsersType {
+  users: {
+    data: IUser[];
+    pagination: IPaginationType;
+  };
+}
+export interface IMusicsType {
+  musics: {
+    data: IMusic[];
+    pagination: IPaginationType;
+  };
+}
+export interface IMusicType {
+  music: IMusic;
+}
+export interface IArtistsType {
+  artists: {
+    data: IArtist[];
+    pagination: IPaginationType;
+  };
+}
+export interface IBandsType {
+  bands: {
+    data: IBand[];
+    pagination: IPaginationType;
+  };
+}
+export interface IBandType {
+  band: IBand;
+}
+export interface IAlbumsType {
+  albums: {
+    data: IAlbum[];
+    pagination: IPaginationType;
+  };
 }
 export interface ISignInFormValues {
   email: string;

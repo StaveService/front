@@ -9,7 +9,7 @@ import DefaultLayout from "../layout/Default";
 import queryKey from "../gql/queryKey.json";
 import { graphQLClient } from "../gql/client";
 import { musicsQuery } from "../gql/query/musics";
-import { IMusicsType } from "../gql/types";
+import { IMusicsType } from "../interfaces";
 
 const Root: React.FC = () => {
   const [page, setPage] = useState(1);

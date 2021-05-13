@@ -5,8 +5,8 @@ import DefaultLayout from "../../layout/Default";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { artistsQuery } from "../../gql/query/artists";
-import { IArtistsType } from "../../gql/types";
 import queryKey from "../../gql/queryKey.json";
+import { IArtistsType } from "../../interfaces";
 
 const Index: React.FC = () => {
   const [page, setPage] = useState(1);

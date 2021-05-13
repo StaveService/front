@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRouteMatch } from "react-router-dom";
@@ -15,7 +15,7 @@ import AlbumsTable from "../../../components/Table/Album";
 import BookmarkButton from "../../../components/Button/Bookmark";
 import DefaultLayout from "../../../layout/Default";
 import routes from "../../../router/routes.json";
-import { IBand, IBandBookmark } from "../../../interfaces";
+import { IBand, IBandBookmark, IBandType } from "../../../interfaces";
 import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
 import {
   selectCurrentUser,
@@ -23,10 +23,12 @@ import {
   setHeaders,
 } from "../../../slices/currentUser";
 import { graphQLClient } from "../../../gql/client";
+import queryKey from "../../../gql/queryKey.json";
 import { bandQuery } from "../../../gql/query/band";
-import { IBandType } from "../../../gql/types";
 
 const Show: React.FC = () => {
+  const [albumPage, setAlbumPage] = useState(1);
+  const [musicPage, setMusicPage] = useState(1);
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);
   const { onError } = useQuerySnackbar();
@@ -38,22 +40,27 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IBandBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      ["bands", id],
+      [queryKey.BANDS, id, { musicPage, albumPage }],
       (prev) => prev && { ...prev, bookmark: res.data }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      ["bands", id],
+      [queryKey.BANDS, id, { musicPage, albumPage }],
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
   const { isLoading, data } = useQuery<IBand>(
-    ["bands", id],
+    [queryKey.BANDS, id, { musicPage, albumPage }],
     () =>
       graphQLClient
-        .request<IBandType>(bandQuery, { id, currentUserId: currentUser?.id })
+        .request<IBandType>(bandQuery, {
+          id,
+          currentUserId: currentUser?.id,
+          musicPage,
+          albumPage,
+        })
         .then((res) => res.band),
     { onError }
   );
@@ -79,6 +86,10 @@ const Show: React.FC = () => {
   // handlers
   const handleCreateMutation = () => createMutation.mutate();
   const handleDestroyMutation = () => destroyMutation.mutate();
+  const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setMusicPage(value);
+  const handleAlbumPage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setAlbumPage(value);
   return (
     <DefaultLayout>
       <Grid container>
@@ -101,11 +112,23 @@ const Show: React.FC = () => {
         <ArtistsTable data={data?.artists} loading={isLoading} />
       </Box>
       <Box mb={3}>
-        <MusicsTable data={data?.musics} loading={isLoading} />
+        <MusicsTable
+          data={data?.musics.data}
+          loading={isLoading}
+          page={musicPage}
+          pageCount={data?.musics.pagination.totalPages}
+          onPage={handleMusicPage}
+        />
       </Box>
       <Box mb={3}>
         <AlbumDialog />
-        <AlbumsTable data={data?.albums} loading={isLoading} />
+        <AlbumsTable
+          data={data?.albums.data}
+          loading={isLoading}
+          page={albumPage}
+          pageCount={data?.albums.pagination.totalPages}
+          onPage={handleAlbumPage}
+        />
       </Box>
     </DefaultLayout>
   );

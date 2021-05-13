@@ -1,26 +1,48 @@
 import { gql } from "graphql-request";
 
 export const bandQuery = gql`
-  query getBand($id: Int!, $currentUserId: Int!) {
+  query getBand(
+    $id: Int!
+    $currentUserId: Int!
+    $musicPage: Int!
+    $albumPage: Int!
+  ) {
     band(id: $id) {
       id
       name
-      musics {
-        id
-        title
-        composers {
+      musics(musicPage: $musicPage) {
+        data {
           id
-          name
+          title
+          composers {
+            id
+            name
+          }
+          lyrists {
+            id
+            name
+          }
+          user {
+            nickname
+          }
+          musicLink {
+            itunes
+          }
         }
-        lyrists {
+        pagination {
+          totalPages
+        }
+      }
+      albums(albumPage: $albumPage) {
+        data {
           id
-          name
+          title
+          albumLink {
+            itunes
+          }
         }
-        user {
-          nickname
-        }
-        musicLink {
-          itunes
+        pagination {
+          totalPages
         }
       }
       artists {

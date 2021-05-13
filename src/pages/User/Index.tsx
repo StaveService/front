@@ -3,10 +3,10 @@ import { useQuery } from "react-query";
 import UsersTable from "../../components/Table/User";
 import DefaultLayout from "../../layout/Default";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
-import { IUsersType } from "../../gql/types";
 import { graphQLClient } from "../../gql/client";
 import { usersQuery } from "../../gql/query/users";
 import queryKey from "../../gql/queryKey.json";
+import { IUsersType } from "../../interfaces";
 
 const Index: React.FC = () => {
   const [page, setPage] = useState(1);

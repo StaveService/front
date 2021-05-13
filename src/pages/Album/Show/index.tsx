@@ -24,14 +24,14 @@ const Show: React.FC = () => {
     { onError }
   );
   const itunesAlbum = useQuery<IItunesAlbum>(
-    ["itunesAlbums", album.data?.itunes_collection_id],
+    ["itunesAlbums", album.data?.albumLink?.itunes],
     () =>
       itunes
         .get<IItunesResponse<IItunesAlbum>>("/lookup", {
-          params: { id: album.data?.itunes_collection_id, entity: "album" },
+          params: { id: album.data?.albumLink?.itunes, entity: "album" },
         })
         .then((res) => res.data.results[0]),
-    { enabled: !!album.data?.itunes_collection_id, onError }
+    { enabled: !!album.data?.albumLink?.itunes, onError }
   );
   return (
     <DefaultLayout>
