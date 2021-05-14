@@ -1,14 +1,15 @@
 import { gql } from "graphql-request";
 
-export const bandsQuery = gql`
-  query getBands($page: Int!, $q: JSON) {
-    bands(page: $page, q: $q) {
+export const issuesQuery = gql`
+  query getIssues($musicId: Int!, $page: Int!) {
+    issues(musicId: $musicId, page: $page) {
       pagination {
         totalPages
       }
       data {
         id
-        name
+        title
+        description
       }
     }
   }

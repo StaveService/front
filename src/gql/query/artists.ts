@@ -1,8 +1,8 @@
 import { gql } from "graphql-request";
 
 export const artistsQuery = gql`
-  query getArtists($page: Int!) {
-    artists(page: $page) {
+  query getArtists($page: Int!, $q: JSON) {
+    artists(page: $page, q: $q) {
       pagination {
         totalPages
       }

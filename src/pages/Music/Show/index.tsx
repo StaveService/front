@@ -60,19 +60,19 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IMusicBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSICS, id],
+      [queryKey.MUSIC, id],
       (prev) => prev && { ...prev, bookmark: res.data }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSICS, id],
+      [queryKey.MUSIC, id],
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
   const music = useQuery<IMusic>(
-    [queryKey.MUSICS, id],
+    [queryKey.MUSIC, id],
     () =>
       graphQLClient
         .request<IMusicType>(musicQuery, {
@@ -83,7 +83,7 @@ const Show: React.FC = () => {
     { onError }
   );
   const itunesMusic = useQuery<IItunesMusic>(
-    ["itunesMusic", music.data?.musicLink?.itunes],
+    [queryKey.ITUNES, queryKey.MUSIC, music.data?.musicLink?.itunes],
     () =>
       itunes
         .get<IItunesResponse<IItunesMusic>>("/lookup", {

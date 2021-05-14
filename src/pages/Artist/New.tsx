@@ -2,19 +2,13 @@ import axios, { AxiosResponse } from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import {
-  Link as RouterLink,
-  useHistory,
-  useRouteMatch,
-} from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
 import { useMutation, useQueryClient } from "react-query";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
@@ -24,12 +18,19 @@ import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
-import ArtistCard from "../../components/Card/Artist";
+import ArtistTable from "../../components/Table/Artist";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import { IArtist, IItunesArtist, IItunesResponse } from "../../interfaces";
+import {
+  IArtist,
+  IArtistsType,
+  IItunesArtist,
+  IItunesResponse,
+} from "../../interfaces";
 import { useOpen } from "../../common/useOpen";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { graphQLClient } from "../../gql/client";
+import { artistsQuery } from "../../gql/query/artists";
 
 interface IFormValues {
   name: string;
@@ -37,6 +38,7 @@ interface IFormValues {
 }
 
 const New: React.FC = () => {
+  const [page, setPage] = useState(1);
   const { open, handleOpen, handleClose } = useOpen();
   const [
     selectedItunesArtist,
@@ -75,8 +77,9 @@ const New: React.FC = () => {
   );
   const searchMutation = useMutation(
     (term: string) =>
-      axios.get<IArtist[]>(route, {
-        params: { q: { name_eq: term } },
+      graphQLClient.request<IArtistsType>(artistsQuery, {
+        page,
+        q: { name_eq: term },
       }),
     { onError }
   );
@@ -101,6 +104,8 @@ const New: React.FC = () => {
     handleOpen();
     searchItunesMutation.mutate(getValues("name"));
   };
+  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setPage(value);
   useEffect(() => {
     if (selectedItunesArtist) {
       const { artistName, artistId } = selectedItunesArtist;
@@ -133,24 +138,24 @@ const New: React.FC = () => {
     );
   };
   const SearchedArtistsCard = () => {
-    if (!searchMutation.data?.data.length) return <></>;
+    if (!searchMutation.data?.artists.data.length) return <></>;
     return (
       <>
-        <Alert severity="warning">
-          <AlertTitle>Warning</AlertTitle>
-          Album Already Existed — <strong>check it out!</strong>
-        </Alert>
-        <Typography>Artist already exists</Typography>
-        {searchMutation.data?.data.map((artist) => (
-          <Link
-            underline="none"
-            key={artist.id}
-            component={RouterLink}
-            to={`${route}/${artist.id}`}
-          >
-            <ArtistCard artist={artist} />
-          </Link>
-        ))}
+        <Box my={3}>
+          <Alert severity="warning">
+            <AlertTitle>Warning</AlertTitle>
+            Album Already Existed — <strong>check it out!</strong>
+          </Alert>
+        </Box>
+        <Box mb={3}>
+          <ArtistTable
+            data={searchMutation.data?.artists.data}
+            page={page}
+            pageCount={searchMutation.data?.artists.pagination.totalPages}
+            onPage={handlePage}
+            loading={searchMutation.isLoading}
+          />
+        </Box>
       </>
     );
   };

@@ -21,15 +21,20 @@ import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../router/routes.json";
 import { selectCurrentUser } from "../../../../../slices/currentUser";
 import { IItunesMusic, IMusic } from "../../../../../interfaces";
+import queryKey from "../../../../../gql/queryKey.json";
 
 const Info: React.FC = () => {
   const params = useParams<{ userId: string; id: string }>();
   const currentUser = useSelector(selectCurrentUser);
   const isSignedIn = currentUser?.id === Number(params.userId);
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>(["music", params.id]);
+  const music = queryClient.getQueryData<IMusic>([
+    queryKey.MUSIC,
+    Number(params.id),
+  ]);
   const itunesMusic = queryClient.getQueryData<IItunesMusic>([
-    "itunesMusic",
+    queryKey.ITUNES,
+    queryKey.MUSIC,
     music?.musicLink?.itunes,
   ]);
   return (

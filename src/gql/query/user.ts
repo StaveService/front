@@ -12,9 +12,11 @@ export const userQuery = gql`
             name
           }
           composers {
+            id
             name
           }
           lyrists {
+            id
             name
           }
           musicLink {

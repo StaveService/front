@@ -1,8 +1,11 @@
 {
   "MUSICS": "musics",
+  "MUSIC": "music",
   "ARTISTS": "artists",
   "ARTIST": "artist",
   "BANDS": "bands",
   "USERS": "users",
-  "USER": "user"
+  "USER": "user",
+  "ISSUES": "issues",
+  "ITUNES": "itunes"
 }

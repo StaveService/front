@@ -2,18 +2,13 @@ import axios, { AxiosResponse } from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import {
-  Link as RouterLink,
-  useHistory,
-  useRouteMatch,
-} from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import Image from "material-ui-image";
 import Box from "@material-ui/core/Box";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
-import Link from "@material-ui/core/Link";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import { useMutation, useQueryClient } from "react-query";
@@ -21,11 +16,16 @@ import ControlTextField from "../../components/ControlTextField";
 import ControlDropzone from "../../components/ControlDropzone";
 import ItunesMusicCard from "../../components/Card/Itunes/Music";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
-import MusicCard from "../../components/Card/Music";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
+import MusicTable from "../../components/Table/Music";
 import DefaultLayout from "../../layout/Default";
-import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
+import {
+  IItunesMusic,
+  IItunesResponse,
+  IMusic,
+  IMusicsType,
+} from "../../interfaces";
 import { itunes } from "../../axios";
 import routes from "../../router/routes.json";
 import {
@@ -35,8 +35,13 @@ import {
 } from "../../slices/currentUser";
 import { useOpen } from "../../common/useOpen";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import queryKey from "../../gql/queryKey.json";
+import { graphQLClient } from "../../gql/client";
+import { musicsQuery } from "../../gql/query/musics";
 
 const New: React.FC = () => {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const [page, setPage] = useState(1);
   const { open, handleOpen, handleClose } = useOpen();
   const [
     selectedItunesMusic,
@@ -60,6 +65,7 @@ const New: React.FC = () => {
   // react-router-dom
   const history = useHistory();
   const match = useRouteMatch<{ id: string }>();
+  const id = Number(match.params.id);
   const route = `${routes.USERS}/${currentUser?.id || "undefinde"}${
     routes.MUSICS
   }`;
@@ -70,10 +76,10 @@ const New: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IMusic>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
-    queryClient.setQueryData(["music", match.params.id], res.data);
+    queryClient.setQueryData([queryKey.MUSIC, id], res.data);
     if (selectedItunesMusic)
       queryClient.setQueryData(
-        ["itunesMusic", selectedItunesMusic.trackId],
+        [queryKey.ITUNES, queryKey.MUSIC, selectedItunesMusic.trackId],
         selectedItunesMusic
       );
   };
@@ -83,7 +89,10 @@ const New: React.FC = () => {
   );
   const searchMutation = useMutation(
     (term: string) =>
-      axios.get<IMusic[]>(routes.MUSICS, { params: { q: { title_eq: term } } }),
+      graphQLClient.request<IMusicsType>(musicsQuery, {
+        page,
+        q: { title_eq: term },
+      }),
     { onError }
   );
   const searchItunesMutation = useMutation(
@@ -97,13 +106,17 @@ const New: React.FC = () => {
     { onError }
   );
   // handlers
-  const onSubmit = (data: IMusic) => {
-    createMusicMutation.mutate(data);
-  };
+  const onSubmit = (data: IMusic) => createMusicMutation.mutate(data);
   const handleChange = ({
     target: { value },
   }: ChangeEvent<HTMLInputElement>) => {
-    if (value) searchMutation.mutate(value);
+    if (value) {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      timer = setTimeout(() => searchMutation.mutate(value), 2000);
+    }
   };
   const handleClick = () => {
     handleOpen();
@@ -114,6 +127,8 @@ const New: React.FC = () => {
     reader.onload = (e) => setValue("tab", e.target?.result);
     reader.readAsText(acceptedFiles[0]);
   };
+  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setPage(value);
   useEffect(() => {
     if (selectedItunesMusic) {
       const { trackCensoredName, trackId } = selectedItunesMusic;
@@ -144,24 +159,24 @@ const New: React.FC = () => {
     );
   };
   const SearchedMusicCards: React.FC = () => {
-    if (!searchMutation.data?.data.length) return null;
+    if (!searchMutation.data?.musics.data.length) return null;
     return (
       <>
-        <Alert severity="warning">
-          <AlertTitle>Warning</AlertTitle>
-          Music Already Existed — <strong>check it out!</strong>
-        </Alert>
-        {searchMutation.data?.data.map((music) => (
-          <Box mb={3} key={music.id}>
-            <Link
-              underline="none"
-              component={RouterLink}
-              to={`${route}/${music.id}`}
-            >
-              <MusicCard music={music} />
-            </Link>
-          </Box>
-        ))}
+        <Box my={3}>
+          <Alert severity="warning">
+            <AlertTitle>Warning</AlertTitle>
+            Music Already Existed — <strong>check it out!</strong>
+          </Alert>
+        </Box>
+        <Box mb={3}>
+          <MusicTable
+            data={searchMutation.data.musics.data}
+            page={page}
+            pageCount={searchMutation.data?.musics.pagination.totalPages}
+            onPage={handlePage}
+            loading={searchMutation.isLoading}
+          />
+        </Box>
       </>
     );
   };

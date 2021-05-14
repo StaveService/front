@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -8,27 +7,33 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import routes from "../../../../../router/routes.json";
 import IssueTable from "../../../../../components/Table/Issue";
-import { IIssue } from "../../../../../interfaces";
+import { IIssueType } from "../../../../../interfaces";
 import { useQuerySnackbar } from "../../../../../common/useQuerySnackbar";
+import { graphQLClient } from "../../../../../gql/client";
+import queryKey from "../../../../../gql/queryKey.json";
+import { issuesQuery } from "../../../../../gql/query/issues";
 
 const Index: React.FC = () => {
+  const [page, setPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
-  const match = useRouteMatch();
-  const ISSUES = match.url.split("/").pop() || "";
+  const match = useRouteMatch<{ id: string }>();
   const { onError } = useQuerySnackbar();
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") setSearchValue((e.target as HTMLInputElement).value);
   };
-  const { data, isLoading } = useQuery<IIssue[]>(
-    searchValue ? [ISSUES, searchValue] : ISSUES,
+  const { data, isLoading } = useQuery<IIssueType>(
+    searchValue
+      ? [queryKey.ISSUES, searchValue, page]
+      : [queryKey.ISSUES, page],
     () =>
-      axios
-        .get<IIssue[]>(match.url, {
-          params: { q: { title_cont: searchValue } },
-        })
-        .then((res) => res.data),
+      graphQLClient.request(issuesQuery, {
+        page,
+        musicId: Number(match.params.id),
+      }),
     { onError }
   );
+  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setPage(value);
   return (
     <>
       <Box mb={3}>
@@ -52,7 +57,13 @@ const Index: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
-      <IssueTable issues={data || []} loading={isLoading} />
+      <IssueTable
+        data={data?.issues.data}
+        loading={isLoading}
+        page={page}
+        pageCount={data?.issues.pagination.totalPages}
+        onPage={handlePage}
+      />
     </>
   );
 };

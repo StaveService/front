@@ -145,6 +145,12 @@ export interface IArtistsType {
     pagination: IPaginationType;
   };
 }
+export interface IIssueType {
+  issues: {
+    data: IIssue[];
+    pagination: IPaginationType;
+  };
+}
 export interface IBandType {
   band: IBand;
 }

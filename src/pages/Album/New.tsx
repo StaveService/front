@@ -2,34 +2,36 @@ import axios, { AxiosResponse } from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import {
-  Link as RouterLink,
-  useHistory,
-  useRouteMatch,
-} from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
-import Link from "@material-ui/core/Link";
 import Image from "material-ui-image";
 import { useMutation, useQueryClient } from "react-query";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
+import AlbumTable from "../../components/Table/Album";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesAlbumCard from "../../components/Card/Itunes/Album";
-import AlbumCard from "../../components/Card/Album";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import DefaultLayout from "../../layout/Default";
-import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
+import {
+  IAlbum,
+  IAlbumsType,
+  IItunesAlbum,
+  IItunesResponse,
+} from "../../interfaces";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { useOpen } from "../../common/useOpen";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { graphQLClient } from "../../gql/client";
+import { albumsQuery } from "../../gql/query/albums";
 
 interface IFormValues {
   title: string;
@@ -37,6 +39,8 @@ interface IFormValues {
 }
 
 const New: React.FC = () => {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const [page, setPage] = useState(1);
   const { open, handleOpen, handleClose } = useOpen();
   const [
     selectedItunesAlbum,
@@ -75,8 +79,9 @@ const New: React.FC = () => {
   );
   const searchMutation = useMutation(
     (term: string) =>
-      axios.get<IAlbum[]>(route, {
-        params: { q: { title_eq: term } },
+      graphQLClient.request<IAlbumsType>(albumsQuery, {
+        page,
+        q: { title_eq: term },
       }),
     { onError }
   );
@@ -95,12 +100,22 @@ const New: React.FC = () => {
   const handleChange = ({
     target: { value },
   }: ChangeEvent<HTMLInputElement>) => {
-    if (value) searchMutation.mutate(value);
+    if (value) {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      timer = setTimeout(() => {
+        searchMutation.mutate(value);
+      }, 2000);
+    }
   };
   const handleClick = () => {
     handleOpen();
     searchItunesMutation.mutate(getValues("title"));
   };
+  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setPage(value);
   useEffect(() => {
     if (selectedItunesAlbum) {
       const { collectionName, collectionId } = selectedItunesAlbum;
@@ -133,23 +148,24 @@ const New: React.FC = () => {
     );
   };
   const SearchedArtistCards = () => {
-    if (!searchMutation.data?.data.length) return null;
+    if (!searchMutation.data?.albums.data.length) return null;
     return (
       <>
-        <Alert severity="warning">
-          <AlertTitle>Warning</AlertTitle>
-          Album Already Existed — <strong>check it out!</strong>
-        </Alert>
-        {searchMutation.data?.data.map((album) => (
-          <Link
-            underline="none"
-            key={album.id}
-            component={RouterLink}
-            to={`${route}/${album.id}`}
-          >
-            <AlbumCard album={album} />
-          </Link>
-        ))}
+        <Box my={3}>
+          <Alert severity="warning">
+            <AlertTitle>Warning</AlertTitle>
+            Album Already Existed — <strong>check it out!</strong>
+          </Alert>
+        </Box>
+        <Box mb={3}>
+          <AlbumTable
+            data={searchMutation.data?.albums.data}
+            page={page}
+            pageCount={searchMutation.data?.albums.pagination.totalPages}
+            onPage={handlePage}
+            loading={searchMutation.isLoading}
+          />
+        </Box>
       </>
     );
   };

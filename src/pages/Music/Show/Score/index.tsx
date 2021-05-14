@@ -4,13 +4,15 @@ import { useSnackbar } from "notistack";
 import { AlphaTabApi, model } from "@coderline/alphatab";
 import Box from "@material-ui/core/Box";
 import { useQuery } from "react-query";
-import { useParams, useRouteMatch } from "react-router-dom";
-import axios from "axios";
+import { useRouteMatch } from "react-router-dom";
 import Header from "./Header";
 import Tracks, { Track } from "../../../../ui/Tracks";
-import { IAlphaTab, IMusic } from "../../../../interfaces";
+import { IAlphaTab, IMusicType } from "../../../../interfaces";
 import styles from "./index.module.css";
 import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
+import queryKey from "../../../../gql/queryKey.json";
+import { graphQLClient } from "../../../../gql/client";
+import { musicQuery } from "../../../../gql/query/music";
 
 const settings = {
   tex: true,
@@ -32,13 +34,12 @@ const Tab: React.FC = () => {
     src:
       "https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js",
   });
-  const params = useParams<{ id: string }>();
-  const match = useRouteMatch();
+  const match = useRouteMatch<{ id: string }>();
+  const id = Number(match.params.id);
   // react-query
-  const { data } = useQuery(
-    ["music", params.id],
-    () =>
-      axios.get<IMusic>(match.url.replace("/tab", "")).then((res) => res.data),
+  const { data } = useQuery<IMusicType>(
+    [queryKey.MUSIC, id],
+    () => graphQLClient.request(musicQuery, { id }),
     { onError }
   );
   // handlers
@@ -66,7 +67,7 @@ const Tab: React.FC = () => {
   useEffect(() => {
     alphaTabApi?.renderStarted.on(renderStarted);
     alphaTabApi?.scoreLoaded.on(scoreLoaded);
-    alphaTabApi?.tex(data?.tab || "");
+    alphaTabApi?.tex(data?.music.tab || "");
     return () => {
       alphaTabApi?.renderStarted.off(renderStarted);
       alphaTabApi?.scoreLoaded.off(scoreLoaded);

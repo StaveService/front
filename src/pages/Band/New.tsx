@@ -2,11 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import {
-  Link as RouterLink,
-  useHistory,
-  useRouteMatch,
-} from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
 import Dialog from "@material-ui/core/Dialog";
@@ -14,24 +10,31 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesArtistCard from "../../components/Card/Itunes/Artist";
-import BandCard from "../../components/Card/Band";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
+import BandTable from "../../components/Table/Band";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import { IBand, IItunesArtist, IItunesResponse } from "../../interfaces";
+import {
+  IBand,
+  IBandsType,
+  IItunesArtist,
+  IItunesResponse,
+} from "../../interfaces";
 import routes from "../../router/routes.json";
 import { itunes } from "../../axios";
 import { useOpen } from "../../common/useOpen";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { graphQLClient } from "../../gql/client";
+import { bandsQuery } from "../../gql/query/bands";
 
 const New: React.FC = () => {
+  const [page, setPage] = useState(1);
   const { open, handleOpen, handleClose } = useOpen();
   const [
     selectedItunesArtist,
@@ -75,7 +78,8 @@ const New: React.FC = () => {
   );
   const searchMutation = useMutation(
     (term: string) =>
-      axios.get<IBand[]>(route, {
+      graphQLClient.request<IBandsType>(bandsQuery, {
+        page,
         params: { q: { name_eq: term } },
       }),
     { onError }
@@ -101,6 +105,8 @@ const New: React.FC = () => {
     handleOpen();
     searchItunesMusicArtistMutation.mutate(getValues("name"));
   };
+  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+    setPage(value);
   useEffect(() => {
     if (selectedItunesArtist) {
       const { artistName, artistId } = selectedItunesArtist;
@@ -135,23 +141,24 @@ const New: React.FC = () => {
     );
   };
   const SearchedBandCards = () => {
-    if (!searchMutation.data?.data.length) return null;
+    if (!searchMutation.data?.bands.data.length) return null;
     return (
       <>
-        <Alert severity="warning">
-          <AlertTitle>Warning</AlertTitle>
-          Band Already Existed — <strong>check it out!</strong>
-        </Alert>
-        {searchMutation.data?.data.map((band) => (
-          <Link
-            underline="none"
-            key={band.id}
-            component={RouterLink}
-            to={`${routes.BANDS}/${band.id}`}
-          >
-            <BandCard band={band} />
-          </Link>
-        ))}
+        <Box my={3}>
+          <Alert severity="warning">
+            <AlertTitle>Warning</AlertTitle>
+            Band Already Existed — <strong>check it out!</strong>
+          </Alert>
+        </Box>
+        <Box mb={3}>
+          <BandTable
+            data={searchMutation.data?.bands.data}
+            page={page}
+            pageCount={searchMutation.data?.bands.pagination.totalPages}
+            onPage={handlePage}
+            loading={searchMutation.isLoading}
+          />
+        </Box>
       </>
     );
   };

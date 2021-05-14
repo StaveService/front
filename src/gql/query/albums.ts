@@ -1,15 +1,17 @@
 import { gql } from "graphql-request";
 
 export const albumsQuery = gql`
-  query getAlbums($id: Int!) {
-    pagination {
-      totalPages
-    }
-    albums(id: $id) {
-      id
-      name
-      albumLink {
-        itunes
+  query getAlbums($page: Int!, $q: JSON) {
+    albums(page: $page, q: $q) {
+      pagination {
+        totalPages
+      }
+      data {
+        id
+        title
+        albumLink {
+          itunes
+        }
       }
     }
   }
