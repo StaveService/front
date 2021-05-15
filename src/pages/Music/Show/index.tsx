@@ -71,26 +71,24 @@ const Show: React.FC = () => {
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
-  const music = useQuery<IMusic>(
+  const music = useQuery<IMusicType>(
     [queryKey.MUSIC, id],
     () =>
-      graphQLClient
-        .request<IMusicType>(musicQuery, {
-          id,
-          currentUserId: currentUser?.id,
-        })
-        .then((res) => res.music),
+      graphQLClient.request(musicQuery, {
+        id,
+        currentUserId: currentUser?.id,
+      }),
     { onError }
   );
   const itunesMusic = useQuery<IItunesMusic>(
-    [queryKey.ITUNES, queryKey.MUSIC, music.data?.musicLink?.itunes],
+    [queryKey.ITUNES, queryKey.MUSIC, music.data?.music.musicLink?.itunes],
     () =>
       itunes
         .get<IItunesResponse<IItunesMusic>>("/lookup", {
-          params: { id: music.data?.musicLink?.itunes, entity: "song" },
+          params: { id: music.data?.music.musicLink?.itunes, entity: "song" },
         })
         .then((res) => res.data.results[0]),
-    { enabled: !!music.data?.musicLink?.itunes, onError }
+    { enabled: !!music.data?.music.musicLink?.itunes, onError }
   );
   const createMutation = useMutation(
     () =>
@@ -105,7 +103,7 @@ const Show: React.FC = () => {
     () =>
       axios.delete(
         `${match.url + routes.MUSIC_BOOKMARKS}/${
-          music.data?.bookmark?.id || "undefined"
+          music.data?.music.bookmark?.id || "undefined"
         }`,
         headers
       ),
@@ -121,12 +119,12 @@ const Show: React.FC = () => {
           <Grid item xs={11}>
             <Typography variant="h5">
               <MusicNoteIcon />
-              {music.data?.title}
+              {music.data?.music.title}
             </Typography>
           </Grid>
           <Grid item xs={1}>
             <BookmarkButton
-              bookmarked={!!music.data?.bookmark || false}
+              bookmarked={!!music.data?.music.bookmark || false}
               onCreate={handleCreateMutation}
               onDestroy={handleDestroyMutation}
             />

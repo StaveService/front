@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from "axios";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -32,6 +32,7 @@ import { useOpen } from "../../common/useOpen";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { bandsQuery } from "../../gql/query/bands";
+import queryKey from "../../gql/queryKey.json";
 
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -42,14 +43,7 @@ const New: React.FC = () => {
   ] = useState<IItunesArtist>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const {
-    errors,
-    control,
-    setValue,
-    getValues,
-    watch,
-    handleSubmit,
-  } = useForm();
+  const { errors, control, setValue, watch, handleSubmit } = useForm<IBand>();
   const { name } = watch();
   // react-router-dom
   const history = useHistory();
@@ -65,10 +59,13 @@ const New: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IBand>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${routes.BANDS}/${res.data.id}`);
-    queryClient.setQueryData(["musics", match.params.id], res.data);
+    queryClient.setQueryData(
+      [queryKey.BAND, Number(match.params.id)],
+      res.data
+    );
     if (selectedItunesArtist)
       queryClient.setQueryData(
-        ["itunesMusics", selectedItunesArtist.artistId],
+        [queryKey.ITUNES, queryKey.ARTIST, selectedItunesArtist.artistId],
         selectedItunesArtist
       );
   };
@@ -76,43 +73,36 @@ const New: React.FC = () => {
     (newBand: IBand) => axios.post<IBand>(route, newBand, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
-  const searchMutation = useMutation(
-    (term: string) =>
-      graphQLClient.request<IBandsType>(bandsQuery, {
+  const searchQuery = useQuery<IBandsType>(
+    [queryKey.BANDS, { page, name }],
+    () =>
+      graphQLClient.request(bandsQuery, {
         page,
-        params: { q: { name_eq: term } },
+        q: { name_eq: name },
       }),
-    { onError }
+    { enabled: !!name, onError }
   );
-  const searchItunesMusicArtistMutation = useMutation(
-    (term: string) =>
+  const searchItunesQuery = useQuery(
+    [queryKey.ITUNES, queryKey.ARTISTS, name],
+    () =>
       itunes.get<IItunesResponse<IItunesArtist>>("/search", {
         params: {
           entity: "musicArtist",
-          term,
+          term: name,
         },
       }),
-    { onError }
+    { enabled: open, onError }
   );
   // handlers
   const onSubmit = (data: IBand) => createMutation.mutate(data);
-  const handleChange = ({
-    target: { value },
-  }: ChangeEvent<HTMLInputElement>) => {
-    if (value) searchMutation.mutate(value);
-  };
-  const handleClick = () => {
-    handleOpen();
-    searchItunesMusicArtistMutation.mutate(getValues("name"));
-  };
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
+
   useEffect(() => {
     if (selectedItunesArtist) {
       const { artistName, artistId } = selectedItunesArtist;
       setValue("name", artistName);
       setValue("itunes_artist_id", artistId);
-      searchMutation.mutate(artistName);
     }
   }, [selectedItunesArtist]);
 
@@ -120,28 +110,26 @@ const New: React.FC = () => {
     return (
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Choose Artist</DialogTitle>
-        {searchItunesMusicArtistMutation.isLoading && <LinearProgress />}
+        {searchItunesQuery.isLoading && <LinearProgress />}
         <Box p={2}>
-          {searchItunesMusicArtistMutation.data?.data.results.map(
-            (itunesArtist) => {
-              const handleSelect = () => {
-                handleClose();
-                setSelectedItunesArtist(itunesArtist);
-              };
-              return (
-                <Box key={itunesArtist.artistId} mb={2}>
-                  <ItunesArtistCard artist={itunesArtist} />
-                  <Button onClick={handleSelect}>select this Artist</Button>
-                </Box>
-              );
-            }
-          )}
+          {searchItunesQuery.data?.data.results.map((itunesArtist) => {
+            const handleSelect = () => {
+              handleClose();
+              setSelectedItunesArtist(itunesArtist);
+            };
+            return (
+              <Box key={itunesArtist.artistId} mb={2}>
+                <ItunesArtistCard artist={itunesArtist} />
+                <Button onClick={handleSelect}>select this Artist</Button>
+              </Box>
+            );
+          })}
         </Box>
       </Dialog>
     );
   };
   const SearchedBandCards = () => {
-    if (!searchMutation.data?.bands.data.length) return null;
+    if (!searchQuery.data?.bands.data.length) return null;
     return (
       <>
         <Box my={3}>
@@ -152,11 +140,11 @@ const New: React.FC = () => {
         </Box>
         <Box mb={3}>
           <BandTable
-            data={searchMutation.data?.bands.data}
+            data={searchQuery.data?.bands.data}
             page={page}
-            pageCount={searchMutation.data?.bands.pagination.totalPages}
+            pageCount={searchQuery.data?.bands.pagination.totalPages}
             onPage={handlePage}
-            loading={searchMutation.isLoading}
+            loading={searchQuery.isLoading}
           />
         </Box>
       </>
@@ -200,10 +188,9 @@ const New: React.FC = () => {
                 />
               ),
             }}
-            onChange={handleChange}
           />
           <SearchItunesButton
-            onClick={handleClick}
+            onClick={handleOpen}
             disabled={!name}
             fullWidth
             disableElevation

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -9,7 +9,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import { itunes } from "../../axios";
@@ -31,11 +31,7 @@ import { useOpen } from "../../common/useOpen";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { artistsQuery } from "../../gql/query/artists";
-
-interface IFormValues {
-  name: string;
-  ["itunes_artist_id"]: number;
-}
+import queryKey from "../../gql/queryKey.json";
 
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -46,14 +42,7 @@ const New: React.FC = () => {
   ] = useState<IItunesArtist>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const {
-    errors,
-    control,
-    setValue,
-    getValues,
-    watch,
-    handleSubmit,
-  } = useForm<IFormValues>();
+  const { errors, control, setValue, watch, handleSubmit } = useForm<IArtist>();
   const { name } = watch();
   // react-router-dom
   const history = useHistory();
@@ -75,43 +64,36 @@ const New: React.FC = () => {
     (newArtist: IArtist) => axios.post<IArtist>(route, newArtist, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
-  const searchMutation = useMutation(
-    (term: string) =>
+  const searchQuery = useQuery(
+    [queryKey.ARTISTS, { page, name }],
+    () =>
       graphQLClient.request<IArtistsType>(artistsQuery, {
         page,
-        q: { name_eq: term },
+        q: { name_eq: name },
       }),
-    { onError }
+    { enabled: !!name, onError }
   );
-  const searchItunesMutation = useMutation(
-    (term: string) =>
+  const searchItunesQuery = useQuery(
+    [queryKey.ITUNES, queryKey.ARTISTS, name],
+    () =>
       itunes.get<IItunesResponse<IItunesArtist>>("/search", {
         params: {
           entity: "musicArtist",
-          term,
+          term: name,
         },
       }),
-    { onError }
+    { enabled: open, onError }
   );
   // handlers
   const onSubmit = (data: IArtist) => createMutation.mutate(data);
-  const handleChange = ({
-    target: { value },
-  }: ChangeEvent<HTMLInputElement>) => {
-    if (value) searchMutation.mutate(value);
-  };
-  const handleClick = () => {
-    handleOpen();
-    searchItunesMutation.mutate(getValues("name"));
-  };
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
+
   useEffect(() => {
     if (selectedItunesArtist) {
       const { artistName, artistId } = selectedItunesArtist;
       setValue("name", artistName);
       setValue("itunes_artist_id", artistId);
-      searchMutation.mutate(artistName);
     }
   }, [selectedItunesArtist]);
 
@@ -119,9 +101,9 @@ const New: React.FC = () => {
     return (
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Choose Artist</DialogTitle>
-        {searchItunesMutation.isLoading && <LinearProgress />}
+        {searchItunesQuery.isLoading && <LinearProgress />}
         <Box p={2}>
-          {searchItunesMutation.data?.data.results.map((itunesArtist) => {
+          {searchItunesQuery.data?.data.results.map((itunesArtist) => {
             const handleSelect = () => {
               handleClose();
               setSelectedItunesArtist(itunesArtist);
@@ -138,7 +120,7 @@ const New: React.FC = () => {
     );
   };
   const SearchedArtistsCard = () => {
-    if (!searchMutation.data?.artists.data.length) return <></>;
+    if (!searchQuery.data?.artists.data.length) return <></>;
     return (
       <>
         <Box my={3}>
@@ -149,11 +131,11 @@ const New: React.FC = () => {
         </Box>
         <Box mb={3}>
           <ArtistTable
-            data={searchMutation.data?.artists.data}
+            data={searchQuery.data?.artists.data}
             page={page}
-            pageCount={searchMutation.data?.artists.pagination.totalPages}
+            pageCount={searchQuery.data?.artists.pagination.totalPages}
             onPage={handlePage}
-            loading={searchMutation.isLoading}
+            loading={searchQuery.isLoading}
           />
         </Box>
       </>
@@ -193,14 +175,13 @@ const New: React.FC = () => {
                 <LoadingCircularProgress
                   color="inherit"
                   size={20}
-                  loading={searchMutation.isLoading}
+                  loading={searchQuery.isLoading}
                 />
               ),
             }}
-            onChange={handleChange}
           />
           <SearchItunesButton
-            onClick={handleClick}
+            onClick={handleOpen}
             disabled={!name}
             fullWidth
             disableElevation

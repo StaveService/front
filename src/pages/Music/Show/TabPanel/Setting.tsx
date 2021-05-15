@@ -16,6 +16,7 @@ import routes from "../../../../router/routes.json";
 import { IMusic } from "../../../../interfaces";
 import { useOpen } from "../../../../common/useOpen";
 import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
+import queryKey from "../../../../gql/queryKey.json";
 
 const Setting: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
@@ -23,14 +24,15 @@ const Setting: React.FC = () => {
   const { errors, control, handleSubmit } = useForm();
   const history = useHistory();
   const match = useRouteMatch<{ id: string }>();
+  const id = Number(match.params.id);
   const headers = useSelector(selectHeaders);
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>(["music", match.params.id]);
+  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const onSuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
-    queryClient.removeQueries(["music", match.params.id]);
+    queryClient.removeQueries([queryKey.MUSIC, id]);
     history.push(routes.ROOT);
   };
   const destroyMusicMutation = useMutation(

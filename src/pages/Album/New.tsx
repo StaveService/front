@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -10,7 +10,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import { itunes } from "../../axios";
@@ -32,6 +32,7 @@ import { useOpen } from "../../common/useOpen";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { albumsQuery } from "../../gql/query/albums";
+import queryKey from "../../gql/queryKey.json";
 
 interface IFormValues {
   title: string;
@@ -39,7 +40,6 @@ interface IFormValues {
 }
 
 const New: React.FC = () => {
-  let timer: ReturnType<typeof setTimeout> | null = null;
   const [page, setPage] = useState(1);
   const { open, handleOpen, handleClose } = useOpen();
   const [
@@ -52,7 +52,6 @@ const New: React.FC = () => {
     errors,
     control,
     setValue,
-    getValues,
     watch,
     handleSubmit,
   } = useForm<IFormValues>();
@@ -77,43 +76,28 @@ const New: React.FC = () => {
     (newAlbum: IAlbum) => axios.post<IAlbum>(route, newAlbum, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
-  const searchMutation = useMutation(
-    (term: string) =>
+  const searchQuery = useQuery(
+    [queryKey.ALBUMS, { page, title }],
+    () =>
       graphQLClient.request<IAlbumsType>(albumsQuery, {
         page,
-        q: { title_eq: term },
+        q: { title_eq: title },
       }),
-    { onError }
+    { enabled: !!title, onError }
   );
-  const searchItunesMutation = useMutation(
-    (term: string) =>
+  const searchItunesQuery = useQuery(
+    [queryKey.ITUNES, queryKey.ALBUMS, title],
+    () =>
       itunes.get<IItunesResponse<IItunesAlbum>>("/search", {
         params: {
           entity: "album",
-          term,
+          term: title,
         },
       }),
-    { onError }
+    { enabled: open, onError }
   );
   // handlers
   const onSubmit = (data: IAlbum) => createMutation.mutate(data);
-  const handleChange = ({
-    target: { value },
-  }: ChangeEvent<HTMLInputElement>) => {
-    if (value) {
-      if (timer) {
-        clearTimeout(timer);
-        timer = null;
-      }
-      timer = setTimeout(() => {
-        searchMutation.mutate(value);
-      }, 2000);
-    }
-  };
-  const handleClick = () => {
-    handleOpen();
-    searchItunesMutation.mutate(getValues("title"));
-  };
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   useEffect(() => {
@@ -121,7 +105,6 @@ const New: React.FC = () => {
       const { collectionName, collectionId } = selectedItunesAlbum;
       setValue("title", collectionName);
       setValue("itunes_collection_id", collectionId);
-      searchMutation.mutate(collectionName);
     }
   }, [selectedItunesAlbum]);
 
@@ -129,9 +112,9 @@ const New: React.FC = () => {
     return (
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Choose Album</DialogTitle>
-        {searchItunesMutation.isLoading && <LinearProgress />}
+        {searchItunesQuery.isLoading && <LinearProgress />}
         <Box p={2}>
-          {searchItunesMutation.data?.data.results.map((itunesAlbum) => {
+          {searchItunesQuery.data?.data.results.map((itunesAlbum) => {
             const handleSelect = () => {
               handleClose();
               setSelectedItunesAlbum(itunesAlbum);
@@ -148,7 +131,7 @@ const New: React.FC = () => {
     );
   };
   const SearchedArtistCards = () => {
-    if (!searchMutation.data?.albums.data.length) return null;
+    if (!searchQuery.data?.albums.data.length) return null;
     return (
       <>
         <Box my={3}>
@@ -159,11 +142,11 @@ const New: React.FC = () => {
         </Box>
         <Box mb={3}>
           <AlbumTable
-            data={searchMutation.data?.albums.data}
+            data={searchQuery.data?.albums.data}
             page={page}
-            pageCount={searchMutation.data?.albums.pagination.totalPages}
+            pageCount={searchQuery.data?.albums.pagination.totalPages}
             onPage={handlePage}
-            loading={searchMutation.isLoading}
+            loading={searchQuery.isLoading}
           />
         </Box>
       </>
@@ -206,14 +189,13 @@ const New: React.FC = () => {
                 <LoadingCircularProgress
                   color="inherit"
                   size={20}
-                  loading={searchMutation.isLoading}
+                  loading={searchQuery.isLoading}
                 />
               ),
             }}
-            onChange={handleChange}
           />
           <SearchItunesButton
-            onClick={handleClick}
+            onClick={handleOpen}
             disabled={!title}
             fullWidth
             disableElevation
