@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -43,8 +44,17 @@ const New: React.FC = () => {
   ] = useState<IItunesArtist>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { errors, control, setValue, watch, handleSubmit } = useForm<IBand>();
+  const {
+    errors,
+    control,
+    setValue,
+    watch,
+    register,
+    handleSubmit,
+  } = useForm<IBand>();
   const { name } = watch();
+  // use-debounce
+  const [debouncedName] = useDebounce(name, 1000);
   // react-router-dom
   const history = useHistory();
   const match = useRouteMatch<{ id: string }>();
@@ -74,21 +84,21 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery<IBandsType>(
-    [queryKey.BANDS, { page, name }],
+    [queryKey.BANDS, { page, debouncedName }],
     () =>
       graphQLClient.request(bandsQuery, {
         page,
-        q: { name_eq: name },
+        q: { name_eq: debouncedName },
       }),
-    { enabled: !!name, onError }
+    { enabled: !!debouncedName, onError }
   );
   const searchItunesQuery = useQuery(
-    [queryKey.ITUNES, queryKey.ARTISTS, name],
+    [queryKey.ITUNES, queryKey.ARTISTS, debouncedName],
     () =>
       itunes.get<IItunesResponse<IItunesArtist>>("/search", {
         params: {
           entity: "musicArtist",
-          term: name,
+          term: debouncedName,
         },
       }),
     { enabled: open, onError }
@@ -101,8 +111,9 @@ const New: React.FC = () => {
   useEffect(() => {
     if (selectedItunesArtist) {
       const { artistName, artistId } = selectedItunesArtist;
+      register("band_link_attributes.itunes");
+      setValue("band_link_attributes.itunes", artistId);
       setValue("name", artistName);
-      setValue("itunes_artist_id", artistId);
     }
   }, [selectedItunesArtist]);
 
@@ -129,7 +140,7 @@ const New: React.FC = () => {
     );
   };
   const SearchedBandCards = () => {
-    if (!searchQuery.data?.bands.data.length) return null;
+    if (!searchQuery.data?.bands?.data.length) return null;
     return (
       <>
         <Box my={3}>
@@ -155,20 +166,6 @@ const New: React.FC = () => {
     <DefaultLayout>
       <Paper>
         <Box p={3}>
-          <Box visibility="hidden">
-            <ControlTextField
-              type="hidden"
-              name="itunes_artist_id"
-              defaultValue=""
-              autoComplete="on"
-              label="Name"
-              variant="outlined"
-              control={control}
-              errors={errors}
-              disabled={createMutation.isLoading}
-              fullWidth
-            />
-          </Box>
           <ControlTextField
             name="name"
             defaultValue=""

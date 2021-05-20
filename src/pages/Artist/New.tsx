@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Box from "@material-ui/core/Box";
@@ -42,8 +43,17 @@ const New: React.FC = () => {
   ] = useState<IItunesArtist>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { errors, control, setValue, watch, handleSubmit } = useForm<IArtist>();
+  const {
+    errors,
+    control,
+    setValue,
+    register,
+    watch,
+    handleSubmit,
+  } = useForm<IArtist>();
   const { name } = watch();
+  // use-debounce
+  const [debouncedName] = useDebounce(name, 1000);
   // react-router-dom
   const history = useHistory();
   const match = useRouteMatch();
@@ -58,28 +68,28 @@ const New: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IArtist>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
-    queryClient.setQueryData(["artists", res.data.id], res.data);
+    queryClient.setQueryData([queryKey.ARTIST, res.data.id], res.data);
   };
   const createMutation = useMutation(
     (newArtist: IArtist) => axios.post<IArtist>(route, newArtist, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.ARTISTS, { page, name }],
+    [queryKey.ARTISTS, { page, debouncedName }],
     () =>
       graphQLClient.request<IArtistsType>(artistsQuery, {
         page,
-        q: { name_eq: name },
+        q: { name_eq: debouncedName },
       }),
-    { enabled: !!name, onError }
+    { enabled: !!debouncedName, onError }
   );
   const searchItunesQuery = useQuery(
-    [queryKey.ITUNES, queryKey.ARTISTS, name],
+    [queryKey.ITUNES, queryKey.ARTISTS, debouncedName],
     () =>
       itunes.get<IItunesResponse<IItunesArtist>>("/search", {
         params: {
           entity: "musicArtist",
-          term: name,
+          term: debouncedName,
         },
       }),
     { enabled: open, onError }
@@ -92,8 +102,9 @@ const New: React.FC = () => {
   useEffect(() => {
     if (selectedItunesArtist) {
       const { artistName, artistId } = selectedItunesArtist;
+      register("artist_link_attributes.itunes");
+      setValue("artist_link_attributes.itunes", artistId);
       setValue("name", artistName);
-      setValue("itunes_artist_id", artistId);
     }
   }, [selectedItunesArtist]);
 
@@ -120,7 +131,7 @@ const New: React.FC = () => {
     );
   };
   const SearchedArtistsCard = () => {
-    if (!searchQuery.data?.artists.data.length) return <></>;
+    if (!searchQuery.data?.artists?.data.length) return <></>;
     return (
       <>
         <Box my={3}>

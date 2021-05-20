@@ -10,6 +10,9 @@ export const artistQuery = gql`
     artist(id: $id) {
       id
       name
+      artistLink {
+        itunes
+      }
       musics(musicPage: $musicPage) {
         data {
           id

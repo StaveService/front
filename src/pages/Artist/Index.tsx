@@ -21,10 +21,10 @@ const Index: React.FC = () => {
   return (
     <DefaultLayout>
       <ArtistsTable
-        data={data?.artists.data}
+        data={data?.artists?.data}
         loading={isLoading}
         page={page}
-        pageCount={data?.artists.pagination.totalPages}
+        pageCount={data?.artists?.pagination.totalPages}
         onPage={handlePage}
       />
     </DefaultLayout>

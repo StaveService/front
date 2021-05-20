@@ -51,11 +51,12 @@ const Album: React.FC = () => {
     queryClient.setQueryData<IBand | undefined>(
       [queryKey.BANDS, id],
       (prev) =>
-        prev && {
+        prev &&
+        prev.albums && {
           ...prev,
           albums: {
-            data: [...prev.albums.data, res.data.album],
-            pagination: prev.albums.pagination,
+            data: [...(prev.albums?.data || []), res.data.album],
+            pagination: prev.albums?.pagination,
           },
         }
     );
@@ -65,7 +66,8 @@ const Album: React.FC = () => {
     queryClient.setQueryData<IBand | undefined>(
       [queryKey.BANDS, id],
       (prev) =>
-        prev && {
+        prev &&
+        prev.albums && {
           ...prev,
           albums: {
             data: prev.albums.data.filter((prevAlbum) => prevAlbum !== album),

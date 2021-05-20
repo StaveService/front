@@ -12,10 +12,17 @@ import AlbumDialog from "./Dialog/Album";
 import ArtistsTable from "../../../components/Table/Artist";
 import MusicsTable from "../../../components/Table/Music";
 import AlbumsTable from "../../../components/Table/Album";
+import LinkTable from "../../../components/Table/Link";
 import BookmarkButton from "../../../components/Button/Bookmark";
 import DefaultLayout from "../../../layout/Default";
 import routes from "../../../router/routes.json";
-import { IBand, IBandBookmark, IBandType } from "../../../interfaces";
+import {
+  IBand,
+  IBandBookmark,
+  IBandType,
+  IItunesArtist,
+  IItunesResponse,
+} from "../../../interfaces";
 import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
 import {
   selectCurrentUser,
@@ -25,6 +32,7 @@ import {
 import { graphQLClient } from "../../../gql/client";
 import queryKey from "../../../gql/queryKey.json";
 import { bandQuery } from "../../../gql/query/band";
+import { itunes } from "../../../axios";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
@@ -40,19 +48,19 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IBandBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BANDS, id, { musicPage, albumPage }],
+      [queryKey.BAND, id, { musicPage, albumPage }],
       (prev) => prev && { ...prev, bookmark: res.data }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BANDS, id, { musicPage, albumPage }],
+      [queryKey.BAND, id, { musicPage, albumPage }],
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
-  const { isLoading, data } = useQuery<IBand>(
-    [queryKey.BANDS, id, { musicPage, albumPage }],
+  const band = useQuery<IBand>(
+    [queryKey.BAND, id, { musicPage, albumPage }],
     () =>
       graphQLClient
         .request<IBandType>(bandQuery, {
@@ -63,6 +71,16 @@ const Show: React.FC = () => {
         })
         .then((res) => res.band),
     { onError }
+  );
+  const itunesArtist = useQuery<IItunesArtist>(
+    [queryKey.ITUNES, queryKey.BAND, band.data?.bandLink?.itunes],
+    () =>
+      itunes
+        .get<IItunesResponse<IItunesArtist>>("/lookup", {
+          params: { id: band.data?.bandLink?.itunes, entity: "musicArtist" },
+        })
+        .then((res) => res.data.results[0]),
+    { enabled: !!band.data?.bandLink?.itunes, onError }
   );
   const createMutation = useMutation(
     () =>
@@ -77,7 +95,7 @@ const Show: React.FC = () => {
     () =>
       axios.delete(
         `${match.url + routes.BAND_BOOKMARKS}/${
-          data?.bookmark?.id || "undefined"
+          band.data?.bookmark?.id || "undefined"
         }`,
         headers
       ),
@@ -96,37 +114,43 @@ const Show: React.FC = () => {
         <Grid xs={11}>
           <Typography variant="h5">
             <GroupIcon />
-            {data?.name}
+            {band.data?.name}
           </Typography>
         </Grid>
         <Grid xs={1}>
           <BookmarkButton
-            bookmarked={!!data?.bookmark || false}
+            bookmarked={!!band.data?.bookmark || false}
             onCreate={handleCreateMutation}
             onDestroy={handleDestroyMutation}
           />
         </Grid>
       </Grid>
       <Box mb={3}>
+        <LinkTable
+          links={{ itunes: itunesArtist.data?.artistLinkUrl }}
+          itunes
+        />
+      </Box>
+      <Box mb={3}>
         <ArtistDialog />
-        <ArtistsTable data={data?.artists} loading={isLoading} />
+        <ArtistsTable data={band.data?.artists} loading={band.isLoading} />
       </Box>
       <Box mb={3}>
         <MusicsTable
-          data={data?.musics.data}
-          loading={isLoading}
+          data={band.data?.musics?.data}
+          loading={band.isLoading}
           page={musicPage}
-          pageCount={data?.musics.pagination.totalPages}
+          pageCount={band.data?.musics?.pagination.totalPages}
           onPage={handleMusicPage}
         />
       </Box>
       <Box mb={3}>
         <AlbumDialog />
         <AlbumsTable
-          data={data?.albums.data}
-          loading={isLoading}
+          data={band.data?.albums?.data}
+          loading={band.isLoading}
           page={albumPage}
-          pageCount={data?.albums.pagination.totalPages}
+          pageCount={band.data?.albums?.pagination.totalPages}
           onPage={handleAlbumPage}
         />
       </Box>

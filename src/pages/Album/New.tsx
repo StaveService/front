@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Box from "@material-ui/core/Box";
@@ -34,11 +35,6 @@ import { graphQLClient } from "../../gql/client";
 import { albumsQuery } from "../../gql/query/albums";
 import queryKey from "../../gql/queryKey.json";
 
-interface IFormValues {
-  title: string;
-  ["itunes_collection_id"]: number;
-}
-
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
   const { open, handleOpen, handleClose } = useOpen();
@@ -52,10 +48,12 @@ const New: React.FC = () => {
     errors,
     control,
     setValue,
+    register,
     watch,
     handleSubmit,
-  } = useForm<IFormValues>();
+  } = useForm<IAlbum>();
   const { title } = watch();
+  const [debouncedTitle] = useDebounce(title, 1000);
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
@@ -70,28 +68,33 @@ const New: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IAlbum>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
-    queryClient.setQueryData(["artists", res.data.id], res.data);
+    queryClient.setQueryData([queryKey.ALBUM, res.data.id], res.data);
+    if (selectedItunesAlbum)
+      queryClient.setQueryData(
+        [queryKey.ITUNES, queryKey.MUSIC, selectedItunesAlbum.collectionId],
+        selectedItunesAlbum
+      );
   };
   const createMutation = useMutation(
     (newAlbum: IAlbum) => axios.post<IAlbum>(route, newAlbum, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.ALBUMS, { page, title }],
+    [queryKey.ALBUMS, { page, debouncedTitle }],
     () =>
       graphQLClient.request<IAlbumsType>(albumsQuery, {
         page,
-        q: { title_eq: title },
+        q: { title_eq: debouncedTitle },
       }),
-    { enabled: !!title, onError }
+    { enabled: !!debouncedTitle, onError }
   );
   const searchItunesQuery = useQuery(
-    [queryKey.ITUNES, queryKey.ALBUMS, title],
+    [queryKey.ITUNES, queryKey.ALBUMS, debouncedTitle],
     () =>
       itunes.get<IItunesResponse<IItunesAlbum>>("/search", {
         params: {
           entity: "album",
-          term: title,
+          term: debouncedTitle,
         },
       }),
     { enabled: open, onError }
@@ -104,7 +107,8 @@ const New: React.FC = () => {
     if (selectedItunesAlbum) {
       const { collectionName, collectionId } = selectedItunesAlbum;
       setValue("title", collectionName);
-      setValue("itunes_collection_id", collectionId);
+      register("album_link_attributes.itunes");
+      setValue("album_link_attributes.itunes", collectionId);
     }
   }, [selectedItunesAlbum]);
 
@@ -131,7 +135,7 @@ const New: React.FC = () => {
     );
   };
   const SearchedArtistCards = () => {
-    if (!searchQuery.data?.albums.data.length) return null;
+    if (!searchQuery.data?.albums?.data.length) return null;
     return (
       <>
         <Box my={3}>

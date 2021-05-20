@@ -10,9 +10,16 @@ import { useDispatch, useSelector } from "react-redux";
 import MusicsTable from "../../components/Table/Music";
 import BandsTable from "../../components/Table/Band";
 import AlbumsTable from "../../components/Table/Album";
+import LinkTable from "../../components/Table/Link";
 import BookmarkButton from "../../components/Button/Bookmark";
 import DefaultLayout from "../../layout/Default";
-import { IArtist, IArtistBookmark, IArtistType } from "../../interfaces";
+import {
+  IArtist,
+  IArtistBookmark,
+  IArtistType,
+  IItunesArtist,
+  IItunesResponse,
+} from "../../interfaces";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
 import {
   selectCurrentUser,
@@ -23,6 +30,7 @@ import routes from "../../router/routes.json";
 import { graphQLClient } from "../../gql/client";
 import { artistQuery } from "../../gql/query/artist";
 import queryKey from "../../gql/queryKey.json";
+import { itunes } from "../../axios";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
@@ -50,7 +58,7 @@ const Show: React.FC = () => {
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
-  const { isLoading, data } = useQuery<IArtist>(
+  const artist = useQuery<IArtist>(
     [queryKey.ARTIST, id, { musicPage, albumPage }],
     () =>
       graphQLClient
@@ -62,6 +70,20 @@ const Show: React.FC = () => {
         })
         .then((res) => res.artist),
     { onError }
+  );
+  console.log(artist);
+  const itunesArtist = useQuery<IItunesArtist>(
+    [queryKey.ITUNES, queryKey.ARTIST, artist.data?.artistLink?.itunes],
+    () =>
+      itunes
+        .get<IItunesResponse<IItunesArtist>>("/lookup", {
+          params: {
+            id: artist.data?.artistLink?.itunes,
+            entity: "musicArtist",
+          },
+        })
+        .then((res) => res.data.results[0]),
+    { enabled: !!artist.data?.artistLink?.itunes, onError }
   );
   const createMutation = useMutation(
     () =>
@@ -76,7 +98,7 @@ const Show: React.FC = () => {
     () =>
       axios.delete(
         `${match.url + routes.ARTIST_BOOKMARKS}/${
-          data?.bookmark?.id || "undefined"
+          artist.data?.bookmark?.id || "undefined"
         }`,
         headers
       ),
@@ -96,32 +118,40 @@ const Show: React.FC = () => {
         <Grid xs={11}>
           <Typography variant="h5">
             <AccessibilityNewIcon />
-            {data?.name}
+            {artist.data?.name}
           </Typography>
         </Grid>
         <Grid xs={1}>
           <BookmarkButton
-            bookmarked={!!data?.bookmark || false}
+            bookmarked={!!artist.data?.bookmark || false}
             onCreate={handleCreateMutation}
             onDestroy={handleDestroyMutation}
           />
         </Grid>
       </Grid>
-      <BandsTable data={data?.bands} loading={isLoading} />
-      <Box pb={3} />
-      <AlbumsTable
-        data={data?.albums?.data}
-        loading={isLoading}
-        page={albumPage}
-        pageCount={data?.albums?.pagination.totalPages}
-        onPage={handleAlbumPage}
-      />
-      <Box pb={3} />
+      <Box mb={3}>
+        <LinkTable
+          links={{ itunes: itunesArtist.data?.artistLinkUrl }}
+          itunes
+        />
+      </Box>
+      <Box mb={3}>
+        <BandsTable data={artist.data?.bands} loading={artist.isLoading} />
+      </Box>
+      <Box mb={3}>
+        <AlbumsTable
+          data={artist.data?.albums?.data}
+          loading={artist.isLoading}
+          page={albumPage}
+          pageCount={artist.data?.albums?.pagination.totalPages}
+          onPage={handleAlbumPage}
+        />
+      </Box>
       <MusicsTable
-        data={data?.musics?.data}
-        loading={isLoading}
+        data={artist.data?.musics?.data}
+        loading={artist.isLoading}
         page={musicPage}
-        pageCount={data?.musics?.pagination.totalPages}
+        pageCount={artist.data?.musics?.pagination.totalPages}
         onPage={handleMusicPage}
       />
     </DefaultLayout>

@@ -13,8 +13,7 @@ import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { useSelector } from "react-redux";
 import AlbumsTable from "../../../../../components/Table/Album";
-import ItunesButton from "../../../../../components/Button/Link/Itunes";
-import TwitterButton from "../../../../../components/Button/Link/Twitter";
+import LinkTable from "../../../../../components/Table/Link";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
@@ -40,28 +39,11 @@ const Info: React.FC = () => {
   return (
     <>
       <Box mb={3}>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Link</TableCell>
-                <TableCell>Edit</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <TwitterButton href={music?.musicLink?.twitter} />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <ItunesButton href={itunesMusic?.trackViewUrl} />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <LinkTable
+          links={{ itunes: itunesMusic?.trackViewUrl }}
+          itunes
+          twitter
+        />
       </Box>
       <Box mb={3}>
         {isSignedIn && <MainDialog />}

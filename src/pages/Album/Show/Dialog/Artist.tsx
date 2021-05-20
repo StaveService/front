@@ -27,6 +27,7 @@ import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import { IAlbum, IArtist, IArtistAlbum } from "../../../../interfaces";
 import { useOpen } from "../../../../common/useOpen";
 import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
+import queryKey from "../../../../gql/queryKey.json";
 
 const Artist: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
@@ -39,14 +40,15 @@ const Artist: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
+  const id = Number(match.params.id);
   const route = match.url + routes.ARTIST_ALBUMS;
   // react-query
   const queryClient = useQueryClient();
-  const album = queryClient.getQueryData<IAlbum>(["albums", match.params.id]);
+  const album = queryClient.getQueryData<IAlbum>([queryKey.ALBUM, id]);
   const handleCreateSuccess = (res: AxiosResponse<IArtistAlbum>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IAlbum | undefined>(
-      ["albums", match.params.id],
+      [queryKey.ALBUM, id],
       (prev) =>
         prev && {
           ...prev,
@@ -57,7 +59,7 @@ const Artist: React.FC = () => {
   const handleDestorySuccess = (res: AxiosResponse, artist: IArtist) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IAlbum | undefined>(
-      ["albums", match.params.id],
+      [queryKey.ALBUM, id],
       (prev) =>
         prev && {
           ...prev,

@@ -10,6 +10,9 @@ export const bandQuery = gql`
     band(id: $id) {
       id
       name
+      bandLink {
+        itunes
+      }
       musics(musicPage: $musicPage) {
         data {
           id

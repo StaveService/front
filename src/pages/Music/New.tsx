@@ -1,6 +1,9 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Image from "material-ui-image";
@@ -48,8 +51,17 @@ const New: React.FC = () => {
   ] = useState<IItunesMusic>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { errors, control, watch, setValue, handleSubmit } = useForm<IMusic>();
+  const {
+    errors,
+    control,
+    watch,
+    register,
+    setValue,
+    handleSubmit,
+  } = useForm<IMusic>();
   const { title } = watch();
+  // use-debounce
+  const [debouncedTitle] = useDebounce(title, 1000);
   // react-redux
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
@@ -80,21 +92,21 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.MUSICS, { page, title }],
+    [queryKey.MUSICS, { page, debounceTitle: debouncedTitle }],
     () =>
       graphQLClient.request<IMusicsType>(musicsQuery, {
         page,
-        q: { title_eq: title },
+        q: { title_eq: debouncedTitle },
       }),
-    { enabled: !!title, onError }
+    { enabled: !!debouncedTitle, onError }
   );
   const searchItunesQuery = useQuery(
-    [queryKey.ITUNES, queryKey.MUSICS, title],
+    [queryKey.ITUNES, queryKey.MUSICS, debouncedTitle],
     () =>
       itunes.get<IItunesResponse<IItunesMusic>>("/search", {
         params: {
           entity: "song",
-          term: title,
+          term: debouncedTitle,
         },
       }),
     { enabled: open, onError }
@@ -108,12 +120,12 @@ const New: React.FC = () => {
   };
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
-
   useEffect(() => {
     if (selectedItunesMusic) {
       const { trackCensoredName, trackId } = selectedItunesMusic;
       setValue("title", trackCensoredName);
-      setValue("itunes_track_id", trackId);
+      register("music_link_attributes.itunes");
+      setValue("music_link_attributes.itunes", trackId);
     }
   }, [selectedItunesMusic]);
   const ItunesMusicsDialog = () => {
@@ -138,7 +150,7 @@ const New: React.FC = () => {
     );
   };
   const SearchedMusicCards: React.FC = () => {
-    if (!searchQuery.data?.musics.data.length) return null;
+    if (!searchQuery.data?.musics?.data.length) return null;
     return (
       <>
         <Box my={3}>
@@ -165,20 +177,6 @@ const New: React.FC = () => {
         <Box p={3}>
           <Box height="100px" width="100px" m="auto">
             <Image src={selectedItunesMusic?.artworkUrl100 || "undefiend"} />
-          </Box>
-          <Box visibility="hidden">
-            <ControlTextField
-              type="hidden"
-              name="itunes_track_id"
-              defaultValue=""
-              autoComplete="on"
-              label="Image"
-              variant="outlined"
-              control={control}
-              errors={errors}
-              disabled={createMusicMutation.isLoading}
-              fullWidth
-            />
           </Box>
           <ControlTextField
             name="title"

@@ -26,10 +26,10 @@ const Show: React.FC = () => {
     <DefaultLayout>
       <Typography variant="h5">{data?.user.nickname}</Typography>
       <MusicsTable
-        data={data?.user.musics.data}
+        data={data?.user.musics?.data}
         loading={isLoading}
         page={musicPage}
-        pageCount={data?.user.musics.pagination.totalPages}
+        pageCount={data?.user.musics?.pagination.totalPages}
         onPage={handleMusicPage}
       />
     </DefaultLayout>

@@ -1,10 +1,6 @@
 import { AlphaTabApi, model, synth } from "@coderline/alphatab";
 
 export type MenuCardType = "Artist" | "Album" | "Music" | "Band";
-export interface IApiPagination {
-  total: string;
-  ["per-page"]: string;
-}
 export interface ITokenHeaders {
   ["content-type"]: string;
   ["access-token"]: string;
@@ -27,9 +23,12 @@ export interface IUser extends IMusicsType {
 export interface IBand extends IMusicsType, IAlbumsType {
   id: number;
   name: string;
-  ["itunes_artist_id"]: number;
   bookmark?: IBandBookmark;
   artists?: IArtist[];
+  bandLink: IBandLink;
+}
+export interface IBandLink {
+  itunes: number;
 }
 export interface IMusic {
   id: number;
@@ -46,18 +45,28 @@ export interface IMusic {
   lyrists?: IArtist[];
   musicLink?: IMusicLink;
 }
+export interface IMusicLink {
+  itunes: number;
+  twitter: string;
+}
 export interface IArtist extends IMusicsType, IAlbumsType {
   id: number;
   name: string;
   bookmark?: IArtistBookmark;
   bands?: IBand[];
+  artistLink?: IArtistLink;
 }
-export interface IAlbum {
+export interface IArtistLink {
+  itunes: number;
+}
+export interface IAlbum extends IMusicsType {
   id: number;
   title: string;
-  musics?: IMusic[];
-  artists?: IArtist[];
+  artists: IArtist[];
   albumLink?: IAlbumLink;
+}
+export interface IAlbumLink {
+  itunes: number;
 }
 export interface IIssue {
   id: number;
@@ -65,13 +74,6 @@ export interface IIssue {
   description: string;
   music?: IMusic;
   user?: IUser;
-}
-export interface IMusicLink {
-  itunes: number;
-  twitter: string;
-}
-export interface IAlbumLink {
-  itunes: number;
 }
 export interface IArtistMusic {
   id: number;
@@ -131,7 +133,7 @@ export interface IMusicType {
   music: IMusic;
 }
 export interface IMusicsType {
-  musics: {
+  musics?: {
     data: IMusic[];
     pagination: IPaginationType;
   };
@@ -140,13 +142,13 @@ export interface IArtistType {
   artist: IArtist;
 }
 export interface IArtistsType {
-  artists: {
+  artists?: {
     data: IArtist[];
     pagination: IPaginationType;
   };
 }
 export interface IIssueType {
-  issues: {
+  issues?: {
     data: IIssue[];
     pagination: IPaginationType;
   };
@@ -155,13 +157,16 @@ export interface IBandType {
   band: IBand;
 }
 export interface IBandsType {
-  bands: {
+  bands?: {
     data: IBand[];
     pagination: IPaginationType;
   };
 }
+export interface IAlbumType {
+  album: IAlbum;
+}
 export interface IAlbumsType {
-  albums: {
+  albums?: {
     data: IAlbum[];
     pagination: IPaginationType;
   };
