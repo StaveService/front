@@ -1,111 +1,76 @@
-/* eslint-disable no-case-declarations */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import React, { ChangeEvent, FC, useEffect, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
-import { useMutation } from "react-query";
-import axios from "axios";
 import { useOpen } from "../common/useOpen";
-import { useQuerySnackbar } from "../common/useQuerySnackbar";
 
-type ControlAutocompleteTextFieldProps = {
-  searchRoute: string;
-  query: string;
-  property: string;
+type ControlAutocompleteTextFieldProps<T> = {
+  defaultValue: T[];
   maxLength?: number;
-  defaultValue?: any;
-  onSelectOption?: (selectOption?: any, options?: any) => void;
-  onRemoveOption?: (removeOption?: any, options?: any) => void;
+  onSelectOption?: (selectOption: T, options: T[]) => void;
+  onRemoveOption?: (removeOption: T, options: T[]) => void;
   // material-ui
   textFieldProps: TextFieldProps;
-  autocompleteProps?: {
+  autocompleteProps: {
+    options: T[];
     multiple?: boolean | undefined;
+    getOptionSelected?: (option: T, value: T) => boolean;
+    getOptionLabel?: (option: T) => string;
+    onInputChange?: (
+      _e: ChangeEvent<Record<string, unknown>>,
+      value: string
+    ) => void;
   };
 };
 
-const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
+function ControlAutocompleteTextField<T>({
   defaultValue,
-  query,
-  property,
-  searchRoute,
   maxLength,
   onSelectOption,
   onRemoveOption,
   textFieldProps,
   autocompleteProps,
-}: ControlAutocompleteTextFieldProps) => {
+}: ControlAutocompleteTextFieldProps<T>): JSX.Element {
   const [loading, setLoading] = useState(false);
-  const [options, setOptions] = useState<any[]>([]);
-  const [tags, setTags] = useState<any[]>([]);
-  const { onError } = useQuerySnackbar();
+  const [tags, setTags] = useState<T[]>(defaultValue || []);
   // useOpen
   const { open, handleOpen, handleClose } = useOpen();
-  // react-query
-  const onSuccess = (res: any) => {
-    setOptions(res.data);
-  };
-  const mutation = useMutation(
-    (value: string) =>
-      axios.get(searchRoute, {
-        params: { q: { [`${property}_${query}`]: value } },
-      }),
-    { onSuccess, onError }
-  );
   // handlers
   const handleChange = (
     _e: ChangeEvent<Record<string, unknown>>,
-    value: any,
+    value: T | T[] | null,
     reason: string
   ) => {
+    if (!value || !Array.isArray(value)) return;
     setLoading(true);
     switch (reason) {
       case "select-option":
         if (onSelectOption) onSelectOption(value[value.length - 1], value);
         break;
-      case "remove-option":
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      case "remove-option": {
         const removeTag = tags.filter((tag) => !value.includes(tag))[0];
         if (onRemoveOption) onRemoveOption(removeTag, value);
         break;
+      }
       default:
         break;
     }
     setLoading(false);
     setTags(value);
   };
-  const handleInputChange = (
-    _e: ChangeEvent<Record<string, unknown>>,
-    value: string
-  ) => mutation.mutate(value);
-  useEffect(() => {
-    setTags(defaultValue);
-  }, [defaultValue]);
-
   return (
     <Autocomplete
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...autocompleteProps}
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       value={defaultValue}
       open={open}
       disabled={loading}
-      getOptionSelected={(option, value) =>
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        option[property] === value[property]
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      getOptionLabel={(option) => option[property]}
       getOptionDisabled={() => (maxLength ? tags.length >= maxLength : false)}
-      options={options}
-      loading={mutation.isLoading}
+      loading={loading}
       noOptionsText="No Results"
       onChange={handleChange}
       onOpen={handleOpen}
       onClose={handleClose}
-      onInputChange={handleInputChange}
       renderInput={(params) => (
         <TextField
           // eslint-disable-next-line react/jsx-props-no-spreading
@@ -117,7 +82,7 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
             ...textFieldProps.InputProps,
             endAdornment: (
               <>
-                {mutation.isLoading ? (
+                {loading ? (
                   <CircularProgress color="inherit" size={20} />
                 ) : null}
                 {params.InputProps.endAdornment}
@@ -128,16 +93,12 @@ const ControlAutocompleteTextField: FC<ControlAutocompleteTextFieldProps> = ({
       )}
     />
   );
-};
+}
 
 ControlAutocompleteTextField.defaultProps = {
   onSelectOption: undefined,
   onRemoveOption: undefined,
   maxLength: undefined,
-  defaultValue: undefined,
-  autocompleteProps: {
-    multiple: undefined,
-  },
 };
 
 export default ControlAutocompleteTextField;

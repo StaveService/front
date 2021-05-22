@@ -75,7 +75,7 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.ARTISTS, { page, debouncedName }],
+    [queryKey.ARTISTS, { page, query: debouncedName }],
     () =>
       graphQLClient.request<IArtistsType>(artistsQuery, {
         page,

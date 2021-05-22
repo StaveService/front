@@ -133,16 +133,14 @@ const Album: React.FC = () => {
           />
           <Box mb={3}>
             <AutocompleteTextField
-              searchRoute={routes.ALBUMS}
-              property="title"
-              query="cont"
+              defaultValue={[]}
               onSelectOption={handleSelectOption}
               onRemoveOption={handleRemoveOption}
               textFieldProps={{
                 label: "Albums",
                 variant: "outlined",
               }}
-              autocompleteProps={{ multiple: true }}
+              autocompleteProps={{ options: [], multiple: true }}
             />
           </Box>
           <Box mb={3}>

@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -92,7 +90,7 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.MUSICS, { page, debounceTitle: debouncedTitle }],
+    [queryKey.MUSICS, { page, query: debouncedTitle }],
     () =>
       graphQLClient.request<IMusicsType>(musicsQuery, {
         page,

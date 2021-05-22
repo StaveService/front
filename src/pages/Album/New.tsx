@@ -80,7 +80,7 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.ALBUMS, { page, debouncedTitle }],
+    [queryKey.ALBUMS, { page, query: debouncedTitle }],
     () =>
       graphQLClient.request<IAlbumsType>(albumsQuery, {
         page,

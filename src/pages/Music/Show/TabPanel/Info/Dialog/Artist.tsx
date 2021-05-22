@@ -168,16 +168,17 @@ const Artist: React.FC = () => {
               </Grid>
               <Grid item xs={9}>
                 <AutocompleteTextField
-                  searchRoute={routes.ARTISTS}
-                  property="name"
-                  query="cont"
+                  defaultValue={[]}
                   onSelectOption={handleSelectOption}
                   onRemoveOption={handleRemoveOption}
                   textFieldProps={{
                     label: "Composers",
                     variant: "outlined",
                   }}
-                  autocompleteProps={{ multiple: true }}
+                  autocompleteProps={{
+                    options: [],
+                    multiple: true,
+                  }}
                 />
               </Grid>
             </Grid>

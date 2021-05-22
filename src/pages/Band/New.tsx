@@ -84,7 +84,7 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery<IBandsType>(
-    [queryKey.BANDS, { page, debouncedName }],
+    [queryKey.BANDS, { page, query: debouncedName }],
     () =>
       graphQLClient.request(bandsQuery, {
         page,

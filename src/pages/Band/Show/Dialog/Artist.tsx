@@ -129,16 +129,14 @@ const Artist: React.FC = () => {
           />
           <Box mb={3}>
             <AutocompleteTextField
-              searchRoute={routes.ARTISTS}
-              property="name"
-              query="cont"
+              defaultValue={[]}
               onSelectOption={handleSelectOption}
               onRemoveOption={handleRemoveOption}
               textFieldProps={{
                 label: "Artist",
                 variant: "outlined",
               }}
-              autocompleteProps={{ multiple: true }}
+              autocompleteProps={{ options: [], multiple: true }}
             />
           </Box>
           <Box mb={3}>

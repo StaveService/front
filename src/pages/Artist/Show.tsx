@@ -71,7 +71,6 @@ const Show: React.FC = () => {
         .then((res) => res.artist),
     { onError }
   );
-  console.log(artist);
   const itunesArtist = useQuery<IItunesArtist>(
     [queryKey.ITUNES, queryKey.ARTIST, artist.data?.artistLink?.itunes],
     () =>

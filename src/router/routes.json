@@ -5,7 +5,7 @@
   "ALBUMS": "/albums",
   "ARTISTS": "/artists",
   "COMPOSERS": "/composer_musics",
-  "LYRISTS": "/lyrists_musics",
+  "LYRISTS": "/lyrist_musics",
   "MUSICS": "/musics",
   "ISSUES": "/issues",
   "INFO": "/info",
