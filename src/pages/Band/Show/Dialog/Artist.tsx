@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
@@ -18,23 +18,42 @@ import Box from "@material-ui/core/Box";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import useDebounce from "use-debounce/lib/useDebounce";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
 import AutocompleteTextField from "../../../../components/AutocompleteTextField";
-import ControlTextField from "../../../../components/ControlTextField";
 import routes from "../../../../router/routes.json";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
-import { IAlbum, IArtist, IArtistBand, IBand } from "../../../../interfaces";
+import {
+  IArtist,
+  IArtistBand,
+  IArtistsType,
+  IBand,
+} from "../../../../interfaces";
 import { useOpen } from "../../../../common/useOpen";
 import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
+import queryKey from "../../../../gql/queryKey.json";
+import { graphQLClient } from "../../../../gql/client";
+import { artistsQuery } from "../../../../gql/query/artists";
 
-const Artist: React.FC = () => {
+interface ArtistProps {
+  musicPage: number;
+  albumPage: number;
+}
+const Artist: React.FC<ArtistProps> = ({
+  musicPage,
+  albumPage,
+}: ArtistProps) => {
+  const [inputValue, setInputValue] = useState("");
   const { open, handleOpen, handleClose } = useOpen();
+  // use-debounce
+  const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { control, handleSubmit, setValue } = useForm<IAlbum>();
+  const { register, handleSubmit, setValue } = useForm<IArtist>();
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
+  const id = Number(match.params.id);
   const route = match.url + routes.ARTIST_BANDS;
   // react-redux
   const dispatch = useDispatch();
@@ -43,11 +62,15 @@ const Artist: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
-  const band = queryClient.getQueryData<IBand>(["bands", match.params.id]);
+  const band = queryClient.getQueryData<IBand>([
+    queryKey.BAND,
+    id,
+    { musicPage, albumPage },
+  ]);
   const handleCreateSuccess = (res: AxiosResponse<IArtistBand>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      ["bands", match.params.id],
+      [queryKey.BAND, id, { musicPage, albumPage }],
       (prev) =>
         prev && {
           ...prev,
@@ -58,7 +81,7 @@ const Artist: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse<IBand>, artist: IArtist) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      ["bands", match.params.id],
+      [queryKey.BAND, id, { musicPage, albumPage }],
       (prev) =>
         prev && {
           ...prev,
@@ -77,14 +100,37 @@ const Artist: React.FC = () => {
     }
   );
   const destroyMutation = useMutation(
-    (artist) => axios.delete<IBand>(`${route}/${artist.id}`, headers),
+    (artist) => axios.delete(`${route}/${artist.id}`, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
+  const artists = useQuery<IArtist[]>(
+    [queryKey.ARTISTS, { query: debouncedInputValue }],
+    () =>
+      graphQLClient
+        .request<IArtistsType>(artistsQuery, {
+          q: { name_cont: debouncedInputValue },
+          page: 1,
+        })
+        .then((res) => res.artists?.data || []),
+    { enabled: !!debouncedInputValue, onError }
+  );
+
   // handlers
   const handleRemoveOption = () => setValue("artist_id", "");
-  const handleSelectOption = (option: IAlbum) =>
+  const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
+  const onInputChange = (
+    _e: ChangeEvent<Record<string, unknown>>,
+    value: string,
+    reason: string
+  ) => reason === "input" && setInputValue(value);
   const onSubmit = (data: IArtistBand) => createMutation.mutate(data);
+  const getOptionSelected = (option: IArtist, value: IArtist) =>
+    option.name === value.name;
+  const getOptionLabel = (option: IArtist) => option.name;
+  useEffect(() => {
+    register("artist_id");
+  }, [register]);
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>
@@ -121,22 +167,28 @@ const Artist: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          <ControlTextField
-            defaultValue=""
-            type="hidden"
-            control={control}
-            name="artist_id"
-          />
           <Box mb={3}>
-            <AutocompleteTextField
+            <AutocompleteTextField<IArtist>
+              maxLength={1}
               onSelectOption={handleSelectOption}
               onRemoveOption={handleRemoveOption}
               textFieldProps={{
-                value: [],
                 label: "Artist",
                 variant: "outlined",
+                margin: "normal",
               }}
-              autocompleteProps={{ options: [], multiple: true }}
+              autocompleteProps={{
+                multiple: true,
+                options: artists.data || [],
+                inputValue,
+                loading:
+                  createMutation.isLoading ||
+                  destroyMutation.isLoading ||
+                  isPending(),
+                getOptionSelected,
+                getOptionLabel,
+                onInputChange,
+              }}
             />
           </Box>
           <Box mb={3}>

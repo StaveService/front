@@ -23,7 +23,7 @@ function ControlAutocompleteTextField<T>({
   textFieldProps,
   autocompleteProps,
 }: ControlAutocompleteTextFieldProps<T>): JSX.Element {
-  const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const [tags, setTags] = useState<T[]>([]);
   // useOpen
   const { open, handleOpen, handleClose } = useOpen();
@@ -34,7 +34,7 @@ function ControlAutocompleteTextField<T>({
     reason: string
   ) => {
     if (!value || !Array.isArray(value)) return;
-    setLoading(true);
+    setDisabled(true);
     switch (reason) {
       case "select-option":
         if (onSelectOption) onSelectOption(value[value.length - 1], value);
@@ -47,7 +47,7 @@ function ControlAutocompleteTextField<T>({
       default:
         break;
     }
-    setLoading(false);
+    setDisabled(false);
     setTags(value);
   };
   useEffect(() => {
@@ -58,9 +58,8 @@ function ControlAutocompleteTextField<T>({
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...autocompleteProps}
       open={open}
-      disabled={loading}
+      disabled={disabled}
       getOptionDisabled={() => (maxLength ? tags.length >= maxLength : false)}
-      loading={loading}
       noOptionsText="No Results"
       onChange={handleChange}
       onOpen={handleOpen}
@@ -77,7 +76,7 @@ function ControlAutocompleteTextField<T>({
               ...params.InputProps,
               endAdornment: (
                 <>
-                  {loading ? (
+                  {autocompleteProps.loading ? (
                     <CircularProgress color="inherit" size={20} />
                   ) : null}
                   {params.InputProps.endAdornment}

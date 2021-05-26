@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
@@ -19,20 +19,30 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
+import useDebounce from "use-debounce/lib/useDebounce";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
 import AutocompleteTextField from "../../../../components/AutocompleteTextField";
-import ControlTextField from "../../../../components/ControlTextField";
 import routes from "../../../../router/routes.json";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
-import { IAlbum, IArtist, IArtistAlbum } from "../../../../interfaces";
+import {
+  IAlbum,
+  IArtist,
+  IArtistAlbum,
+  IArtistsType,
+} from "../../../../interfaces";
 import { useOpen } from "../../../../common/useOpen";
 import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
 import queryKey from "../../../../gql/queryKey.json";
+import { graphQLClient } from "../../../../gql/client";
+import { artistsQuery } from "../../../../gql/query/artists";
 
 const Artist: React.FC = () => {
+  const [inputValue, setInputValue] = useState("");
   const { open, handleOpen, handleClose } = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { control, handleSubmit, setValue } = useForm<IAlbum>();
+  const { register, handleSubmit, setValue } = useForm();
+  // use-debounce
+  const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
@@ -78,10 +88,30 @@ const Artist: React.FC = () => {
     (artist: IArtist) => axios.delete(`${route}/${artist.id}`, headers),
     { onSuccess: handleDestorySuccess, onError }
   );
+  const artists = useQuery<IArtist[]>(
+    [queryKey.ARTISTS, { query: debouncedInputValue }],
+    () =>
+      graphQLClient
+        .request<IArtistsType>(artistsQuery, {
+          page: 1,
+          q: { name_cont: debouncedInputValue },
+        })
+        .then((res) => res.artists?.data || []),
+    { enabled: !!debouncedInputValue, onError }
+  );
+  // handlers
   const handleRemoveOption = () => setValue("artist_id", "");
-  const handleSelectOption = (option: IAlbum) =>
+  const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
+  const onInputChange = (
+    _e: ChangeEvent<Record<string, unknown>>,
+    value: string,
+    reason: string
+  ) => reason === "input" && setInputValue(value);
   const onSubmit = (data: IArtistAlbum) => createMutation.mutate(data);
+  useEffect(() => {
+    register("artist_id");
+  }, [register]);
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>
@@ -118,24 +148,24 @@ const Artist: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          <ControlTextField
-            defaultValue=""
-            type="hidden"
-            control={control}
-            name="artist_id"
-          />
           <Box mb={3}>
-            <AutocompleteTextField
+            <AutocompleteTextField<IArtist>
               onSelectOption={handleSelectOption}
               onRemoveOption={handleRemoveOption}
               textFieldProps={{
                 label: "Artist",
                 variant: "outlined",
+                margin: "none",
               }}
               autocompleteProps={{
-                value: [],
-                options: [],
+                options: artists.data || [],
+                loading:
+                  createMutation.isLoading ||
+                  destroyMutation.isLoading ||
+                  isPending(),
                 multiple: true,
+                inputValue,
+                onInputChange,
               }}
             />
           </Box>

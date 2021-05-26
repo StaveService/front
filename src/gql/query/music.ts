@@ -32,6 +32,13 @@ export const musicQuery = gql`
         id
         name
       }
+      albums {
+        id
+        title
+        albumLink {
+          itunes
+        }
+      }
       bookmark(currentUserId: $currentUserId) {
         id
       }

@@ -8,7 +8,6 @@ import Box from "@material-ui/core/Box";
 import GroupIcon from "@material-ui/icons/Group";
 import Grid from "@material-ui/core/Grid";
 import ArtistDialog from "./Dialog/Artist";
-import AlbumDialog from "./Dialog/Album";
 import ArtistsTable from "../../../components/Table/Artist";
 import MusicsTable from "../../../components/Table/Music";
 import AlbumsTable from "../../../components/Table/Album";
@@ -132,7 +131,7 @@ const Show: React.FC = () => {
         />
       </Box>
       <Box mb={3}>
-        <ArtistDialog />
+        <ArtistDialog musicPage={musicPage} albumPage={albumPage} />
         <ArtistsTable data={band.data?.artists} loading={band.isLoading} />
       </Box>
       <Box mb={3}>
@@ -145,7 +144,6 @@ const Show: React.FC = () => {
         />
       </Box>
       <Box mb={3}>
-        <AlbumDialog />
         <AlbumsTable
           data={band.data?.albums?.data}
           loading={band.isLoading}

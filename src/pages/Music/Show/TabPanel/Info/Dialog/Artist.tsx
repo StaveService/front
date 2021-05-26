@@ -197,6 +197,7 @@ const Artist: React.FC = () => {
               </Grid>
               <Grid item xs={9}>
                 <AutocompleteTextField<IArtist>
+                  maxLength={1}
                   onSelectOption={handleSelectOption}
                   onRemoveOption={handleRemoveOption}
                   textFieldProps={{
@@ -205,7 +206,6 @@ const Artist: React.FC = () => {
                   }}
                   autocompleteProps={{
                     multiple: true,
-                    value: [],
                     options: artists.data || [],
                     inputValue,
                     getOptionSelected,

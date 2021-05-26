@@ -24,7 +24,7 @@ const Band: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const { onError } = useQuerySnackbar();
   // use-debounce
-  const [debouncedInputValue] = useDebounce(inputValue, 1000);
+  const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-redux
   const headers = useSelector(selectHeaders);
   const dispatch = useDispatch();
@@ -91,6 +91,7 @@ const Band: React.FC = () => {
   const getOptionLabel = (option: IBand) => option.name;
   return (
     <AutocompleteTextField<IBand>
+      maxLength={1}
       onSelectOption={handleSelectOption}
       onRemoveOption={handleRemoveOption}
       textFieldProps={{
@@ -101,9 +102,10 @@ const Band: React.FC = () => {
       autocompleteProps={{
         multiple: true,
         options: bands.data || [],
-        defaultValue: [],
         value: music?.band ? [music.band] : [],
         inputValue,
+        loading:
+          createMutation.isLoading || destroyMutation.isLoading || isPending(),
         getOptionSelected,
         getOptionLabel,
         onInputChange,

@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -19,25 +19,37 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
+import useDebounce from "use-debounce/lib/useDebounce";
 import LoadingButton from "../../../../../../components/Loading/LoadingButton";
 import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
-import ControlTextField from "../../../../../../components/ControlTextField";
 import routes from "../../../../../../router/routes.json";
 import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../slices/currentUser";
-import { IAlbum, IAlbumMusic, IMusic } from "../../../../../../interfaces";
+import {
+  IAlbum,
+  IAlbumMusic,
+  IAlbumsType,
+  IMusic,
+} from "../../../../../../interfaces";
 import { useOpen } from "../../../../../../common/useOpen";
 import { useQuerySnackbar } from "../../../../../../common/useQuerySnackbar";
+import queryKey from "../../../../../../gql/queryKey.json";
+import { graphQLClient } from "../../../../../../gql/client";
+import { albumsQuery } from "../../../../../../gql/query/albums";
 
 const Album: React.FC = () => {
+  const [inputValue, setInputValue] = useState("");
   const { open, handleOpen, handleClose } = useOpen();
+  // use-debounce
+  const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { control, handleSubmit, setValue } = useForm<IAlbum>();
+  const { register, handleSubmit, setValue } = useForm<IAlbum>();
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
+  const id = Number(match.params.id);
   const route = match.url + routes.ALBUM_MUSICS;
   // react-redux
   const dispatch = useDispatch();
@@ -46,11 +58,11 @@ const Album: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>(["music", match.params.id]);
+  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const handleCreateSuccess = (res: AxiosResponse<IAlbumMusic>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["music", match.params.id],
+      [queryKey.MUSIC, id],
       (prev) =>
         prev && {
           ...prev,
@@ -64,7 +76,7 @@ const Album: React.FC = () => {
   ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["music", match.params.id],
+      [queryKey.MUSIC, id],
       (prev) =>
         prev && {
           ...prev,
@@ -74,22 +86,42 @@ const Album: React.FC = () => {
         }
     );
   };
-  const createAlbumMutation = useMutation(
+  const createMutation = useMutation(
     (newAlbumMusic: IAlbum) =>
       axios.post<IAlbumMusic>(route, newAlbumMusic, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
-  const destroyAlbumMutation = useMutation(
+  const destroyMutation = useMutation(
     (album: IAlbum) =>
       axios.delete<IAlbumMusic>(`${route}/${album.id}`, headers),
     { onSuccess: handleDestroySuccess, onError }
+  );
+  const albums = useQuery<IAlbum[]>(
+    [queryKey.ALBUMS, { query: debouncedInputValue }],
+    () =>
+      graphQLClient
+        .request<IAlbumsType>(albumsQuery, {
+          page: 1,
+          q: { title_cont: debouncedInputValue },
+        })
+        .then((res) => res.albums?.data || []),
+    { enabled: !!debouncedInputValue, onError }
   );
   // handlers
   const handleRemoveOption = () => setValue("album_id", "");
   const handleSelectOption = (option: IAlbum) =>
     setValue("album_id", option.id);
-  const onSubmit = (data: IAlbum) => createAlbumMutation.mutate(data);
-
+  const getOptionSelected = (option: IAlbum, value: IAlbum) =>
+    option.title === value.title;
+  const getOptionLabel = (option: IAlbum) => option.title;
+  const onInputChange = (
+    e: ChangeEvent<Record<string, unknown>>,
+    value: string
+  ) => setInputValue(value);
+  const onSubmit = (data: IAlbum) => createMutation.mutate(data);
+  useEffect(() => {
+    register("album_id");
+  }, [register]);
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>
@@ -106,7 +138,7 @@ const Album: React.FC = () => {
               </TableHead>
               <TableBody>
                 {music?.albums?.map((album) => {
-                  const handleClick = () => destroyAlbumMutation.mutate(album);
+                  const handleClick = () => destroyMutation.mutate(album);
                   return (
                     <TableRow key={album.id}>
                       <TableCell>
@@ -125,31 +157,33 @@ const Album: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          <ControlTextField
-            defaultValue=""
-            type="hidden"
-            control={control}
-            name="album_id"
-          />
           <Box mb={3}>
             <AutocompleteTextField
+              maxLength={1}
               onSelectOption={handleSelectOption}
               onRemoveOption={handleRemoveOption}
               textFieldProps={{
                 label: "Albums",
                 variant: "outlined",
+                margin: "normal",
               }}
               autocompleteProps={{
-                value: [],
-                options: [],
+                options: albums.data || [],
                 multiple: true,
+                loading:
+                  createMutation.isLoading ||
+                  destroyMutation.isLoading ||
+                  isPending(),
+                getOptionSelected,
+                getOptionLabel,
+                onInputChange,
               }}
             />
           </Box>
           <Box mb={3}>
             <LoadingButton
               color="primary"
-              loading={createAlbumMutation.isLoading}
+              loading={createMutation.isLoading}
               onClick={handleSubmit(onSubmit)}
               fullWidth
             >

@@ -28,7 +28,7 @@ const Lyrist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const { onError } = useQuerySnackbar();
   // use-debounce
-  const [debouncedInputValue] = useDebounce(inputValue, 1000);
+  const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-redux
   const headers = useSelector(selectHeaders);
   const dispatch = useDispatch();
@@ -115,6 +115,8 @@ const Lyrist: React.FC = () => {
         multiple: true,
         value: music?.lyrists || [],
         options: lyrists.data || [],
+        loading:
+          createMutation.isLoading || destroyMutation.isLoading || isPending(),
         getOptionSelected,
         getOptionLabel,
         onInputChange,
