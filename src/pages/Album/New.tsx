@@ -110,7 +110,7 @@ const New: React.FC = () => {
       register("album_link_attributes.itunes");
       setValue("album_link_attributes.itunes", collectionId);
     }
-  }, [selectedItunesAlbum]);
+  }, [register, setValue, selectedItunesAlbum]);
 
   const ItunesAlbumsDialog = () => {
     return (

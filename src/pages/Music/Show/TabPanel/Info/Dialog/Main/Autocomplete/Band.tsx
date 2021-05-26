@@ -3,6 +3,7 @@ import React, { ChangeEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
+import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/AutocompleteTextField";
 import { IBand, IBandsType, IMusic } from "../../../../../../../../interfaces";
 import routes from "../../../../../../../../router/routes.json";
@@ -22,6 +23,8 @@ interface MutateVariables {
 const Band: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const { onError } = useQuerySnackbar();
+  // use-debounce
+  const [debouncedInputValue] = useDebounce(inputValue, 1000);
   // react-redux
   const headers = useSelector(selectHeaders);
   const dispatch = useDispatch();
@@ -67,27 +70,27 @@ const Band: React.FC = () => {
   const handleRemoveOption = (option: IBand, options: IBand[]) =>
     destroyMutation.mutate({ option, options });
   const bands = useQuery<IBand[]>(
-    [queryKey.BANDS, { query: inputValue }],
+    [queryKey.BANDS, { query: debouncedInputValue }],
     () =>
       graphQLClient
-        .request<IBandsType>(bandsQuery, { q: inputValue, page: 1 })
+        .request<IBandsType>(bandsQuery, {
+          q: { name_cont: debouncedInputValue },
+          page: 1,
+        })
         .then((res) => res.bands?.data || []),
-    { enabled: !!inputValue, onError }
+    { enabled: !!debouncedInputValue, onError }
   );
   // handlers
   const onInputChange = (
-    _e: ChangeEvent<Record<string, unknown>>,
-    value: string
-  ) => {
-    setInputValue(value);
-  };
+    e: ChangeEvent<Record<string, unknown>>,
+    value: string,
+    reason: string
+  ) => reason === "input" && setInputValue(value);
   const getOptionSelected = (option: IBand, value: IBand) =>
     option.name === value.name;
   const getOptionLabel = (option: IBand) => option.name;
   return (
     <AutocompleteTextField<IBand>
-      defaultValue={music?.band ? [music.band] : []}
-      maxLength={1}
       onSelectOption={handleSelectOption}
       onRemoveOption={handleRemoveOption}
       textFieldProps={{
@@ -98,6 +101,9 @@ const Band: React.FC = () => {
       autocompleteProps={{
         multiple: true,
         options: bands.data || [],
+        defaultValue: [],
+        value: music?.band ? [music.band] : [],
+        inputValue,
         getOptionSelected,
         getOptionLabel,
         onInputChange,

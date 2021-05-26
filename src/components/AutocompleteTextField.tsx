@@ -1,30 +1,22 @@
-import React, { ChangeEvent, useState } from "react";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import Autocomplete, { AutocompleteProps } from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import { useOpen } from "../common/useOpen";
 
 type ControlAutocompleteTextFieldProps<T> = {
-  defaultValue: T[];
   maxLength?: number;
   onSelectOption?: (selectOption: T, options: T[]) => void;
   onRemoveOption?: (removeOption: T, options: T[]) => void;
   // material-ui
   textFieldProps: TextFieldProps;
-  autocompleteProps: {
-    options: T[];
-    multiple?: boolean | undefined;
-    getOptionSelected?: (option: T, value: T) => boolean;
-    getOptionLabel?: (option: T) => string;
-    onInputChange?: (
-      _e: ChangeEvent<Record<string, unknown>>,
-      value: string
-    ) => void;
-  };
+  autocompleteProps: Omit<
+    AutocompleteProps<T, true, false, false>,
+    "renderInput"
+  >;
 };
 
 function ControlAutocompleteTextField<T>({
-  defaultValue,
   maxLength,
   onSelectOption,
   onRemoveOption,
@@ -32,7 +24,7 @@ function ControlAutocompleteTextField<T>({
   autocompleteProps,
 }: ControlAutocompleteTextFieldProps<T>): JSX.Element {
   const [loading, setLoading] = useState(false);
-  const [tags, setTags] = useState<T[]>(defaultValue || []);
+  const [tags, setTags] = useState<T[]>([]);
   // useOpen
   const { open, handleOpen, handleClose } = useOpen();
   // handlers
@@ -58,11 +50,13 @@ function ControlAutocompleteTextField<T>({
     setLoading(false);
     setTags(value);
   };
+  useEffect(() => {
+    setTags(autocompleteProps?.value || []);
+  }, [autocompleteProps.inputValue, autocompleteProps?.value]);
   return (
     <Autocomplete
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...autocompleteProps}
-      value={defaultValue}
       open={open}
       disabled={loading}
       getOptionDisabled={() => (maxLength ? tags.length >= maxLength : false)}
@@ -71,26 +65,28 @@ function ControlAutocompleteTextField<T>({
       onChange={handleChange}
       onOpen={handleOpen}
       onClose={handleClose}
-      renderInput={(params) => (
-        <TextField
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...textFieldProps}
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...params}
-          InputProps={{
-            ...params.InputProps,
-            ...textFieldProps.InputProps,
-            endAdornment: (
-              <>
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-        />
-      )}
+      renderInput={(params) => {
+        return (
+          <TextField
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...params}
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...textFieldProps}
+            InputProps={{
+              ...textFieldProps.InputProps,
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {loading ? (
+                    <CircularProgress color="inherit" size={20} />
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
+          />
+        );
+      }}
     />
   );
 }

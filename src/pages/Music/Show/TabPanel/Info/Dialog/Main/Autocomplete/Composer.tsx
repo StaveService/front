@@ -3,6 +3,7 @@ import React, { ChangeEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
+import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/AutocompleteTextField";
 import {
   IArtist,
@@ -26,6 +27,8 @@ interface MutateVariables {
 const Composer: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const { onError } = useQuerySnackbar();
+  // use-debounce
+  const [debouncedInputValue] = useDebounce(inputValue, 1000);
   // react-redux
   const headers = useSelector(selectHeaders);
   const dispatch = useDispatch();
@@ -77,16 +80,18 @@ const Composer: React.FC = () => {
   const handleRemoveOption = (option: IArtist, options: IArtist[]) =>
     destroyMutation.mutate({ option, options });
   const composers = useQuery<IArtist[]>(
-    [queryKey.ARTISTS, { query: inputValue }],
+    [queryKey.ARTISTS, { query: debouncedInputValue }],
     () =>
       graphQLClient
-        .request<IArtistsType>(artistsQuery, { q: inputValue, page: 1 })
+        .request<IArtistsType>(artistsQuery, {
+          q: { name_cont: debouncedInputValue },
+          page: 1,
+        })
         .then((res) => res.artists?.data || []),
-    { enabled: !!inputValue, onError }
+    { enabled: !!debouncedInputValue, onError }
   );
-
   // handlers
-  const handleInputChange = (
+  const onInputChange = (
     _e: ChangeEvent<Record<string, unknown>>,
     value: string
   ) => setInputValue(value);
@@ -95,7 +100,6 @@ const Composer: React.FC = () => {
   const getOptionLabel = (option: IArtist) => option.name;
   return (
     <AutocompleteTextField<IArtist>
-      defaultValue={music?.composers || []}
       onSelectOption={handleSelectOption}
       onRemoveOption={handleRemoveOption}
       textFieldProps={{
@@ -105,10 +109,11 @@ const Composer: React.FC = () => {
       }}
       autocompleteProps={{
         multiple: true,
+        value: music?.composers || [],
         options: composers.data || [],
         getOptionSelected,
         getOptionLabel,
-        onInputChange: handleInputChange,
+        onInputChange,
       }}
     />
   );

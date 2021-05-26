@@ -133,10 +133,10 @@ const Album: React.FC = () => {
           />
           <Box mb={3}>
             <AutocompleteTextField
-              defaultValue={[]}
               onSelectOption={handleSelectOption}
               onRemoveOption={handleRemoveOption}
               textFieldProps={{
+                value: [],
                 label: "Albums",
                 variant: "outlined",
               }}

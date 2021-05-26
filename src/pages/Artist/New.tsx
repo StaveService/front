@@ -106,7 +106,7 @@ const New: React.FC = () => {
       setValue("artist_link_attributes.itunes", artistId);
       setValue("name", artistName);
     }
-  }, [selectedItunesArtist]);
+  }, [register, selectedItunesArtist, setValue]);
 
   const ItunesMusicsDialog = () => {
     return (

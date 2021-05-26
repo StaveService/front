@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
-import React from "react";
-import { useMutation, useQueryClient } from "react-query";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
@@ -22,12 +22,17 @@ import Link from "@material-ui/core/Link";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import { yupResolver } from "@hookform/resolvers/yup";
+import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
 import ControlSelect from "../../../../../../components/ControlSelect";
 import LoadingButton from "../../../../../../components/Loading/LoadingButton";
-import ControlTextField from "../../../../../../components/ControlTextField";
 import routes from "../../../../../../router/routes.json";
-import { IArtist, IMusic, IArtistMusic } from "../../../../../../interfaces";
+import {
+  IArtist,
+  IMusic,
+  IArtistMusic,
+  IArtistsType,
+} from "../../../../../../interfaces";
 import { addRoleSchema } from "../../../../../../schema";
 import {
   selectHeaders,
@@ -35,11 +40,17 @@ import {
 } from "../../../../../../slices/currentUser";
 import { useOpen } from "../../../../../../common/useOpen";
 import { useQuerySnackbar } from "../../../../../../common/useQuerySnackbar";
+import queryKey from "../../../../../../gql/queryKey.json";
+import { graphQLClient } from "../../../../../../gql/client";
+import { artistsQuery } from "../../../../../../gql/query/artists";
 
 const Artist: React.FC = () => {
+  const [inputValue, setInputValue] = useState("");
   const { open, handleOpen, handleClose } = useOpen();
+  // use-debounce
+  const [debouncedInputValue] = useDebounce(inputValue, 1000);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { control, handleSubmit, setValue } = useForm<IArtistMusic>({
+  const { control, handleSubmit, setValue, register } = useForm<IArtistMusic>({
     defaultValues: { artist_id: undefined },
     resolver: yupResolver(addRoleSchema),
   });
@@ -47,24 +58,25 @@ const Artist: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
+  const id = Number(match.params.id);
   const route = match.url + routes.ARTIST_MUSICS;
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
   // react-query
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>(["music", match.params.id]);
+  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
   const handleRemoveOption = () => setValue("artist_id", "");
   const handleCreateSuccess = (res: AxiosResponse<IArtistMusic>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["music", match.params.id],
+      [queryKey.MUSIC, id],
       (prev) =>
         prev && {
           ...prev,
-          roles: [...(prev.artistMusics || []), res.data],
+          artistMusics: [...(prev.artistMusics || []), res.data],
         }
     );
   };
@@ -74,11 +86,11 @@ const Artist: React.FC = () => {
   ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["music", match.params.id],
+      [queryKey.MUSIC, id],
       (prev) =>
         prev && {
           ...prev,
-          roles:
+          artistMusics:
             prev.artistMusics &&
             prev.artistMusics.filter((prevArtist) => prevArtist !== artist),
         }
@@ -94,7 +106,30 @@ const Artist: React.FC = () => {
       axios.delete<IArtistMusic>(`${route}/${role.id}`, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
+  const artists = useQuery<IArtist[]>(
+    [queryKey.ARTISTS, { query: debouncedInputValue }],
+    () =>
+      graphQLClient
+        .request<IArtistsType>(artistsQuery, {
+          q: { name_cont: debouncedInputValue },
+          page: 1,
+        })
+        .then((res) => res.artists?.data || []),
+    { enabled: !!debouncedInputValue, onError }
+  );
+  // handlers
+  const onInputChange = (
+    _e: ChangeEvent<Record<string, unknown>>,
+    value: string,
+    reason: string
+  ) => reason === "input" && setInputValue(value);
   const onSubmit = (data: IArtistMusic) => createRoleMutation.mutate(data);
+  const getOptionSelected = (option: IArtist, value: IArtist) =>
+    option.name === value.name;
+  const getOptionLabel = (option: IArtist) => option.name;
+  useEffect(() => {
+    register("artist_id");
+  }, [register]);
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>
@@ -142,12 +177,6 @@ const Artist: React.FC = () => {
               </Table>
             </TableContainer>
           </Box>
-          <ControlTextField
-            defaultValue=""
-            type="hidden"
-            control={control}
-            name="artist_id"
-          />
           <Box mb={3}>
             <Grid container spacing={1}>
               <Grid item xs={3}>
@@ -167,17 +196,21 @@ const Artist: React.FC = () => {
                 </ControlSelect>
               </Grid>
               <Grid item xs={9}>
-                <AutocompleteTextField
-                  defaultValue={[]}
+                <AutocompleteTextField<IArtist>
                   onSelectOption={handleSelectOption}
                   onRemoveOption={handleRemoveOption}
                   textFieldProps={{
-                    label: "Composers",
+                    label: "Artist",
                     variant: "outlined",
                   }}
                   autocompleteProps={{
-                    options: [],
                     multiple: true,
+                    value: [],
+                    options: artists.data || [],
+                    inputValue,
+                    getOptionSelected,
+                    getOptionLabel,
+                    onInputChange,
                   }}
                 />
               </Grid>

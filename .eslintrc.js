@@ -7,6 +7,7 @@ module.exports = {
     'prettier',
     'airbnb',
     'plugin:react/recommended',
+    "plugin:react-hooks/recommended",
     'plugin:prettier/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',

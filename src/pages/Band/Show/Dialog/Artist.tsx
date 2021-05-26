@@ -129,10 +129,10 @@ const Artist: React.FC = () => {
           />
           <Box mb={3}>
             <AutocompleteTextField
-              defaultValue={[]}
               onSelectOption={handleSelectOption}
               onRemoveOption={handleRemoveOption}
               textFieldProps={{
+                value: [],
                 label: "Artist",
                 variant: "outlined",
               }}

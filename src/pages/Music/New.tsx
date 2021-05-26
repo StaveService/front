@@ -125,7 +125,7 @@ const New: React.FC = () => {
       register("music_link_attributes.itunes");
       setValue("music_link_attributes.itunes", trackId);
     }
-  }, [selectedItunesMusic]);
+  }, [register, selectedItunesMusic, setValue]);
   const ItunesMusicsDialog = () => {
     return (
       <Dialog open={open} onClose={handleClose} fullWidth>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import useScript from "react-script-hook";
 import { useSnackbar } from "notistack";
 import { AlphaTabApi, model } from "@coderline/alphatab";
@@ -52,9 +52,9 @@ const Tab: React.FC = () => {
   const handleSolo = (solo: boolean, track: typeof Track) =>
     alphaTabApi?.changeTrackSolo([track], !solo);
   const scoreLoaded = (score: typeof Score) => setTracks(score.tracks);
-  const renderStarted = () => {
+  const renderStarted = useCallback(() => {
     if (alphaTabApi) setSelectedIndex(alphaTabApi.tracks[0].index);
-  };
+  }, [alphaTabApi]);
   // init alphaTabApi
   useEffect(() => {
     if (!loading && ref.current)
@@ -62,7 +62,7 @@ const Tab: React.FC = () => {
     return () => {
       alphaTabApi?.destroy();
     };
-  }, [loading]);
+  }, [alphaTabApi, loading]);
   // mount
   useEffect(() => {
     alphaTabApi?.renderStarted.on(renderStarted);
@@ -72,11 +72,11 @@ const Tab: React.FC = () => {
       alphaTabApi?.renderStarted.off(renderStarted);
       alphaTabApi?.scoreLoaded.off(scoreLoaded);
     };
-  }, [alphaTabApi]);
+  }, [alphaTabApi, data?.music.tab, renderStarted]);
   // useScript handleError
   useEffect(() => {
     if (error) enqueueSnackbar(error.type, { variant: "error" });
-  }, [error]);
+  }, [enqueueSnackbar, error]);
   return (
     <Box
       className="at-wrap"

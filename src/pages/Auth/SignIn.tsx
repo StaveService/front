@@ -64,12 +64,11 @@ const SignIn: React.FC = () => {
       axios.post<ISignSuccessResponse>("/auth/sign_in", user),
     { onSuccess, onError }
   );
-  if (process.env.NODE_ENV === "development") {
-    useEffect(() => {
-      setValue("email", "test@test.com");
-      setValue("password", "password");
-    }, []);
-  }
+  // TODO: ONLY DEVELOPMENT
+  useEffect(() => {
+    setValue("email", "test@test.com");
+    setValue("password", "password");
+  }, [setValue]);
   const onSubmit = (data: ISignInFormValues) => mutate(data);
   return (
     <Container maxWidth="xs">
