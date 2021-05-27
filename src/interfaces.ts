@@ -7,7 +7,11 @@ export interface ITokenHeaders {
   client: string;
   uid: string;
 }
-export interface IUser extends IMusicsType {
+export interface IUser
+  extends IMusicsType,
+    IBookmarkedMusicsType,
+    IBookmarkedBandsType,
+    IBookmarkedArtistsType {
   ["allow_password_change"]?: false;
   email: string;
   id: number;
@@ -120,56 +124,51 @@ export interface IPaginationType {
   totalCount: number;
   totalPages: number;
 }
+export interface IIndexType<Data> {
+  data: Data[];
+  pagination: IPaginationType;
+}
 export interface IUserType {
   user: IUser;
 }
 export interface IUsersType {
-  users: {
-    data: IUser[];
-    pagination: IPaginationType;
-  };
+  users: IIndexType<IUser>;
 }
 export interface IMusicType {
   music: IMusic;
 }
 export interface IMusicsType {
-  musics?: {
-    data: IMusic[];
-    pagination: IPaginationType;
-  };
+  musics?: IIndexType<IMusic>;
+}
+export interface IBookmarkedMusicsType {
+  bookmarkedMusics?: IIndexType<IMusic>;
 }
 export interface IArtistType {
   artist: IArtist;
 }
 export interface IArtistsType {
-  artists?: {
-    data: IArtist[];
-    pagination: IPaginationType;
-  };
+  artists?: IIndexType<IArtist>;
+}
+export interface IBookmarkedArtistsType {
+  bookmarkedArtists?: IIndexType<IArtist>;
 }
 export interface IIssueType {
-  issues?: {
-    data: IIssue[];
-    pagination: IPaginationType;
-  };
+  issues?: IIndexType<IIssue>;
 }
 export interface IBandType {
   band: IBand;
 }
 export interface IBandsType {
-  bands?: {
-    data: IBand[];
-    pagination: IPaginationType;
-  };
+  bands?: IIndexType<IBand>;
+}
+export interface IBookmarkedBandsType {
+  bookmarkedBands?: IIndexType<IBand>;
 }
 export interface IAlbumType {
   album: IAlbum;
 }
 export interface IAlbumsType {
-  albums?: {
-    data: IAlbum[];
-    pagination: IPaginationType;
-  };
+  albums?: IIndexType<IAlbum>;
 }
 export interface ISignInFormValues {
   email: string;
