@@ -31,6 +31,10 @@ export const albumQuery = gql`
           totalPages
         }
       }
+      artists {
+        id
+        name
+      }
     }
   }
 `;

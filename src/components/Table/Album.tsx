@@ -16,6 +16,7 @@ import { itunes } from "../../axios";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
 import routes from "../../router/routes.json";
 import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import queryKey from "../../gql/queryKey.json";
 
 interface AlbumProps {
   data: IAlbum[] | undefined;
@@ -55,7 +56,11 @@ const Album: React.FC<AlbumProps> = ({
     );
   };
   useQuery(
-    ["itunesAlbums", data?.map((album) => album.albumLink?.itunes).join(",")],
+    [
+      queryKey.ITUNES,
+      queryKey.ALBUMS,
+      data?.map((album) => album.albumLink?.itunes).join(","),
+    ],
     () =>
       itunes
         .get<IItunesResponse<IItunesAlbum>>("/lookup", {

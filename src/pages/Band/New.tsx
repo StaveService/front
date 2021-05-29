@@ -6,18 +6,14 @@ import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
-import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
+import ItunesBandDialog from "../../components/Dialog/Itunes/Band";
 import BandTable from "../../components/Table/Band";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
@@ -107,6 +103,8 @@ const New: React.FC = () => {
   const onSubmit = (data: IBand) => createMutation.mutate(data);
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
+  const handleSelect = (selectedItem: IItunesArtist) =>
+    setSelectedItunesArtist(selectedItem);
 
   useEffect(() => {
     if (selectedItunesArtist) {
@@ -117,28 +115,6 @@ const New: React.FC = () => {
     }
   }, [register, selectedItunesArtist, setValue]);
 
-  const ItunesMusicsDialog = () => {
-    return (
-      <Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogTitle>Choose Artist</DialogTitle>
-        {searchItunesQuery.isLoading && <LinearProgress />}
-        <Box p={2}>
-          {searchItunesQuery.data?.data.results.map((itunesArtist) => {
-            const handleSelect = () => {
-              handleClose();
-              setSelectedItunesArtist(itunesArtist);
-            };
-            return (
-              <Box key={itunesArtist.artistId} mb={2}>
-                <ItunesArtistCard artist={itunesArtist} />
-                <Button onClick={handleSelect}>select this Artist</Button>
-              </Box>
-            );
-          })}
-        </Box>
-      </Dialog>
-    );
-  };
   const SearchedBandCards = () => {
     if (!searchQuery.data?.bands?.data.length) return null;
     return (
@@ -192,7 +168,13 @@ const New: React.FC = () => {
             fullWidth
             disableElevation
           />
-          <ItunesMusicsDialog />
+          <ItunesBandDialog
+            open={open}
+            loading={searchItunesQuery.isLoading}
+            cards={searchItunesQuery.data?.data.results}
+            onClose={handleClose}
+            onSelect={handleSelect}
+          />
           <SearchedBandCards />
           <LoadingButton
             color="primary"

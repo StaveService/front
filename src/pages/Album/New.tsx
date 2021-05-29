@@ -5,10 +5,6 @@ import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -18,7 +14,7 @@ import { itunes } from "../../axios";
 import ControlTextField from "../../components/ControlTextField";
 import AlbumTable from "../../components/Table/Album";
 import LoadingButton from "../../components/Loading/LoadingButton";
-import ItunesAlbumCard from "../../components/Card/Itunes/Album";
+import ItunesAlbumDialog from "../../components/Dialog/Itunes/Album";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import DefaultLayout from "../../layout/Default";
@@ -103,6 +99,8 @@ const New: React.FC = () => {
   const onSubmit = (data: IAlbum) => createMutation.mutate(data);
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
+  const handleSelect = (selectedItem: IItunesAlbum) =>
+    setSelectedItunesAlbum(selectedItem);
   useEffect(() => {
     if (selectedItunesAlbum) {
       const { collectionName, collectionId } = selectedItunesAlbum;
@@ -112,28 +110,6 @@ const New: React.FC = () => {
     }
   }, [register, setValue, selectedItunesAlbum]);
 
-  const ItunesAlbumsDialog = () => {
-    return (
-      <Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogTitle>Choose Album</DialogTitle>
-        {searchItunesQuery.isLoading && <LinearProgress />}
-        <Box p={2}>
-          {searchItunesQuery.data?.data.results.map((itunesAlbum) => {
-            const handleSelect = () => {
-              handleClose();
-              setSelectedItunesAlbum(itunesAlbum);
-            };
-            return (
-              <Box key={itunesAlbum.collectionId} mb={2}>
-                <ItunesAlbumCard album={itunesAlbum} />
-                <Button onClick={handleSelect}>select this Album</Button>
-              </Box>
-            );
-          })}
-        </Box>
-      </Dialog>
-    );
-  };
   const SearchedArtistCards = () => {
     if (!searchQuery.data?.albums?.data.length) return null;
     return (
@@ -164,20 +140,6 @@ const New: React.FC = () => {
           <Box height="100px" width="100px" m="auto">
             <Image src={selectedItunesAlbum?.artworkUrl100 || "undefiend"} />
           </Box>
-          <Box visibility="hidden">
-            <ControlTextField
-              type="hidden"
-              name="itunes_collection_id"
-              defaultValue=""
-              autoComplete="on"
-              label="itunesCollectionId"
-              variant="outlined"
-              control={control}
-              errors={errors}
-              disabled={createMutation.isLoading}
-              fullWidth
-            />
-          </Box>
           <ControlTextField
             name="title"
             defaultValue=""
@@ -204,7 +166,13 @@ const New: React.FC = () => {
             fullWidth
             disableElevation
           />
-          <ItunesAlbumsDialog />
+          <ItunesAlbumDialog
+            open={open}
+            loading={searchItunesQuery.isLoading}
+            cards={searchItunesQuery.data?.data.results}
+            onClose={handleClose}
+            onSelect={handleSelect}
+          />
           <SearchedArtistCards />
           <LoadingButton
             color="primary"

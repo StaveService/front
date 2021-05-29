@@ -5,11 +5,7 @@ import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Box from "@material-ui/core/Box";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
@@ -18,8 +14,8 @@ import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
-import ItunesArtistCard from "../../components/Card/Itunes/Artist";
 import ArtistTable from "../../components/Table/Artist";
+import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import {
@@ -98,6 +94,8 @@ const New: React.FC = () => {
   const onSubmit = (data: IArtist) => createMutation.mutate(data);
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
+  const handleSelect = (selectedItem: IItunesArtist) =>
+    setSelectedItunesArtist(selectedItem);
 
   useEffect(() => {
     if (selectedItunesArtist) {
@@ -108,28 +106,6 @@ const New: React.FC = () => {
     }
   }, [register, selectedItunesArtist, setValue]);
 
-  const ItunesMusicsDialog = () => {
-    return (
-      <Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogTitle>Choose Artist</DialogTitle>
-        {searchItunesQuery.isLoading && <LinearProgress />}
-        <Box p={2}>
-          {searchItunesQuery.data?.data.results.map((itunesArtist) => {
-            const handleSelect = () => {
-              handleClose();
-              setSelectedItunesArtist(itunesArtist);
-            };
-            return (
-              <Box key={itunesArtist.artistId} mb={2}>
-                <ItunesArtistCard artist={itunesArtist} />
-                <Button onClick={handleSelect}>select this Artist</Button>
-              </Box>
-            );
-          })}
-        </Box>
-      </Dialog>
-    );
-  };
   const SearchedArtistsCard = () => {
     if (!searchQuery.data?.artists?.data.length) return <></>;
     return (
@@ -157,20 +133,6 @@ const New: React.FC = () => {
     <DefaultLayout>
       <Paper>
         <Box p={3}>
-          <Box visibility="hidden">
-            <ControlTextField
-              type="hidden"
-              name="itunes_artist_id"
-              defaultValue=""
-              autoComplete="on"
-              label="Name"
-              variant="outlined"
-              control={control}
-              errors={errors}
-              disabled={createMutation.isLoading}
-              fullWidth
-            />
-          </Box>
           <ControlTextField
             name="name"
             defaultValue=""
@@ -197,7 +159,13 @@ const New: React.FC = () => {
             fullWidth
             disableElevation
           />
-          <ItunesMusicsDialog />
+          <ItunesArtistDialog
+            open={open}
+            loading={searchItunesQuery.isLoading}
+            cards={searchItunesQuery.data?.data.results}
+            onClose={handleClose}
+            onSelect={handleSelect}
+          />
           <SearchedArtistsCard />
           <LoadingButton
             color="primary"

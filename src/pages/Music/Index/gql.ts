@@ -1,6 +1,6 @@
 import { gql } from "graphql-request";
 
-export const musicsQuery = gql`
+const query = gql`
   query getMusics($page: Int!, $q: JSON) {
     musics(page: $page, q: $q) {
       pagination {
@@ -29,12 +29,8 @@ export const musicsQuery = gql`
           id
           name
         }
-        albums {
-          id
-          title
-        }
       }
     }
   }
 `;
-export default undefined;
+export default query;

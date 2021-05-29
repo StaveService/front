@@ -105,10 +105,12 @@ const Artist: React.FC = () => {
     setValue("artist_id", option.id);
   const onInputChange = (
     _e: ChangeEvent<Record<string, unknown>>,
-    value: string,
-    reason: string
-  ) => reason === "input" && setInputValue(value);
+    value: string
+  ) => setInputValue(value);
   const onSubmit = (data: IArtistAlbum) => createMutation.mutate(data);
+  const getOptionSelected = (option: IArtist, value: IArtist) =>
+    option.name === value.name;
+  const getOptionLabel = (option: IArtist) => option.name;
   useEffect(() => {
     register("artist_id");
   }, [register]);
@@ -155,9 +157,10 @@ const Artist: React.FC = () => {
               textFieldProps={{
                 label: "Artist",
                 variant: "outlined",
-                margin: "none",
+                margin: "normal",
               }}
               autocompleteProps={{
+                value: artists.data,
                 options: artists.data || [],
                 loading:
                   createMutation.isLoading ||
@@ -165,6 +168,8 @@ const Artist: React.FC = () => {
                   isPending(),
                 multiple: true,
                 inputValue,
+                getOptionSelected,
+                getOptionLabel,
                 onInputChange,
               }}
             />

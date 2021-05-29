@@ -6,9 +6,9 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import LinkButton from "../Button/Link";
-import TwitterIcon from "../Icon/Twitter";
-import ItunesIcon from "../Icon/Itunes";
+import LinkButton from "../../Button/Link";
+import TwitterIcon from "../../Icon/Twitter";
+import ItunesIcon from "../../Icon/Itunes";
 
 interface Links {
   twitter?: string;
@@ -43,6 +43,11 @@ const Link: React.FC<LinkProps> = ({ links, itunes, twitter }: LinkProps) => {
           )}
           {itunes && (
             <TableRow>
+              <TableCell>
+                <LinkButton startIcon={<ItunesIcon />} href={links.itunes}>
+                  itunes
+                </LinkButton>
+              </TableCell>
               <TableCell>
                 <LinkButton startIcon={<ItunesIcon />} href={links.itunes}>
                   itunes

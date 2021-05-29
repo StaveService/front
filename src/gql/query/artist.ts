@@ -48,6 +48,13 @@ export const artistQuery = gql`
           totalPages
         }
       }
+      bands {
+        id
+        name
+        bandLink {
+          itunes
+        }
+      }
       bookmark(currentUserId: $currentUserId) {
         id
       }
