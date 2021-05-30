@@ -14,7 +14,7 @@ import AlbumsTable from "../../../components/Table/Album";
 import LinkTable from "../../../components/Table/Link";
 import BookmarkButton from "../../../components/Button/Bookmark";
 import DefaultLayout from "../../../layout/Default";
-import routes from "../../../router/routes.json";
+import routes from "../../../constants/routes.json";
 import {
   IBand,
   IBandBookmark,
@@ -22,16 +22,16 @@ import {
   IItunesArtist,
   IItunesResponse,
 } from "../../../interfaces";
-import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
+import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import {
   selectCurrentUser,
   selectHeaders,
   setHeaders,
 } from "../../../slices/currentUser";
 import { graphQLClient } from "../../../gql/client";
-import queryKey from "../../../gql/queryKey.json";
+import queryKey from "../../../constants/queryKey.json";
 import { bandQuery } from "../../../gql/query/band";
-import { itunes } from "../../../axios";
+import { itunes } from "../../../axios/axios";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
@@ -84,7 +84,7 @@ const Show: React.FC = () => {
   const createMutation = useMutation(
     () =>
       axios.post<IBandBookmark>(
-        match.url + routes.BAND_BOOKMARKS,
+        match.url + routes.BOOKMARKS,
         undefined,
         headers
       ),
@@ -93,7 +93,7 @@ const Show: React.FC = () => {
   const destroyMutation = useMutation(
     () =>
       axios.delete(
-        `${match.url + routes.BAND_BOOKMARKS}/${
+        `${match.url + routes.BOOKMARKS}/${
           band.data?.bookmark?.id || "undefined"
         }`,
         headers

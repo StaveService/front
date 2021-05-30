@@ -20,17 +20,17 @@ import {
   IItunesArtist,
   IItunesResponse,
 } from "../../interfaces";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import {
   selectCurrentUser,
   selectHeaders,
   setHeaders,
 } from "../../slices/currentUser";
-import routes from "../../router/routes.json";
+import routes from "../../constants/routes.json";
 import { graphQLClient } from "../../gql/client";
 import { artistQuery } from "../../gql/query/artist";
-import queryKey from "../../gql/queryKey.json";
-import { itunes } from "../../axios";
+import queryKey from "../../constants/queryKey.json";
+import { itunes } from "../../axios/axios";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
@@ -87,7 +87,7 @@ const Show: React.FC = () => {
   const createMutation = useMutation(
     () =>
       axios.post<IArtistBookmark>(
-        match.url + routes.ARTIST_BOOKMARKS,
+        match.url + routes.BOOKMARKS,
         undefined,
         headers
       ),
@@ -96,7 +96,7 @@ const Show: React.FC = () => {
   const destroyMutation = useMutation(
     () =>
       axios.delete(
-        `${match.url + routes.ARTIST_BOOKMARKS}/${
+        `${match.url + routes.BOOKMARKS}/${
           artist.data?.bookmark?.id || "undefined"
         }`,
         headers

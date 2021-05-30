@@ -10,7 +10,7 @@ import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import GroupIcon from "@material-ui/icons/Group";
 import Box from "@material-ui/core/Box";
-import routes from "../../router/routes.json";
+import routes from "../../constants/routes.json";
 import { MenuCardType } from "../../interfaces";
 
 interface ILayout {

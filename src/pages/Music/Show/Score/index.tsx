@@ -9,8 +9,8 @@ import Header from "./Header";
 import Tracks, { Track } from "../../../../ui/Tracks";
 import { IAlphaTab, IMusicType } from "../../../../interfaces";
 import styles from "./index.module.css";
-import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
-import queryKey from "../../../../gql/queryKey.json";
+import { useQuerySnackbar } from "../../../../hooks/useQuerySnackbar";
+import queryKey from "../../../../constants/queryKey.json";
 import { graphQLClient } from "../../../../gql/client";
 import { musicQuery } from "../../../../gql/query/music";
 

@@ -13,9 +13,9 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { useQuery } from "react-query";
 import Pagination from "@material-ui/lab/Pagination";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
-import routes from "../../router/routes.json";
-import { itunes } from "../../axios";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import routes from "../../constants/routes.json";
+import { itunes } from "../../axios/axios";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 
 interface MusicProps {
   data: IMusic[] | undefined;

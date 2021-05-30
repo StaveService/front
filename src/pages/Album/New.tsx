@@ -10,7 +10,7 @@ import Image from "material-ui-image";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
-import { itunes } from "../../axios";
+import { itunes } from "../../axios/axios";
 import ControlTextField from "../../components/ControlTextField";
 import AlbumTable from "../../components/Table/Album";
 import LoadingButton from "../../components/Loading/LoadingButton";
@@ -25,11 +25,11 @@ import {
   IItunesResponse,
 } from "../../interfaces";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import { useOpen } from "../../common/useOpen";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { useOpen } from "../../hooks/useOpen";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { albumsQuery } from "../../gql/query/albums";
-import queryKey from "../../gql/queryKey.json";
+import queryKey from "../../constants/queryKey.json";
 
 const New: React.FC = () => {
   const [page, setPage] = useState(1);

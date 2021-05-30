@@ -5,12 +5,12 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import routes from "../../../../../router/routes.json";
+import routes from "../../../../../constants/routes.json";
 import IssueTable from "../../../../../components/Table/Issue";
 import { IIssueType } from "../../../../../interfaces";
-import { useQuerySnackbar } from "../../../../../common/useQuerySnackbar";
+import { useQuerySnackbar } from "../../../../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../../../../gql/client";
-import queryKey from "../../../../../gql/queryKey.json";
+import queryKey from "../../../../../constants/queryKey.json";
 import { issuesQuery } from "../../../../../gql/query/issues";
 
 const Index: React.FC = () => {

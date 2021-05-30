@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import BandsTable from "../../components/Table/Band";
 import DefaultLayout from "../../layout/Default";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { bandsQuery } from "../../gql/query/bands";
-import queryKey from "../../gql/queryKey.json";
+import queryKey from "../../constants/queryKey.json";
 import { IBandsType } from "../../interfaces";
 
 const Index: React.FC = () => {

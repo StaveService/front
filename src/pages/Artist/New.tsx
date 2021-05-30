@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
-import { itunes } from "../../axios";
+import { itunes, postArtist } from "../../axios/axios";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
@@ -24,11 +24,11 @@ import {
   IItunesArtist,
   IItunesResponse,
 } from "../../interfaces";
-import { useOpen } from "../../common/useOpen";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { useOpen } from "../../hooks/useOpen";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { artistsQuery } from "../../gql/query/artists";
-import queryKey from "../../gql/queryKey.json";
+import queryKey from "../../constants/queryKey.json";
 
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -67,7 +67,7 @@ const New: React.FC = () => {
     queryClient.setQueryData([queryKey.ARTIST, res.data.id], res.data);
   };
   const createMutation = useMutation(
-    (newArtist: IArtist) => axios.post<IArtist>(route, newArtist, headers),
+    (newArtist: IArtist) => postArtist(newArtist, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(

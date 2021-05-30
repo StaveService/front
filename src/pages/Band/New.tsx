@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,13 +23,13 @@ import {
   IItunesArtist,
   IItunesResponse,
 } from "../../interfaces";
-import routes from "../../router/routes.json";
-import { itunes } from "../../axios";
-import { useOpen } from "../../common/useOpen";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { itunes, postBand } from "../../axios/axios";
+import { useOpen } from "../../hooks/useOpen";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { bandsQuery } from "../../gql/query/bands";
-import queryKey from "../../gql/queryKey.json";
+import queryKey from "../../constants/queryKey.json";
+import routes from "../../constants/routes.json";
 
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -54,7 +54,6 @@ const New: React.FC = () => {
   // react-router-dom
   const history = useHistory();
   const match = useRouteMatch<{ id: string }>();
-  const route = match.url.replace("/new", "");
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
@@ -76,7 +75,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newBand: IBand) => axios.post<IBand>(route, newBand, headers),
+    (newBand: IBand) => postBand(newBand, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery<IBandsType>(

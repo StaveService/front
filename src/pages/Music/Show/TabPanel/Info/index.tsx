@@ -17,10 +17,10 @@ import LinkTable from "../../../../../components/Table/Link";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
-import routes from "../../../../../router/routes.json";
+import routes from "../../../../../constants/routes.json";
 import { selectCurrentUser } from "../../../../../slices/currentUser";
 import { IItunesMusic, IMusic } from "../../../../../interfaces";
-import queryKey from "../../../../../gql/queryKey.json";
+import queryKey from "../../../../../constants/queryKey.json";
 
 const Info: React.FC = () => {
   const params = useParams<{ userId: string; id: string }>();

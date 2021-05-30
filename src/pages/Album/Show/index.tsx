@@ -16,9 +16,9 @@ import ArtistTable from "../../../components/Table/Artist";
 import LinkTable from "../../../components/Table/Link";
 import DefaultLayout from "../../../layout/Default";
 import ArtistDialog from "./Dialog/Artist";
-import { itunes } from "../../../axios";
-import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
-import queryKey from "../../../gql/queryKey.json";
+import { itunes } from "../../../axios/axios";
+import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
+import queryKey from "../../../constants/queryKey.json";
 import { graphQLClient } from "../../../gql/client";
 import { albumQuery } from "../../../gql/query/album";
 

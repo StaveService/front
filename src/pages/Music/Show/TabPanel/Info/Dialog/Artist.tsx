@@ -26,7 +26,6 @@ import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
 import ControlSelect from "../../../../../../components/ControlSelect";
 import LoadingButton from "../../../../../../components/Loading/LoadingButton";
-import routes from "../../../../../../router/routes.json";
 import {
   IArtist,
   IMusic,
@@ -38,11 +37,12 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../slices/currentUser";
-import { useOpen } from "../../../../../../common/useOpen";
-import { useQuerySnackbar } from "../../../../../../common/useQuerySnackbar";
-import queryKey from "../../../../../../gql/queryKey.json";
+import { useOpen } from "../../../../../../hooks/useOpen";
+import { useQuerySnackbar } from "../../../../../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../../../../../gql/client";
 import { artistsQuery } from "../../../../../../gql/query/artists";
+import routes from "../../../../../../constants/routes.json";
+import queryKey from "../../../../../../constants/queryKey.json";
 
 const Artist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -59,7 +59,7 @@ const Artist: React.FC = () => {
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);
-  const route = match.url + routes.ARTIST_MUSICS;
+  const route = match.url + routes.ARTISTS;
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);

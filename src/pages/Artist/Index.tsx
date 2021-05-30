@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import ArtistsTable from "../../components/Table/Artist";
 import DefaultLayout from "../../layout/Default";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { artistsQuery } from "../../gql/query/artists";
-import queryKey from "../../gql/queryKey.json";
+import queryKey from "../../constants/queryKey.json";
 import { IArtistsType } from "../../interfaces";
 
 const Index: React.FC = () => {

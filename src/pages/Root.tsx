@@ -6,7 +6,7 @@ import Box from "@material-ui/core/Box";
 import MusicsTable from "../components/Table/Music";
 import MenuCard from "../components/Card/Menu";
 import DefaultLayout from "../layout/Default";
-import queryKey from "../gql/queryKey.json";
+import queryKey from "../constants/queryKey.json";
 import { graphQLClient } from "../gql/client";
 import { musicsQuery } from "../gql/query/musics";
 import { IMusicsType } from "../interfaces";

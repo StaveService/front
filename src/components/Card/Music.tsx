@@ -7,8 +7,8 @@ import Box from "@material-ui/core/Box";
 import CardMedia from "@material-ui/core/CardMedia";
 import { makeStyles } from "@material-ui/core/styles";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
-import { itunes } from "../../axios";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { itunes } from "../../axios/axios";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 
 const useStyles = makeStyles({
   media: {

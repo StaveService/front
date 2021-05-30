@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,19 +12,21 @@ import { useMutation, useQueryClient } from "react-query";
 import ControlTextField from "../../../../components/ControlTextField";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
-import routes from "../../../../router/routes.json";
+import routes from "../../../../constants/routes.json";
 import { IMusic } from "../../../../interfaces";
-import { useOpen } from "../../../../common/useOpen";
-import { useQuerySnackbar } from "../../../../common/useQuerySnackbar";
-import queryKey from "../../../../gql/queryKey.json";
+import { useOpen } from "../../../../hooks/useOpen";
+import { useQuerySnackbar } from "../../../../hooks/useQuerySnackbar";
+import queryKey from "../../../../constants/queryKey.json";
+import { deleteMusic } from "../../../../axios/axios";
 
 const Setting: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm();
   const history = useHistory();
-  const match = useRouteMatch<{ id: string }>();
+  const match = useRouteMatch<{ userId: string; id: string }>();
   const id = Number(match.params.id);
+  const userId = Number(match.params.userId);
   const headers = useSelector(selectHeaders);
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
@@ -36,7 +38,7 @@ const Setting: React.FC = () => {
     history.push(routes.ROOT);
   };
   const destroyMusicMutation = useMutation(
-    () => axios.delete(match.url.replace("/setting", ""), headers),
+    () => deleteMusic(userId, id, headers),
     { onSuccess, onError }
   );
   const onSubmit = () => destroyMusicMutation.mutate();

@@ -10,7 +10,7 @@ import LoadingButton from "../../../../../components/Loading/LoadingButton";
 import { issueSchema } from "../../../../../schema";
 import { selectHeaders, setHeaders } from "../../../../../slices/currentUser";
 import { IIssue } from "../../../../../interfaces";
-import { useQuerySnackbar } from "../../../../../common/useQuerySnackbar";
+import { useQuerySnackbar } from "../../../../../hooks/useQuerySnackbar";
 
 const New: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/unbound-method

@@ -2,7 +2,7 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import React from "react";
-import { useOpen } from "../../../../../../common/useOpen";
+import { useOpen } from "../../../../../../hooks/useOpen";
 
 const Link: React.FC = () => {
   const { open, handleOpen, handleClose } = useOpen();

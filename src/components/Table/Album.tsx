@@ -12,11 +12,11 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Pagination from "@material-ui/lab/Pagination";
-import { itunes } from "../../axios";
+import { itunes } from "../../axios/axios";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
-import routes from "../../router/routes.json";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
-import queryKey from "../../gql/queryKey.json";
+import routes from "../../constants/routes.json";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import queryKey from "../../constants/queryKey.json";
 
 interface AlbumProps {
   data: IAlbum[] | undefined;

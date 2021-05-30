@@ -11,7 +11,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
 import Pagination from "@material-ui/lab/Pagination";
 import { IUser } from "../../interfaces";
-import routes from "../../router/routes.json";
+import routes from "../../constants/routes.json";
 
 interface UserProps {
   data: IUser[] | undefined;

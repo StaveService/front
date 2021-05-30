@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
@@ -24,16 +24,16 @@ import {
   IMusic,
   IMusicsType,
 } from "../../interfaces";
-import { itunes } from "../../axios";
-import routes from "../../router/routes.json";
+import { itunes, postMusic } from "../../axios/axios";
 import {
   selectCurrentUser,
   selectHeaders,
   setHeaders,
 } from "../../slices/currentUser";
-import { useOpen } from "../../common/useOpen";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
-import queryKey from "../../gql/queryKey.json";
+import { useOpen } from "../../hooks/useOpen";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import queryKey from "../../constants/queryKey.json";
+import routes from "../../constants/routes.json";
 import { graphQLClient } from "../../gql/client";
 import { musicsQuery } from "../../gql/query/musics";
 
@@ -83,7 +83,7 @@ const New: React.FC = () => {
       );
   };
   const createMusicMutation = useMutation(
-    (newMusic: IMusic) => axios.post<IMusic>(route, newMusic, headers),
+    (newMusic: IMusic) => postMusic(currentUser?.id, newMusic, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(

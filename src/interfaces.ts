@@ -1,6 +1,9 @@
 import { AlphaTabApi, model, synth } from "@coderline/alphatab";
 
 export type MenuCardType = "Artist" | "Album" | "Music" | "Band";
+export interface IHeaders {
+  headers: ITokenHeaders;
+}
 export interface ITokenHeaders {
   ["content-type"]: string;
   ["access-token"]: string;
@@ -29,7 +32,7 @@ export interface IBand extends IMusicsType, IAlbumsType {
   name: string;
   bookmark?: IBandBookmark;
   artists?: IArtist[];
-  bandLink: IBandLink;
+  bandLink?: IBandLink;
 }
 export interface IBandLink {
   itunes: number;
@@ -66,7 +69,7 @@ export interface IArtistLink {
 export interface IAlbum extends IMusicsType {
   id: number;
   title: string;
-  artists: IArtist[];
+  artists?: IArtist[];
   albumLink?: IAlbumLink;
 }
 export interface IAlbumLink {

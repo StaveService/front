@@ -14,7 +14,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useMutation } from "react-query";
-import routes from "../router/routes.json";
+import routes from "../constants/routes.json";
 import {
   remove,
   selectCurrentUser,

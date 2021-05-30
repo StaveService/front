@@ -37,12 +37,12 @@ import {
   IMusicBookmark,
   IMusicType,
 } from "../../../interfaces";
-import routes from "../../../router/routes.json";
-import { itunes } from "../../../axios";
-import { useQuerySnackbar } from "../../../common/useQuerySnackbar";
+import { itunes } from "../../../axios/axios";
+import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import { musicQuery } from "../../../gql/query/music";
 import { graphQLClient } from "../../../gql/client";
-import queryKey from "../../../gql/queryKey.json";
+import queryKey from "../../../constants/queryKey.json";
+import routes from "../../../constants/routes.json";
 
 const Show: React.FC = () => {
   // react-hook-form
@@ -95,7 +95,7 @@ const Show: React.FC = () => {
   const createMutation = useMutation(
     () =>
       axios.post<IMusicBookmark>(
-        match.url + routes.MUSIC_BOOKMARKS,
+        match.url + routes.BOOKMARKS,
         undefined,
         headers
       ),
@@ -104,7 +104,7 @@ const Show: React.FC = () => {
   const destroyMutation = useMutation(
     () =>
       axios.delete(
-        `${match.url + routes.MUSIC_BOOKMARKS}/${
+        `${match.url + routes.BOOKMARKS}/${
           music.data?.bookmark?.id || "undefined"
         }`,
         headers

@@ -10,13 +10,13 @@ import {
   IArtistsType,
   IMusic,
 } from "../../../../../../../../interfaces";
-import routes from "../../../../../../../../router/routes.json";
-import queryKey from "../../../../../../../../gql/queryKey.json";
+import routes from "../../../../../../../../constants/routes.json";
+import queryKey from "../../../../../../../../constants/queryKey.json";
 import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../../../slices/currentUser";
-import { useQuerySnackbar } from "../../../../../../../../common/useQuerySnackbar";
+import { useQuerySnackbar } from "../../../../../../../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../../../../../../../gql/client";
 import { artistsQuery } from "../../../../../../../../gql/query/artists";
 

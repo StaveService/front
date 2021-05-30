@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import AlbumTable from "../../components/Table/Album";
 import DefaultLayout from "../../layout/Default";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { albumsQuery } from "../../gql/query/albums";
 import { IAlbumsType } from "../../interfaces";
-import queryKey from "../../gql/queryKey.json";
+import queryKey from "../../constants/queryKey.json";
 
 const Index: React.FC = () => {
   const [page, setPage] = useState(1);

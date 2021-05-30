@@ -7,10 +7,10 @@ import BandTable from "../../components/Table/Band";
 import ArtistTable from "../../components/Table/Artist";
 import DefaultLayout from "../../layout/Default";
 import { IUserType } from "../../interfaces";
-import { useQuerySnackbar } from "../../common/useQuerySnackbar";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { userQuery } from "../../gql/query/user";
-import queryKey from "../../gql/queryKey.json";
+import queryKey from "../../constants/queryKey.json";
 
 const Show: React.FC = () => {
   const [musicPage, setMusicPage] = useState(1);

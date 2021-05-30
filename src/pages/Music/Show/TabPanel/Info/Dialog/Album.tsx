@@ -22,7 +22,6 @@ import IconButton from "@material-ui/core/IconButton";
 import useDebounce from "use-debounce/lib/useDebounce";
 import LoadingButton from "../../../../../../components/Loading/LoadingButton";
 import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
-import routes from "../../../../../../router/routes.json";
 import {
   selectHeaders,
   setHeaders,
@@ -33,9 +32,10 @@ import {
   IAlbumsType,
   IMusic,
 } from "../../../../../../interfaces";
-import { useOpen } from "../../../../../../common/useOpen";
-import { useQuerySnackbar } from "../../../../../../common/useQuerySnackbar";
-import queryKey from "../../../../../../gql/queryKey.json";
+import { useOpen } from "../../../../../../hooks/useOpen";
+import { useQuerySnackbar } from "../../../../../../hooks/useQuerySnackbar";
+import queryKey from "../../../../../../constants/queryKey.json";
+import routes from "../../../../../../constants/routes.json";
 import { graphQLClient } from "../../../../../../gql/client";
 import { albumsQuery } from "../../../../../../gql/query/albums";
 
@@ -50,7 +50,7 @@ const Album: React.FC = () => {
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);
-  const route = match.url + routes.ALBUM_MUSICS;
+  const route = match.url + routes.ALBUMS;
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);

@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -18,7 +18,9 @@ import {
   ISignSuccessResponse,
 } from "../../interfaces";
 import { signInSchema } from "../../schema";
+import { signIn } from "../../axios/axios";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
+import testUser from "../../constants/user.json";
 
 const SignIn: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -60,14 +62,13 @@ const SignIn: React.FC = () => {
     }
   };
   const { isLoading, mutate } = useMutation(
-    (user: ISignInFormValues) =>
-      axios.post<ISignSuccessResponse>("/auth/sign_in", user),
+    (user: ISignInFormValues) => signIn(user),
     { onSuccess, onError }
   );
   // TODO: ONLY DEVELOPMENT
   useEffect(() => {
-    setValue("email", "test@test.com");
-    setValue("password", "password");
+    setValue("email", testUser.EMAIL);
+    setValue("password", testUser.PASSWORD);
   }, [setValue]);
   const onSubmit = (data: ISignInFormValues) => mutate(data);
   return (

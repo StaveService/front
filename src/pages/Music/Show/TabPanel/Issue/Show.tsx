@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import { useQuery } from "react-query";
 import { IIssue } from "../../../../../interfaces";
 import LoadingCircularProgress from "../../../../../components/Loading/LoadingCircularProgress";
-import { useQuerySnackbar } from "../../../../../common/useQuerySnackbar";
+import { useQuerySnackbar } from "../../../../../hooks/useQuerySnackbar";
 
 const Show: React.FC = () => {
   const match = useRouteMatch<{ id: string }>();
