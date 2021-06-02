@@ -10,7 +10,6 @@ import Image from "material-ui-image";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
-import { itunes } from "../../axios/axios";
 import ControlTextField from "../../components/ControlTextField";
 import AlbumTable from "../../components/Table/Album";
 import LoadingButton from "../../components/Loading/LoadingButton";
@@ -18,12 +17,7 @@ import ItunesAlbumDialog from "../../components/Dialog/Itunes/Album";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import DefaultLayout from "../../layout/Default";
-import {
-  IAlbum,
-  IAlbumsType,
-  IItunesAlbum,
-  IItunesResponse,
-} from "../../interfaces";
+import { IAlbum, IAlbumsType, IItunesAlbum } from "../../interfaces";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { useOpen } from "../../hooks/useOpen";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
@@ -83,17 +77,6 @@ const New: React.FC = () => {
         q: { title_eq: debouncedTitle },
       }),
     { enabled: !!debouncedTitle, onError }
-  );
-  const searchItunesQuery = useQuery(
-    [queryKey.ITUNES, queryKey.ALBUMS, debouncedTitle],
-    () =>
-      itunes.get<IItunesResponse<IItunesAlbum>>("/search", {
-        params: {
-          entity: "album",
-          term: debouncedTitle,
-        },
-      }),
-    { enabled: open, onError }
   );
   // handlers
   const onSubmit = (data: IAlbum) => createMutation.mutate(data);
@@ -167,9 +150,8 @@ const New: React.FC = () => {
             disableElevation
           />
           <ItunesAlbumDialog
+            value={title}
             open={open}
-            loading={searchItunesQuery.isLoading}
-            cards={searchItunesQuery.data?.data.results}
             onClose={handleClose}
             onSelect={handleSelect}
           />

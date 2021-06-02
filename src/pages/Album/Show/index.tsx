@@ -14,6 +14,7 @@ import {
 import MusicsTable from "../../../components/Table/Music";
 import ArtistTable from "../../../components/Table/Artist";
 import LinkTable from "../../../components/Table/Link";
+import ItunesAlbumDialog from "../../../components/Dialog/Itunes/Album";
 import DefaultLayout from "../../../layout/Default";
 import ArtistDialog from "./Dialog/Artist";
 import { itunes } from "../../../axios/axios";
@@ -46,6 +47,7 @@ const Show: React.FC = () => {
     { enabled: !!album.data?.albumLink?.itunes, onError }
   );
   // handlers
+  const handleSelect = () => console.log("");
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
     setMusicPage(value);
   return (
@@ -60,6 +62,14 @@ const Show: React.FC = () => {
       <Box mb={3}>
         <LinkTable
           links={{ itunes: itunesAlbum.data?.collectionViewUrl }}
+          renderItunes={(open, handleClose) => (
+            <ItunesAlbumDialog
+              open={open}
+              onClose={handleClose}
+              onSelect={handleSelect}
+              showSearchBar
+            />
+          )}
           itunes
         />
       </Box>

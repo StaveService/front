@@ -6,9 +6,11 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import LinkButton from "../../Button/Link";
-import TwitterIcon from "../../Icon/Twitter";
-import ItunesIcon from "../../Icon/Itunes";
+import Button from "@material-ui/core/Button";
+import LinkButton from "../Button/Link";
+import TwitterIcon from "../Icon/Twitter";
+import ItunesIcon from "../Icon/Itunes";
+import { useOpen } from "../../hooks/useOpen";
 
 interface Links {
   twitter?: string;
@@ -20,8 +22,15 @@ interface Options {
 }
 interface LinkProps extends Options {
   links: Links;
+  renderItunes: (open: boolean, handleClose: () => void) => React.ReactNode;
 }
-const Link: React.FC<LinkProps> = ({ links, itunes, twitter }: LinkProps) => {
+const Link: React.FC<LinkProps> = ({
+  links,
+  itunes,
+  twitter,
+  renderItunes,
+}: LinkProps) => {
+  const { open, handleClose, handleOpen } = useOpen();
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -49,9 +58,11 @@ const Link: React.FC<LinkProps> = ({ links, itunes, twitter }: LinkProps) => {
                 </LinkButton>
               </TableCell>
               <TableCell>
-                <LinkButton startIcon={<ItunesIcon />} href={links.itunes}>
-                  itunes
-                </LinkButton>
+                <Button variant="text" onClick={handleOpen}>
+                  Edit
+                </Button>
+
+                {renderItunes(open, handleClose)}
               </TableCell>
             </TableRow>
           )}

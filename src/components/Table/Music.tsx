@@ -14,6 +14,7 @@ import { useQuery } from "react-query";
 import Pagination from "@material-ui/lab/Pagination";
 import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
 import routes from "../../constants/routes.json";
+import queryKey from "../../constants/queryKey.json";
 import { itunes } from "../../axios/axios";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 
@@ -70,7 +71,11 @@ const Music: React.FC<MusicProps> = ({
     );
   };
   useQuery(
-    ["itunesMusics", data?.map((music) => music.musicLink?.itunes).join(",")],
+    [
+      queryKey.ITUNES,
+      queryKey.MUSICS,
+      data?.map((music) => music.musicLink?.itunes).join(","),
+    ],
     () =>
       itunes
         .get<IItunesResponse<IItunesMusic>>("/lookup", {

@@ -18,13 +18,8 @@ import LoadingCircularProgress from "../../components/Loading/LoadingCircularPro
 import MusicTable from "../../components/Table/Music";
 import DefaultLayout from "../../layout/Default";
 import ItunesMusicDialog from "../../components/Dialog/Itunes/Music";
-import {
-  IItunesMusic,
-  IItunesResponse,
-  IMusic,
-  IMusicsType,
-} from "../../interfaces";
-import { itunes, postMusic } from "../../axios/axios";
+import { IItunesMusic, IMusic, IMusicsType } from "../../interfaces";
+import { postMusic } from "../../axios/axios";
 import {
   selectCurrentUser,
   selectHeaders,
@@ -94,17 +89,6 @@ const New: React.FC = () => {
         q: { title_eq: debouncedTitle },
       }),
     { enabled: !!debouncedTitle, onError }
-  );
-  const searchItunesQuery = useQuery(
-    [queryKey.ITUNES, queryKey.MUSICS, debouncedTitle],
-    () =>
-      itunes.get<IItunesResponse<IItunesMusic>>("/search", {
-        params: {
-          entity: "song",
-          term: debouncedTitle,
-        },
-      }),
-    { enabled: open, onError }
   );
   // handlers
   const onSubmit = (data: IMusic) => createMusicMutation.mutate(data);
@@ -191,9 +175,8 @@ const New: React.FC = () => {
             disableElevation
           />
           <ItunesMusicDialog
+            value={title}
             open={open}
-            loading={searchItunesQuery.isLoading}
-            cards={searchItunesQuery.data?.data.results}
             onClose={handleClose}
             onSelect={handleSelect}
           />

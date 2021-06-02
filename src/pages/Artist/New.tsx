@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
-import { itunes, postArtist } from "../../axios/axios";
+import { postArtist } from "../../axios/axios";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
@@ -18,12 +18,7 @@ import ArtistTable from "../../components/Table/Artist";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import {
-  IArtist,
-  IArtistsType,
-  IItunesArtist,
-  IItunesResponse,
-} from "../../interfaces";
+import { IArtist, IArtistsType, IItunesArtist } from "../../interfaces";
 import { useOpen } from "../../hooks/useOpen";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
@@ -78,17 +73,6 @@ const New: React.FC = () => {
         q: { name_eq: debouncedName },
       }),
     { enabled: !!debouncedName, onError }
-  );
-  const searchItunesQuery = useQuery(
-    [queryKey.ITUNES, queryKey.ARTISTS, debouncedName],
-    () =>
-      itunes.get<IItunesResponse<IItunesArtist>>("/search", {
-        params: {
-          entity: "musicArtist",
-          term: debouncedName,
-        },
-      }),
-    { enabled: open, onError }
   );
   // handlers
   const onSubmit = (data: IArtist) => createMutation.mutate(data);
@@ -160,9 +144,8 @@ const New: React.FC = () => {
             disableElevation
           />
           <ItunesArtistDialog
+            value={name}
             open={open}
-            loading={searchItunesQuery.isLoading}
-            cards={searchItunesQuery.data?.data.results}
             onClose={handleClose}
             onSelect={handleSelect}
           />

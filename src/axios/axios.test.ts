@@ -49,7 +49,6 @@ const setHeaders = (newHeaders: ITokenHeaders) => {
     },
   };
 };
-
 describe("/signin", () => {
   it("", async () => {
     const res = await signInTest();
@@ -89,6 +88,7 @@ describe(routes.ALBUMS, () => {
     expect(res.status).toBe(204);
   });
 });
+
 describe(routes.BANDS, () => {
   let band: IBand;
   it("POST", async () => {

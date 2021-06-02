@@ -14,6 +14,7 @@ import Paper from "@material-ui/core/Paper";
 import { useSelector } from "react-redux";
 import AlbumsTable from "../../../../../components/Table/Album";
 import LinkTable from "../../../../../components/Table/Link";
+import ItunesMusicDialog from "../../../../../components/Dialog/Itunes/Music";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
@@ -36,13 +37,21 @@ const Info: React.FC = () => {
     queryKey.MUSIC,
     music?.musicLink?.itunes,
   ]);
+  const handleSelect = () => console.log("");
   return (
     <>
       <Box mb={3}>
         <LinkTable
           links={{ itunes: itunesMusic?.trackViewUrl }}
+          renderItunes={(open, handleClose) => (
+            <ItunesMusicDialog
+              open={open}
+              onClose={handleClose}
+              onSelect={handleSelect}
+              showSearchBar
+            />
+          )}
           itunes
-          twitter
         />
       </Box>
       <Box mb={3}>

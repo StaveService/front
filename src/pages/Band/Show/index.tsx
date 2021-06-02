@@ -13,6 +13,7 @@ import MusicsTable from "../../../components/Table/Music";
 import AlbumsTable from "../../../components/Table/Album";
 import LinkTable from "../../../components/Table/Link";
 import BookmarkButton from "../../../components/Button/Bookmark";
+import ItunesBandDialog from "../../../components/Dialog/Itunes/Band";
 import DefaultLayout from "../../../layout/Default";
 import routes from "../../../constants/routes.json";
 import {
@@ -101,6 +102,7 @@ const Show: React.FC = () => {
     { onSuccess: handleDestroySuccess, onError }
   );
   // handlers
+  const handleSelect = () => console.log("");
   const handleCreateMutation = () => createMutation.mutate();
   const handleDestroyMutation = () => destroyMutation.mutate();
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
@@ -127,6 +129,14 @@ const Show: React.FC = () => {
       <Box mb={3}>
         <LinkTable
           links={{ itunes: itunesArtist.data?.artistLinkUrl }}
+          renderItunes={(open, handleClose) => (
+            <ItunesBandDialog
+              open={open}
+              onClose={handleClose}
+              onSelect={handleSelect}
+              showSearchBar
+            />
+          )}
           itunes
         />
       </Box>

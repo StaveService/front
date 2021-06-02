@@ -12,13 +12,13 @@ import BandsTable from "../../components/Table/Band";
 import AlbumsTable from "../../components/Table/Album";
 import LinkTable from "../../components/Table/Link";
 import BookmarkButton from "../../components/Button/Bookmark";
+import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import DefaultLayout from "../../layout/Default";
 import {
   IArtist,
   IArtistBookmark,
   IArtistType,
   IItunesArtist,
-  IItunesResponse,
 } from "../../interfaces";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import {
@@ -30,7 +30,7 @@ import routes from "../../constants/routes.json";
 import { graphQLClient } from "../../gql/client";
 import { artistQuery } from "../../gql/query/artist";
 import queryKey from "../../constants/queryKey.json";
-import { itunes } from "../../axios/axios";
+import { getItunesArtist } from "../../axios/itunes";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
@@ -73,15 +73,7 @@ const Show: React.FC = () => {
   );
   const itunesArtist = useQuery<IItunesArtist>(
     [queryKey.ITUNES, queryKey.ARTIST, artist.data?.artistLink?.itunes],
-    () =>
-      itunes
-        .get<IItunesResponse<IItunesArtist>>("/lookup", {
-          params: {
-            id: artist.data?.artistLink?.itunes,
-            entity: "musicArtist",
-          },
-        })
-        .then((res) => res.data.results[0]),
+    () => getItunesArtist(artist.data?.artistLink?.itunes),
     { enabled: !!artist.data?.artistLink?.itunes, onError }
   );
   const createMutation = useMutation(
@@ -106,6 +98,8 @@ const Show: React.FC = () => {
   // handlers
   const handleCreateMutation = () => createMutation.mutate();
   const handleDestroyMutation = () => destroyMutation.mutate();
+  const handleSelect = (selectedAlbum: IItunesArtist) =>
+    console.log(selectedAlbum);
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
     setMusicPage(value);
   const handleAlbumPage = (event: React.ChangeEvent<unknown>, value: number) =>
@@ -131,6 +125,14 @@ const Show: React.FC = () => {
       <Box mb={3}>
         <LinkTable
           links={{ itunes: itunesArtist.data?.artistLinkUrl }}
+          renderItunes={(open, handleClose) => (
+            <ItunesArtistDialog
+              open={open}
+              onClose={handleClose}
+              onSelect={handleSelect}
+              showSearchBar
+            />
+          )}
           itunes
         />
       </Box>

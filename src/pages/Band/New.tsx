@@ -17,13 +17,8 @@ import ItunesBandDialog from "../../components/Dialog/Itunes/Band";
 import BandTable from "../../components/Table/Band";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import {
-  IBand,
-  IBandsType,
-  IItunesArtist,
-  IItunesResponse,
-} from "../../interfaces";
-import { itunes, postBand } from "../../axios/axios";
+import { IBand, IBandsType, IItunesArtist } from "../../interfaces";
+import { postBand } from "../../axios/axios";
 import { useOpen } from "../../hooks/useOpen";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
@@ -86,17 +81,6 @@ const New: React.FC = () => {
         q: { name_eq: debouncedName },
       }),
     { enabled: !!debouncedName, onError }
-  );
-  const searchItunesQuery = useQuery(
-    [queryKey.ITUNES, queryKey.ARTISTS, debouncedName],
-    () =>
-      itunes.get<IItunesResponse<IItunesArtist>>("/search", {
-        params: {
-          entity: "musicArtist",
-          term: debouncedName,
-        },
-      }),
-    { enabled: open, onError }
   );
   // handlers
   const onSubmit = (data: IBand) => createMutation.mutate(data);
@@ -168,9 +152,8 @@ const New: React.FC = () => {
             disableElevation
           />
           <ItunesBandDialog
+            value={name}
             open={open}
-            loading={searchItunesQuery.isLoading}
-            cards={searchItunesQuery.data?.data.results}
             onClose={handleClose}
             onSelect={handleSelect}
           />
