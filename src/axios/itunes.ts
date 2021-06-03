@@ -18,6 +18,12 @@ export const getItunesArtist = (
       },
     })
     .then((res) => res.data.results[0]);
+export const getItunesAlbum = (id: number | undefined): Promise<IItunesAlbum> =>
+  itunes
+    .get<IItunesResponse<IItunesAlbum>>("/lookup", {
+      params: { id, entity: "album" },
+    })
+    .then((res) => res.data.results[0]);
 export const searchItunesMusics = (
   term: string | undefined
 ): Promise<AxiosResponse<IItunesResponse<IItunesMusic>>> =>

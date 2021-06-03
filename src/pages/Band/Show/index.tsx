@@ -1,8 +1,8 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import GroupIcon from "@material-ui/icons/Group";
@@ -15,13 +15,12 @@ import LinkTable from "../../../components/Table/Link";
 import BookmarkButton from "../../../components/Button/Bookmark";
 import ItunesBandDialog from "../../../components/Dialog/Itunes/Band";
 import DefaultLayout from "../../../layout/Default";
-import routes from "../../../constants/routes.json";
 import {
   IBand,
   IBandBookmark,
+  IBandLink,
   IBandType,
   IItunesArtist,
-  IItunesResponse,
 } from "../../../interfaces";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import {
@@ -32,13 +31,18 @@ import {
 import { graphQLClient } from "../../../gql/client";
 import queryKey from "../../../constants/queryKey.json";
 import { bandQuery } from "../../../gql/query/band";
-import { itunes } from "../../../axios/axios";
+import { getItunesArtist } from "../../../axios/itunes";
+import {
+  postBandBookmark,
+  deleteBandBookmark,
+  patchBandLink,
+} from "../../../axios/axios";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
   const [musicPage, setMusicPage] = useState(1);
-  const match = useRouteMatch<{ id: string }>();
-  const id = Number(match.params.id);
+  const params = useParams<{ id: string }>();
+  const id = Number(params.id);
   const { onError } = useQuerySnackbar();
   const headers = useSelector(selectHeaders);
   const currentUser = useSelector(selectCurrentUser);
@@ -59,6 +63,13 @@ const Show: React.FC = () => {
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
+  const handleUpdateSuccess = (res: AxiosResponse<IBandLink>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IBand | undefined>(
+      [queryKey.BAND, id, { musicPage, albumPage }],
+      (prev) => prev && { ...prev, bandLink: res.data }
+    );
+  };
   const band = useQuery<IBand>(
     [queryKey.BAND, id, { musicPage, albumPage }],
     () =>
@@ -74,37 +85,27 @@ const Show: React.FC = () => {
   );
   const itunesArtist = useQuery<IItunesArtist>(
     [queryKey.ITUNES, queryKey.BAND, band.data?.bandLink?.itunes],
-    () =>
-      itunes
-        .get<IItunesResponse<IItunesArtist>>("/lookup", {
-          params: { id: band.data?.bandLink?.itunes, entity: "musicArtist" },
-        })
-        .then((res) => res.data.results[0]),
+    () => getItunesArtist(band.data?.bandLink?.itunes),
     { enabled: !!band.data?.bandLink?.itunes, onError }
   );
-  const createMutation = useMutation(
-    () =>
-      axios.post<IBandBookmark>(
-        match.url + routes.BOOKMARKS,
-        undefined,
-        headers
-      ),
+  const createBookmarkMutation = useMutation(
+    () => postBandBookmark(id, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
-  const destroyMutation = useMutation(
-    () =>
-      axios.delete(
-        `${match.url + routes.BOOKMARKS}/${
-          band.data?.bookmark?.id || "undefined"
-        }`,
-        headers
-      ),
+  const destroyBookmarkMutation = useMutation(
+    () => deleteBandBookmark(id, band.data?.bookmark?.id, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
+  const updateLinkMutation = useMutation(
+    (itunesId: number) =>
+      patchBandLink(id, band.data?.bandLink?.id, itunesId, headers),
+    { onSuccess: handleUpdateSuccess, onError }
+  );
   // handlers
-  const handleSelect = () => console.log("");
-  const handleCreateMutation = () => createMutation.mutate();
-  const handleDestroyMutation = () => destroyMutation.mutate();
+  const handleSelect = (selectedBand: IItunesArtist) =>
+    updateLinkMutation.mutate(selectedBand.artistId);
+  const handleCreateBookmarkMutation = () => createBookmarkMutation.mutate();
+  const handleDestroyBookmarkMutation = () => destroyBookmarkMutation.mutate();
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
     setMusicPage(value);
   const handleAlbumPage = (event: React.ChangeEvent<unknown>, value: number) =>
@@ -121,8 +122,8 @@ const Show: React.FC = () => {
         <Grid xs={1}>
           <BookmarkButton
             bookmarked={!!band.data?.bookmark || false}
-            onCreate={handleCreateMutation}
-            onDestroy={handleDestroyMutation}
+            onCreate={handleCreateBookmarkMutation}
+            onDestroy={handleDestroyBookmarkMutation}
           />
         </Grid>
       </Grid>

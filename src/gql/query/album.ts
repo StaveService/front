@@ -6,6 +6,7 @@ export const albumQuery = gql`
       id
       title
       albumLink {
+        id
         itunes
       }
       musics(musicPage: $musicPage) {

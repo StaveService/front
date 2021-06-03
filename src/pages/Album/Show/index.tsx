@@ -4,12 +4,14 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import AlbumIcon from "@material-ui/icons/Album";
 import Image from "material-ui-image";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useDispatch, useSelector } from "react-redux";
+import { AxiosResponse } from "axios";
 import {
   IAlbum,
   IAlbumType,
+  IBandLink,
   IItunesAlbum,
-  IItunesResponse,
 } from "../../../interfaces";
 import MusicsTable from "../../../components/Table/Music";
 import ArtistTable from "../../../components/Table/Artist";
@@ -17,17 +19,32 @@ import LinkTable from "../../../components/Table/Link";
 import ItunesAlbumDialog from "../../../components/Dialog/Itunes/Album";
 import DefaultLayout from "../../../layout/Default";
 import ArtistDialog from "./Dialog/Artist";
-import { itunes } from "../../../axios/axios";
+import { patchAlbumLink } from "../../../axios/axios";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
 import { graphQLClient } from "../../../gql/client";
 import { albumQuery } from "../../../gql/query/album";
+import { selectHeaders, setHeaders } from "../../../slices/currentUser";
+import { getItunesAlbum } from "../../../axios/itunes";
 
 const Show: React.FC = () => {
   const [musicPage, setMusicPage] = useState(1);
+  const { onError } = useQuerySnackbar();
+  // react-router
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);
-  const { onError } = useQuerySnackbar();
+  // react-redux
+  const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
+  // react-query
+  const queryClient = useQueryClient();
+  const handleUpdateSuccess = (res: AxiosResponse<IBandLink>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IAlbum | undefined>(
+      [queryKey.ALBUM, id],
+      (prev) => prev && { ...prev, albumLink: res.data }
+    );
+  };
   const album = useQuery<IAlbum>(
     [queryKey.ALBUM, id],
     () =>
@@ -38,16 +55,17 @@ const Show: React.FC = () => {
   );
   const itunesAlbum = useQuery<IItunesAlbum>(
     [queryKey.ITUNES, queryKey.ALBUM, album.data?.albumLink?.itunes],
-    () =>
-      itunes
-        .get<IItunesResponse<IItunesAlbum>>("/lookup", {
-          params: { id: album.data?.albumLink?.itunes, entity: "album" },
-        })
-        .then((res) => res.data.results[0]),
+    () => getItunesAlbum(album.data?.albumLink?.itunes),
     { enabled: !!album.data?.albumLink?.itunes, onError }
   );
+  const updateLinkMutation = useMutation(
+    (itunesId: number) =>
+      patchAlbumLink(id, album.data?.albumLink?.id, itunesId, headers),
+    { onSuccess: handleUpdateSuccess, onError }
+  );
   // handlers
-  const handleSelect = () => console.log("");
+  const handleSelect = (selectedAlbum: IItunesAlbum) =>
+    updateLinkMutation.mutate(selectedAlbum.collectionId);
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
     setMusicPage(value);
   return (

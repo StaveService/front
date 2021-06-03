@@ -85,10 +85,10 @@ const New: React.FC = () => {
   const handleSelect = (selectedItem: IItunesAlbum) =>
     setSelectedItunesAlbum(selectedItem);
   useEffect(() => {
+    register("album_link_attributes.itunes");
     if (selectedItunesAlbum) {
       const { collectionName, collectionId } = selectedItunesAlbum;
       setValue("title", collectionName);
-      register("album_link_attributes.itunes");
       setValue("album_link_attributes.itunes", collectionId);
     }
   }, [register, setValue, selectedItunesAlbum]);

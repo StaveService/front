@@ -6,6 +6,7 @@ export const musicQuery = gql`
       id
       title
       musicLink {
+        id
         itunes
       }
       user {

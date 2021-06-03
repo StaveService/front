@@ -14,9 +14,9 @@ import TableRow from "@material-ui/core/TableRow";
 import Pagination from "@material-ui/lab/Pagination";
 import { itunes } from "../../axios/axios";
 import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
-import routes from "../../constants/routes.json";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
+import routes from "../../constants/routes.json";
 
 interface AlbumProps {
   data: IAlbum[] | undefined;

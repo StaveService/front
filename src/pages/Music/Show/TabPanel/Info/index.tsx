@@ -1,5 +1,5 @@
 import React from "react";
-import { useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { format } from "date-fns";
 import Table from "@material-ui/core/Table";
@@ -11,7 +11,8 @@ import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { AxiosResponse } from "axios";
 import AlbumsTable from "../../../../../components/Table/Album";
 import LinkTable from "../../../../../components/Table/Link";
 import ItunesMusicDialog from "../../../../../components/Dialog/Itunes/Music";
@@ -19,25 +20,53 @@ import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../constants/routes.json";
-import { selectCurrentUser } from "../../../../../slices/currentUser";
-import { IItunesMusic, IMusic } from "../../../../../interfaces";
+import {
+  selectCurrentUser,
+  selectHeaders,
+  setHeaders,
+} from "../../../../../slices/currentUser";
+import { IItunesMusic, IMusic, IMusicLink } from "../../../../../interfaces";
 import queryKey from "../../../../../constants/queryKey.json";
+import { patchMusicLink } from "../../../../../axios/axios";
+import { useQuerySnackbar } from "../../../../../hooks/useQuerySnackbar";
 
 const Info: React.FC = () => {
+  const { onError } = useQuerySnackbar();
+  // react-router
   const params = useParams<{ userId: string; id: string }>();
+  const id = Number(params.id);
+  const userId = Number(params.userId);
+  // react-redux
+  const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
+  const headers = useSelector(selectHeaders);
   const isSignedIn = currentUser?.id === Number(params.userId);
+  // react-query
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>([
-    queryKey.MUSIC,
-    Number(params.id),
-  ]);
+  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const itunesMusic = queryClient.getQueryData<IItunesMusic>([
     queryKey.ITUNES,
     queryKey.MUSIC,
     music?.musicLink?.itunes,
   ]);
-  const handleSelect = () => console.log("");
+  const handleCreateSuccess = (res: AxiosResponse<IMusicLink>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IMusic | undefined>(
+      [queryKey.MUSIC, id],
+      (prev) => prev && { ...prev, musicLink: res.data }
+    );
+  };
+  const createMutation = useMutation(
+    (itunesId: number) =>
+      patchMusicLink(userId, id, music?.musicLink?.id, itunesId, headers),
+    {
+      onSuccess: handleCreateSuccess,
+      onError,
+    }
+  );
+  // handlers
+  const handleSelect = (selectedMusic: IItunesMusic) =>
+    createMutation.mutate(selectedMusic.trackId);
   return (
     <>
       <Box mb={3}>

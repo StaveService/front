@@ -17,6 +17,7 @@ import DefaultLayout from "../../layout/Default";
 import {
   IArtist,
   IArtistBookmark,
+  IArtistLink,
   IArtistType,
   IItunesArtist,
 } from "../../interfaces";
@@ -31,6 +32,7 @@ import { graphQLClient } from "../../gql/client";
 import { artistQuery } from "../../gql/query/artist";
 import queryKey from "../../constants/queryKey.json";
 import { getItunesArtist } from "../../axios/itunes";
+import { patchArtistLink } from "../../axios/axios";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
@@ -56,6 +58,13 @@ const Show: React.FC = () => {
     queryClient.setQueryData<IArtist | undefined>(
       [queryKey.ARTIST, id, { musicPage, albumPage }],
       (prev) => prev && { ...prev, bookmark: undefined }
+    );
+  };
+  const handleUpdateSuccess = (res: AxiosResponse<IArtistLink>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IArtist | undefined>(
+      [queryKey.ARTIST, id, { musicPage, albumPage }],
+      (prev) => prev && { ...prev, artistLink: res.data }
     );
   };
   const artist = useQuery<IArtist>(
@@ -95,11 +104,16 @@ const Show: React.FC = () => {
       ),
     { onSuccess: handleDestroySuccess, onError }
   );
+  const updateLinkMutation = useMutation(
+    (itunesId: number) =>
+      patchArtistLink(id, artist.data?.artistLink?.id, itunesId, headers),
+    { onSuccess: handleUpdateSuccess, onError }
+  );
   // handlers
   const handleCreateMutation = () => createMutation.mutate();
   const handleDestroyMutation = () => destroyMutation.mutate();
-  const handleSelect = (selectedAlbum: IItunesArtist) =>
-    console.log(selectedAlbum);
+  const handleSelect = (selectedArtist: IItunesArtist) =>
+    updateLinkMutation.mutate(selectedArtist.artistId);
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
     setMusicPage(value);
   const handleAlbumPage = (event: React.ChangeEvent<unknown>, value: number) =>

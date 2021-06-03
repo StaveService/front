@@ -82,9 +82,9 @@ const New: React.FC = () => {
     setSelectedItunesArtist(selectedItem);
 
   useEffect(() => {
+    register("artist_link_attributes.itunes");
     if (selectedItunesArtist) {
       const { artistName, artistId } = selectedItunesArtist;
-      register("artist_link_attributes.itunes");
       setValue("artist_link_attributes.itunes", artistId);
       setValue("name", artistName);
     }

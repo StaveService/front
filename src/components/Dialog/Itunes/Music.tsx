@@ -5,7 +5,7 @@ import { useQuery } from "react-query";
 import { AxiosResponse } from "axios";
 import ItunesMusicCard from "../../Card/Itunes/Music";
 import { IItunesMusic, IItunesResponse } from "../../../interfaces";
-import Layout, { LayoutProps } from "./Layout";
+import Layout, { ItunesDialogProps } from "./Layout";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import { searchItunesMusics } from "../../../axios/itunes";
 import queryKey from "../../../constants/queryKey.json";
@@ -16,10 +16,7 @@ function Music({
   showSearchBar,
   onClose,
   onSelect,
-}: Omit<
-  LayoutProps<IItunesMusic>,
-  "loading" | "cards" | "title" | "children"
->): JSX.Element {
+}: ItunesDialogProps<IItunesMusic>): JSX.Element {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();

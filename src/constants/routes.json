@@ -12,6 +12,7 @@
   "SETTING": "/setting",
   "BANDS": "/bands",
   "USERS" : "/users",
+  "LINKS": "/links",
   "BOOKMARKS": "/bookmarks",
   "ARTIST_MUSICS": "/artist_musics",
   "ALBUM_MUSICS": "/album_musics",

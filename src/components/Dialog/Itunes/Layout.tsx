@@ -17,6 +17,11 @@ export interface LayoutProps<T> {
   onSelect: (selectedCard: T) => void;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
+export type ItunesDialogProps<T> = Omit<
+  LayoutProps<T>,
+  "loading" | "cards" | "title" | "children"
+>;
+
 function Layout<T>({
   value,
   open,

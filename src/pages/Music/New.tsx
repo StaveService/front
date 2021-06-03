@@ -102,10 +102,10 @@ const New: React.FC = () => {
   const handleSelect = (selectedCard: IItunesMusic) =>
     setSelectedItunesMusic(selectedCard);
   useEffect(() => {
+    register("music_link_attributes.itunes");
     if (selectedItunesMusic) {
       const { trackCensoredName, trackId } = selectedItunesMusic;
       setValue("title", trackCensoredName);
-      register("music_link_attributes.itunes");
       setValue("music_link_attributes.itunes", trackId);
     }
   }, [register, selectedItunesMusic, setValue]);
