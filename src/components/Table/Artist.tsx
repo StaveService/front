@@ -14,14 +14,14 @@ import { IArtist } from "../../interfaces";
 import routes from "../../constants/routes.json";
 
 interface ArtistProps {
-  data: IArtist[] | undefined;
+  artists: IArtist[] | undefined;
   page?: number;
   pageCount?: number;
   onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
   loading?: boolean;
 }
 const Artist: React.FC<ArtistProps> = ({
-  data,
+  artists,
   page,
   pageCount,
   onPage,
@@ -41,7 +41,7 @@ const Artist: React.FC<ArtistProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((artist) => (
+            {artists?.map((artist) => (
               <TableRow key={artist.id}>
                 <TableCell>
                   <Link

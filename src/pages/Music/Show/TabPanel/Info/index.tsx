@@ -184,7 +184,7 @@ const Info: React.FC = () => {
         </TableContainer>
       </Box>
       {isSignedIn && <AlbumDialog />}
-      <AlbumsTable data={music?.albums} />
+      <AlbumsTable albums={music?.albums} />
     </>
   );
 };

@@ -10,7 +10,7 @@ import { IMusic } from "../../interfaces";
 import { itunes } from "../../axios/axios";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
-import { getItunesMusic } from "../../axios/itunes";
+import { lookupItunesMusic } from "../../axios/itunes";
 
 const useStyles = makeStyles({
   media: {
@@ -28,7 +28,7 @@ const MusicCard: React.FC<IMusicCard> = ({
   const { onError } = useQuerySnackbar();
   const { data } = useQuery(
     [queryKey.ITUNES, queryKey.MUSICS, itunes],
-    () => getItunesMusic(musicLink?.itunes),
+    () => lookupItunesMusic(musicLink?.itunes).then((res) => res.results[0]),
     { onError }
   );
   return (

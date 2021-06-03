@@ -16,10 +16,10 @@ import { IItunesMusic, IMusic } from "../../interfaces";
 import routes from "../../constants/routes.json";
 import queryKey from "../../constants/queryKey.json";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
-import { getItunesMusic } from "../../axios/itunes";
+import { lookupItunesMusic } from "../../axios/itunes";
 
 interface MusicProps {
-  data: IMusic[] | undefined;
+  musics: IMusic[] | undefined;
   page?: number;
   pageCount?: number;
   onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
@@ -29,14 +29,14 @@ interface IMergedMusic extends IMusic {
   itunesArtworkUrl: string;
 }
 const Music: React.FC<MusicProps> = ({
-  data,
+  musics,
   page,
   pageCount,
   onPage,
   loading,
 }: MusicProps) => {
   const [mergedMusics, setMergedMusics] = useState<IMergedMusic[]>([]);
-  const ids = data?.map((music) => music.musicLink?.itunes).join(",");
+  const ids = musics?.map((music) => music.musicLink?.itunes).join(",");
   const columns = [
     {
       route: routes.MUSICS,
@@ -55,14 +55,14 @@ const Music: React.FC<MusicProps> = ({
   ];
   const { onError } = useQuerySnackbar();
   const onSuccess = (results: IItunesMusic[]) => {
-    if (!data) return;
+    if (!musics) return;
     let i = 0;
     setMergedMusics(
-      data.map((music) => {
-        if (music.musicLink?.itunes === results[i]?.trackId) {
+      musics?.map((music) => {
+        if (music.musicLink?.itunes === results[i].trackId) {
           const mergedMusic = {
             ...music,
-            itunesArtworkUrl: results[i]?.artworkUrl60,
+            itunesArtworkUrl: results[i].artworkUrl60,
           };
           i += 1;
           return mergedMusic;
@@ -71,10 +71,14 @@ const Music: React.FC<MusicProps> = ({
       })
     );
   };
-  useQuery([queryKey.ITUNES, queryKey.MUSICS, ids], () => getItunesMusic(ids), {
-    onSuccess,
-    onError,
-  });
+  useQuery(
+    [queryKey.ITUNES, queryKey.MUSICS, ids],
+    () => lookupItunesMusic(ids).then((res) => res.results),
+    {
+      onSuccess,
+      onError,
+    }
+  );
   return (
     <>
       <TableContainer component={Paper}>

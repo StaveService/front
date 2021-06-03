@@ -10,7 +10,9 @@ import { itunes } from "./axios";
 type IdType = number | string | undefined;
 type TermType = string | undefined;
 
-export const getItunesArtist = (id: IdType): Promise<IItunesArtist> =>
+export const lookupItunesArtist = (
+  id: IdType
+): Promise<IItunesResponse<IItunesArtist>> =>
   itunes
     .get<IItunesResponse<IItunesArtist>>("/lookup", {
       params: {
@@ -18,19 +20,23 @@ export const getItunesArtist = (id: IdType): Promise<IItunesArtist> =>
         entity: "musicArtist",
       },
     })
-    .then((res) => res.data.results[0]);
-export const getItunesAlbum = (id: IdType): Promise<IItunesAlbum> =>
+    .then((res) => res.data);
+export const lookupItunesAlbum = (
+  id: IdType
+): Promise<IItunesResponse<IItunesAlbum>> =>
   itunes
     .get<IItunesResponse<IItunesAlbum>>("/lookup", {
       params: { id, entity: "album" },
     })
-    .then((res) => res.data.results[0]);
-export const getItunesMusic = (id: IdType): Promise<IItunesMusic> =>
+    .then((res) => res.data);
+export const lookupItunesMusic = (
+  id: IdType
+): Promise<IItunesResponse<IItunesMusic>> =>
   itunes
     .get<IItunesResponse<IItunesMusic>>("/lookup", {
       params: { id, entity: "song" },
     })
-    .then((res) => res.data.results[0]);
+    .then((res) => res.data);
 
 export const searchItunesMusics = (
   term: TermType

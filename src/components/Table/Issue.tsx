@@ -13,14 +13,14 @@ import Pagination from "@material-ui/lab/Pagination";
 import { IIssue } from "../../interfaces";
 
 interface IssueProps {
-  data: IIssue[] | undefined;
+  issues: IIssue[] | undefined;
   page?: number;
   pageCount?: number;
   onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
   loading?: boolean;
 }
 const Issue: React.FC<IssueProps> = ({
-  data,
+  issues,
   page,
   pageCount,
   onPage,
@@ -37,7 +37,7 @@ const Issue: React.FC<IssueProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((issue) => (
+            {issues?.map((issue) => (
               <TableRow key={issue.id}>
                 <TableCell>
                   <Link component={RouterLink} to={`${match.url}/${issue.id}`}>

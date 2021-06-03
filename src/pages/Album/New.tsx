@@ -105,7 +105,7 @@ const New: React.FC = () => {
         </Box>
         <Box mb={3}>
           <AlbumTable
-            data={searchQuery.data?.albums.data}
+            albums={searchQuery.data?.albums.data}
             page={page}
             pageCount={searchQuery.data?.albums.pagination.totalPages}
             onPage={handlePage}

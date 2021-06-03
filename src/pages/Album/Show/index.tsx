@@ -25,7 +25,7 @@ import queryKey from "../../../constants/queryKey.json";
 import { graphQLClient } from "../../../gql/client";
 import { albumQuery } from "../../../gql/query/album";
 import { selectHeaders, setHeaders } from "../../../slices/currentUser";
-import { getItunesAlbum } from "../../../axios/itunes";
+import { lookupItunesAlbum } from "../../../axios/itunes";
 
 const Show: React.FC = () => {
   const [musicPage, setMusicPage] = useState(1);
@@ -55,7 +55,10 @@ const Show: React.FC = () => {
   );
   const itunesAlbum = useQuery<IItunesAlbum>(
     [queryKey.ITUNES, queryKey.ALBUM, album.data?.albumLink?.itunes],
-    () => getItunesAlbum(album.data?.albumLink?.itunes),
+    () =>
+      lookupItunesAlbum(album.data?.albumLink?.itunes).then(
+        (res) => res.results[0]
+      ),
     { enabled: !!album.data?.albumLink?.itunes, onError }
   );
   const updateLinkMutation = useMutation(
@@ -93,7 +96,7 @@ const Show: React.FC = () => {
       </Box>
       <Box mb={3}>
         <MusicsTable
-          data={album.data?.musics?.data}
+          musics={album.data?.musics?.data}
           loading={album.isLoading}
           page={musicPage}
           pageCount={album.data?.musics?.pagination.totalPages}
@@ -101,7 +104,7 @@ const Show: React.FC = () => {
         />
       </Box>
       <ArtistDialog />
-      <ArtistTable data={album.data?.artists} loading={album.isLoading} />
+      <ArtistTable artists={album.data?.artists} loading={album.isLoading} />
     </DefaultLayout>
   );
 };

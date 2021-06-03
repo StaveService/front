@@ -41,7 +41,7 @@ import { musicQuery } from "../../../gql/query/music";
 import { graphQLClient } from "../../../gql/client";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
-import { getItunesMusic } from "../../../axios/itunes";
+import { lookupItunesMusic } from "../../../axios/itunes";
 
 const Show: React.FC = () => {
   // react-hook-form
@@ -83,7 +83,10 @@ const Show: React.FC = () => {
   );
   const itunesMusic = useQuery<IItunesMusic>(
     [queryKey.ITUNES, queryKey.MUSIC, music.data?.musicLink?.itunes],
-    () => getItunesMusic(music.data?.musicLink?.itunes),
+    () =>
+      lookupItunesMusic(music.data?.musicLink?.itunes).then(
+        (res) => res.results[0]
+      ),
     { enabled: !!music.data?.musicLink?.itunes, onError }
   );
   const createMutation = useMutation(

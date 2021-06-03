@@ -102,7 +102,7 @@ const New: React.FC = () => {
         </Box>
         <Box mb={3}>
           <ArtistTable
-            data={searchQuery.data?.artists.data}
+            artists={searchQuery.data?.artists.data}
             page={page}
             pageCount={searchQuery.data?.artists.pagination.totalPages}
             onPage={handlePage}

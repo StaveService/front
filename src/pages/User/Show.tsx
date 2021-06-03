@@ -59,7 +59,7 @@ const Show: React.FC = () => {
     <DefaultLayout>
       <Typography variant="h6">{data?.user.nickname}</Typography>
       <MusicTable
-        data={data?.user.musics?.data}
+        musics={data?.user.musics?.data}
         loading={isLoading}
         page={musicPage}
         pageCount={data?.user.musics?.pagination.totalPages}
@@ -67,21 +67,21 @@ const Show: React.FC = () => {
       />
       <Typography variant="h5">Bookmark</Typography>
       <MusicTable
-        data={data?.user.bookmarkedMusics?.data}
+        musics={data?.user.bookmarkedMusics?.data}
         loading={isLoading}
         page={bookmarkedMusicPage}
         pageCount={data?.user.bookmarkedMusics?.pagination.totalPages}
         onPage={handleBookmarkedMusicPage}
       />
       <BandTable
-        data={data?.user.bookmarkedBands?.data}
+        bands={data?.user.bookmarkedBands?.data}
         loading={isLoading}
         page={bookmarkedBandPage}
         pageCount={data?.user.bookmarkedBands?.pagination.totalPages}
         onPage={handleBookmarkedBandPage}
       />
       <ArtistTable
-        data={data?.user.bookmarkedArtists?.data}
+        artists={data?.user.bookmarkedArtists?.data}
         loading={isLoading}
         page={bookmarkedArtistPage}
         pageCount={data?.user.bookmarkedArtists?.pagination.totalPages}

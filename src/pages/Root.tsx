@@ -42,7 +42,7 @@ const Root: React.FC = () => {
         </Grid>
       </Box>
       <MusicsTable
-        data={data?.musics?.data}
+        musics={data?.musics?.data}
         loading={isLoading}
         page={page}
         pageCount={data?.musics?.pagination?.totalPages}

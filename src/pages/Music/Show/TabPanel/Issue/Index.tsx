@@ -58,7 +58,7 @@ const Index: React.FC = () => {
         </Grid>
       </Box>
       <IssueTable
-        data={data?.issues?.data}
+        issues={data?.issues?.data}
         loading={isLoading}
         page={page}
         pageCount={data?.issues?.pagination.totalPages}

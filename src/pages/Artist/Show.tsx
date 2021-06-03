@@ -31,7 +31,7 @@ import routes from "../../constants/routes.json";
 import { graphQLClient } from "../../gql/client";
 import { artistQuery } from "../../gql/query/artist";
 import queryKey from "../../constants/queryKey.json";
-import { getItunesArtist } from "../../axios/itunes";
+import { lookupItunesArtist } from "../../axios/itunes";
 import { patchArtistLink } from "../../axios/axios";
 
 const Show: React.FC = () => {
@@ -82,7 +82,10 @@ const Show: React.FC = () => {
   );
   const itunesArtist = useQuery<IItunesArtist>(
     [queryKey.ITUNES, queryKey.ARTIST, artist.data?.artistLink?.itunes],
-    () => getItunesArtist(artist.data?.artistLink?.itunes),
+    () =>
+      lookupItunesArtist(artist.data?.artistLink?.itunes).then(
+        (res) => res.results[0]
+      ),
     { enabled: !!artist.data?.artistLink?.itunes, onError }
   );
   const createMutation = useMutation(
@@ -151,11 +154,11 @@ const Show: React.FC = () => {
         />
       </Box>
       <Box mb={3}>
-        <BandsTable data={artist.data?.bands} loading={artist.isLoading} />
+        <BandsTable bands={artist.data?.bands} loading={artist.isLoading} />
       </Box>
       <Box mb={3}>
         <AlbumsTable
-          data={artist.data?.albums?.data}
+          albums={artist.data?.albums?.data}
           loading={artist.isLoading}
           page={albumPage}
           pageCount={artist.data?.albums?.pagination.totalPages}
@@ -163,7 +166,7 @@ const Show: React.FC = () => {
         />
       </Box>
       <MusicsTable
-        data={artist.data?.musics?.data}
+        musics={artist.data?.musics?.data}
         loading={artist.isLoading}
         page={musicPage}
         pageCount={artist.data?.musics?.pagination.totalPages}

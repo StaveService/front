@@ -16,10 +16,10 @@ import { IAlbum, IItunesAlbum } from "../../interfaces";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
-import { getItunesAlbum } from "../../axios/itunes";
+import { lookupItunesAlbum } from "../../axios/itunes";
 
 interface AlbumProps {
-  data: IAlbum[] | undefined;
+  albums: IAlbum[] | undefined;
   page?: number;
   pageCount?: number;
   onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
@@ -29,7 +29,7 @@ interface IMergedAlbum extends IAlbum {
   itunesArtworkUrl: string;
 }
 const Album: React.FC<AlbumProps> = ({
-  data,
+  albums,
   loading,
   page,
   pageCount,
@@ -37,13 +37,13 @@ const Album: React.FC<AlbumProps> = ({
 }: AlbumProps) => {
   const [mergedAlbums, setMergedAlbums] = useState<IMergedAlbum[]>([]);
   const { onError } = useQuerySnackbar();
-  const ids = data?.map((album) => album.albumLink?.itunes).join(",");
+  const ids = albums?.map((album) => album.albumLink?.itunes).join(",");
   // react-query
   const onSuccess = (results: IItunesAlbum[]) => {
-    if (!data) return;
+    if (!albums) return;
     let i = 0;
     setMergedAlbums(
-      data.map((album) => {
+      albums.map((album) => {
         if (album.albumLink?.itunes === results[i]?.collectionId) {
           const mergedMusic = {
             ...album,
@@ -56,10 +56,14 @@ const Album: React.FC<AlbumProps> = ({
       })
     );
   };
-  useQuery([queryKey.ITUNES, queryKey.ALBUMS, ids], () => getItunesAlbum(ids), {
-    onSuccess,
-    onError,
-  });
+  useQuery(
+    [queryKey.ITUNES, queryKey.ALBUMS, ids],
+    () => lookupItunesAlbum(ids).then((res) => res.results),
+    {
+      onSuccess,
+      onError,
+    }
+  );
   return (
     <>
       <TableContainer component={Paper}>

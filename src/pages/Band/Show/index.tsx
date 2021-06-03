@@ -31,7 +31,7 @@ import {
 import { graphQLClient } from "../../../gql/client";
 import queryKey from "../../../constants/queryKey.json";
 import { bandQuery } from "../../../gql/query/band";
-import { getItunesArtist } from "../../../axios/itunes";
+import { lookupItunesArtist } from "../../../axios/itunes";
 import {
   postBandBookmark,
   deleteBandBookmark,
@@ -85,7 +85,10 @@ const Show: React.FC = () => {
   );
   const itunesArtist = useQuery<IItunesArtist>(
     [queryKey.ITUNES, queryKey.BAND, band.data?.bandLink?.itunes],
-    () => getItunesArtist(band.data?.bandLink?.itunes),
+    () =>
+      lookupItunesArtist(band.data?.bandLink?.itunes).then(
+        (res) => res.results[0]
+      ),
     { enabled: !!band.data?.bandLink?.itunes, onError }
   );
   const createBookmarkMutation = useMutation(
@@ -143,11 +146,11 @@ const Show: React.FC = () => {
       </Box>
       <Box mb={3}>
         <ArtistDialog musicPage={musicPage} albumPage={albumPage} />
-        <ArtistsTable data={band.data?.artists} loading={band.isLoading} />
+        <ArtistsTable artists={band.data?.artists} loading={band.isLoading} />
       </Box>
       <Box mb={3}>
         <MusicsTable
-          data={band.data?.musics?.data}
+          musics={band.data?.musics?.data}
           loading={band.isLoading}
           page={musicPage}
           pageCount={band.data?.musics?.pagination.totalPages}
@@ -156,7 +159,7 @@ const Show: React.FC = () => {
       </Box>
       <Box mb={3}>
         <AlbumsTable
-          data={band.data?.albums?.data}
+          albums={band.data?.albums?.data}
           loading={band.isLoading}
           page={albumPage}
           pageCount={band.data?.albums?.pagination.totalPages}

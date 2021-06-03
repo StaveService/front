@@ -14,14 +14,14 @@ import { IBand } from "../../interfaces";
 import routes from "../../constants/routes.json";
 
 interface BandProps {
-  data: IBand[] | undefined;
+  bands: IBand[] | undefined;
   page?: number;
   pageCount?: number;
   onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
   loading?: boolean;
 }
 const Band: React.FC<BandProps> = ({
-  data,
+  bands,
   page,
   pageCount,
   onPage,
@@ -41,7 +41,7 @@ const Band: React.FC<BandProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((band) => (
+            {bands?.map((band) => (
               <TableRow key={band.id}>
                 <TableCell>
                   <Link
