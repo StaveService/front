@@ -32,7 +32,6 @@ import {
 } from "../../../slices/currentUser";
 import {
   IItunesMusic,
-  IItunesResponse,
   IMusic,
   IMusicBookmark,
   IMusicType,

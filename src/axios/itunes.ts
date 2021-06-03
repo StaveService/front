@@ -7,7 +7,8 @@ import {
 } from "../interfaces";
 import { itunes } from "./axios";
 
-type IdType = number | undefined;
+type IdType = number | string | undefined;
+type TermType = string | undefined;
 
 export const getItunesArtist = (id: IdType): Promise<IItunesArtist> =>
   itunes
@@ -30,23 +31,18 @@ export const getItunesMusic = (id: IdType): Promise<IItunesMusic> =>
       params: { id, entity: "song" },
     })
     .then((res) => res.data.results[0]);
-interface SearchArgs {
-  term?: string | undefined;
-  ids?: string | undefined;
-}
-export const searchItunesMusics = ({
-  term,
-  ids,
-}: SearchArgs): Promise<AxiosResponse<IItunesResponse<IItunesMusic>>> =>
+
+export const searchItunesMusics = (
+  term: TermType
+): Promise<AxiosResponse<IItunesResponse<IItunesMusic>>> =>
   itunes.get<IItunesResponse<IItunesMusic>>("/search", {
     params: {
       entity: "song",
       term,
-      id: ids,
     },
   });
 export const searchItunesArtists = (
-  term: string | undefined
+  term: TermType
 ): Promise<AxiosResponse<IItunesResponse<IItunesArtist>>> =>
   itunes.get<IItunesResponse<IItunesArtist>>("/search", {
     params: {
@@ -54,14 +50,12 @@ export const searchItunesArtists = (
       term,
     },
   });
-export const searchItunesAlbums = ({
-  term,
-  ids,
-}: SearchArgs): Promise<AxiosResponse<IItunesResponse<IItunesAlbum>>> =>
+export const searchItunesAlbums = (
+  term: TermType
+): Promise<AxiosResponse<IItunesResponse<IItunesAlbum>>> =>
   itunes.get<IItunesResponse<IItunesAlbum>>("/search", {
     params: {
       entity: "album",
       term,
-      id: ids,
     },
   });

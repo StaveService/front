@@ -16,7 +16,7 @@ import { IItunesMusic, IMusic } from "../../interfaces";
 import routes from "../../constants/routes.json";
 import queryKey from "../../constants/queryKey.json";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
-import { searchItunesMusics } from "../../axios/itunes";
+import { getItunesMusic } from "../../axios/itunes";
 
 interface MusicProps {
   data: IMusic[] | undefined;
@@ -71,11 +71,10 @@ const Music: React.FC<MusicProps> = ({
       })
     );
   };
-  useQuery(
-    [queryKey.ITUNES, queryKey.MUSICS, ids],
-    () => searchItunesMusics({ ids }),
-    { onSuccess, onError }
-  );
+  useQuery([queryKey.ITUNES, queryKey.MUSICS, ids], () => getItunesMusic(ids), {
+    onSuccess,
+    onError,
+  });
   return (
     <>
       <TableContainer component={Paper}>

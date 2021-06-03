@@ -16,7 +16,7 @@ import { IAlbum, IItunesAlbum } from "../../interfaces";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
-import { searchItunesAlbums } from "../../axios/itunes";
+import { getItunesAlbum } from "../../axios/itunes";
 
 interface AlbumProps {
   data: IAlbum[] | undefined;
@@ -56,11 +56,10 @@ const Album: React.FC<AlbumProps> = ({
       })
     );
   };
-  useQuery(
-    [queryKey.ITUNES, queryKey.ALBUMS, ids],
-    () => searchItunesAlbums({ ids }),
-    { onSuccess, onError }
-  );
+  useQuery([queryKey.ITUNES, queryKey.ALBUMS, ids], () => getItunesAlbum(ids), {
+    onSuccess,
+    onError,
+  });
   return (
     <>
       <TableContainer component={Paper}>
