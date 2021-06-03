@@ -12,11 +12,11 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Pagination from "@material-ui/lab/Pagination";
-import { itunes } from "../../axios/axios";
-import { IAlbum, IItunesAlbum, IItunesResponse } from "../../interfaces";
+import { IAlbum, IItunesAlbum } from "../../interfaces";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
+import { searchItunesAlbums } from "../../axios/itunes";
 
 interface AlbumProps {
   data: IAlbum[] | undefined;
@@ -37,6 +37,7 @@ const Album: React.FC<AlbumProps> = ({
 }: AlbumProps) => {
   const [mergedAlbums, setMergedAlbums] = useState<IMergedAlbum[]>([]);
   const { onError } = useQuerySnackbar();
+  const ids = data?.map((album) => album.albumLink?.itunes).join(",");
   // react-query
   const onSuccess = (results: IItunesAlbum[]) => {
     if (!data) return;
@@ -56,20 +57,8 @@ const Album: React.FC<AlbumProps> = ({
     );
   };
   useQuery(
-    [
-      queryKey.ITUNES,
-      queryKey.ALBUMS,
-      data?.map((album) => album.albumLink?.itunes).join(","),
-    ],
-    () =>
-      itunes
-        .get<IItunesResponse<IItunesAlbum>>("/lookup", {
-          params: {
-            id: data?.map((album) => album.albumLink?.itunes).join(","),
-            entity: "album",
-          },
-        })
-        .then((res) => res.data.results),
+    [queryKey.ITUNES, queryKey.ALBUMS, ids],
+    () => searchItunesAlbums({ ids }),
     { onSuccess, onError }
   );
   return (

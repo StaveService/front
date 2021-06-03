@@ -6,9 +6,11 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import CardMedia from "@material-ui/core/CardMedia";
 import { makeStyles } from "@material-ui/core/styles";
-import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
+import { IMusic } from "../../interfaces";
 import { itunes } from "../../axios/axios";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import queryKey from "../../constants/queryKey.json";
+import { getItunesMusic } from "../../axios/itunes";
 
 const useStyles = makeStyles({
   media: {
@@ -25,11 +27,8 @@ const MusicCard: React.FC<IMusicCard> = ({
   const classes = useStyles();
   const { onError } = useQuerySnackbar();
   const { data } = useQuery(
-    ["itunesMusic", itunes],
-    () =>
-      itunes.get<IItunesResponse<IItunesMusic>>("/lookup", {
-        params: { id: musicLink?.itunes, entity: "song" },
-      }),
+    [queryKey.ITUNES, queryKey.MUSICS, itunes],
+    () => getItunesMusic(musicLink?.itunes),
     { onError }
   );
   return (
@@ -56,10 +55,7 @@ const MusicCard: React.FC<IMusicCard> = ({
           </CardContent>
         </Box>
         <Box display="flex" justifyItems="center" alignItems="center" mx={1}>
-          <CardMedia
-            image={data?.data.results[0]?.artworkUrl100}
-            className={classes.media}
-          />
+          <CardMedia image={data?.artworkUrl100} className={classes.media} />
         </Box>
       </Box>
     </Card>

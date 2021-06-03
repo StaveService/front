@@ -12,11 +12,11 @@ import Image from "material-ui-image";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { useQuery } from "react-query";
 import Pagination from "@material-ui/lab/Pagination";
-import { IItunesMusic, IItunesResponse, IMusic } from "../../interfaces";
+import { IItunesMusic, IMusic } from "../../interfaces";
 import routes from "../../constants/routes.json";
 import queryKey from "../../constants/queryKey.json";
-import { itunes } from "../../axios/axios";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import { searchItunesMusics } from "../../axios/itunes";
 
 interface MusicProps {
   data: IMusic[] | undefined;
@@ -36,6 +36,7 @@ const Music: React.FC<MusicProps> = ({
   loading,
 }: MusicProps) => {
   const [mergedMusics, setMergedMusics] = useState<IMergedMusic[]>([]);
+  const ids = data?.map((music) => music.musicLink?.itunes).join(",");
   const columns = [
     {
       route: routes.MUSICS,
@@ -71,20 +72,8 @@ const Music: React.FC<MusicProps> = ({
     );
   };
   useQuery(
-    [
-      queryKey.ITUNES,
-      queryKey.MUSICS,
-      data?.map((music) => music.musicLink?.itunes).join(","),
-    ],
-    () =>
-      itunes
-        .get<IItunesResponse<IItunesMusic>>("/lookup", {
-          params: {
-            id: data?.map((music) => music.musicLink?.itunes).join(","),
-            entity: "song",
-          },
-        })
-        .then((res) => res.data.results),
+    [queryKey.ITUNES, queryKey.MUSICS, ids],
+    () => searchItunesMusics({ ids }),
     { onSuccess, onError }
   );
   return (

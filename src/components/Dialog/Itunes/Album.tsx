@@ -23,7 +23,7 @@ function Album({
   const valueANDSearchValue = value || debouncedSearchValue;
   const searchedItunes = useQuery<AxiosResponse<IItunesResponse<IItunesAlbum>>>(
     [queryKey.ITUNES, queryKey.ALBUMS, valueANDSearchValue],
-    () => searchItunesAlbums(valueANDSearchValue),
+    () => searchItunesAlbums({ term: valueANDSearchValue }),
     {
       enabled: !!valueANDSearchValue,
       onError,

@@ -37,12 +37,12 @@ import {
   IMusicBookmark,
   IMusicType,
 } from "../../../interfaces";
-import { itunes } from "../../../axios/axios";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import { musicQuery } from "../../../gql/query/music";
 import { graphQLClient } from "../../../gql/client";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
+import { getItunesMusic } from "../../../axios/itunes";
 
 const Show: React.FC = () => {
   // react-hook-form
@@ -84,12 +84,7 @@ const Show: React.FC = () => {
   );
   const itunesMusic = useQuery<IItunesMusic>(
     [queryKey.ITUNES, queryKey.MUSIC, music.data?.musicLink?.itunes],
-    () =>
-      itunes
-        .get<IItunesResponse<IItunesMusic>>("/lookup", {
-          params: { id: music.data?.musicLink?.itunes, entity: "song" },
-        })
-        .then((res) => res.data.results[0]),
+    () => getItunesMusic(music.data?.musicLink?.itunes),
     { enabled: !!music.data?.musicLink?.itunes, onError }
   );
   const createMutation = useMutation(

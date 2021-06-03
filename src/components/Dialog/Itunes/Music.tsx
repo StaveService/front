@@ -23,7 +23,7 @@ function Music({
   const valueANDSearchValue = value || debouncedSearchValue;
   const searchedItunes = useQuery<AxiosResponse<IItunesResponse<IItunesMusic>>>(
     [queryKey.ITUNES, queryKey.MUSIC, valueANDSearchValue],
-    () => searchItunesMusics(valueANDSearchValue),
+    () => searchItunesMusics({ term: valueANDSearchValue }),
     {
       enabled: !!valueANDSearchValue,
       onError,

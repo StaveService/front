@@ -1,9 +1,9 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
@@ -24,6 +24,8 @@ import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { albumsQuery } from "../../gql/query/albums";
 import queryKey from "../../constants/queryKey.json";
+import routes from "../../constants/routes.json";
+import { postAlbum } from "../../axios/axios";
 
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -49,15 +51,13 @@ const New: React.FC = () => {
   const headers = useSelector(selectHeaders);
   // react-router-dom
   const history = useHistory();
-  const match = useRouteMatch();
-  const route = match.url.replace("/new", "");
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IAlbum>) => {
     dispatch(setHeaders(res.headers));
-    history.push(`${route}/${res.data.id}`);
+    history.push(`${routes.ALBUMS}/${res.data.id}`);
     queryClient.setQueryData([queryKey.ALBUM, res.data.id], res.data);
     if (selectedItunesAlbum)
       queryClient.setQueryData(
@@ -66,7 +66,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newAlbum: IAlbum) => axios.post<IAlbum>(route, newAlbum, headers),
+    (newAlbum: IAlbum) => postAlbum(newAlbum, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
