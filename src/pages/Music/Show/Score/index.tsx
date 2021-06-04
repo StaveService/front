@@ -36,11 +36,14 @@ const Tab: React.FC = () => {
   });
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);
+  const onSuccess = (res: IMusicType) => {
+    if (res.music.tab) alphaTabApi?.tex(res.music.tab);
+  };
   // react-query
-  const { data } = useQuery<IMusicType>(
+  useQuery<IMusicType>(
     [queryKey.MUSIC, id],
     () => graphQLClient.request(musicQuery, { id }),
-    { onError }
+    { onSuccess, onError, enabled: loading }
   );
   // handlers
   const handleListItemClick = (track: typeof Track, i: number) => {
@@ -59,20 +62,22 @@ const Tab: React.FC = () => {
   useEffect(() => {
     if (!loading && ref.current)
       setAlphaTabApi(new window.alphaTab.AlphaTabApi(ref.current, settings));
-    return () => {
-      alphaTabApi?.destroy();
-    };
-  }, [alphaTabApi, loading]);
+  }, [loading]);
   // mount
   useEffect(() => {
     alphaTabApi?.renderStarted.on(renderStarted);
     alphaTabApi?.scoreLoaded.on(scoreLoaded);
-    alphaTabApi?.tex(data?.music.tab || "");
     return () => {
       alphaTabApi?.renderStarted.off(renderStarted);
       alphaTabApi?.scoreLoaded.off(scoreLoaded);
+      alphaTabApi?.destroy();
     };
-  }, [alphaTabApi, data?.music.tab, renderStarted]);
+  }, [
+    alphaTabApi,
+    alphaTabApi?.renderStarted,
+    alphaTabApi?.scoreLoaded,
+    renderStarted,
+  ]);
   // useScript handleError
   useEffect(() => {
     if (error) enqueueSnackbar(error.type, { variant: "error" });

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,11 +42,13 @@ import { graphQLClient } from "../../../gql/client";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
 import { lookupItunesMusic } from "../../../axios/itunes";
+import { deleteMusicBookmark, postMusicBookmark } from "../../../axios/axios";
 
 const Show: React.FC = () => {
   // react-hook-form
   const match = useRouteMatch<{ id: string; userId: string }>();
   const id = Number(match.params.id);
+  const userId = Number(match.params.userId);
   const location = useLocation();
   // notistack
   const { onError } = useQuerySnackbar();
@@ -90,22 +92,11 @@ const Show: React.FC = () => {
     { enabled: !!music.data?.musicLink?.itunes, onError }
   );
   const createMutation = useMutation(
-    () =>
-      axios.post<IMusicBookmark>(
-        match.url + routes.BOOKMARKS,
-        undefined,
-        headers
-      ),
+    () => postMusicBookmark(userId, id, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const destroyMutation = useMutation(
-    () =>
-      axios.delete(
-        `${match.url + routes.BOOKMARKS}/${
-          music.data?.bookmark?.id || "undefined"
-        }`,
-        headers
-      ),
+    () => deleteMusicBookmark(userId, id, music.data?.bookmark?.id, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
   // handlers
@@ -129,6 +120,9 @@ const Show: React.FC = () => {
             />
           </Grid>
         </Grid>
+        <Box height="100px" width="100px" m="auto">
+          <Image src={itunesMusic?.data?.artworkUrl100 || "undefiend"} />
+        </Box>
         <Box my={3}>
           <Button
             variant="contained"
@@ -168,9 +162,6 @@ const Show: React.FC = () => {
             disabled={currentUser?.id !== Number(match.params.userId)}
           />
         </Tabs>
-        <Box height="100px" width="100px" m="auto">
-          <Image src={itunesMusic?.data?.artworkUrl100 || "undefiend"} />
-        </Box>
         <Switch>
           <Route exact path={match.path} component={InfoTabPanel} />
           <Route

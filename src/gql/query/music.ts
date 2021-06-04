@@ -5,6 +5,7 @@ export const musicQuery = gql`
     music(id: $id) {
       id
       title
+      tab
       musicLink {
         id
         itunes

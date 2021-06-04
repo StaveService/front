@@ -44,7 +44,7 @@ const Routes: React.FC = () => (
 
     {/* USER */}
     <Route exact path={routes.USERS} component={Users} />
-    <Route exact path={`${routes.USERS}/:id`} component={User} />
+    <Route strict path={`${routes.USERS}/:id`} component={User} />
 
     {/* BAND */}
     <Route exact path={routes.BANDS} component={Bands} />

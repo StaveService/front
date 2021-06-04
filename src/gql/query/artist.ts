@@ -32,6 +32,9 @@ export const artistQuery = gql`
             id
             name
           }
+          user {
+            nickname
+          }
         }
         pagination {
           totalPages

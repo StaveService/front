@@ -59,7 +59,7 @@ const Music: React.FC<MusicProps> = ({
     let i = 0;
     setMergedMusics(
       musics?.map((music) => {
-        if (music.musicLink?.itunes === results[i].trackId) {
+        if (music.musicLink?.itunes === results[i]?.trackId) {
           const mergedMusic = {
             ...music,
             itunesArtworkUrl: results[i].artworkUrl60,

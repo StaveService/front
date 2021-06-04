@@ -1,12 +1,15 @@
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import {
   IItunesAlbum,
   IItunesArtist,
   IItunesMusic,
   IItunesResponse,
 } from "../interfaces";
-import { itunes } from "./axios";
 
+const limit = 100;
+const itunes = axios.create({
+  baseURL: "https://itunes.apple.com",
+});
 type IdType = number | string | undefined;
 type TermType = string | undefined;
 
@@ -45,6 +48,7 @@ export const searchItunesMusics = (
     params: {
       entity: "song",
       term,
+      limit,
     },
   });
 export const searchItunesArtists = (
@@ -54,6 +58,7 @@ export const searchItunesArtists = (
     params: {
       entity: "musicArtist",
       term,
+      limit,
     },
   });
 export const searchItunesAlbums = (
@@ -63,5 +68,6 @@ export const searchItunesAlbums = (
     params: {
       entity: "album",
       term,
+      limit,
     },
   });

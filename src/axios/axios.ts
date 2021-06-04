@@ -1,9 +1,12 @@
 import axios, { AxiosResponse } from "axios";
 import {
   IAlbum,
+  IAlbumLink,
   IArtist,
+  IArtistLink,
   IBand,
   IBandBookmark,
+  IBandLink,
   IHeaders,
   IMusic,
   IMusicBookmark,
@@ -13,9 +16,6 @@ import {
 } from "../interfaces";
 import routes from "../constants/routes.json";
 
-export const itunes = axios.create({
-  baseURL: "https://itunes.apple.com",
-});
 export const wiki = axios.create({
   baseURL: "http://ja.wikipedia.org/w/api.php?",
   params: {
@@ -150,7 +150,7 @@ export const patchBandLink = (
   linkId: number | undefined,
   itunesId: number,
   headers: IHeaders | undefined
-): Promise<AxiosResponse<IMusicLink>> =>
+): Promise<AxiosResponse<IBandLink>> =>
   axios.patch(
     `${routes.BANDS}/${bandId}${routes.LINKS}/${linkId || "undefined"}`,
     { itunes: itunesId },
@@ -161,7 +161,7 @@ export const patchArtistLink = (
   linkId: number | undefined,
   itunesId: number,
   headers: IHeaders | undefined
-): Promise<AxiosResponse<IMusicLink>> =>
+): Promise<AxiosResponse<IArtistLink>> =>
   axios.patch(
     `${routes.ARTISTS}/${artistId}${routes.LINKS}/${linkId || "undefined"}`,
     { itunes: itunesId },
@@ -172,7 +172,7 @@ export const patchAlbumLink = (
   linkId: number | undefined,
   itunesId: number,
   headers: IHeaders | undefined
-): Promise<AxiosResponse<IMusicLink>> =>
+): Promise<AxiosResponse<IAlbumLink>> =>
   axios.patch(
     `${routes.ALBUMS}/${albumId}${routes.LINKS}/${linkId || "undefined"}`,
     { itunes: itunesId },

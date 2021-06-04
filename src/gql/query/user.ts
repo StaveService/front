@@ -51,6 +51,9 @@ export const userQuery = gql`
           musicLink {
             itunes
           }
+          user {
+            nickname
+          }
         }
         pagination {
           totalPages
