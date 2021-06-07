@@ -132,16 +132,19 @@ const Show: React.FC = () => {
       </Grid>
       <Box mb={3}>
         <LinkTable
-          links={{ itunes: itunesArtist.data?.artistLinkUrl }}
-          renderItunes={(open, handleClose) => (
-            <ItunesBandDialog
-              open={open}
-              onClose={handleClose}
-              onSelect={handleSelect}
-              showSearchBar
-            />
-          )}
-          itunes
+          itunes={{
+            link: itunesArtist.data?.artistLinkUrl,
+            renderDialog(open, handleClose) {
+              return (
+                <ItunesBandDialog
+                  open={open}
+                  onClose={handleClose}
+                  onSelect={handleSelect}
+                  showSearchBar
+                />
+              );
+            },
+          }}
         />
       </Box>
       <Box mb={3}>

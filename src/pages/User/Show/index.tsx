@@ -90,9 +90,9 @@ const Show: React.FC = () => {
         />
         <Tab
           label="Bookmark"
-          value={match.url + routes.ISSUES}
+          value={match.url + routes.BOOKMARKS}
           component={RouterLink}
-          to={match.url + routes.ISSUES}
+          to={match.url + routes.BOOKMARKS}
         />
         <Tab
           label="Setting"
@@ -108,6 +108,7 @@ const Show: React.FC = () => {
           path={match.path}
           render={() => (
             <RootTabPanel
+              userLink={data?.user.userLink}
               musics={data?.user.musics}
               loading={isLoading}
               page={musicPage}
@@ -122,7 +123,7 @@ const Show: React.FC = () => {
         />
         <Route
           exact
-          path={match.path + routes.ISSUES}
+          path={match.path + routes.BOOKMARKS}
           render={() => (
             <BookmarkTabPanel
               musics={data?.user.bookmarkedMusics}

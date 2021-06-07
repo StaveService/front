@@ -10,6 +10,10 @@ export const userQuery = gql`
   ) {
     user(id: $id) {
       nickname
+      userLink {
+        id
+        twitter
+      }
       musics(musicPage: $musicPage) {
         data {
           id

@@ -82,16 +82,19 @@ const Show: React.FC = () => {
       </Box>
       <Box mb={3}>
         <LinkTable
-          links={{ itunes: itunesAlbum.data?.collectionViewUrl }}
-          renderItunes={(open, handleClose) => (
-            <ItunesAlbumDialog
-              open={open}
-              onClose={handleClose}
-              onSelect={handleSelect}
-              showSearchBar
-            />
-          )}
-          itunes
+          itunes={{
+            link: itunesAlbum.data?.collectionViewUrl,
+            renderDialog(open, handleClose) {
+              return (
+                <ItunesAlbumDialog
+                  open={open}
+                  onClose={handleClose}
+                  onSelect={handleSelect}
+                  showSearchBar
+                />
+              );
+            },
+          }}
         />
       </Box>
       <Box mb={3}>

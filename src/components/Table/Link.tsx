@@ -12,25 +12,25 @@ import TwitterIcon from "../Icon/Twitter";
 import ItunesIcon from "../Icon/Itunes";
 import { useOpen } from "../../hooks/useOpen";
 
-interface Links {
-  twitter?: string;
-  itunes?: string;
+interface LinkProps {
+  itunes?: RenderAndLink;
+  twitter?: RenderAndLink;
 }
-interface Options {
-  itunes?: boolean;
-  twitter?: boolean;
+interface RenderAndLink {
+  link?: string;
+  renderDialog: (open: boolean, handleClose: () => void) => React.ReactNode;
 }
-interface LinkProps extends Options {
-  links: Links;
-  renderItunes: (open: boolean, handleClose: () => void) => React.ReactNode;
-}
-const Link: React.FC<LinkProps> = ({
-  links,
-  itunes,
-  twitter,
-  renderItunes,
-}: LinkProps) => {
-  const { open, handleClose, handleOpen } = useOpen();
+const Link: React.FC<LinkProps> = ({ itunes, twitter }: LinkProps) => {
+  const {
+    open: itunesOpen,
+    handleClose: handleItunesClose,
+    handleOpen: handleItunesOpen,
+  } = useOpen();
+  const {
+    open: twitterOpen,
+    handleClose: handleTwitterClose,
+    handleOpen: handleTwitterOpen,
+  } = useOpen();
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -44,25 +44,34 @@ const Link: React.FC<LinkProps> = ({
           {twitter && (
             <TableRow>
               <TableCell>
-                <LinkButton startIcon={<TwitterIcon />} href={links.twitter}>
+                <LinkButton
+                  startIcon={<TwitterIcon />}
+                  href={twitter.link && `https://twitter.com/${twitter.link}`}
+                >
                   twitter
                 </LinkButton>
+              </TableCell>
+              <TableCell>
+                <Button variant="text" onClick={handleTwitterOpen}>
+                  Edit
+                </Button>
+                {twitter.renderDialog(twitterOpen, handleTwitterClose)}
               </TableCell>
             </TableRow>
           )}
           {itunes && (
             <TableRow>
               <TableCell>
-                <LinkButton startIcon={<ItunesIcon />} href={links.itunes}>
+                <LinkButton startIcon={<ItunesIcon />} href={itunes.link}>
                   itunes
                 </LinkButton>
               </TableCell>
               <TableCell>
-                <Button variant="text" onClick={handleOpen}>
+                <Button variant="text" onClick={handleItunesOpen}>
                   Edit
                 </Button>
 
-                {renderItunes(open, handleClose)}
+                {itunes.renderDialog(itunesOpen, handleItunesClose)}
               </TableCell>
             </TableRow>
           )}
@@ -72,7 +81,7 @@ const Link: React.FC<LinkProps> = ({
   );
 };
 Link.defaultProps = {
-  itunes: false,
-  twitter: false,
+  itunes: undefined,
+  twitter: undefined,
 };
 export default Link;

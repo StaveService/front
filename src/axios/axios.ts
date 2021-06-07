@@ -13,6 +13,7 @@ import {
   IMusicLink,
   ISignInFormValues,
   ISignSuccessResponse,
+  IUserLink,
 } from "../interfaces";
 import routes from "../constants/routes.json";
 
@@ -176,5 +177,17 @@ export const patchAlbumLink = (
   axios.patch(
     `${routes.ALBUMS}/${albumId}${routes.LINKS}/${linkId || "undefined"}`,
     { itunes: itunesId },
+    headers
+  );
+
+export const patchUserLink = (
+  userId: number,
+  linkId: number | undefined,
+  twitterId: string,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IUserLink>> =>
+  axios.patch(
+    `${routes.USERS}/${userId}${routes.LINKS}/${linkId || "undefined"}`,
+    { twitter: twitterId },
     headers
   );

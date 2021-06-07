@@ -26,6 +26,11 @@ export interface IUser
   gender: number | null;
   introduction: string | null;
   ["created_at"]: string;
+  userLink: IUserLink;
+}
+export interface IUserLink {
+  id: number;
+  twitter: string;
 }
 export interface IBand extends IMusicsType, IAlbumsType {
   id: number;

@@ -37,18 +37,18 @@ function Layout<T>({
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <DialogTitle>Choose {title}</DialogTitle>
-      {showSearchBar && (
-        <TextField
-          id=""
-          label=""
-          value={value}
-          variant="outlined"
-          onChange={onChange}
-          margin="normal"
-        />
-      )}
-      {loading && <LinearProgress />}
-      <Box p={2}>
+      <Box p={3}>
+        {showSearchBar && (
+          <TextField
+            id=""
+            label=""
+            value={value}
+            variant="outlined"
+            onChange={onChange}
+            fullWidth
+          />
+        )}
+        {loading && <LinearProgress />}
         {cards?.map((card) => {
           const handleSelect = () => {
             onClose();

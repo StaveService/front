@@ -17,11 +17,11 @@ const useStyles = makeStyles(() =>
   })
 );
 interface FooterProps {
-  src?: string;
+  src: string;
 }
 const Footer: React.FC<FooterProps> = ({ src }: FooterProps) => {
   const [audio, state, controls] = useAudio({
-    src: src || "",
+    src,
   });
   const classes = useStyles();
   const handleMute = () => (state.muted ? controls.unmute() : controls.mute());
@@ -32,7 +32,6 @@ const Footer: React.FC<FooterProps> = ({ src }: FooterProps) => {
   ) => {
     if (!Array.isArray(newValue)) controls.volume(newValue / 100);
   };
-  if (!src) return null;
   return (
     <>
       <AppBar position="fixed" color="inherit" className={classes.appBar}>
@@ -56,10 +55,6 @@ const Footer: React.FC<FooterProps> = ({ src }: FooterProps) => {
       <Toolbar />
     </>
   );
-};
-
-Footer.defaultProps = {
-  src: undefined,
 };
 
 export default Footer;

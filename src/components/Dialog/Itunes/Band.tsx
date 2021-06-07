@@ -35,7 +35,7 @@ function Band({
     setSearchValue(e.target.value);
   return (
     <Layout
-      title="Music"
+      title="Band"
       value={searchValue}
       open={open}
       loading={searchedItunes.isLoading || isPending()}

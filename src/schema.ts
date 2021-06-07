@@ -15,7 +15,6 @@ const signUpSchema = yup.object().shape({
   password,
   passwordConfirmation: yup.string().oneOf([yup.ref("password"), null]),
 });
-
 const addRoleSchema = yup.object().shape({
   artist_id: yup.number().required(),
   role: yup.number().required(),

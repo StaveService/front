@@ -186,7 +186,9 @@ const Show: React.FC = () => {
           />
         </Switch>
       </DefaultLayout>
-      <Footer src={itunesMusic?.data?.previewUrl} />
+      {itunesMusic?.data?.previewUrl && (
+        <Footer src={itunesMusic.data.previewUrl} />
+      )}
     </>
   );
 };

@@ -71,16 +71,19 @@ const Info: React.FC = () => {
     <>
       <Box mb={3}>
         <LinkTable
-          links={{ itunes: itunesMusic?.trackViewUrl }}
-          renderItunes={(open, handleClose) => (
-            <ItunesMusicDialog
-              open={open}
-              onClose={handleClose}
-              onSelect={handleSelect}
-              showSearchBar
-            />
-          )}
-          itunes
+          itunes={{
+            link: itunesMusic?.trackViewUrl,
+            renderDialog(open, handleClose) {
+              return (
+                <ItunesMusicDialog
+                  open={open}
+                  onClose={handleClose}
+                  onSelect={handleSelect}
+                  showSearchBar
+                />
+              );
+            },
+          }}
         />
       </Box>
       <Box mb={3}>
