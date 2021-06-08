@@ -129,6 +129,7 @@ const Show: React.FC = () => {
             color="primary"
             component={RouterLink}
             to={match.url + routes.TAB}
+            disabled={!music.data?.tab}
             fullWidth
             disableElevation
           >
