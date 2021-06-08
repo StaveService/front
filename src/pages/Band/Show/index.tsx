@@ -14,6 +14,7 @@ import AlbumsTable from "../../../components/Table/Album";
 import LinkTable from "../../../components/Table/Link";
 import BookmarkButton from "../../../components/Button/Bookmark";
 import ItunesBandDialog from "../../../components/Dialog/Itunes/Band";
+import TwitterDialog from "../../../components/Dialog/Twitter";
 import DefaultLayout from "../../../layout/Default";
 import {
   IBand,
@@ -36,6 +37,7 @@ import {
   postBandBookmark,
   deleteBandBookmark,
   patchBandLink,
+  Link,
 } from "../../../axios/axios";
 
 const Show: React.FC = () => {
@@ -100,13 +102,14 @@ const Show: React.FC = () => {
     { onSuccess: handleDestroySuccess, onError }
   );
   const updateLinkMutation = useMutation(
-    (itunesId: number) =>
-      patchBandLink(id, band.data?.bandLink?.id, itunesId, headers),
+    (link: Link) => patchBandLink(id, band.data?.bandLink?.id, link, headers),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers
   const handleSelect = (selectedBand: IItunesArtist) =>
-    updateLinkMutation.mutate(selectedBand.artistId);
+    updateLinkMutation.mutate({ itunes: selectedBand.artistId });
+  const handleSubmit = (value: string) =>
+    updateLinkMutation.mutate({ twitter: value });
   const handleCreateBookmarkMutation = () => createBookmarkMutation.mutate();
   const handleDestroyBookmarkMutation = () => destroyBookmarkMutation.mutate();
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
@@ -132,6 +135,19 @@ const Show: React.FC = () => {
       </Grid>
       <Box mb={3}>
         <LinkTable
+          twitter={{
+            link: band.data?.bandLink?.twitter,
+            renderDialog(open, handleClose) {
+              return (
+                <TwitterDialog
+                  open={open}
+                  loading={updateLinkMutation.isLoading}
+                  onClose={handleClose}
+                  onPatch={handleSubmit}
+                />
+              );
+            },
+          }}
           itunes={{
             link: itunesArtist.data?.artistLinkUrl,
             renderDialog(open, handleClose) {

@@ -13,6 +13,7 @@ import AlbumsTable from "../../components/Table/Album";
 import LinkTable from "../../components/Table/Link";
 import BookmarkButton from "../../components/Button/Bookmark";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
+import TwitterDialog from "../../components/Dialog/Twitter";
 import DefaultLayout from "../../layout/Default";
 import {
   IArtist,
@@ -32,7 +33,7 @@ import { graphQLClient } from "../../gql/client";
 import { artistQuery } from "../../gql/query/artist";
 import queryKey from "../../constants/queryKey.json";
 import { lookupItunesArtist } from "../../axios/itunes";
-import { patchArtistLink } from "../../axios/axios";
+import { Link, patchArtistLink } from "../../axios/axios";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
@@ -108,15 +109,17 @@ const Show: React.FC = () => {
     { onSuccess: handleDestroySuccess, onError }
   );
   const updateLinkMutation = useMutation(
-    (itunesId: number) =>
-      patchArtistLink(id, artist.data?.artistLink?.id, itunesId, headers),
+    (link: Link) =>
+      patchArtistLink(id, artist.data?.artistLink?.id, link, headers),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers
   const handleCreateMutation = () => createMutation.mutate();
   const handleDestroyMutation = () => destroyMutation.mutate();
   const handleSelect = (selectedArtist: IItunesArtist) =>
-    updateLinkMutation.mutate(selectedArtist.artistId);
+    updateLinkMutation.mutate({ itunes: selectedArtist.artistId });
+  const handleSubmit = (value: string) =>
+    updateLinkMutation.mutate({ twitter: value });
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
     setMusicPage(value);
   const handleAlbumPage = (event: React.ChangeEvent<unknown>, value: number) =>
@@ -141,6 +144,19 @@ const Show: React.FC = () => {
       </Grid>
       <Box mb={3}>
         <LinkTable
+          twitter={{
+            link: artist.data?.artistLink?.twitter,
+            renderDialog(open, handleClose) {
+              return (
+                <TwitterDialog
+                  open={open}
+                  loading={updateLinkMutation.isLoading}
+                  onClose={handleClose}
+                  onPatch={handleSubmit}
+                />
+              );
+            },
+          }}
           itunes={{
             link: itunesArtist.data?.artistLinkUrl,
             renderDialog(open, handleClose) {

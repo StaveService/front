@@ -9,8 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
 import {
   IAlbum,
+  IAlbumLink,
   IAlbumType,
-  IBandLink,
   IItunesAlbum,
 } from "../../../interfaces";
 import MusicsTable from "../../../components/Table/Music";
@@ -38,7 +38,7 @@ const Show: React.FC = () => {
   const headers = useSelector(selectHeaders);
   // react-query
   const queryClient = useQueryClient();
-  const handleUpdateSuccess = (res: AxiosResponse<IBandLink>) => {
+  const handleUpdateSuccess = (res: AxiosResponse<IAlbumLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IAlbum | undefined>(
       [queryKey.ALBUM, id],

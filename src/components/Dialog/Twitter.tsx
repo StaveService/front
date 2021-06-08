@@ -19,7 +19,10 @@ const Twitter: React.FC<TwitterProps> = ({
   const [value, setValue] = useState("");
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setValue(e.target.value.replace("https://twitter.com/", ""));
-  const handleClick = () => onPatch(value);
+  const handleClick = () => {
+    onClose();
+    onPatch(value);
+  };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>

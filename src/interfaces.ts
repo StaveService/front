@@ -42,6 +42,7 @@ export interface IBand extends IMusicsType, IAlbumsType {
 export interface IBandLink {
   id: number;
   itunes: number;
+  twitter: string;
 }
 export interface IMusic {
   id: number;
@@ -73,6 +74,7 @@ export interface IArtist extends IMusicsType, IAlbumsType {
 export interface IArtistLink {
   id: number;
   itunes: number;
+  twitter: string;
 }
 export interface IAlbum extends IMusicsType {
   id: number;

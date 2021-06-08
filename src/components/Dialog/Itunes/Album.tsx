@@ -37,7 +37,7 @@ function Album({
       value={searchValue}
       open={open}
       loading={searchedItunes.isLoading || isPending()}
-      cards={searchedItunes.data?.data.results}
+      cards={searchedItunes.data?.data?.results}
       showSearchBar={showSearchBar}
       onSelect={onSelect}
       onClose={onClose}

@@ -146,26 +146,30 @@ export const patchMusicLink = (
     { itunes: itunesId },
     headers
   );
+export interface Link {
+  twitter?: string;
+  itunes?: number;
+}
 export const patchBandLink = (
   bandId: number,
   linkId: number | undefined,
-  itunesId: number,
+  link: Link,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IBandLink>> =>
   axios.patch(
     `${routes.BANDS}/${bandId}${routes.LINKS}/${linkId || "undefined"}`,
-    { itunes: itunesId },
+    link,
     headers
   );
 export const patchArtistLink = (
   artistId: number,
   linkId: number | undefined,
-  itunesId: number,
+  link: Link,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IArtistLink>> =>
   axios.patch(
     `${routes.ARTISTS}/${artistId}${routes.LINKS}/${linkId || "undefined"}`,
-    { itunes: itunesId },
+    link,
     headers
   );
 export const patchAlbumLink = (

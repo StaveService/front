@@ -13,6 +13,7 @@ export const artistQuery = gql`
       artistLink {
         id
         itunes
+        twitter
       }
       musics(musicPage: $musicPage) {
         data {
