@@ -16,7 +16,7 @@ import RootTabPanel from "./TabPanel/Root";
 import BookmarkTabPanel from "./TabPanel/Bookmark";
 import SettingTabPanel from "./TabPanel/Setting";
 import DefaultLayout from "../../../layout/Default";
-import { IUserType } from "../../../interfaces";
+import { IUser, IUserType } from "../../../interfaces";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../../gql/client";
 import { userQuery } from "../../../gql/query/user";
@@ -37,7 +37,7 @@ const Show: React.FC = () => {
   const location = useLocation();
   const id = Number(match.params.id);
   // react-query
-  const { isLoading, data } = useQuery<IUserType>(
+  const { isLoading, data } = useQuery<IUser>(
     [
       queryKey.USER,
       id,
@@ -49,13 +49,15 @@ const Show: React.FC = () => {
       },
     ],
     () =>
-      graphQLClient.request(userQuery, {
-        id,
-        musicPage,
-        bookmarkedMusicPage,
-        bookmarkedBandPage,
-        bookmarkedArtistPage,
-      }),
+      graphQLClient
+        .request<IUserType>(userQuery, {
+          id,
+          musicPage,
+          bookmarkedMusicPage,
+          bookmarkedBandPage,
+          bookmarkedArtistPage,
+        })
+        .then((res) => res.user),
     { onError }
   );
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
@@ -74,7 +76,7 @@ const Show: React.FC = () => {
   ) => setBookmarkedArtistPage(value);
   return (
     <DefaultLayout>
-      <Typography variant="h6">{data?.user.nickname}</Typography>
+      <Typography variant="h6">{data?.nickname}</Typography>
       <Tabs
         value={
           location.pathname.includes("issues")
@@ -108,11 +110,14 @@ const Show: React.FC = () => {
           path={match.path}
           render={() => (
             <RootTabPanel
-              userLink={data?.user.userLink}
-              musics={data?.user.musics}
+              userLink={data?.userLink}
+              musics={data?.musics}
               loading={isLoading}
-              page={musicPage}
+              musicPage={musicPage}
               onPage={handleMusicPage}
+              bookmarkedMusicPage={bookmarkedMusicPage}
+              bookmarkedArtistPage={bookmarkedArtistPage}
+              bookmarkedBandPage={bookmarkedBandPage}
             />
           )}
         />
@@ -126,9 +131,9 @@ const Show: React.FC = () => {
           path={match.path + routes.BOOKMARKS}
           render={() => (
             <BookmarkTabPanel
-              musics={data?.user.bookmarkedMusics}
-              bands={data?.user.bookmarkedBands}
-              artists={data?.user.bookmarkedArtists}
+              musics={data?.bookmarkedMusics}
+              bands={data?.bookmarkedBands}
+              artists={data?.bookmarkedArtists}
               loading={isLoading}
               musicPage={bookmarkedMusicPage}
               onMusicPage={handleBookmarkedMusicPage}

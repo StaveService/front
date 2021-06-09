@@ -149,6 +149,7 @@ const Show: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <TwitterDialog
+                  defaultValue={artist.data?.artistLink?.twitter}
                   open={open}
                   loading={updateLinkMutation.isLoading}
                   onClose={handleClose}

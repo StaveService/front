@@ -6,19 +6,22 @@ import TextField from "@material-ui/core/TextField";
 import LoadingButton from "../Loading/LoadingButton";
 
 type TwitterProps = DialogProps & {
+  defaultValue: string | undefined;
   loading: boolean;
   onPatch: (value: string) => void;
   onClose: () => void;
 };
+const TWITTER_URL = "https://twitter.com/";
 const Twitter: React.FC<TwitterProps> = ({
   loading,
   open,
+  defaultValue,
   onPatch,
   onClose,
 }: TwitterProps) => {
   const [value, setValue] = useState("");
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setValue(e.target.value.replace("https://twitter.com/", ""));
+    setValue(e.target.value.replace(TWITTER_URL, ""));
   const handleClick = () => {
     onClose();
     onPatch(value);
@@ -30,9 +33,10 @@ const Twitter: React.FC<TwitterProps> = ({
       <Box p={3}>
         <TextField
           name="twitter"
-          label="https://twitter.com/"
+          label={TWITTER_URL}
           variant="outlined"
           value={value}
+          defaultValue={defaultValue}
           onChange={handleChange}
           fullWidth
         />

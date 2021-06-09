@@ -140,6 +140,7 @@ const Show: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <TwitterDialog
+                  defaultValue={band.data?.bandLink?.twitter}
                   open={open}
                   loading={updateLinkMutation.isLoading}
                   onClose={handleClose}
