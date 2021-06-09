@@ -59,7 +59,15 @@ const New: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IArtist>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
-    queryClient.setQueryData([queryKey.ARTIST, res.data.id], res.data);
+    queryClient.setQueryData(
+      [queryKey.ARTIST, res.data.id, { musicPage: 1, albumPage: 1 }],
+      res.data
+    );
+    if (selectedItunesArtist)
+      queryClient.setQueryData(
+        [queryKey.ITUNES, queryKey.ARTIST, selectedItunesArtist.artistId],
+        selectedItunesArtist
+      );
   };
   const createMutation = useMutation(
     (newArtist: IArtist) => postArtist(newArtist, headers),

@@ -60,7 +60,7 @@ const New: React.FC = () => {
     dispatch(setHeaders(res.headers));
     history.push(`${routes.BANDS}/${res.data.id}`);
     queryClient.setQueryData(
-      [queryKey.BAND, Number(match.params.id)],
+      [queryKey.BAND, Number(match.params.id), { musicPage: 1, albumPage: 1 }],
       res.data
     );
     if (selectedItunesArtist)

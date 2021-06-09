@@ -30,3 +30,27 @@ custom-hooks
 - [react-use](https://github.com/streamich/react-use)
 - [react-script-hook](https://github.com/hupe1980/react-script-hook)
 - ~~[use-http](https://github.com/ava/use-http)~~ can't use multiple url
+
+## ReactQuery Key Pattern
+
+| type          | key                                                                                                   |
+| ------------- | ----------------------------------------------------------------------------------------------------- |
+| artist        | [artist, :id, { musicPage, albumPage }]                                                               |
+| artists       | [artists, :page]                                                                                      |
+| album         | [album, :id]                                                                                          |
+| albums        | [albums, :page]                                                                                       |
+| band          | [band, :id]                                                                                           |
+| bands         | [bands, :page, { musicPage, albumPage }]                                                              |
+| music         | [music, :id]                                                                                          |
+| musics        | [musics, :page]                                                                                       |
+| user          | [<br>user, :id,<br> { musicPage, bookmarkedMusicPage, bookmarkedArtistPage, bookmarkedBandPage }<br>] |
+| users         | [users, :page]                                                                                        |
+| itunesArtist  | [itunes, artist, :id]                                                                                 |
+| itunesAlbum   | [itunes, album, :id]                                                                                  |
+| itunesAlbums  | [itunes, albums, :id]                                                                                 |
+| itunesMusic   | [itunes, music, :id]                                                                                  |
+| itunesMusics  | [itunes, musics, :ids]                                                                                |
+| searchArtists | [artists, { page, query }]                                                                            |
+| searchMusics  | [musics, { page, query }]                                                                             |
+| searchBands   | [bands, { page, query }]                                                                              |
+| searchAlbums  | [albums, { page, query }]                                                                             |

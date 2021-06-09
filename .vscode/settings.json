@@ -12,8 +12,10 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  "[markdown]": {
+    "editor.formatOnSave": true,
+  },
   "editor.snippetSuggestions": "top",
-
   "javascript.validate.enable": false,
   "javascript.format.enable": false,
   "typescript.format.enable": false,

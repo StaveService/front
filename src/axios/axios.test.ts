@@ -5,6 +5,7 @@ import {
   postBand,
   deleteBand,
   postAlbum,
+  postMusicBookmark,
 } from "./axios";
 import testUser from "../constants/user.json";
 import routes from "../constants/routes.json";
