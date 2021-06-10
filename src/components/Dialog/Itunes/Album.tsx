@@ -5,7 +5,7 @@ import { AxiosResponse } from "axios";
 import { useDebounce } from "use-debounce/lib";
 import ItunesAlbumCard from "../../Card/Itunes/Album";
 import { IItunesAlbum, IItunesResponse } from "../../../interfaces";
-import Layout, { ItunesDialogProps } from "./Layout";
+import CardSearchDialog, { ItunesDialogProps } from "../CardSearchDialog";
 import queryKey from "../../../constants/queryKey.json";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import { searchItunesAlbums } from "../../../axios/itunes";
@@ -32,7 +32,7 @@ function Album({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(e.target.value);
   return (
-    <Layout
+    <CardSearchDialog
       title="Album"
       value={searchValue}
       open={open}
@@ -48,7 +48,7 @@ function Album({
           <ItunesAlbumCard album={card} />
         </Box>
       )}
-    </Layout>
+    </CardSearchDialog>
   );
 }
 export default Album;

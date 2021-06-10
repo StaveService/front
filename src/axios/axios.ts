@@ -8,6 +8,7 @@ import {
   IBandBookmark,
   IBandLink,
   IHeaders,
+  IIssue,
   IMusic,
   IMusicBookmark,
   IMusicLink,
@@ -89,6 +90,17 @@ export const deleteArtist = (
 ): Promise<AxiosResponse<IArtist>> =>
   axios.delete(`${routes.ARTISTS}/${artistId}`, headers);
 
+export const postIssue = (
+  userId: number,
+  musicId: number,
+  newIssue: IIssue,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IIssue>> =>
+  axios.post(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.ISSUES}`,
+    newIssue,
+    headers
+  );
 export const postMusicBookmark = (
   userId: number,
   musicId: number,
@@ -149,6 +161,7 @@ export const patchMusicLink = (
 export interface Link {
   twitter?: string;
   itunes?: number;
+  wikipedia?: number;
 }
 export const patchBandLink = (
   bandId: number,

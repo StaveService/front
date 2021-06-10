@@ -15,6 +15,7 @@ import LinkTable from "../../../components/Table/Link";
 import BookmarkButton from "../../../components/Button/Bookmark";
 import ItunesBandDialog from "../../../components/Dialog/Itunes/Band";
 import TwitterDialog from "../../../components/Dialog/Twitter";
+import WikipediaDialog from "../../../components/Dialog/Wikipedia";
 import DefaultLayout from "../../../layout/Default";
 import {
   IBand,
@@ -22,6 +23,7 @@ import {
   IBandLink,
   IBandType,
   IItunesArtist,
+  IWikipedia,
 } from "../../../interfaces";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import {
@@ -39,6 +41,7 @@ import {
   patchBandLink,
   Link,
 } from "../../../axios/axios";
+import { getWikipedia } from "../../../axios/wikipedia";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
@@ -93,6 +96,11 @@ const Show: React.FC = () => {
       ),
     { enabled: !!band.data?.bandLink?.itunes, onError }
   );
+  const wikipedia = useQuery<IWikipedia>(
+    [queryKey.WIKIPEDIA, band.data?.bandLink?.wikipedia],
+    () => getWikipedia(band.data?.bandLink?.wikipedia),
+    { enabled: !!band.data?.bandLink?.wikipedia, onError }
+  );
   const createBookmarkMutation = useMutation(
     () => postBandBookmark(id, headers),
     { onSuccess: handleCreateSuccess, onError }
@@ -106,8 +114,10 @@ const Show: React.FC = () => {
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers
-  const handleSelect = (selectedBand: IItunesArtist) =>
+  const handleItunesSelect = (selectedBand: IItunesArtist) =>
     updateLinkMutation.mutate({ itunes: selectedBand.artistId });
+  const handleWikipediaSelect = (selectedWikipedia: IWikipedia) =>
+    updateLinkMutation.mutate({ wikipedia: selectedWikipedia.pageid });
   const handleSubmit = (value: string) =>
     updateLinkMutation.mutate({ twitter: value });
   const handleCreateBookmarkMutation = () => createBookmarkMutation.mutate();
@@ -133,6 +143,7 @@ const Show: React.FC = () => {
           />
         </Grid>
       </Grid>
+      <Box>{wikipedia.data?.extract}</Box>
       <Box mb={3}>
         <LinkTable
           twitter={{
@@ -156,7 +167,20 @@ const Show: React.FC = () => {
                 <ItunesBandDialog
                   open={open}
                   onClose={handleClose}
-                  onSelect={handleSelect}
+                  onSelect={handleItunesSelect}
+                  showSearchBar
+                />
+              );
+            },
+          }}
+          wikipedia={{
+            link: band.data?.bandLink?.wikipedia,
+            renderDialog(open, handleClose) {
+              return (
+                <WikipediaDialog
+                  open={open}
+                  onClose={handleClose}
+                  onSelect={handleWikipediaSelect}
                   showSearchBar
                 />
               );

@@ -14,6 +14,7 @@ import LinkTable from "../../components/Table/Link";
 import BookmarkButton from "../../components/Button/Bookmark";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import TwitterDialog from "../../components/Dialog/Twitter";
+import WikipediaDialog from "../../components/Dialog/Wikipedia";
 import DefaultLayout from "../../layout/Default";
 import {
   IArtist,
@@ -21,6 +22,7 @@ import {
   IArtistLink,
   IArtistType,
   IItunesArtist,
+  IWikipedia,
 } from "../../interfaces";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import {
@@ -34,6 +36,7 @@ import { artistQuery } from "../../gql/query/artist";
 import queryKey from "../../constants/queryKey.json";
 import { lookupItunesArtist } from "../../axios/itunes";
 import { Link, patchArtistLink } from "../../axios/axios";
+import { getWikipedia } from "../../axios/wikipedia";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
@@ -81,6 +84,11 @@ const Show: React.FC = () => {
         .then((res) => res.artist),
     { onError }
   );
+  const wikipedia = useQuery<IWikipedia>(
+    [queryKey.WIKIPEDIA, artist.data?.artistLink?.wikipedia],
+    () => getWikipedia(artist.data?.artistLink?.wikipedia),
+    { enabled: !!artist.data?.artistLink?.wikipedia, onError }
+  );
   const itunesArtist = useQuery<IItunesArtist>(
     [queryKey.ITUNES, queryKey.ARTIST, artist.data?.artistLink?.itunes],
     () =>
@@ -118,6 +126,8 @@ const Show: React.FC = () => {
   const handleDestroyMutation = () => destroyMutation.mutate();
   const handleSelect = (selectedArtist: IItunesArtist) =>
     updateLinkMutation.mutate({ itunes: selectedArtist.artistId });
+  const handleWikipediaSelect = (selectedWikipedia: IWikipedia) =>
+    updateLinkMutation.mutate({ wikipedia: selectedWikipedia.pageid });
   const handleSubmit = (value: string) =>
     updateLinkMutation.mutate({ twitter: value });
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
@@ -142,6 +152,7 @@ const Show: React.FC = () => {
           />
         </Grid>
       </Grid>
+      <Box>{wikipedia.data?.extract}</Box>
       <Box mb={3}>
         <LinkTable
           twitter={{
@@ -166,6 +177,19 @@ const Show: React.FC = () => {
                   open={open}
                   onClose={handleClose}
                   onSelect={handleSelect}
+                  showSearchBar
+                />
+              );
+            },
+          }}
+          wikipedia={{
+            link: artist.data?.artistLink?.wikipedia,
+            renderDialog(open, handleClose) {
+              return (
+                <WikipediaDialog
+                  open={open}
+                  onClose={handleClose}
+                  onSelect={handleWikipediaSelect}
                   showSearchBar
                 />
               );

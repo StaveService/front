@@ -6,7 +6,7 @@
 
 - [official](https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/)
 - [artist-photos](https://gist.github.com/karlding/954388cb6cd2665d4f3a)
-- [pagenation](https://stackoverflow.com/questions/44177089/itunes-search-api-page-number-for-the-query)
+- [pagination](https://stackoverflow.com/questions/44177089/itunes-search-api-page-number-for-the-query)
 
 ## Packages
 
@@ -33,24 +33,26 @@ custom-hooks
 
 ## ReactQuery Key Pattern
 
-| type          | key                                                                                                   |
-| ------------- | ----------------------------------------------------------------------------------------------------- |
-| artist        | [artist, :id, { musicPage, albumPage }]                                                               |
-| artists       | [artists, :page]                                                                                      |
-| album         | [album, :id]                                                                                          |
-| albums        | [albums, :page]                                                                                       |
-| band          | [band, :id]                                                                                           |
-| bands         | [bands, :page, { musicPage, albumPage }]                                                              |
-| music         | [music, :id]                                                                                          |
-| musics        | [musics, :page]                                                                                       |
-| user          | [<br>user, :id,<br> { musicPage, bookmarkedMusicPage, bookmarkedArtistPage, bookmarkedBandPage }<br>] |
-| users         | [users, :page]                                                                                        |
-| itunesArtist  | [itunes, artist, :id]                                                                                 |
-| itunesAlbum   | [itunes, album, :id]                                                                                  |
-| itunesAlbums  | [itunes, albums, :id]                                                                                 |
-| itunesMusic   | [itunes, music, :id]                                                                                  |
-| itunesMusics  | [itunes, musics, :ids]                                                                                |
-| searchArtists | [artists, { page, query }]                                                                            |
-| searchMusics  | [musics, { page, query }]                                                                             |
-| searchBands   | [bands, { page, query }]                                                                              |
-| searchAlbums  | [albums, { page, query }]                                                                             |
+| type            | key                                                                                                   |
+| --------------- | ----------------------------------------------------------------------------------------------------- |
+| artist          | [artist, :id, { musicPage, albumPage }]                                                               |
+| artists         | [artists, :page]                                                                                      |
+| album           | [album, :id]                                                                                          |
+| albums          | [albums, :page]                                                                                       |
+| band            | [band, :id]                                                                                           |
+| bands           | [bands, :page, { musicPage, albumPage }]                                                              |
+| music           | [music, :id]                                                                                          |
+| musics          | [musics, :page]                                                                                       |
+| user            | [<br>user, :id,<br> { musicPage, bookmarkedMusicPage, bookmarkedArtistPage, bookmarkedBandPage }<br>] |
+| users           | [users, :page]                                                                                        |
+| itunesArtist    | [itunes, artist, :id]                                                                                 |
+| itunesAlbum     | [itunes, album, :id]                                                                                  |
+| itunesAlbums    | [itunes, albums, :id]                                                                                 |
+| itunesMusic     | [itunes, music, :id]                                                                                  |
+| itunesMusics    | [itunes, musics, :ids]                                                                                |
+| searchArtists   | [artists, { page, query }]                                                                            |
+| searchMusics    | [musics, { page, query }]                                                                             |
+| searchBands     | [bands, { page, query }]                                                                              |
+| searchAlbums    | [albums, { page, query }]                                                                             |
+| wikipedia       | [wikipedia, :id]                                                                                      |
+| searchWikipedia | [wikipedia, :query]                                                                                   |

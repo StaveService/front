@@ -1,14 +1,17 @@
 import React, { ChangeEvent, useState } from "react";
 import Box from "@material-ui/core/Box";
 import { useQuery } from "react-query";
-import { AxiosResponse } from "axios";
 import { useDebounce } from "use-debounce/lib";
-import ItunesArtistCard from "../../Card/Itunes/Artist";
-import { IItunesArtist, IItunesResponse } from "../../../interfaces";
-import CardSearchDialog, { ItunesDialogProps } from "../CardSearchDialog";
-import queryKey from "../../../constants/queryKey.json";
-import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
-import { searchItunesArtists } from "../../../axios/itunes";
+import CardSearchDialog, { ItunesDialogProps } from "./CardSearchDialog";
+import WikipediaCard from "../Card/Wikipedia";
+import {
+  IWikipedia,
+  IWikipediaResponse,
+  IWikipediaSearch,
+} from "../../interfaces";
+import queryKey from "../../constants/queryKey.json";
+import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import { searchWikipedia } from "../../axios/wikipedia";
 
 function Artist({
   value,
@@ -16,16 +19,14 @@ function Artist({
   showSearchBar,
   onClose,
   onSelect,
-}: ItunesDialogProps<IItunesArtist>): JSX.Element {
+}: ItunesDialogProps<IWikipedia>): JSX.Element {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();
   const valueANDSearchValue = value || debouncedSearchValue;
-  const searchedItunes = useQuery<
-    AxiosResponse<IItunesResponse<IItunesArtist>>
-  >(
-    [queryKey.ITUNES, queryKey.ARTIST, valueANDSearchValue],
-    () => searchItunesArtists(valueANDSearchValue),
+  const searchedWikipedia = useQuery<IWikipediaResponse<IWikipediaSearch>>(
+    [queryKey.WIKIPEDIA, valueANDSearchValue],
+    () => searchWikipedia(valueANDSearchValue),
     {
       enabled: !!valueANDSearchValue,
       onError,
@@ -34,20 +35,20 @@ function Artist({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(e.target.value);
   return (
-    <CardSearchDialog
-      title="Artist"
+    <CardSearchDialog<IWikipedia>
+      title="Wikipedia"
       value={searchValue}
       open={open}
-      loading={searchedItunes.isLoading || isPending()}
-      cards={searchedItunes.data?.data.results}
+      loading={searchedWikipedia.isLoading || isPending()}
+      cards={searchedWikipedia.data?.query.search}
       showSearchBar={showSearchBar}
       onSelect={onSelect}
       onClose={onClose}
       onChange={handleChange}
     >
       {(card, handleSelect) => (
-        <Box key={card.artistId} mb={2} onClick={handleSelect}>
-          <ItunesArtistCard artist={card} />
+        <Box key={card.pageid} mb={2} onClick={handleSelect}>
+          <WikipediaCard wikipedia={card} />
         </Box>
       )}
     </CardSearchDialog>

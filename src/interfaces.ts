@@ -43,6 +43,7 @@ export interface IBandLink {
   id: number;
   itunes: number;
   twitter: string;
+  wikipedia: number;
 }
 export interface IMusic {
   id: number;
@@ -75,6 +76,7 @@ export interface IArtistLink {
   id: number;
   itunes: number;
   twitter: string;
+  wikipedia: number;
 }
 export interface IAlbum extends IMusicsType {
   id: number;
@@ -251,6 +253,29 @@ export interface IItunesAlbum extends IItunesArtwork {
 export interface IItunesResponse<T> {
   resultCount: number;
   results: T[];
+}
+export interface IWikipediaResponse<T> {
+  batchcomplete: "";
+  continue: { sroffset: number };
+  query: T;
+}
+export interface IWikipediaSearch {
+  search: IWikipedia[];
+  searchinfo: { totalhits: number };
+}
+export interface IWikipediaGet {
+  pages: {
+    [key: number]: IWikipedia;
+  };
+}
+export interface IWikipedia {
+  ns: number;
+  pageid: number;
+  size: number;
+  snippet: string;
+  timestamp: string;
+  title: string;
+  extract: string;
 }
 export interface IAlphaTab {
   AlphaTabApi: typeof AlphaTabApi;

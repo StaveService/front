@@ -5,7 +5,7 @@ import { useQuery } from "react-query";
 import { AxiosResponse } from "axios";
 import ItunesMusicCard from "../../Card/Itunes/Music";
 import { IItunesMusic, IItunesResponse } from "../../../interfaces";
-import Layout, { ItunesDialogProps } from "./Layout";
+import CardSearchDialog, { ItunesDialogProps } from "../CardSearchDialog";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import { searchItunesMusics } from "../../../axios/itunes";
 import queryKey from "../../../constants/queryKey.json";
@@ -32,7 +32,7 @@ function Music({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(e.target.value);
   return (
-    <Layout
+    <CardSearchDialog
       title="Music"
       value={searchValue}
       open={open}
@@ -48,7 +48,7 @@ function Music({
           <ItunesMusicCard music={card} />
         </Box>
       )}
-    </Layout>
+    </CardSearchDialog>
   );
 }
 
