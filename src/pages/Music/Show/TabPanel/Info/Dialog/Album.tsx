@@ -1,6 +1,6 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Link as RouterLink, useRouteMatch } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,9 +35,12 @@ import {
 import { useOpen } from "../../../../../../hooks/useOpen";
 import { useQuerySnackbar } from "../../../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../../../constants/queryKey.json";
-import routes from "../../../../../../constants/routes.json";
 import { graphQLClient } from "../../../../../../gql/client";
 import { albumsQuery } from "../../../../../../gql/query/albums";
+import {
+  deleteAlbumMusic,
+  postAlbumMusic,
+} from "../../../../../../axios/axios";
 
 const Album: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -48,9 +51,12 @@ const Album: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { register, handleSubmit, setValue } = useForm<IAlbum>();
   // react-router-dom
-  const match = useRouteMatch<{ id: string }>();
-  const id = Number(match.params.id);
-  const route = match.url + routes.ALBUMS;
+  const params = useParams<{
+    userId: string;
+    id: string;
+  }>();
+  const userId = Number(params.userId);
+  const id = Number(params.id);
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
@@ -87,13 +93,11 @@ const Album: React.FC = () => {
     );
   };
   const createMutation = useMutation(
-    (newAlbumMusic: IAlbum) =>
-      axios.post<IAlbumMusic>(route, newAlbumMusic, headers),
+    (newAlbum: IAlbum) => postAlbumMusic(userId, id, newAlbum, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const destroyMutation = useMutation(
-    (album: IAlbum) =>
-      axios.delete<IAlbumMusic>(`${route}/${album.id}`, headers),
+    (album: IAlbum) => deleteAlbumMusic(userId, id, album.id, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
   const albums = useQuery<IAlbum[]>(

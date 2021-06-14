@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -30,19 +30,24 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../slices/currentUser";
-import routes from "../../constants/routes.json";
 import { graphQLClient } from "../../gql/client";
 import { artistQuery } from "../../gql/query/artist";
 import queryKey from "../../constants/queryKey.json";
 import { lookupItunesArtist } from "../../axios/itunes";
-import { Link, patchArtistLink } from "../../axios/axios";
+import {
+  deleteArtistBookmark,
+  Link,
+  patchArtistLink,
+  postArtistBookmark,
+} from "../../axios/axios";
 import { getWikipedia } from "../../axios/wikipedia";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
   const [musicPage, setMusicPage] = useState(1);
-  const match = useRouteMatch<{ id: string }>();
-  const id = Number(match.params.id);
+  const params = useParams<{ id: string; artistId: string }>();
+  const id = Number(params.id);
+  const artistId = Number(params.artistId);
   const { onError } = useQuerySnackbar();
   // react-redux
   const headers = useSelector(selectHeaders);
@@ -98,23 +103,18 @@ const Show: React.FC = () => {
     { enabled: !!artist.data?.artistLink?.itunes, onError }
   );
   const createMutation = useMutation(
-    () =>
-      axios.post<IArtistBookmark>(
-        match.url + routes.BOOKMARKS,
-        undefined,
-        headers
-      ),
-    { onSuccess: handleCreateSuccess, onError }
+    () => postArtistBookmark(artistId, headers),
+    {
+      onSuccess: handleCreateSuccess,
+      onError,
+    }
   );
   const destroyMutation = useMutation(
-    () =>
-      axios.delete(
-        `${match.url + routes.BOOKMARKS}/${
-          artist.data?.bookmark?.id || "undefined"
-        }`,
-        headers
-      ),
-    { onSuccess: handleDestroySuccess, onError }
+    () => deleteArtistBookmark(artistId, artist.data?.bookmark?.id, headers),
+    {
+      onSuccess: handleDestroySuccess,
+      onError,
+    }
   );
   const updateLinkMutation = useMutation(
     (link: Link) =>
@@ -152,7 +152,11 @@ const Show: React.FC = () => {
           />
         </Grid>
       </Grid>
-      <Box>{wikipedia.data?.extract}</Box>
+      <Box>
+        <Typography variant="body1" color="initial">
+          {wikipedia.data?.extract}
+        </Typography>
+      </Box>
       <Box mb={3}>
         <LinkTable
           twitter={{

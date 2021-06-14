@@ -1,8 +1,8 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React, { ChangeEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/AutocompleteTextField";
 import {
@@ -10,7 +10,6 @@ import {
   IArtistsType,
   IMusic,
 } from "../../../../../../../../interfaces";
-import routes from "../../../../../../../../constants/routes.json";
 import queryKey from "../../../../../../../../constants/queryKey.json";
 import {
   selectHeaders,
@@ -19,6 +18,10 @@ import {
 import { useQuerySnackbar } from "../../../../../../../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../../../../../../../gql/client";
 import { artistsQuery } from "../../../../../../../../gql/query/artists";
+import {
+  deleteLyristMusic,
+  postLyristMusic,
+} from "../../../../../../../../axios/axios";
 
 interface MutateVariables {
   option: IArtist;
@@ -33,8 +36,9 @@ const Lyrist: React.FC = () => {
   const headers = useSelector(selectHeaders);
   const dispatch = useDispatch();
   // react-router-dom
-  const match = useRouteMatch<{ id: string }>();
-  const id = Number(match.params.id);
+  const params = useParams<{ userId: string; id: string }>();
+  const id = Number(params.id);
+  const userId = Number(params.userId);
   // react-query
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
@@ -67,17 +71,14 @@ const Lyrist: React.FC = () => {
   };
   const createMutation = useMutation(
     ({ option }: MutateVariables) =>
-      axios.post<IArtist>(match.url + routes.LYRISTS, option, headers),
+      postLyristMusic(userId, id, option, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const handleSelectOption = (option: IArtist, options: IArtist[]) =>
     createMutation.mutate({ option, options });
   const destroyMutation = useMutation(
     ({ option }: MutateVariables) =>
-      axios.delete<IArtist>(
-        `${match.url + routes.LYRISTS}/${option.id}`,
-        headers
-      ),
+      deleteLyristMusic(userId, id, option.id, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
   const handleRemoveOption = (option: IArtist, options: IArtist[]) =>

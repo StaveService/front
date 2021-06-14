@@ -20,9 +20,9 @@ const New: React.FC = () => {
   });
   const match = useRouteMatch();
   const route = match.url.replace("/new", "");
-  const params = useParams<{ userId: string; musicId: string }>();
+  const params = useParams<{ userId: string; id: string }>();
   const userId = Number(params.userId);
-  const musicId = Number(params.musicId);
+  const id = Number(params.id);
   const headers = useSelector(selectHeaders);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -32,7 +32,7 @@ const New: React.FC = () => {
     history.push(`${route}/${res.data.id}`);
   };
   const { isLoading, mutate } = useMutation(
-    (newIssue: IIssue) => postIssue(userId, musicId, newIssue, headers),
+    (newIssue: IIssue) => postIssue(userId, id, newIssue, headers),
     {
       onSuccess,
       onError,
@@ -63,6 +63,7 @@ const New: React.FC = () => {
         control={control}
         errors={errors}
         disabled={isLoading}
+        rows={10}
         fullWidth
         multiline
       />

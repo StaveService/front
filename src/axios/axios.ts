@@ -2,7 +2,9 @@ import axios, { AxiosResponse } from "axios";
 import {
   IAlbum,
   IAlbumLink,
+  IAlbumMusic,
   IArtist,
+  IArtistBookmark,
   IArtistLink,
   IBand,
   IBandBookmark,
@@ -101,6 +103,73 @@ export const postIssue = (
     newIssue,
     headers
   );
+
+export const postAlbumMusic = (
+  userId: number,
+  musicId: number,
+  newAlbum: IAlbum,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IAlbumMusic>> =>
+  axios.post<IAlbumMusic>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.ALBUMS}`,
+    newAlbum,
+    headers
+  );
+export const deleteAlbumMusic = (
+  userId: number,
+  musicId: number,
+  albumId: number,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IAlbumMusic>> =>
+  axios.delete<IAlbumMusic>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.ALBUMS}/${albumId}`,
+    headers
+  );
+
+export const postLyristMusic = (
+  userId: number,
+  musicId: number,
+  newLyrist: IArtist,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtist>> =>
+  axios.post<IArtist>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.LYRISTS}`,
+    newLyrist,
+    headers
+  );
+export const deleteLyristMusic = (
+  userId: number,
+  musicId: number,
+  lyristId: number,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtist>> =>
+  axios.delete<IArtist>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.LYRISTS}/${lyristId}`,
+    headers
+  );
+
+export const postComposerMusic = (
+  userId: number,
+  musicId: number,
+  newComposer: IArtist,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtist>> =>
+  axios.post<IArtist>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.COMPOSERS}`,
+    newComposer,
+    headers
+  );
+export const deleteComposerMusic = (
+  userId: number,
+  musicId: number,
+  composerId: number,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtist>> =>
+  axios.delete<IArtist>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.COMPOSERS}/${composerId}`,
+    headers
+  );
+
 export const postMusicBookmark = (
   userId: number,
   musicId: number,
@@ -114,12 +183,12 @@ export const postMusicBookmark = (
 export const deleteMusicBookmark = (
   userId: number,
   musicId: number,
-  musicBookmarkId: number | undefined,
+  bookmarkId: number | undefined,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IMusicBookmark>> =>
   axios.delete(
     `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.BOOKMARKS}/${
-      musicBookmarkId || "undefined"
+      bookmarkId || "undefined"
     }`,
     headers
   );
@@ -134,12 +203,30 @@ export const postBandBookmark = (
   );
 export const deleteBandBookmark = (
   bandId: number,
-  musicBookmarkId: number | undefined,
+  bookmarkId: number | undefined,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IBandBookmark>> =>
   axios.delete(
-    `${routes.BANDS}/${bandId}${routes.BOOKMARKS}/${
-      musicBookmarkId || "undefined"
+    `${routes.BANDS}/${bandId}${routes.BOOKMARKS}/${bookmarkId || "undefined"}`,
+    headers
+  );
+export const postArtistBookmark = (
+  artistId: number,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtistBookmark>> =>
+  axios.post<IBandBookmark>(
+    `${routes.ARTISTS}/${artistId}${routes.BOOKMARKS}`,
+    undefined,
+    headers
+  );
+export const deleteArtistBookmark = (
+  artistId: number,
+  bookmarkId: number | undefined,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtistBookmark>> =>
+  axios.delete(
+    `${routes.ARTISTS}/${artistId}${routes.BOOKMARKS}/${
+      bookmarkId || "undefined"
     }`,
     headers
   );

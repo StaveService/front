@@ -20,11 +20,7 @@ import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../constants/routes.json";
-import {
-  selectCurrentUser,
-  selectHeaders,
-  setHeaders,
-} from "../../../../../slices/currentUser";
+import { selectHeaders, setHeaders } from "../../../../../slices/currentUser";
 import { IItunesMusic, IMusic, IMusicLink } from "../../../../../interfaces";
 import queryKey from "../../../../../constants/queryKey.json";
 import { patchMusicLink } from "../../../../../axios/axios";
@@ -38,9 +34,7 @@ const Info: React.FC = () => {
   const userId = Number(params.userId);
   // react-redux
   const dispatch = useDispatch();
-  const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
-  const isSignedIn = currentUser?.id === Number(params.userId);
   // react-query
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
@@ -87,7 +81,7 @@ const Info: React.FC = () => {
         />
       </Box>
       <Box mb={3}>
-        {isSignedIn && <MainDialog />}
+        <MainDialog />
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -159,7 +153,7 @@ const Info: React.FC = () => {
         </TableContainer>
       </Box>
       <Box mb={3}>
-        {isSignedIn && <RoleDialog />}
+        <RoleDialog />
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -186,7 +180,7 @@ const Info: React.FC = () => {
           </Table>
         </TableContainer>
       </Box>
-      {isSignedIn && <AlbumDialog />}
+      <AlbumDialog />
       <AlbumsTable albums={music?.albums} />
     </>
   );

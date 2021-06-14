@@ -17,6 +17,7 @@
 - [react-query](https://react-query.tanstack.com/installation)
 - [react-router-dom](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-dom)
 - [react-dropzone](https://github.com/react-dropzone/react-dropzone)
+- [react-markdown](https://github.com/remarkjs/react-markdown)
 - [redux-toolkit](https://redux-toolkit.js.org/)
 - [redux-persist](https://github.com/rt2zz/redux-persist)
 - [redux-logger](https://github.com/LogRocket/redux-logger)
@@ -24,8 +25,7 @@
 - [@coderline/alphatab](https://github.com/coderline/alphaTab)
 - [graphql](https://github.com/graphql/graphql-js)
 - [graphql-request](https://github.com/prisma-labs/graphql-request)
-
-custom-hooks
+  custom-hooks
 
 - [react-use](https://github.com/streamich/react-use)
 - [react-script-hook](https://github.com/hupe1980/react-script-hook)
@@ -47,7 +47,7 @@ custom-hooks
 | users           | [users, :page]                                                                                        |
 | itunesArtist    | [itunes, artist, :id]                                                                                 |
 | itunesAlbum     | [itunes, album, :id]                                                                                  |
-| itunesAlbums    | [itunes, albums, :id]                                                                                 |
+| itunesAlbums    | [itunes, albums, :ids]                                                                                |
 | itunesMusic     | [itunes, music, :id]                                                                                  |
 | itunesMusics    | [itunes, musics, :ids]                                                                                |
 | searchArtists   | [artists, { page, query }]                                                                            |
