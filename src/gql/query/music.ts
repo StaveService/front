@@ -9,6 +9,7 @@ export const musicQuery = gql`
       musicLink {
         id
         itunes
+        musixmatch
       }
       user {
         id

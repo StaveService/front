@@ -16,12 +16,18 @@ import { AxiosResponse } from "axios";
 import AlbumsTable from "../../../../../components/Table/Album";
 import LinkTable from "../../../../../components/Table/Link";
 import ItunesMusicDialog from "../../../../../components/Dialog/Itunes/Music";
+import MusixmatchDialog from "../../../../../components/Dialog/Musixmatch";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../constants/routes.json";
 import { selectHeaders, setHeaders } from "../../../../../slices/currentUser";
-import { IItunesMusic, IMusic, IMusicLink } from "../../../../../interfaces";
+import {
+  IItunesMusic,
+  IMusic,
+  IMusicLink,
+  ITrack,
+} from "../../../../../interfaces";
 import queryKey from "../../../../../constants/queryKey.json";
 import { patchMusicLink } from "../../../../../axios/axios";
 import { useQuerySnackbar } from "../../../../../hooks/useQuerySnackbar";
@@ -50,17 +56,19 @@ const Info: React.FC = () => {
       (prev) => prev && { ...prev, musicLink: res.data }
     );
   };
-  const createMutation = useMutation(
-    (itunesId: number) =>
-      patchMusicLink(userId, id, music?.musicLink?.id, itunesId, headers),
+  const patchMutation = useMutation(
+    (link: Partial<Omit<IMusicLink, "id">>) =>
+      patchMusicLink(userId, id, music?.musicLink?.id, link, headers),
     {
       onSuccess: handleCreateSuccess,
       onError,
     }
   );
   // handlers
-  const handleSelect = (selectedMusic: IItunesMusic) =>
-    createMutation.mutate(selectedMusic.trackId);
+  const handleItunesSelect = (selectedMusic: IItunesMusic) =>
+    patchMutation.mutate({ itunes: selectedMusic.trackId });
+  const handleMusixmatchSelect = (selectedMusic: ITrack) =>
+    patchMutation.mutate({ musixmatch: selectedMusic.track.track_id });
   return (
     <>
       <Box mb={3}>
@@ -72,7 +80,19 @@ const Info: React.FC = () => {
                 <ItunesMusicDialog
                   open={open}
                   onClose={handleClose}
-                  onSelect={handleSelect}
+                  onSelect={handleItunesSelect}
+                  showSearchBar
+                />
+              );
+            },
+          }}
+          musixmatch={{
+            renderDialog(open, handleClose) {
+              return (
+                <MusixmatchDialog
+                  open={open}
+                  onClose={handleClose}
+                  onSelect={handleMusixmatchSelect}
                   showSearchBar
                 />
               );

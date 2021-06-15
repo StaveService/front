@@ -22,6 +22,7 @@ import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issue/Index";
 import IssueNew from "./TabPanel/Issue/New";
 import Issue from "./TabPanel/Issue/Show";
+import LyricTabPanel from "./TabPanel/Lyric";
 import Footer from "./Footer";
 import BookmarkButton from "../../../components/Button/Bookmark";
 import DefaultLayout from "../../../layout/Default";
@@ -150,6 +151,12 @@ const Show: React.FC = () => {
             to={match.url}
           />
           <Tab
+            label="Lyric"
+            value={match.url + routes.LYRIC}
+            component={RouterLink}
+            to={match.url + routes.LYRIC}
+          />
+          <Tab
             label="Issues"
             value={match.url + routes.ISSUES}
             component={RouterLink}
@@ -169,6 +176,11 @@ const Show: React.FC = () => {
             exact
             path={match.path + routes.SETTING}
             component={SettingTabPanel}
+          />
+          <Route
+            exact
+            path={match.path + routes.LYRIC}
+            component={LyricTabPanel}
           />
           <Route
             exact

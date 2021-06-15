@@ -39,7 +39,6 @@ import {
   postBandBookmark,
   deleteBandBookmark,
   patchBandLink,
-  Link,
 } from "../../../axios/axios";
 import { getWikipedia } from "../../../axios/wikipedia";
 
@@ -110,7 +109,8 @@ const Show: React.FC = () => {
     { onSuccess: handleDestroySuccess, onError }
   );
   const updateLinkMutation = useMutation(
-    (link: Link) => patchBandLink(id, band.data?.bandLink?.id, link, headers),
+    (link: Partial<Omit<IBandLink, "id">>) =>
+      patchBandLink(id, band.data?.bandLink?.id, link, headers),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers

@@ -36,7 +36,6 @@ import queryKey from "../../constants/queryKey.json";
 import { lookupItunesArtist } from "../../axios/itunes";
 import {
   deleteArtistBookmark,
-  Link,
   patchArtistLink,
   postArtistBookmark,
 } from "../../axios/axios";
@@ -117,7 +116,7 @@ const Show: React.FC = () => {
     }
   );
   const updateLinkMutation = useMutation(
-    (link: Link) =>
+    (link: Partial<Omit<IArtistLink, "id">>) =>
       patchArtistLink(id, artist.data?.artistLink?.id, link, headers),
     { onSuccess: handleUpdateSuccess, onError }
   );

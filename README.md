@@ -2,11 +2,20 @@
 
 ## External API
 
-### iTunes Search API
+### iTunes Search
 
 - [official](https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/)
 - [artist-photos](https://gist.github.com/karlding/954388cb6cd2665d4f3a)
 - [pagination](https://stackoverflow.com/questions/44177089/itunes-search-api-page-number-for-the-query)
+
+### Wikipedia
+
+- [official](https://www.mediawiki.org/wiki/API:Main_page)
+
+### ~~Musixmatch~~ lyric return only 30%
+
+- [official](https://developer.musixmatch.com/documentation/api-reference/track-search)
+- プチリリに変更したい
 
 ## Packages
 

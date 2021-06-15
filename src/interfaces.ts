@@ -64,6 +64,7 @@ export interface IMusicLink {
   id: number;
   itunes: number;
   twitter: string;
+  musixmatch: number;
 }
 export interface IArtist extends IMusicsType, IAlbumsType {
   id: number;
@@ -281,4 +282,46 @@ export interface IAlphaTab {
   AlphaTabApi: typeof AlphaTabApi;
   synth: typeof synth;
   model: typeof model;
+}
+
+export interface IMusixmatchResponse<T extends ISearchTrack | IGetTrackLyric> {
+  message: {
+    body: T;
+    header: {
+      available: number;
+      ["execute_time"]: number;
+      ["status_code"]: number;
+    };
+  };
+}
+export interface ISearchTrack {
+  ["track_list"]: ITrack[];
+}
+export interface IGetTrackLyric {
+  lyrics: {
+    explict: number;
+    ["lyrics_body"]: string;
+    ["lyrics_copyright"]: string;
+    ["lyrics_id"]: number;
+  };
+}
+export interface ITrack {
+  track: {
+    ["album_id"]: number;
+    ["album_name"]: string;
+    ["artist_id"]: number;
+    ["artist_name"]: string;
+    ["commontrack_id"]: number;
+    explicit: number;
+    ["has_lyrics"]: number;
+    ["has_richsync"]: number;
+    ["has_subtitles"]: number;
+    instrumental: number;
+    ["num_favourite"]: number;
+    restricted: number;
+    ["track_edit_url"]: string;
+    ["track_id"]: number;
+    ["track_name"]: string;
+    ["track_share_url"]: string;
+  };
 }

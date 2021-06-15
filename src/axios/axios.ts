@@ -20,12 +20,6 @@ import {
 } from "../interfaces";
 import routes from "../constants/routes.json";
 
-export const wiki = axios.create({
-  baseURL: "http://ja.wikipedia.org/w/api.php?",
-  params: {
-    format: "json",
-  },
-});
 switch (process.env.NODE_ENV) {
   case "development":
     axios.defaults.baseURL = "http://localhost:3000";
@@ -235,25 +229,20 @@ export const patchMusicLink = (
   userId: number,
   musicId: number,
   linkId: number | undefined,
-  itunesId: number,
+  link: Partial<Omit<IMusicLink, "id">>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IMusicLink>> =>
   axios.patch(
     `${routes.USERS}/${userId}/${routes.MUSICS}/${musicId}/${routes.LINKS}/${
       linkId || "undefined"
     }`,
-    { itunes: itunesId },
+    link,
     headers
   );
-export interface Link {
-  twitter?: string;
-  itunes?: number;
-  wikipedia?: number;
-}
 export const patchBandLink = (
   bandId: number,
   linkId: number | undefined,
-  link: Link,
+  link: Partial<Omit<IBandLink, "id">>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IBandLink>> =>
   axios.patch(
@@ -264,7 +253,7 @@ export const patchBandLink = (
 export const patchArtistLink = (
   artistId: number,
   linkId: number | undefined,
-  link: Link,
+  link: Partial<Omit<IArtistLink, "id">>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IArtistLink>> =>
   axios.patch(

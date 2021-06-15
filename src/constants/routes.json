@@ -11,7 +11,7 @@
   "INFO": "/info",
   "SETTING": "/setting",
   "BANDS": "/bands",
-  "USERS" : "/users",
+  "USERS": "/users",
   "LINKS": "/links",
   "BOOKMARKS": "/bookmarks",
   "ARTIST_MUSICS": "/artist_musics",
@@ -22,6 +22,7 @@
   "MUSIC_BOOKMARKS": "/music_bookmarks",
   "BAND_BOOKMARKS": "/band_bookmarks",
   "ARTIST_BOOKMARKS": "/artist_bookmarks",
-  "TAB":"/tab",
-  "NEW": "/new"
+  "TAB": "/tab",
+  "NEW": "/new",
+  "LYRIC": "/lyric"
 }

@@ -3,30 +3,26 @@ import Box from "@material-ui/core/Box";
 import { useQuery } from "react-query";
 import { useDebounce } from "use-debounce/lib";
 import CardSearchDialog, { DialogProps } from "./CardSearchDialog";
-import WikipediaCard from "../Card/Wikipedia";
-import {
-  IWikipedia,
-  IWikipediaResponse,
-  IWikipediaSearch,
-} from "../../interfaces";
+import { IMusixmatchResponse, ISearchTrack, ITrack } from "../../interfaces";
+import MusixmatchCard from "../Card/Musixcmatch";
 import queryKey from "../../constants/queryKey.json";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
-import { searchWikipedia } from "../../axios/wikipedia";
+import { searchTracks } from "../../axios/musixmatch";
 
-function Wikipedia({
+function Musixmatch({
   value,
   open,
   showSearchBar,
   onClose,
   onSelect,
-}: DialogProps<IWikipedia>): JSX.Element {
+}: DialogProps<ITrack>): JSX.Element {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();
   const valueANDSearchValue = value || debouncedSearchValue;
-  const searchedWikipedia = useQuery<IWikipediaResponse<IWikipediaSearch>>(
-    [queryKey.WIKIPEDIA, valueANDSearchValue],
-    () => searchWikipedia(valueANDSearchValue),
+  const searchedMusixmatch = useQuery<IMusixmatchResponse<ISearchTrack>>(
+    [queryKey.MUSIXMATCH, valueANDSearchValue],
+    () => searchTracks(valueANDSearchValue),
     {
       enabled: !!valueANDSearchValue,
       onError,
@@ -35,24 +31,24 @@ function Wikipedia({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(e.target.value);
   return (
-    <CardSearchDialog<IWikipedia>
-      title="Wikipedia"
+    <CardSearchDialog<ITrack>
+      title="Musixmatch"
       value={searchValue}
       open={open}
-      loading={searchedWikipedia.isLoading || isPending()}
-      cards={searchedWikipedia.data?.query.search}
+      loading={searchedMusixmatch.isLoading || isPending()}
+      cards={searchedMusixmatch.data?.message.body.track_list}
       showSearchBar={showSearchBar}
       onSelect={onSelect}
       onClose={onClose}
       onChange={handleChange}
     >
       {(card, handleSelect) => (
-        <Box key={card.pageid} mb={2} onClick={handleSelect}>
-          <WikipediaCard wikipedia={card} />
+        <Box key={card.track.track_id} mb={2} onClick={handleSelect}>
+          <MusixmatchCard music={card} />
         </Box>
       )}
     </CardSearchDialog>
   );
 }
 
-export default Wikipedia;
+export default Musixmatch;

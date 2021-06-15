@@ -5,7 +5,7 @@ import { AxiosResponse } from "axios";
 import { useDebounce } from "use-debounce/lib";
 import ItunesAlbumCard from "../../Card/Itunes/Album";
 import { IItunesAlbum, IItunesResponse } from "../../../interfaces";
-import CardSearchDialog, { ItunesDialogProps } from "../CardSearchDialog";
+import CardSearchDialog, { DialogProps } from "../CardSearchDialog";
 import queryKey from "../../../constants/queryKey.json";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import { searchItunesAlbums } from "../../../axios/itunes";
@@ -16,7 +16,7 @@ function Album({
   showSearchBar,
   onClose,
   onSelect,
-}: ItunesDialogProps<IItunesAlbum>): JSX.Element {
+}: DialogProps<IItunesAlbum>): JSX.Element {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();

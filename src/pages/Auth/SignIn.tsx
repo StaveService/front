@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
+import DefaultLayout from "../../layout/Default";
 import {
   ISignErrorResponse,
   ISignInFormValues,
@@ -72,50 +73,52 @@ const SignIn: React.FC = () => {
   }, [setValue]);
   const onSubmit = (data: ISignInFormValues) => mutate(data);
   return (
-    <Container maxWidth="xs">
-      <Paper variant="outlined">
-        <Box m={3}>
-          <Typography variant="h4" align="center">
-            SignIn
-          </Typography>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <ControlTextField
-              type="email"
-              name="email"
-              defaultValue=""
-              autoComplete="on"
-              label="Email"
-              variant="outlined"
-              margin="normal"
-              control={control}
-              errors={errors}
-              disabled={isLoading}
-              fullWidth
-            />
-            <ControlTextField
-              type="password"
-              name="password"
-              label="Password"
-              variant="outlined"
-              margin="normal"
-              control={control}
-              defaultValue=""
-              errors={errors}
-              disabled={isLoading}
-              fullWidth
-            />
-            <LoadingButton
-              type="submit"
-              color="primary"
-              loading={isLoading}
-              fullWidth
-            >
+    <DefaultLayout>
+      <Container maxWidth="xs">
+        <Paper variant="outlined">
+          <Box m={3}>
+            <Typography variant="h4" align="center">
               SignIn
-            </LoadingButton>
-          </form>
-        </Box>
-      </Paper>
-    </Container>
+            </Typography>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <ControlTextField
+                type="email"
+                name="email"
+                defaultValue=""
+                autoComplete="on"
+                label="Email"
+                variant="outlined"
+                margin="normal"
+                control={control}
+                errors={errors}
+                disabled={isLoading}
+                fullWidth
+              />
+              <ControlTextField
+                type="password"
+                name="password"
+                label="Password"
+                variant="outlined"
+                margin="normal"
+                control={control}
+                defaultValue=""
+                errors={errors}
+                disabled={isLoading}
+                fullWidth
+              />
+              <LoadingButton
+                type="submit"
+                color="primary"
+                loading={isLoading}
+                fullWidth
+              >
+                SignIn
+              </LoadingButton>
+            </form>
+          </Box>
+        </Paper>
+      </Container>
+    </DefaultLayout>
   );
 };
 
