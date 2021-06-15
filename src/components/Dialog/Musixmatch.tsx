@@ -3,7 +3,11 @@ import Box from "@material-ui/core/Box";
 import { useQuery } from "react-query";
 import { useDebounce } from "use-debounce/lib";
 import CardSearchDialog, { DialogProps } from "./CardSearchDialog";
-import { IMusixmatchResponse, ISearchTrack, ITrack } from "../../interfaces";
+import {
+  IMusixmatchResponse,
+  ISearchTrack,
+  IMusicmatchTrack,
+} from "../../interfaces";
 import MusixmatchCard from "../Card/Musixcmatch";
 import queryKey from "../../constants/queryKey.json";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
@@ -15,7 +19,7 @@ function Musixmatch({
   showSearchBar,
   onClose,
   onSelect,
-}: DialogProps<ITrack>): JSX.Element {
+}: DialogProps<IMusicmatchTrack>): JSX.Element {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();
@@ -31,7 +35,7 @@ function Musixmatch({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(e.target.value);
   return (
-    <CardSearchDialog<ITrack>
+    <CardSearchDialog<IMusicmatchTrack>
       title="Musixmatch"
       value={searchValue}
       open={open}

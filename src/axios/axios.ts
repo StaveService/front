@@ -237,7 +237,10 @@ export const patchMusicLink = (
       linkId || "undefined"
     }`,
     link,
-    headers
+    {
+      ...headers,
+      ...{ "Key-Inflection": "camel" },
+    }
   );
 export const patchBandLink = (
   bandId: number,
@@ -248,7 +251,10 @@ export const patchBandLink = (
   axios.patch(
     `${routes.BANDS}/${bandId}${routes.LINKS}/${linkId || "undefined"}`,
     link,
-    headers
+    {
+      ...headers,
+      ...{ "Key-Inflection": "camel" },
+    }
   );
 export const patchArtistLink = (
   artistId: number,
@@ -259,7 +265,10 @@ export const patchArtistLink = (
   axios.patch(
     `${routes.ARTISTS}/${artistId}${routes.LINKS}/${linkId || "undefined"}`,
     link,
-    headers
+    {
+      ...headers,
+      ...{ "Key-Inflection": "camel" },
+    }
   );
 export const patchAlbumLink = (
   albumId: number,
@@ -270,7 +279,10 @@ export const patchAlbumLink = (
   axios.patch(
     `${routes.ALBUMS}/${albumId}${routes.LINKS}/${linkId || "undefined"}`,
     { itunes: itunesId },
-    headers
+    {
+      ...headers,
+      ...{ "Key-Inflection": "camel" },
+    }
   );
 
 export const patchUserLink = (
@@ -282,5 +294,8 @@ export const patchUserLink = (
   axios.patch(
     `${routes.USERS}/${userId}${routes.LINKS}/${linkId || "undefined"}`,
     { twitter: twitterId },
-    headers
+    {
+      ...headers,
+      ...{ "Key-Inflection": "camel" },
+    }
   );

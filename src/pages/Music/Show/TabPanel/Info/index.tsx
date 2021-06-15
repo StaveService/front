@@ -26,7 +26,7 @@ import {
   IItunesMusic,
   IMusic,
   IMusicLink,
-  ITrack,
+  IMusicmatchTrack,
 } from "../../../../../interfaces";
 import queryKey from "../../../../../constants/queryKey.json";
 import { patchMusicLink } from "../../../../../axios/axios";
@@ -67,7 +67,7 @@ const Info: React.FC = () => {
   // handlers
   const handleItunesSelect = (selectedMusic: IItunesMusic) =>
     patchMutation.mutate({ itunes: selectedMusic.trackId });
-  const handleMusixmatchSelect = (selectedMusic: ITrack) =>
+  const handleMusixmatchSelect = (selectedMusic: IMusicmatchTrack) =>
     patchMutation.mutate({ musixmatch: selectedMusic.track.track_id });
   return (
     <>
@@ -78,6 +78,7 @@ const Info: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <ItunesMusicDialog
+                  value={music?.title}
                   open={open}
                   onClose={handleClose}
                   onSelect={handleItunesSelect}

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Box from "@material-ui/core/Box";
 import { useDebounce } from "use-debounce/lib";
 import { useQuery } from "react-query";
@@ -20,15 +20,18 @@ function Music({
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();
-  const valueANDSearchValue = value || debouncedSearchValue;
+  const valueANDSearchValue = debouncedSearchValue;
   const searchedItunes = useQuery<AxiosResponse<IItunesResponse<IItunesMusic>>>(
     [queryKey.ITUNES, queryKey.MUSIC, valueANDSearchValue],
     () => searchItunesMusics(valueANDSearchValue),
     {
-      enabled: !!valueANDSearchValue,
+      enabled: !!valueANDSearchValue && open,
       onError,
     }
   );
+  useEffect(() => {
+    if (value) setSearchValue(value);
+  }, [value]);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(e.target.value);
   return (

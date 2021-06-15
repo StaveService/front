@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Box from "@material-ui/core/Box";
 import { useQuery } from "react-query";
 import { AxiosResponse } from "axios";
@@ -20,19 +20,22 @@ function Album({
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();
-  const valueANDSearchValue = value || debouncedSearchValue;
+  const valueANDSearchValue = debouncedSearchValue;
   const searchedItunes = useQuery<AxiosResponse<IItunesResponse<IItunesAlbum>>>(
     [queryKey.ITUNES, queryKey.ALBUMS, valueANDSearchValue],
     () => searchItunesAlbums(valueANDSearchValue),
     {
-      enabled: !!valueANDSearchValue,
+      enabled: !!valueANDSearchValue && open,
       onError,
     }
   );
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(e.target.value);
+  useEffect(() => {
+    if (value) setSearchValue(value);
+  }, [value]);
   return (
-    <CardSearchDialog
+    <CardSearchDialog<IItunesAlbum>
       title="Album"
       value={searchValue}
       open={open}
