@@ -91,6 +91,7 @@ const Info: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <MusixmatchDialog
+                  value={music?.title}
                   open={open}
                   onClose={handleClose}
                   onSelect={handleMusixmatchSelect}

@@ -20,14 +20,13 @@ function Band({
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();
-  const valueANDSearchValue = debouncedSearchValue;
   const searchedItunes = useQuery<
     AxiosResponse<IItunesResponse<IItunesArtist>>
   >(
-    [queryKey.ITUNES, queryKey.ARTIST, valueANDSearchValue],
-    () => searchItunesArtists(valueANDSearchValue),
+    [queryKey.ITUNES, queryKey.ARTIST, debouncedSearchValue],
+    () => searchItunesArtists(debouncedSearchValue),
     {
-      enabled: !!valueANDSearchValue && open,
+      enabled: !!debouncedSearchValue && open,
       onError,
     }
   );

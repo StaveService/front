@@ -20,12 +20,11 @@ function Album({
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();
-  const valueANDSearchValue = debouncedSearchValue;
   const searchedItunes = useQuery<AxiosResponse<IItunesResponse<IItunesAlbum>>>(
-    [queryKey.ITUNES, queryKey.ALBUMS, valueANDSearchValue],
-    () => searchItunesAlbums(valueANDSearchValue),
+    [queryKey.ITUNES, queryKey.ALBUMS, debouncedSearchValue],
+    () => searchItunesAlbums(debouncedSearchValue),
     {
-      enabled: !!valueANDSearchValue && open,
+      enabled: !!debouncedSearchValue && open,
       onError,
     }
   );
