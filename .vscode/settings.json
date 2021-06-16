@@ -15,6 +15,12 @@
   "[markdown]": {
     "editor.formatOnSave": true,
   },
+  "[json]": {
+    "editor.formatOnSave": true,
+  },
+  "[css]": {
+    "editor.formatOnSave": true,
+  },
   "editor.snippetSuggestions": "top",
   "javascript.validate.enable": false,
   "javascript.format.enable": false,

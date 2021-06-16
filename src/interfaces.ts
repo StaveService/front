@@ -43,6 +43,7 @@ export interface IBandLink {
   id: number;
   itunes: number;
   twitter: string;
+  wikipedia: number;
 }
 export interface IMusic {
   id: number;
@@ -63,6 +64,7 @@ export interface IMusicLink {
   id: number;
   itunes: number;
   twitter: string;
+  musixmatch: number;
 }
 export interface IArtist extends IMusicsType, IAlbumsType {
   id: number;
@@ -75,6 +77,7 @@ export interface IArtistLink {
   id: number;
   itunes: number;
   twitter: string;
+  wikipedia: number;
 }
 export interface IAlbum extends IMusicsType {
   id: number;
@@ -252,8 +255,73 @@ export interface IItunesResponse<T> {
   resultCount: number;
   results: T[];
 }
+export interface IWikipediaResponse<T> {
+  batchcomplete: "";
+  continue: { sroffset: number };
+  query: T;
+}
+export interface IWikipediaSearch {
+  search: IWikipedia[];
+  searchinfo: { totalhits: number };
+}
+export interface IWikipediaGet {
+  pages: {
+    [key: number]: IWikipedia;
+  };
+}
+export interface IWikipedia {
+  ns: number;
+  pageid: number;
+  size: number;
+  snippet: string;
+  timestamp: string;
+  title: string;
+  extract: string;
+}
 export interface IAlphaTab {
   AlphaTabApi: typeof AlphaTabApi;
   synth: typeof synth;
   model: typeof model;
+}
+
+export interface IMusixmatchResponse<T extends ISearchTrack | IGetTrackLyric> {
+  message: {
+    body: T;
+    header: {
+      available: number;
+      ["execute_time"]: number;
+      ["status_code"]: number;
+    };
+  };
+}
+export interface ISearchTrack {
+  ["track_list"]: IMusicmatchTrack[];
+}
+export interface IGetTrackLyric {
+  lyrics: {
+    explict: number;
+    ["lyrics_body"]: string;
+    ["lyrics_copyright"]: string;
+    ["lyrics_id"]: number;
+  };
+}
+export interface IMusicmatchTrack {
+  track: {
+    ["album_id"]: number;
+    ["album_name"]: string;
+    ["artist_id"]: number;
+    ["artist_name"]: string;
+    ["commontrack_id"]: number;
+    explicit: number;
+    ["has_lyrics"]: number;
+    ["has_richsync"]: number;
+    ["has_subtitles"]: number;
+    instrumental: number;
+    ["num_favourite"]: number;
+    restricted: number;
+    ["track_edit_url"]: string;
+    ["track_id"]: number;
+    ["track_name"]: string;
+    ["track_share_url"]: string;
+  };
 }

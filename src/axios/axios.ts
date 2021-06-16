@@ -2,12 +2,15 @@ import axios, { AxiosResponse } from "axios";
 import {
   IAlbum,
   IAlbumLink,
+  IAlbumMusic,
   IArtist,
+  IArtistBookmark,
   IArtistLink,
   IBand,
   IBandBookmark,
   IBandLink,
   IHeaders,
+  IIssue,
   IMusic,
   IMusicBookmark,
   IMusicLink,
@@ -17,12 +20,6 @@ import {
 } from "../interfaces";
 import routes from "../constants/routes.json";
 
-export const wiki = axios.create({
-  baseURL: "http://ja.wikipedia.org/w/api.php?",
-  params: {
-    format: "json",
-  },
-});
 switch (process.env.NODE_ENV) {
   case "development":
     axios.defaults.baseURL = "http://localhost:3000";
@@ -89,6 +86,84 @@ export const deleteArtist = (
 ): Promise<AxiosResponse<IArtist>> =>
   axios.delete(`${routes.ARTISTS}/${artistId}`, headers);
 
+export const postIssue = (
+  userId: number,
+  musicId: number,
+  newIssue: IIssue,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IIssue>> =>
+  axios.post(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.ISSUES}`,
+    newIssue,
+    headers
+  );
+
+export const postAlbumMusic = (
+  userId: number,
+  musicId: number,
+  newAlbum: IAlbum,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IAlbumMusic>> =>
+  axios.post<IAlbumMusic>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.ALBUMS}`,
+    newAlbum,
+    headers
+  );
+export const deleteAlbumMusic = (
+  userId: number,
+  musicId: number,
+  albumId: number,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IAlbumMusic>> =>
+  axios.delete<IAlbumMusic>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.ALBUMS}/${albumId}`,
+    headers
+  );
+
+export const postLyristMusic = (
+  userId: number,
+  musicId: number,
+  newLyrist: IArtist,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtist>> =>
+  axios.post<IArtist>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.LYRISTS}`,
+    newLyrist,
+    headers
+  );
+export const deleteLyristMusic = (
+  userId: number,
+  musicId: number,
+  lyristId: number,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtist>> =>
+  axios.delete<IArtist>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.LYRISTS}/${lyristId}`,
+    headers
+  );
+
+export const postComposerMusic = (
+  userId: number,
+  musicId: number,
+  newComposer: IArtist,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtist>> =>
+  axios.post<IArtist>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.COMPOSERS}`,
+    newComposer,
+    headers
+  );
+export const deleteComposerMusic = (
+  userId: number,
+  musicId: number,
+  composerId: number,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtist>> =>
+  axios.delete<IArtist>(
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.COMPOSERS}/${composerId}`,
+    headers
+  );
+
 export const postMusicBookmark = (
   userId: number,
   musicId: number,
@@ -102,12 +177,12 @@ export const postMusicBookmark = (
 export const deleteMusicBookmark = (
   userId: number,
   musicId: number,
-  musicBookmarkId: number | undefined,
+  bookmarkId: number | undefined,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IMusicBookmark>> =>
   axios.delete(
     `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.BOOKMARKS}/${
-      musicBookmarkId || "undefined"
+      bookmarkId || "undefined"
     }`,
     headers
   );
@@ -122,12 +197,30 @@ export const postBandBookmark = (
   );
 export const deleteBandBookmark = (
   bandId: number,
-  musicBookmarkId: number | undefined,
+  bookmarkId: number | undefined,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IBandBookmark>> =>
   axios.delete(
-    `${routes.BANDS}/${bandId}${routes.BOOKMARKS}/${
-      musicBookmarkId || "undefined"
+    `${routes.BANDS}/${bandId}${routes.BOOKMARKS}/${bookmarkId || "undefined"}`,
+    headers
+  );
+export const postArtistBookmark = (
+  artistId: number,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtistBookmark>> =>
+  axios.post<IBandBookmark>(
+    `${routes.ARTISTS}/${artistId}${routes.BOOKMARKS}`,
+    undefined,
+    headers
+  );
+export const deleteArtistBookmark = (
+  artistId: number,
+  bookmarkId: number | undefined,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IArtistBookmark>> =>
+  axios.delete(
+    `${routes.ARTISTS}/${artistId}${routes.BOOKMARKS}/${
+      bookmarkId || "undefined"
     }`,
     headers
   );
@@ -136,41 +229,46 @@ export const patchMusicLink = (
   userId: number,
   musicId: number,
   linkId: number | undefined,
-  itunesId: number,
+  link: Partial<Omit<IMusicLink, "id">>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IMusicLink>> =>
   axios.patch(
     `${routes.USERS}/${userId}/${routes.MUSICS}/${musicId}/${routes.LINKS}/${
       linkId || "undefined"
     }`,
-    { itunes: itunesId },
-    headers
+    link,
+    {
+      ...headers,
+      ...{ "Key-Inflection": "camel" },
+    }
   );
-export interface Link {
-  twitter?: string;
-  itunes?: number;
-}
 export const patchBandLink = (
   bandId: number,
   linkId: number | undefined,
-  link: Link,
+  link: Partial<Omit<IBandLink, "id">>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IBandLink>> =>
   axios.patch(
     `${routes.BANDS}/${bandId}${routes.LINKS}/${linkId || "undefined"}`,
     link,
-    headers
+    {
+      ...headers,
+      ...{ "Key-Inflection": "camel" },
+    }
   );
 export const patchArtistLink = (
   artistId: number,
   linkId: number | undefined,
-  link: Link,
+  link: Partial<Omit<IArtistLink, "id">>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IArtistLink>> =>
   axios.patch(
     `${routes.ARTISTS}/${artistId}${routes.LINKS}/${linkId || "undefined"}`,
     link,
-    headers
+    {
+      ...headers,
+      ...{ "Key-Inflection": "camel" },
+    }
   );
 export const patchAlbumLink = (
   albumId: number,
@@ -181,7 +279,10 @@ export const patchAlbumLink = (
   axios.patch(
     `${routes.ALBUMS}/${albumId}${routes.LINKS}/${linkId || "undefined"}`,
     { itunes: itunesId },
-    headers
+    {
+      ...headers,
+      ...{ "Key-Inflection": "camel" },
+    }
   );
 
 export const patchUserLink = (
@@ -193,5 +294,8 @@ export const patchUserLink = (
   axios.patch(
     `${routes.USERS}/${userId}${routes.LINKS}/${linkId || "undefined"}`,
     { twitter: twitterId },
-    headers
+    {
+      ...headers,
+      ...{ "Key-Inflection": "camel" },
+    }
   );

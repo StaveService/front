@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -14,6 +14,7 @@ import LinkTable from "../../components/Table/Link";
 import BookmarkButton from "../../components/Button/Icon/Bookmark";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import TwitterDialog from "../../components/Dialog/Twitter";
+import WikipediaDialog from "../../components/Dialog/Wikipedia";
 import DefaultLayout from "../../layout/Default";
 import {
   IArtist,
@@ -21,6 +22,7 @@ import {
   IArtistLink,
   IArtistType,
   IItunesArtist,
+  IWikipedia,
 } from "../../interfaces";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import {
@@ -28,18 +30,23 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../slices/currentUser";
-import routes from "../../constants/routes.json";
 import { graphQLClient } from "../../gql/client";
 import { artistQuery } from "../../gql/query/artist";
 import queryKey from "../../constants/queryKey.json";
 import { lookupItunesArtist } from "../../axios/itunes";
-import { Link, patchArtistLink } from "../../axios/axios";
+import {
+  deleteArtistBookmark,
+  patchArtistLink,
+  postArtistBookmark,
+} from "../../axios/axios";
+import { getWikipedia } from "../../axios/wikipedia";
 
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
   const [musicPage, setMusicPage] = useState(1);
-  const match = useRouteMatch<{ id: string }>();
-  const id = Number(match.params.id);
+  const params = useParams<{ id: string; artistId: string }>();
+  const id = Number(params.id);
+  const artistId = Number(params.artistId);
   const { onError } = useQuerySnackbar();
   // react-redux
   const headers = useSelector(selectHeaders);
@@ -81,6 +88,11 @@ const Show: React.FC = () => {
         .then((res) => res.artist),
     { onError }
   );
+  const wikipedia = useQuery<IWikipedia>(
+    [queryKey.WIKIPEDIA, artist.data?.artistLink?.wikipedia],
+    () => getWikipedia(artist.data?.artistLink?.wikipedia),
+    { enabled: !!artist.data?.artistLink?.wikipedia, onError }
+  );
   const itunesArtist = useQuery<IItunesArtist>(
     [queryKey.ITUNES, queryKey.ARTIST, artist.data?.artistLink?.itunes],
     () =>
@@ -90,26 +102,21 @@ const Show: React.FC = () => {
     { enabled: !!artist.data?.artistLink?.itunes, onError }
   );
   const createMutation = useMutation(
-    () =>
-      axios.post<IArtistBookmark>(
-        match.url + routes.BOOKMARKS,
-        undefined,
-        headers
-      ),
-    { onSuccess: handleCreateSuccess, onError }
+    () => postArtistBookmark(artistId, headers),
+    {
+      onSuccess: handleCreateSuccess,
+      onError,
+    }
   );
   const destroyMutation = useMutation(
-    () =>
-      axios.delete(
-        `${match.url + routes.BOOKMARKS}/${
-          artist.data?.bookmark?.id || "undefined"
-        }`,
-        headers
-      ),
-    { onSuccess: handleDestroySuccess, onError }
+    () => deleteArtistBookmark(artistId, artist.data?.bookmark?.id, headers),
+    {
+      onSuccess: handleDestroySuccess,
+      onError,
+    }
   );
   const updateLinkMutation = useMutation(
-    (link: Link) =>
+    (link: Partial<Omit<IArtistLink, "id">>) =>
       patchArtistLink(id, artist.data?.artistLink?.id, link, headers),
     { onSuccess: handleUpdateSuccess, onError }
   );
@@ -118,6 +125,8 @@ const Show: React.FC = () => {
   const handleDestroyMutation = () => destroyMutation.mutate();
   const handleSelect = (selectedArtist: IItunesArtist) =>
     updateLinkMutation.mutate({ itunes: selectedArtist.artistId });
+  const handleWikipediaSelect = (selectedWikipedia: IWikipedia) =>
+    updateLinkMutation.mutate({ wikipedia: selectedWikipedia.pageid });
   const handleSubmit = (value: string) =>
     updateLinkMutation.mutate({ twitter: value });
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
@@ -142,6 +151,11 @@ const Show: React.FC = () => {
           />
         </Grid>
       </Grid>
+      <Box>
+        <Typography variant="body1" color="initial">
+          {wikipedia.data?.extract}
+        </Typography>
+      </Box>
       <Box mb={3}>
         <LinkTable
           twitter={{
@@ -163,9 +177,23 @@ const Show: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <ItunesArtistDialog
+                  value={artist.data?.name}
                   open={open}
                   onClose={handleClose}
                   onSelect={handleSelect}
+                  showSearchBar
+                />
+              );
+            },
+          }}
+          wikipedia={{
+            link: artist.data?.artistLink?.wikipedia,
+            renderDialog(open, handleClose) {
+              return (
+                <WikipediaDialog
+                  open={open}
+                  onClose={handleClose}
+                  onSelect={handleWikipediaSelect}
                   showSearchBar
                 />
               );

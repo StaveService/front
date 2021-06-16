@@ -13,6 +13,7 @@ import Grid from "@material-ui/core/Grid";
 import { useHistory } from "react-router-dom";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
+import DefaultLayout from "../../layout/Default";
 import {
   ISignErrorResponse,
   ISignSuccessResponse,
@@ -70,96 +71,98 @@ const SignUp: React.FC = () => {
   );
   const onSubmit = (data: ISignUpFormValues) => mutate(data);
   return (
-    <Container maxWidth="xs">
-      <Paper variant="outlined">
-        <Box m={3}>
-          <Typography variant="h4" align="center">
-            SignUp
-          </Typography>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <ControlTextField
-              name="nickname"
-              defaultValue=""
-              label="NickName"
-              variant="outlined"
-              margin="normal"
-              control={control}
-              errors={errors}
-              disabled={isLoading}
-              fullWidth
-            />
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <ControlTextField
-                  name="familyname"
-                  defaultValue=""
-                  label="FamilyName"
-                  variant="outlined"
-                  control={control}
-                  errors={errors}
-                  disabled={isLoading}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <ControlTextField
-                  name="givenname"
-                  defaultValue=""
-                  label="GivenName"
-                  variant="outlined"
-                  control={control}
-                  errors={errors}
-                  disabled={isLoading}
-                />
-              </Grid>
-            </Grid>
-            <ControlTextField
-              type="email"
-              name="email"
-              defaultValue=""
-              label="Email"
-              variant="outlined"
-              margin="normal"
-              control={control}
-              errors={errors}
-              disabled={isLoading}
-              fullWidth
-            />
-            <ControlTextField
-              type="password"
-              name="password"
-              defaultValue=""
-              label="Password"
-              variant="outlined"
-              margin="normal"
-              control={control}
-              errors={errors}
-              disabled={isLoading}
-              fullWidth
-            />
-            <ControlTextField
-              type="password"
-              name="password_confirmation"
-              defaultValue=""
-              label="PasswordConfirmation"
-              variant="outlined"
-              margin="normal"
-              control={control}
-              errors={errors}
-              disabled={isLoading}
-              fullWidth
-            />
-            <LoadingButton
-              type="submit"
-              loading={isLoading}
-              color="primary"
-              fullWidth
-            >
+    <DefaultLayout>
+      <Container maxWidth="xs">
+        <Paper variant="outlined">
+          <Box m={3}>
+            <Typography variant="h4" align="center">
               SignUp
-            </LoadingButton>
-          </form>
-        </Box>
-      </Paper>
-    </Container>
+            </Typography>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <ControlTextField
+                name="nickname"
+                defaultValue=""
+                label="NickName"
+                variant="outlined"
+                margin="normal"
+                control={control}
+                errors={errors}
+                disabled={isLoading}
+                fullWidth
+              />
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <ControlTextField
+                    name="familyname"
+                    defaultValue=""
+                    label="FamilyName"
+                    variant="outlined"
+                    control={control}
+                    errors={errors}
+                    disabled={isLoading}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <ControlTextField
+                    name="givenname"
+                    defaultValue=""
+                    label="GivenName"
+                    variant="outlined"
+                    control={control}
+                    errors={errors}
+                    disabled={isLoading}
+                  />
+                </Grid>
+              </Grid>
+              <ControlTextField
+                type="email"
+                name="email"
+                defaultValue=""
+                label="Email"
+                variant="outlined"
+                margin="normal"
+                control={control}
+                errors={errors}
+                disabled={isLoading}
+                fullWidth
+              />
+              <ControlTextField
+                type="password"
+                name="password"
+                defaultValue=""
+                label="Password"
+                variant="outlined"
+                margin="normal"
+                control={control}
+                errors={errors}
+                disabled={isLoading}
+                fullWidth
+              />
+              <ControlTextField
+                type="password"
+                name="password_confirmation"
+                defaultValue=""
+                label="PasswordConfirmation"
+                variant="outlined"
+                margin="normal"
+                control={control}
+                errors={errors}
+                disabled={isLoading}
+                fullWidth
+              />
+              <LoadingButton
+                type="submit"
+                loading={isLoading}
+                color="primary"
+                fullWidth
+              >
+                SignUp
+              </LoadingButton>
+            </form>
+          </Box>
+        </Paper>
+      </Container>
+    </DefaultLayout>
   );
 };
 

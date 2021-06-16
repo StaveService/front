@@ -6,7 +6,7 @@ import {
   IItunesResponse,
 } from "../interfaces";
 
-const limit = 100;
+const limit = 200;
 const itunes = axios.create({
   baseURL: "https://itunes.apple.com",
 });
@@ -49,6 +49,7 @@ export const searchItunesMusics = (
       entity: "song",
       term,
       limit,
+      offset: 2,
     },
   });
 export const searchItunesArtists = (

@@ -1,6 +1,6 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import React from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import { issueSchema } from "../../../../../schema";
 import { selectHeaders, setHeaders } from "../../../../../slices/currentUser";
 import { IIssue } from "../../../../../interfaces";
 import { useQuerySnackbar } from "../../../../../hooks/useQuerySnackbar";
+import { postIssue } from "../../../../../axios/axios";
 
 const New: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -19,6 +20,9 @@ const New: React.FC = () => {
   });
   const match = useRouteMatch();
   const route = match.url.replace("/new", "");
+  const params = useParams<{ userId: string; id: string }>();
+  const userId = Number(params.userId);
+  const id = Number(params.id);
   const headers = useSelector(selectHeaders);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -28,8 +32,11 @@ const New: React.FC = () => {
     history.push(`${route}/${res.data.id}`);
   };
   const { isLoading, mutate } = useMutation(
-    (newIssue: IIssue) => axios.post<IIssue>(route, newIssue, headers),
-    { onSuccess, onError }
+    (newIssue: IIssue) => postIssue(userId, id, newIssue, headers),
+    {
+      onSuccess,
+      onError,
+    }
   );
   const onSubmit = (data: IIssue) => mutate(data);
   return (
@@ -56,6 +63,7 @@ const New: React.FC = () => {
         control={control}
         errors={errors}
         disabled={isLoading}
+        rows={10}
         fullWidth
         multiline
       />

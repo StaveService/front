@@ -7,20 +7,30 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
+import TextFieldsIcon from "@material-ui/icons/TextFields";
+import { Box } from "@material-ui/core";
 import LinkButton from "../Button/Link";
 import TwitterIcon from "../Icon/Twitter";
 import ItunesIcon from "../Icon/Itunes";
+import WikipediaIcon from "../Icon/Wikipedia";
 import { useOpen } from "../../hooks/useOpen";
 
-interface LinkProps {
-  itunes?: RenderAndLink;
-  twitter?: RenderAndLink;
-}
-interface RenderAndLink {
-  link?: string;
+interface RenderAndLink<T> {
+  link?: T;
   renderDialog: (open: boolean, handleClose: () => void) => React.ReactNode;
 }
-const Link: React.FC<LinkProps> = ({ itunes, twitter }: LinkProps) => {
+interface LinkProps {
+  itunes?: RenderAndLink<string>;
+  twitter?: RenderAndLink<string>;
+  wikipedia?: RenderAndLink<number>;
+  musixmatch?: RenderAndLink<number>;
+}
+const Link: React.FC<LinkProps> = ({
+  itunes,
+  twitter,
+  wikipedia,
+  musixmatch,
+}: LinkProps) => {
   const {
     open: itunesOpen,
     handleClose: handleItunesClose,
@@ -30,6 +40,16 @@ const Link: React.FC<LinkProps> = ({ itunes, twitter }: LinkProps) => {
     open: twitterOpen,
     handleClose: handleTwitterClose,
     handleOpen: handleTwitterOpen,
+  } = useOpen();
+  const {
+    open: wikipediaOpen,
+    handleClose: handleWikipediaClose,
+    handleOpen: handleWikipediaOpen,
+  } = useOpen();
+  const {
+    open: musixmatchOpen,
+    handleClose: handleMusixmatchClose,
+    handleOpen: handleMusixmatchOpen,
   } = useOpen();
   return (
     <TableContainer component={Paper}>
@@ -75,6 +95,48 @@ const Link: React.FC<LinkProps> = ({ itunes, twitter }: LinkProps) => {
               </TableCell>
             </TableRow>
           )}
+          {wikipedia && (
+            <TableRow>
+              <TableCell>
+                <LinkButton
+                  startIcon={<WikipediaIcon />}
+                  href={
+                    wikipedia.link
+                      ? `https://ja.wikipedia.org/?curid=${wikipedia.link}`
+                      : undefined
+                  }
+                >
+                  wikipedia
+                </LinkButton>
+              </TableCell>
+              <TableCell>
+                <Button variant="text" onClick={handleWikipediaOpen}>
+                  Edit
+                </Button>
+
+                {wikipedia.renderDialog(wikipediaOpen, handleWikipediaClose)}
+              </TableCell>
+            </TableRow>
+          )}
+          {musixmatch && (
+            <TableRow>
+              <TableCell>
+                <Box display="flex" alignItems="cneter">
+                  <Box mr={1}>
+                    <TextFieldsIcon />
+                  </Box>
+                  MUSIXMATCH
+                </Box>
+              </TableCell>
+              <TableCell>
+                <Button variant="text" onClick={handleMusixmatchOpen}>
+                  Edit
+                </Button>
+
+                {musixmatch.renderDialog(musixmatchOpen, handleMusixmatchClose)}
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </TableContainer>
@@ -83,5 +145,7 @@ const Link: React.FC<LinkProps> = ({ itunes, twitter }: LinkProps) => {
 Link.defaultProps = {
   itunes: undefined,
   twitter: undefined,
+  wikipedia: undefined,
+  musixmatch: undefined,
 };
 export default Link;
