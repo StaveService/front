@@ -11,7 +11,7 @@ import MusicsTable from "../../components/Table/Music";
 import BandsTable from "../../components/Table/Band";
 import AlbumsTable from "../../components/Table/Album";
 import LinkTable from "../../components/Table/Link";
-import BookmarkButton from "../../components/Button/Bookmark";
+import BookmarkButton from "../../components/Button/Icon/Bookmark";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import TwitterDialog from "../../components/Dialog/Twitter";
 import DefaultLayout from "../../layout/Default";

@@ -12,7 +12,7 @@ import ArtistsTable from "../../../components/Table/Artist";
 import MusicsTable from "../../../components/Table/Music";
 import AlbumsTable from "../../../components/Table/Album";
 import LinkTable from "../../../components/Table/Link";
-import BookmarkButton from "../../../components/Button/Bookmark";
+import BookmarkButton from "../../../components/Button/Icon/Bookmark";
 import ItunesBandDialog from "../../../components/Dialog/Itunes/Band";
 import TwitterDialog from "../../../components/Dialog/Twitter";
 import DefaultLayout from "../../../layout/Default";

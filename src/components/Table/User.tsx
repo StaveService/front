@@ -10,6 +10,8 @@ import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
 import Pagination from "@material-ui/lab/Pagination";
+import TwitterIcon from "../Icon/Twitter";
+import LinkIconButton from "../Button/Icon/Link";
 import { IUser } from "../../interfaces";
 import routes from "../../constants/routes.json";
 
@@ -42,6 +44,19 @@ const User: React.FC<UserProps> = ({
                 <Link component={RouterLink} to={`${routes.USERS}/${user.id}`}>
                   {user.nickname}
                 </Link>
+              </TableCell>
+              <TableCell />
+              <TableCell>
+                <LinkIconButton
+                  href={
+                    user.userLink?.twitter &&
+                    `https://twitter.com/${
+                      user.userLink?.twitter || "undefined"
+                    }`
+                  }
+                >
+                  <TwitterIcon />
+                </LinkIconButton>
               </TableCell>
             </TableRow>
           ))}

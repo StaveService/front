@@ -10,6 +10,8 @@ import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
 import Pagination from "@material-ui/lab/Pagination";
+import TwitterIcon from "../Icon/Twitter";
+import LinkIconButton from "../Button/Icon/Link";
 import { IArtist } from "../../interfaces";
 import routes from "../../constants/routes.json";
 
@@ -38,6 +40,7 @@ const Artist: React.FC<ArtistProps> = ({
                   Artists
                 </Link>
               </TableCell>
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -50,6 +53,18 @@ const Artist: React.FC<ArtistProps> = ({
                   >
                     {artist.name}
                   </Link>
+                </TableCell>
+                <TableCell>
+                  <LinkIconButton
+                    href={
+                      artist.artistLink?.twitter &&
+                      `https://twitter.com/${
+                        artist.artistLink?.twitter || "undefined"
+                      }`
+                    }
+                  >
+                    <TwitterIcon />
+                  </LinkIconButton>
                 </TableCell>
               </TableRow>
             ))}

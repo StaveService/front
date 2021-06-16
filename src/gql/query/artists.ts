@@ -9,6 +9,9 @@ export const artistsQuery = gql`
       data {
         id
         name
+        artistLink {
+          twitter
+        }
       }
     }
   }

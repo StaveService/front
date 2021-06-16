@@ -23,7 +23,7 @@ import IssuesTabPanel from "./TabPanel/Issue/Index";
 import IssueNew from "./TabPanel/Issue/New";
 import Issue from "./TabPanel/Issue/Show";
 import Footer from "./Footer";
-import BookmarkButton from "../../../components/Button/Bookmark";
+import BookmarkButton from "../../../components/Button/Icon/Bookmark";
 import DefaultLayout from "../../../layout/Default";
 import {
   selectCurrentUser,
