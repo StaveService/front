@@ -1,9 +1,13 @@
 import React from "react";
+import SpotifyIcon from "../../../../components/Icon/Spotify";
+import LinkIconButton from "../../../../components/Button/Icon/Link";
 
 const Setting: React.FC = () => {
   return (
     <div>
-      <p>Setting</p>
+      <LinkIconButton>
+        <SpotifyIcon />
+      </LinkIconButton>
     </div>
   );
 };

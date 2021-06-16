@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Box from "@material-ui/core/Box";
 import { useQuery } from "react-query";
 import { useDebounce } from "use-debounce/lib";
@@ -23,17 +23,19 @@ function Wikipedia({
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();
-  const valueANDSearchValue = value || debouncedSearchValue;
   const searchedWikipedia = useQuery<IWikipediaResponse<IWikipediaSearch>>(
-    [queryKey.WIKIPEDIA, valueANDSearchValue],
-    () => searchWikipedia(valueANDSearchValue),
+    [queryKey.WIKIPEDIA, debouncedSearchValue],
+    () => searchWikipedia(debouncedSearchValue),
     {
-      enabled: !!valueANDSearchValue,
+      enabled: !!debouncedSearchValue,
       onError,
     }
   );
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(e.target.value);
+  useEffect(() => {
+    if (value) setSearchValue(value);
+  }, [value]);
   return (
     <CardSearchDialog<IWikipedia>
       title="Wikipedia"
