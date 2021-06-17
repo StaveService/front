@@ -17,6 +17,7 @@ import AlbumsTable from "../../../../../components/Table/Album";
 import LinkTable from "../../../../../components/Table/Link";
 import ItunesMusicDialog from "../../../../../components/Dialog/Itunes/Music";
 import MusixmatchDialog from "../../../../../components/Dialog/Musixmatch";
+import SpotifyDialog from "../../../../../components/Dialog/Spotify";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
@@ -78,6 +79,20 @@ const Info: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <ItunesMusicDialog
+                  value={music?.title}
+                  open={open}
+                  onClose={handleClose}
+                  onSelect={handleItunesSelect}
+                  showSearchBar
+                />
+              );
+            },
+          }}
+          spotify={{
+            link: "",
+            renderDialog(open, handleClose) {
+              return (
+                <SpotifyDialog
                   value={music?.title}
                   open={open}
                   onClose={handleClose}

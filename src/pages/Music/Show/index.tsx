@@ -23,7 +23,7 @@ import IssuesTabPanel from "./TabPanel/Issue/Index";
 import IssueNew from "./TabPanel/Issue/New";
 import Issue from "./TabPanel/Issue/Show";
 import LyricTabPanel from "./TabPanel/Lyric";
-import Footer from "./Footer";
+import Player from "./Player";
 import BookmarkButton from "../../../components/Button/Icon/Bookmark";
 import DefaultLayout from "../../../layout/Default";
 import {
@@ -200,7 +200,7 @@ const Show: React.FC = () => {
         </Switch>
       </DefaultLayout>
       {itunesMusic?.data?.previewUrl && (
-        <Footer src={itunesMusic.data.previewUrl} />
+        <Player src={{ itunes: itunesMusic.data.previewUrl }} />
       )}
     </>
   );

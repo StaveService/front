@@ -27,7 +27,7 @@ function Musixmatch({
     [queryKey.MUSIXMATCH, debouncedSearchValue],
     () => searchTracks(debouncedSearchValue),
     {
-      enabled: !!debouncedSearchValue,
+      enabled: !!debouncedSearchValue && open,
       onError,
     }
   );

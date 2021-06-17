@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useSnackbar } from "notistack";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import MusicsTable from "../components/Table/Music";
@@ -10,12 +10,11 @@ import queryKey from "../constants/queryKey.json";
 import { graphQLClient } from "../gql/client";
 import { musicsQuery } from "../gql/query/musics";
 import { IMusicsType } from "../interfaces";
+import { useQuerySnackbar } from "../hooks/useQuerySnackbar";
 
 const Root: React.FC = () => {
   const [page, setPage] = useState(1);
-  const { enqueueSnackbar } = useSnackbar();
-  const onError = (err: unknown) =>
-    enqueueSnackbar(String(err), { variant: "error" });
+  const { onError } = useQuerySnackbar();
   const { isLoading, data } = useQuery<IMusicsType>(
     [queryKey.MUSICS, page],
     () => graphQLClient.request(musicsQuery, { page }),
@@ -23,6 +22,17 @@ const Root: React.FC = () => {
   );
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
+  useEffect(() => {
+    const params = new URL(window.location.href).searchParams;
+    const code = params.get("code");
+    if (code) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const prevWindow = window.opener;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (prevWindow) prevWindow.dispatchCode(code);
+      window.close();
+    }
+  }, []);
   return (
     <DefaultLayout>
       <Box mb={3}>

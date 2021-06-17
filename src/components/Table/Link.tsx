@@ -13,6 +13,7 @@ import LinkButton from "../Button/Link";
 import TwitterIcon from "../Icon/Twitter";
 import ItunesIcon from "../Icon/Itunes";
 import WikipediaIcon from "../Icon/Wikipedia";
+import SpotifyIcon from "../Icon/Spotify";
 import { useOpen } from "../../hooks/useOpen";
 
 interface RenderAndLink<T> {
@@ -22,12 +23,14 @@ interface RenderAndLink<T> {
 interface LinkProps {
   itunes?: RenderAndLink<string>;
   twitter?: RenderAndLink<string>;
+  spotify?: RenderAndLink<string>;
   wikipedia?: RenderAndLink<number>;
   musixmatch?: RenderAndLink<number>;
 }
 const Link: React.FC<LinkProps> = ({
   itunes,
   twitter,
+  spotify,
   wikipedia,
   musixmatch,
 }: LinkProps) => {
@@ -40,6 +43,11 @@ const Link: React.FC<LinkProps> = ({
     open: twitterOpen,
     handleClose: handleTwitterClose,
     handleOpen: handleTwitterOpen,
+  } = useOpen();
+  const {
+    open: spotifyOpen,
+    handleClose: handleSpotifyClose,
+    handleOpen: handleSpotifyOpen,
   } = useOpen();
   const {
     open: wikipediaOpen,
@@ -95,6 +103,41 @@ const Link: React.FC<LinkProps> = ({
               </TableCell>
             </TableRow>
           )}
+          {spotify && (
+            <TableRow>
+              <TableCell>
+                <LinkButton startIcon={<SpotifyIcon />} href={spotify.link}>
+                  spotify
+                </LinkButton>
+              </TableCell>
+              <TableCell>
+                <Button variant="text" onClick={handleSpotifyOpen}>
+                  Edit
+                </Button>
+
+                {spotify.renderDialog(spotifyOpen, handleSpotifyClose)}
+              </TableCell>
+            </TableRow>
+          )}
+          {musixmatch && (
+            <TableRow>
+              <TableCell>
+                <Box display="flex" alignItems="cneter">
+                  <Box mr={1}>
+                    <TextFieldsIcon />
+                  </Box>
+                  MUSIXMATCH
+                </Box>
+              </TableCell>
+              <TableCell>
+                <Button variant="text" onClick={handleMusixmatchOpen}>
+                  Edit
+                </Button>
+
+                {musixmatch.renderDialog(musixmatchOpen, handleMusixmatchClose)}
+              </TableCell>
+            </TableRow>
+          )}
           {wikipedia && (
             <TableRow>
               <TableCell>
@@ -118,25 +161,6 @@ const Link: React.FC<LinkProps> = ({
               </TableCell>
             </TableRow>
           )}
-          {musixmatch && (
-            <TableRow>
-              <TableCell>
-                <Box display="flex" alignItems="cneter">
-                  <Box mr={1}>
-                    <TextFieldsIcon />
-                  </Box>
-                  MUSIXMATCH
-                </Box>
-              </TableCell>
-              <TableCell>
-                <Button variant="text" onClick={handleMusixmatchOpen}>
-                  Edit
-                </Button>
-
-                {musixmatch.renderDialog(musixmatchOpen, handleMusixmatchClose)}
-              </TableCell>
-            </TableRow>
-          )}
         </TableBody>
       </Table>
     </TableContainer>
@@ -145,6 +169,7 @@ const Link: React.FC<LinkProps> = ({
 Link.defaultProps = {
   itunes: undefined,
   twitter: undefined,
+  spotify: undefined,
   wikipedia: undefined,
   musixmatch: undefined,
 };

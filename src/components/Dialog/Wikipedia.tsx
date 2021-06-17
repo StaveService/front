@@ -27,7 +27,7 @@ function Wikipedia({
     [queryKey.WIKIPEDIA, debouncedSearchValue],
     () => searchWikipedia(debouncedSearchValue),
     {
-      enabled: !!debouncedSearchValue,
+      enabled: !!debouncedSearchValue && open,
       onError,
     }
   );

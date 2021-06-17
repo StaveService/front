@@ -4,13 +4,22 @@ import Link from "@material-ui/core/Link";
 
 interface LinkProps extends IconButtonProps {
   href?: string;
+  windowFeatures?: string;
+  onWindow?: (window: Window | null) => void;
 }
-const LinkIcon: React.FC<LinkProps> = ({ href, children }: LinkProps) => {
-  const handleClick = () => window.open(href, "_blank");
+const LinkIcon: React.FC<LinkProps> = ({
+  href,
+  windowFeatures,
+  children,
+  onWindow,
+}: LinkProps) => {
+  const handleClick = () => {
+    const newWindow = window.open(href, undefined, windowFeatures);
+    if (onWindow) onWindow(newWindow);
+  };
   return (
     <IconButton
       component={Link}
-      target="_blank"
       rel="noopener noreferrer"
       disabled={!href}
       onClick={handleClick}
@@ -22,5 +31,7 @@ const LinkIcon: React.FC<LinkProps> = ({ href, children }: LinkProps) => {
 
 LinkIcon.defaultProps = {
   href: undefined,
+  windowFeatures: undefined,
+  onWindow: undefined,
 };
 export default LinkIcon;
