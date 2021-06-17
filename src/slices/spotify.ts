@@ -4,25 +4,31 @@ import { RootState } from "../store";
 
 interface ISpotify {
   code: string | undefined;
+  token: string | undefined;
 }
 const initialState: ISpotify = {
   code: undefined,
+  token: undefined,
 };
 
 const spotifySlice = createSlice({
   name: "spotify",
   initialState,
   reducers: {
-    set: (state, action: PayloadAction<string>) => {
+    setCode: (state, action: PayloadAction<string>) => {
       state.code = action.payload;
+    },
+    setToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
     },
     remove: (state) => {
       state.code = "";
+      state.token = "";
     },
   },
 });
 
 export const selectSpotifyCode = (state: RootState): undefined | string =>
   state.spotify.code;
-export const { set, remove } = spotifySlice.actions;
+export const { setCode, remove } = spotifySlice.actions;
 export default spotifySlice.reducer;

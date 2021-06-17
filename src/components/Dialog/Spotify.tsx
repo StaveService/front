@@ -9,9 +9,10 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import axios from "axios";
 import LinkIconButton from "../Button/Icon/Link";
 import SpotifyIcon from "../Icon/Spotify";
-import { remove, selectSpotifyCode, set } from "../../slices/spotify";
+import { remove, selectSpotifyCode, setCode } from "../../slices/spotify";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import CardSearchDialog, { DialogProps } from "./CardSearchDialog";
@@ -49,7 +50,12 @@ function Spotify({
     setSearchValue(e.target.value);
   const dispatchCode = useCallback(
     (code: string) => {
-      dispatch(set(code));
+      dispatch(setCode(code));
+      axios.get(
+        "https://accounts.spotify.com/api/token",
+        code,
+        window.location.origin
+      );
     },
     [dispatch]
   );
