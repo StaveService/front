@@ -30,7 +30,7 @@ const Root: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prevWindow = window.opener;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (prevWindow) prevWindow.dispatchCode(code);
+      if (prevWindow) prevWindow.dispatchCode(params, code);
       window.close();
     }
   }, []);
