@@ -8,7 +8,9 @@ const Setting: React.FC = () => {
       <LinkIconButton
         href={`https://accounts.spotify.com/authorize?response_type=code&client_id=${
           process.env.REACT_APP_SPOTIFY_KEY || ""
-        }&redirect_uri=${encodeURIComponent("http://localhost:3001")}`}
+        }&redirect_uri=${encodeURIComponent(
+          "http://localhost:3001"
+        )}&scope=user-read-private`}
         windowFeatures="top=100,left=100,width=500,height=700"
       >
         <SpotifyIcon />

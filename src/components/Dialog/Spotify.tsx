@@ -49,13 +49,17 @@ function Spotify({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(e.target.value);
   const dispatchCode = useCallback(
-    (code: string) => {
+    async (params, code: string, verifier: string) => {
+      console.log(code, verifier);
       dispatch(setCode(code));
-      axios.get(
-        "https://accounts.spotify.com/api/token",
-        code,
-        window.location.origin
-      );
+      await axios
+        .get("https://accounts.spotify.com/api/token", {
+          params: {
+            code,
+            redirect_uri: window.location.origin,
+          },
+        })
+        .then((res) => res);
     },
     [dispatch]
   );

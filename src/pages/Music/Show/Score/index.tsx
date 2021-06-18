@@ -141,7 +141,7 @@ const Tab: React.FC = () => {
 declare global {
   interface Window {
     alphaTab: IAlphaTab;
-    dispatchCode: (code: string) => void;
+    dispatchCode: (code: string, verifier: string) => void;
   }
 }
 
