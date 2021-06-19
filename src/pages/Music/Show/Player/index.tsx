@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Toolbar from "@material-ui/core/Toolbar";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import { MenuItem, Select } from "@material-ui/core";
 import {
@@ -9,14 +8,6 @@ import {
 } from "react-use/lib/factory/createHTMLMediaHook";
 import ItunesPlayer from "./Itunes";
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    appBar: {
-      top: "auto",
-      bottom: 0,
-    },
-  })
-);
 interface PlayerProps {
   src: {
     itunes: string | undefined;

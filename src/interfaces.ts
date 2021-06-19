@@ -65,6 +65,7 @@ export interface IMusicLink {
   itunes: number;
   twitter: string;
   musixmatch: number;
+  spotify: string;
 }
 export interface IArtist extends IMusicsType, IAlbumsType {
   id: number;
@@ -251,11 +252,15 @@ export interface IItunesAlbum extends IItunesArtwork {
   trackCount: number;
   wrapperType: "collection";
 }
-export interface IItunesResponse<T> {
+export interface IItunesResponse<
+  T extends IItunesAlbum | IItunesArtist | IItunesMusic
+> {
   resultCount: number;
   results: T[];
 }
-export interface IWikipediaResponse<T> {
+export interface IWikipediaResponse<
+  T extends IWikipediaSearch | IWikipediaGet
+> {
   batchcomplete: "";
   continue: { sroffset: number };
   query: T;
@@ -324,4 +329,85 @@ export interface IMusicmatchTrack {
     ["track_name"]: string;
     ["track_share_url"]: string;
   };
+}
+export interface ISpotifyToken {
+  ["access_token"]: string;
+  ["expires_in"]: 3600;
+  ["refresh_token"]: string;
+  scope: string;
+  ["token_type"]: string;
+}
+
+export type ISpotifyKeyType = "artists" | "tracks";
+export type ISpotifyTypes = ISpotifyArtist | ISpotifyTrack;
+interface ISpotifyImage {
+  height: number;
+  width: number;
+  url: string;
+}
+export type ISpotifySearchResponse<T extends ISpotifyTypes> = {
+  [key in ISpotifyKeyType]: {
+    href: string;
+    items: T[];
+    limit: number;
+    next: number;
+    offset: number;
+    previous: number;
+    total: number;
+  };
+};
+export interface ISpotifyArtist {
+  ["external_urls"]: {
+    spotify: string;
+  };
+  followers: {
+    href: string;
+    total: number;
+  };
+  genres: string[];
+  href: string;
+  id: string;
+  images: ISpotifyImage[];
+  name: string;
+  popularity: number;
+  type: "artist";
+  uri: string;
+}
+export interface ISpotifyTrack {
+  artists: ISpotifyArtist[];
+  albums: ISpotifyAlbum[];
+  ["available_markets"]: string[];
+  ["disc_number"]: number;
+  ["duration_ms"]: number;
+  explict: boolean;
+  ["external_urls"]: {
+    spotify: string;
+  };
+  ["external_ids"]: { isrc: string };
+  href: string;
+  id: string;
+  ["is_local"]: boolean;
+  name: string;
+  popularity: number;
+  ["preview_url"]: string;
+  ["track_number"]: number;
+  type: "track";
+  uri: string;
+}
+export interface ISpotifyAlbum {
+  ["album_type"]: "album";
+  artists: ISpotifyArtist[];
+  ["available_markets"]: string[];
+  ["external_urls"]: {
+    spotify: string;
+  };
+  href: string;
+  id: string;
+  images: ISpotifyImage;
+  name: string;
+  ["release_date"]: string;
+  ["release_date_precision"]: string;
+  ["track_tracks"]: number;
+  type: "album";
+  uri: string;
 }

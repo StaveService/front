@@ -10,6 +10,7 @@ export const musicQuery = gql`
         id
         itunes
         musixmatch
+        spotify
       }
       user {
         id

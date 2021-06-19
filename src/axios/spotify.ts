@@ -1,15 +1,17 @@
 import axios from "axios";
 
+const { REACT_APP_SPOTIFY_KEY, REACT_APP_SPOTIFY_SECRET_KEY } = process.env;
+const authorization: string = btoa(
+  `${REACT_APP_SPOTIFY_KEY || ""}:${REACT_APP_SPOTIFY_SECRET_KEY || ""}`
+);
+
 export const spotify = axios.create({
   baseURL: "https://api.spotify.com/v1/",
 });
-export const spotifyToken = axios.create({
-  baseURL: "https://accounts.spotify.com/api/token",
-  params: {
-    client_id: process.env.REACT_APP_SPOTIFY_KEY,
-    grant_type: "authorization_code",
-    redirect_uri: window.location.origin,
+export const spotifyAccount = axios.create({
+  baseURL: "https://accounts.spotify.com/api",
+  headers: {
+    Authorization: `Basic ${authorization}`,
+    "Content-Type": "application/x-www-form-urlencoded",
   },
 });
-
-export default undefined;

@@ -24,13 +24,12 @@ const Root: React.FC = () => {
     setPage(value);
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;
-    console.log(params);
     const code = params.get("code");
     if (code) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prevWindow = window.opener;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (prevWindow) prevWindow.dispatchCode(params, code);
+      if (prevWindow) prevWindow.getSpotifyCode(code);
       window.close();
     }
   }, []);

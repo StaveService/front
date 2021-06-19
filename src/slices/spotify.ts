@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ISpotifyToken } from "../interfaces";
 /* eslint-disable import/no-cycle */
 import { RootState } from "../store";
 
 interface ISpotify {
   code: string | undefined;
-  token: string | undefined;
+  token: ISpotifyToken | undefined;
 }
 const initialState: ISpotify = {
   code: undefined,
@@ -18,17 +19,20 @@ const spotifySlice = createSlice({
     setCode: (state, action: PayloadAction<string>) => {
       state.code = action.payload;
     },
-    setToken: (state, action: PayloadAction<string>) => {
+    setToken: (state, action: PayloadAction<ISpotifyToken>) => {
       state.token = action.payload;
     },
     remove: (state) => {
       state.code = "";
-      state.token = "";
+      state.token = undefined;
     },
   },
 });
 
 export const selectSpotifyCode = (state: RootState): undefined | string =>
   state.spotify.code;
-export const { setCode, remove } = spotifySlice.actions;
+export const selectSpotifyToken = (
+  state: RootState
+): undefined | ISpotifyToken => state.spotify.token;
+export const { setCode, setToken, remove } = spotifySlice.actions;
 export default spotifySlice.reducer;

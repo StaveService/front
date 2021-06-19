@@ -34,6 +34,7 @@
 - [@coderline/alphatab](https://github.com/coderline/alphaTab)
 - [graphql](https://github.com/graphql/graphql-js)
 - [graphql-request](https://github.com/prisma-labs/graphql-request)
+- [spotify-web-api-js](https://github.com/JMPerez/spotify-web-api-js)
   custom-hooks
 
 - [react-use](https://github.com/streamich/react-use)

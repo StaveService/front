@@ -106,7 +106,13 @@ const Link: React.FC<LinkProps> = ({
           {spotify && (
             <TableRow>
               <TableCell>
-                <LinkButton startIcon={<SpotifyIcon />} href={spotify.link}>
+                <LinkButton
+                  startIcon={<SpotifyIcon />}
+                  href={
+                    spotify.link &&
+                    `https://open.spotify.com/track/${spotify.link}`
+                  }
+                >
                   spotify
                 </LinkButton>
               </TableCell>

@@ -17,7 +17,7 @@ import AlbumsTable from "../../../../../components/Table/Album";
 import LinkTable from "../../../../../components/Table/Link";
 import ItunesMusicDialog from "../../../../../components/Dialog/Itunes/Music";
 import MusixmatchDialog from "../../../../../components/Dialog/Musixmatch";
-import SpotifyDialog from "../../../../../components/Dialog/Spotify";
+import SpotifyTrackDialog from "../../../../../components/Dialog/Spotify/Track";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
@@ -28,6 +28,7 @@ import {
   IMusic,
   IMusicLink,
   IMusicmatchTrack,
+  ISpotifyTrack,
 } from "../../../../../interfaces";
 import queryKey from "../../../../../constants/queryKey.json";
 import { patchMusicLink } from "../../../../../axios/axios";
@@ -66,6 +67,8 @@ const Info: React.FC = () => {
     }
   );
   // handlers
+  const handleSpotifySelect = (selectedMusic: ISpotifyTrack) =>
+    patchMutation.mutate({ spotify: selectedMusic.id });
   const handleItunesSelect = (selectedMusic: IItunesMusic) =>
     patchMutation.mutate({ itunes: selectedMusic.trackId });
   const handleMusixmatchSelect = (selectedMusic: IMusicmatchTrack) =>
@@ -89,14 +92,14 @@ const Info: React.FC = () => {
             },
           }}
           spotify={{
-            link: "",
+            link: music?.musicLink?.spotify,
             renderDialog(open, handleClose) {
               return (
-                <SpotifyDialog
+                <SpotifyTrackDialog
                   value={music?.title}
                   open={open}
                   onClose={handleClose}
-                  onSelect={handleItunesSelect}
+                  onSelect={handleSpotifySelect}
                   showSearchBar
                 />
               );
