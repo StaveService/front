@@ -1,12 +1,23 @@
-import { SvgIcon, SvgIconProps } from "@material-ui/core";
+import { SvgIcon } from "@material-ui/core";
+import { Theme } from "@material-ui/core/styles/createMuiTheme";
+import createStyles from "@material-ui/core/styles/createStyles";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 import React from "react";
 import { FaTwitter } from "react-icons/fa";
 
-const Itunes: React.FC = ({ color }: SvgIconProps) => {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    colorPrimary: {
+      color: theme.palette.twitter.main,
+    },
+  })
+);
+const Twitter: React.FC = () => {
+  const classes = useStyles();
   return (
-    <SvgIcon color={color}>
+    <SvgIcon classes={{ root: classes.colorPrimary }}>
       <FaTwitter />
     </SvgIcon>
   );
 };
-export default Itunes;
+export default Twitter;

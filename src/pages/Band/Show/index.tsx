@@ -13,7 +13,7 @@ import MusicsTable from "../../../components/Table/Music";
 import AlbumsTable from "../../../components/Table/Album";
 import LinkTable from "../../../components/Table/Link";
 import BookmarkButton from "../../../components/Button/Icon/Bookmark";
-import ItunesBandDialog from "../../../components/Dialog/Itunes/Band";
+import ItunesArtistDialog from "../../../components/Dialog/Itunes/Artist";
 import TwitterDialog from "../../../components/Dialog/Twitter";
 import WikipediaDialog from "../../../components/Dialog/Wikipedia";
 import DefaultLayout from "../../../layout/Default";
@@ -164,7 +164,7 @@ const Show: React.FC = () => {
             link: itunesArtist.data?.artistLinkUrl,
             renderDialog(open, handleClose) {
               return (
-                <ItunesBandDialog
+                <ItunesArtistDialog
                   value={band.data?.name}
                   open={open}
                   onClose={handleClose}

@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from "react";
 import { useAudio } from "react-use";
 import Toolbar from "@material-ui/core/Toolbar";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
@@ -13,11 +13,21 @@ import {
 import Volume from "../../../../ui/Volume";
 import Pause from "../../../../ui/Pause";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
       top: "auto",
       bottom: 0,
+      color: "#191414",
+    },
+    spotify: {
+      color: theme.palette.spotify.main,
+    },
+    colorPrimary: {
+      background: theme.palette.spotify.light,
+    },
+    barColorPrimary: {
+      backgroundColor: theme.palette.spotify.main,
     },
   })
 );
@@ -52,6 +62,10 @@ const Player: React.FC<PlayerProps> = ({
       <AppBar position="fixed" color="inherit" className={classes.appBar}>
         {audio}
         <LinearProgress
+          classes={{
+            colorPrimary: classes.colorPrimary,
+            barColorPrimary: classes.barColorPrimary,
+          }}
           variant="determinate"
           value={(state.time / state.duration) * 100}
         />
@@ -60,12 +74,17 @@ const Player: React.FC<PlayerProps> = ({
             <Box display="flex" justifyContent="space-between">
               <ToggleButtonGroup>
                 <Volume
+                  className={classes.spotify}
                   muted={state.muted}
                   volume={state.volume * 100}
                   onVolume={handleVolume}
                   onMute={handleMute}
                 />
-                <Pause paused={state.paused} onPause={handlePlay} />
+                <Pause
+                  className={classes.spotify}
+                  paused={state.paused}
+                  onPause={handlePlay}
+                />
               </ToggleButtonGroup>
               <Box display="flex" alignItems="center">
                 {selectInput}

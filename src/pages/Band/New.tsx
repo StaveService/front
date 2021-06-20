@@ -13,7 +13,7 @@ import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
-import ItunesBandDialog from "../../components/Dialog/Itunes/Band";
+import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import BandTable from "../../components/Table/Band";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
@@ -151,7 +151,7 @@ const New: React.FC = () => {
             fullWidth
             disableElevation
           />
-          <ItunesBandDialog
+          <ItunesArtistDialog
             value={name}
             open={open}
             onClose={handleClose}

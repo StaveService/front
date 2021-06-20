@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce/lib";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +16,7 @@ import { remove, selectSpotifyToken, setToken } from "../../../slices/spotify";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
 import CardSearchDialog, { DialogProps } from "../CardSearchDialog";
-import { spotify, spotifyAccount } from "../../../axios/spotify";
+import { searchSpotifyTrack, spotifyAccount } from "../../../axios/spotify";
 import {
   ISpotifySearchResponse,
   ISpotifyToken,
@@ -42,15 +41,7 @@ function SpotifyTrack({
   };
   const searchedSpotify = useQuery<ISpotifySearchResponse<ISpotifyTrack>>(
     [queryKey.SPOTIFY, debouncedSearchValue],
-    () =>
-      spotify
-        .get<ISpotifySearchResponse<ISpotifyTrack>>("/search", {
-          params: { q: debouncedSearchValue, type: "track" },
-          headers: {
-            ...{ Authorization: `Bearer ${spotifyToken?.access_token}` },
-          },
-        })
-        .then((res) => res.data),
+    () => searchSpotifyTrack(debouncedSearchValue, spotifyToken?.access_token),
     {
       enabled: !!(debouncedSearchValue && open && spotifyToken),
       onError: handleError,

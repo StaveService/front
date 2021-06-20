@@ -36,6 +36,7 @@ import {
   IMusic,
   IMusicBookmark,
   IMusicType,
+  ISpotifyTrack,
 } from "../../../interfaces";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import { musicQuery } from "../../../gql/query/music";
@@ -44,6 +45,8 @@ import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
 import { lookupItunesMusic } from "../../../axios/itunes";
 import { deleteMusicBookmark, postMusicBookmark } from "../../../axios/axios";
+import { getSpotifyTrack } from "../../../axios/spotify";
+import { selectSpotifyToken } from "../../../slices/spotify";
 
 const Show: React.FC = () => {
   // react-hook-form
@@ -56,6 +59,7 @@ const Show: React.FC = () => {
   // react-redux
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
+  const spotifyToken = useSelector(selectSpotifyToken);
   const dispatch = useDispatch();
   // react-query
   const queryClient = useQueryClient();
@@ -91,6 +95,15 @@ const Show: React.FC = () => {
         (res) => res.results[0]
       ),
     { enabled: !!music.data?.musicLink?.itunes, onError }
+  );
+  const spotifyTrack = useQuery<ISpotifyTrack>(
+    [queryKey.SPOTIFY, queryKey.MUSIC, music.data?.musicLink?.spotify],
+    () =>
+      getSpotifyTrack(
+        music.data?.musicLink?.spotify,
+        spotifyToken?.access_token
+      ),
+    { enabled: !!music.data?.musicLink?.spotify, onError }
   );
   const createMutation = useMutation(
     () => postMusicBookmark(userId, id, headers),
@@ -199,9 +212,12 @@ const Show: React.FC = () => {
           />
         </Switch>
       </DefaultLayout>
-      {itunesMusic?.data?.previewUrl && (
-        <Player src={{ itunes: itunesMusic.data.previewUrl }} />
-      )}
+      <Player
+        src={{
+          itunes: itunesMusic.data?.previewUrl,
+          spotify: spotifyTrack.data?.preview_url,
+        }}
+      />
     </>
   );
 };

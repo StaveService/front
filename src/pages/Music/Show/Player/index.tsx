@@ -7,13 +7,15 @@ import {
   HTMLMediaState,
 } from "react-use/lib/factory/createHTMLMediaHook";
 import ItunesPlayer from "./Itunes";
+import SpotifyPlayer from "./Spotify";
 
-interface PlayerProps {
+type PlayerProps = {
   src: {
     itunes: string | undefined;
+    spotify: string | undefined;
     [key: string]: string | undefined;
   };
-}
+};
 const Player: React.FC<PlayerProps> = ({ src }: PlayerProps) => {
   const srcTypes = Object.entries(src)
     .filter(([, value]) => !!value)
@@ -31,10 +33,11 @@ const Player: React.FC<PlayerProps> = ({ src }: PlayerProps) => {
   ) => {
     if (!Array.isArray(newValue)) controls.volume(newValue / 100);
   };
+  console.log(srcTypes);
   useEffect(() => {
     setSelectedSrcType(srcTypes[0]);
-  }, [srcTypes]);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [src]);
   const SelectInput = () => (
     <Box display="flex" alignItems="center">
       <Select value={selectedSrcType} onChange={handleChange}>
@@ -48,21 +51,39 @@ const Player: React.FC<PlayerProps> = ({ src }: PlayerProps) => {
       </Select>
     </Box>
   );
-
-  return (
-    <>
-      {src.itunes && (
-        <ItunesPlayer
-          src={src.itunes}
-          selectInput={<SelectInput />}
-          onMute={handleMute}
-          onVolume={handleVolume}
-          onPlay={handlePlay}
-        />
-      )}
-      <Toolbar />
-    </>
-  );
+  if (selectedSrcType === "itunes") {
+    return (
+      <>
+        {src.itunes && (
+          <ItunesPlayer
+            src={src.itunes}
+            selectInput={<SelectInput />}
+            onMute={handleMute}
+            onVolume={handleVolume}
+            onPlay={handlePlay}
+          />
+        )}
+        <Toolbar />
+      </>
+    );
+  }
+  if (selectedSrcType === "spotify") {
+    return (
+      <>
+        {src.spotify && (
+          <SpotifyPlayer
+            src={src.spotify}
+            selectInput={<SelectInput />}
+            onMute={handleMute}
+            onVolume={handleVolume}
+            onPlay={handlePlay}
+          />
+        )}
+        <Toolbar />
+      </>
+    );
+  }
+  return <></>;
 };
 
 export default Player;

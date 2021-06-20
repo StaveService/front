@@ -6,9 +6,11 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { SnackbarProvider } from "notistack";
+import { ThemeProvider } from "@material-ui/core/styles";
 import { store, persistor } from "./store";
 import Routes from "./Routes";
 import Header from "./components/Header";
+import theme from "./theme";
 
 switch (process.env.NODE_ENV) {
   case "development":
@@ -26,11 +28,13 @@ const App: React.FC = () => (
     <SnackbarProvider maxSnack={3}>
       <QueryClientProvider client={queryClient}>
         <PersistGate loading={null} persistor={persistor}>
-          <ReactQueryDevtools initialIsOpen />
-          <Router>
-            <Header />
-            <Routes />
-          </Router>
+          <ThemeProvider theme={theme}>
+            <ReactQueryDevtools initialIsOpen />
+            <Router>
+              <Header />
+              <Routes />
+            </Router>
+          </ThemeProvider>
         </PersistGate>
       </QueryClientProvider>
     </SnackbarProvider>
