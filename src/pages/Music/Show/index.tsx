@@ -46,7 +46,7 @@ import routes from "../../../constants/routes.json";
 import { lookupItunesMusic } from "../../../axios/itunes";
 import { deleteMusicBookmark, postMusicBookmark } from "../../../axios/axios";
 import { getSpotifyTrack } from "../../../axios/spotify";
-import { selectSpotifyToken } from "../../../slices/spotify";
+import { remove, selectSpotifyToken } from "../../../slices/spotify";
 
 const Show: React.FC = () => {
   // react-hook-form
@@ -77,6 +77,10 @@ const Show: React.FC = () => {
       (prev) => prev && { ...prev, bookmark: undefined }
     );
   };
+  const handleError = (err: unknown) => {
+    dispatch(remove());
+    onError(err);
+  };
   const music = useQuery<IMusic>(
     [queryKey.MUSIC, id],
     () =>
@@ -92,13 +96,13 @@ const Show: React.FC = () => {
     [queryKey.ITUNES, queryKey.MUSIC, music.data?.link?.itunes],
     () =>
       lookupItunesMusic(music.data?.link?.itunes).then((res) => res.results[0]),
-    { enabled: !!music.data?.link?.itunes, onError }
+    { enabled: !!music.data?.link?.itunes, onError, retry: 2 }
   );
   const spotifyTrack = useQuery<ISpotifyTrack>(
     [queryKey.SPOTIFY, queryKey.MUSIC, music.data?.link?.spotify],
     () =>
       getSpotifyTrack(music.data?.link?.spotify, spotifyToken?.access_token),
-    { enabled: !!music.data?.link?.spotify, onError }
+    { enabled: !!music.data?.link?.spotify, onError: handleError, retry: 2 }
   );
   const createMutation = useMutation(
     () => postMusicBookmark(userId, id, headers),

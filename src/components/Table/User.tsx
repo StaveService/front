@@ -49,10 +49,8 @@ const User: React.FC<UserProps> = ({
               <TableCell>
                 <LinkIconButton
                   href={
-                    user.userLink?.twitter &&
-                    `https://twitter.com/${
-                      user.userLink?.twitter || "undefined"
-                    }`
+                    user.link?.twitter &&
+                    `https://twitter.com/${user.link?.twitter || "undefined"}`
                   }
                 >
                   <TwitterIcon />

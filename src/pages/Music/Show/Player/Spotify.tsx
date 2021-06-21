@@ -10,8 +10,11 @@ import {
   HTMLMediaControls,
   HTMLMediaState,
 } from "react-use/lib/factory/createHTMLMediaHook";
+import { useSelector } from "react-redux";
+import SpotifyButton from "../../../../components/Button/Spotify";
 import Volume from "../../../../ui/Volume";
 import Pause from "../../../../ui/Pause";
+import { selectSpotifyToken } from "../../../../slices/spotify";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,6 +51,7 @@ const Player: React.FC<PlayerProps> = ({
   const [audio, state, controls] = useAudio({
     src,
   });
+  const spotifyToken = useSelector(selectSpotifyToken);
   const handleVolume = (
     _e: ChangeEvent<Record<string, unknown>>,
     newValue: number | number[]
@@ -83,8 +87,10 @@ const Player: React.FC<PlayerProps> = ({
                 className={classes.spotify}
                 paused={state.paused}
                 onPause={handlePlay}
+                disabled={!spotifyToken}
               />
             </ToggleButtonGroup>
+            {!spotifyToken && <SpotifyButton />}
             <Box display="flex" alignItems="center">
               {selectInput}
             </Box>

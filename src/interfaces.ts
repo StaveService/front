@@ -26,7 +26,7 @@ export interface IUser
   gender: number | null;
   introduction: string | null;
   ["created_at"]: string;
-  userLink: IUserLink;
+  link: IUserLink;
 }
 export interface IUserLink {
   id: number;
@@ -37,7 +37,7 @@ export interface IBand extends IMusicsType, IAlbumsType {
   name: string;
   bookmark?: IBandBookmark;
   artists?: IArtist[];
-  bandLink?: IBandLink;
+  link?: IBandLink;
 }
 export interface IBandLink {
   id: number;
@@ -72,7 +72,7 @@ export interface IArtist extends IMusicsType, IAlbumsType {
   name: string;
   bookmark?: IArtistBookmark;
   bands?: IBand[];
-  artistLink?: IArtistLink;
+  link?: IArtistLink;
 }
 export interface IArtistLink {
   id: number;
@@ -84,7 +84,7 @@ export interface IAlbum extends IMusicsType {
   id: number;
   title: string;
   artists?: IArtist[];
-  albumLink?: IAlbumLink;
+  link?: IAlbumLink;
 }
 export interface IAlbumLink {
   id: number;

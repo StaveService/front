@@ -54,16 +54,14 @@ const Show: React.FC = () => {
     { onError }
   );
   const itunesAlbum = useQuery<IItunesAlbum>(
-    [queryKey.ITUNES, queryKey.ALBUM, album.data?.albumLink?.itunes],
+    [queryKey.ITUNES, queryKey.ALBUM, album.data?.link?.itunes],
     () =>
-      lookupItunesAlbum(album.data?.albumLink?.itunes).then(
-        (res) => res.results[0]
-      ),
-    { enabled: !!album.data?.albumLink?.itunes, onError }
+      lookupItunesAlbum(album.data?.link?.itunes).then((res) => res.results[0]),
+    { enabled: !!album.data?.link?.itunes, onError }
   );
   const updateLinkMutation = useMutation(
     (itunesId: number) =>
-      patchAlbumLink(id, album.data?.albumLink?.id, itunesId, headers),
+      patchAlbumLink(id, album.data?.link?.id, itunesId, headers),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers

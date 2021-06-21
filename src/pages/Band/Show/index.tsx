@@ -88,17 +88,15 @@ const Show: React.FC = () => {
     { onError }
   );
   const itunesArtist = useQuery<IItunesArtist>(
-    [queryKey.ITUNES, queryKey.BAND, band.data?.bandLink?.itunes],
+    [queryKey.ITUNES, queryKey.BAND, band.data?.link?.itunes],
     () =>
-      lookupItunesArtist(band.data?.bandLink?.itunes).then(
-        (res) => res.results[0]
-      ),
-    { enabled: !!band.data?.bandLink?.itunes, onError }
+      lookupItunesArtist(band.data?.link?.itunes).then((res) => res.results[0]),
+    { enabled: !!band.data?.link?.itunes, onError }
   );
   const wikipedia = useQuery<IWikipedia>(
-    [queryKey.WIKIPEDIA, band.data?.bandLink?.wikipedia],
-    () => getWikipedia(band.data?.bandLink?.wikipedia),
-    { enabled: !!band.data?.bandLink?.wikipedia, onError }
+    [queryKey.WIKIPEDIA, band.data?.link?.wikipedia],
+    () => getWikipedia(band.data?.link?.wikipedia),
+    { enabled: !!band.data?.link?.wikipedia, onError }
   );
   const createBookmarkMutation = useMutation(
     () => postBandBookmark(id, headers),
@@ -110,7 +108,7 @@ const Show: React.FC = () => {
   );
   const updateLinkMutation = useMutation(
     (link: Partial<Omit<IBandLink, "id">>) =>
-      patchBandLink(id, band.data?.bandLink?.id, link, headers),
+      patchBandLink(id, band.data?.link?.id, link, headers),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers
@@ -147,11 +145,11 @@ const Show: React.FC = () => {
       <Box mb={3}>
         <LinkTable
           twitter={{
-            link: band.data?.bandLink?.twitter,
+            link: band.data?.link?.twitter,
             renderDialog(open, handleClose) {
               return (
                 <TwitterDialog
-                  defaultValue={band.data?.bandLink?.twitter}
+                  defaultValue={band.data?.link?.twitter}
                   open={open}
                   loading={updateLinkMutation.isLoading}
                   onClose={handleClose}
@@ -175,7 +173,7 @@ const Show: React.FC = () => {
             },
           }}
           wikipedia={{
-            link: band.data?.bandLink?.wikipedia,
+            link: band.data?.link?.wikipedia,
             renderDialog(open, handleClose) {
               return (
                 <WikipediaDialog

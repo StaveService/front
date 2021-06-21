@@ -109,7 +109,7 @@ const Show: React.FC = () => {
           path={match.path}
           render={() => (
             <RootTabPanel
-              userLink={data?.userLink}
+              userLink={data?.link}
               musics={data?.musics}
               loading={isLoading}
               musicPage={musicPage}

@@ -10,8 +10,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Box from "@material-ui/core/Box";
 import SpotifyTrackCard from "../../Card/Spotify/Track";
-import LinkIconButton from "../../Button/Icon/Link";
-import SpotifyIcon from "../../Icon/Spotify";
+import SpotifyButton from "../../Button/Spotify";
 import { remove, selectSpotifyToken, setToken } from "../../../slices/spotify";
 import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
@@ -73,16 +72,7 @@ function SpotifyTrack({
         <DialogTitle>Spotify need SignIn</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <LinkIconButton
-              href={`https://accounts.spotify.com/authorize?response_type=code&client_id=${
-                process.env.REACT_APP_SPOTIFY_KEY || ""
-              }&redirect_uri=${encodeURIComponent(
-                window.location.origin
-              )}&scope=${encodeURIComponent("user-read-email")}`}
-              windowFeatures="top=100,left=100,width=500,height=700"
-            >
-              <SpotifyIcon />
-            </LinkIconButton>
+            <SpotifyButton />
           </DialogContentText>
         </DialogContent>
         <DialogActions>

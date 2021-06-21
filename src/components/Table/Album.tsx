@@ -37,14 +37,14 @@ const Album: React.FC<AlbumProps> = ({
 }: AlbumProps) => {
   const [mergedAlbums, setMergedAlbums] = useState<IMergedAlbum[]>([]);
   const { onError } = useQuerySnackbar();
-  const ids = albums?.map((album) => album.albumLink?.itunes).join(",");
+  const ids = albums?.map((album) => album.link?.itunes).join(",");
   // react-query
   const onSuccess = (results: IItunesAlbum[]) => {
     if (!albums) return;
     let i = 0;
     setMergedAlbums(
       albums.map((album) => {
-        if (album.albumLink?.itunes === results[i]?.collectionId) {
+        if (album.link?.itunes === results[i]?.collectionId) {
           const mergedMusic = {
             ...album,
             itunesArtworkUrl: results[i]?.artworkUrl60,

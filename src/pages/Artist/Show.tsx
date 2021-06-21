@@ -89,17 +89,17 @@ const Show: React.FC = () => {
     { onError }
   );
   const wikipedia = useQuery<IWikipedia>(
-    [queryKey.WIKIPEDIA, artist.data?.artistLink?.wikipedia],
-    () => getWikipedia(artist.data?.artistLink?.wikipedia),
-    { enabled: !!artist.data?.artistLink?.wikipedia, onError }
+    [queryKey.WIKIPEDIA, artist.data?.link?.wikipedia],
+    () => getWikipedia(artist.data?.link?.wikipedia),
+    { enabled: !!artist.data?.link?.wikipedia, onError }
   );
   const itunesArtist = useQuery<IItunesArtist>(
-    [queryKey.ITUNES, queryKey.ARTIST, artist.data?.artistLink?.itunes],
+    [queryKey.ITUNES, queryKey.ARTIST, artist.data?.link?.itunes],
     () =>
-      lookupItunesArtist(artist.data?.artistLink?.itunes).then(
+      lookupItunesArtist(artist.data?.link?.itunes).then(
         (res) => res.results[0]
       ),
-    { enabled: !!artist.data?.artistLink?.itunes, onError }
+    { enabled: !!artist.data?.link?.itunes, onError }
   );
   const createMutation = useMutation(
     () => postArtistBookmark(artistId, headers),
@@ -117,7 +117,7 @@ const Show: React.FC = () => {
   );
   const updateLinkMutation = useMutation(
     (link: Partial<Omit<IArtistLink, "id">>) =>
-      patchArtistLink(id, artist.data?.artistLink?.id, link, headers),
+      patchArtistLink(id, artist.data?.link?.id, link, headers),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers
@@ -159,11 +159,11 @@ const Show: React.FC = () => {
       <Box mb={3}>
         <LinkTable
           twitter={{
-            link: artist.data?.artistLink?.twitter,
+            link: artist.data?.link?.twitter,
             renderDialog(open, handleClose) {
               return (
                 <TwitterDialog
-                  defaultValue={artist.data?.artistLink?.twitter}
+                  defaultValue={artist.data?.link?.twitter}
                   open={open}
                   loading={updateLinkMutation.isLoading}
                   onClose={handleClose}
@@ -187,7 +187,7 @@ const Show: React.FC = () => {
             },
           }}
           wikipedia={{
-            link: artist.data?.artistLink?.wikipedia,
+            link: artist.data?.link?.wikipedia,
             renderDialog(open, handleClose) {
               return (
                 <WikipediaDialog

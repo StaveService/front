@@ -81,7 +81,7 @@ const Post: React.FC<RootProps> = ({
             renderDialog(open, onClose) {
               return (
                 <TwitterDialog
-                  defaultValue={user?.userLink.twitter}
+                  defaultValue={user?.link.twitter}
                   open={open}
                   loading={userLinkMutation.isLoading}
                   onClose={onClose}
