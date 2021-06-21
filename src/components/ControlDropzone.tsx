@@ -4,6 +4,7 @@ import {
   Control,
   DeepMap,
   FieldError,
+  FieldValues,
   RegisterOptions,
   useController,
 } from "react-hook-form";
@@ -11,7 +12,7 @@ import {
 type ControlDropzoneProps = HTMLProps<HTMLInputElement> & {
   control: Control;
   rules?: RegisterOptions;
-  errors: DeepMap<Record<string, any>, FieldError>;
+  errors: DeepMap<FieldValues, FieldError>;
   onDrop: (
     acceptedFiles: File[],
     fileRejections: FileRejection[],
@@ -28,7 +29,7 @@ const ControlDropzone: React.FC<ControlDropzoneProps> = ({
   const {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     field: { ref },
-    meta: { invalid },
+    // meta: { invalid },
   } = useController({ name, control, rules, defaultValue });
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
