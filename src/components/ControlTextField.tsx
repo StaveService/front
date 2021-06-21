@@ -3,6 +3,7 @@ import {
   Control,
   DeepMap,
   FieldError,
+  FieldValues,
   RegisterOptions,
   useController,
 } from "react-hook-form";
@@ -11,7 +12,7 @@ import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 
 export type ControlTextFieldProps = TextFieldProps & {
   control: Control;
-  errors?: DeepMap<Record<string, any>, FieldError>;
+  errors?: DeepMap<FieldValues, FieldError>;
   rules?: RegisterOptions;
 };
 
