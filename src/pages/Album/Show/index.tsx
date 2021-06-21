@@ -42,7 +42,7 @@ const Show: React.FC = () => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IAlbum | undefined>(
       [queryKey.ALBUM, id],
-      (prev) => prev && { ...prev, albumLink: res.data }
+      (prev) => prev && { ...prev, link: res.data }
     );
   };
   const album = useQuery<IAlbum>(

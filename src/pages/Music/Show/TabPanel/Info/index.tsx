@@ -55,7 +55,7 @@ const Info: React.FC = () => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
       [queryKey.MUSIC, id],
-      (prev) => prev && { ...prev, musicLink: res.data }
+      (prev) => prev && { ...prev, link: res.data }
     );
   };
   const patchMutation = useMutation(

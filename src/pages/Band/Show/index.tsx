@@ -71,7 +71,7 @@ const Show: React.FC = () => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
       [queryKey.BAND, id, { musicPage, albumPage }],
-      (prev) => prev && { ...prev, bandLink: res.data }
+      (prev) => prev && { ...prev, link: res.data }
     );
   };
   const band = useQuery<IBand>(

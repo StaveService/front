@@ -72,7 +72,7 @@ const Show: React.FC = () => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
       [queryKey.ARTIST, id, { musicPage, albumPage }],
-      (prev) => prev && { ...prev, artistLink: res.data }
+      (prev) => prev && { ...prev, link: res.data }
     );
   };
   const artist = useQuery<IArtist>(

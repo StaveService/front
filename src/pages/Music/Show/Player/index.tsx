@@ -34,7 +34,11 @@ const Player: React.FC<PlayerProps> = ({ src }: PlayerProps) => {
     if (!Array.isArray(newValue)) controls.volume(newValue / 100);
   };
   useEffect(() => {
-    setSelectedSrcType(srcTypes[0]);
+    let i = 0;
+    if (i !== 1) {
+      i += 1;
+      setSelectedSrcType(srcTypes[0]);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src]);
   const SelectInput = () => (

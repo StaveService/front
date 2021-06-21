@@ -10,7 +10,7 @@ export const userQuery = gql`
   ) {
     user(id: $id) {
       nickname
-      userLink {
+      link {
         id
         twitter
       }
@@ -67,7 +67,7 @@ export const userQuery = gql`
         data {
           id
           name
-          bandLink {
+          link {
             itunes
           }
         }
@@ -79,7 +79,7 @@ export const userQuery = gql`
         data {
           id
           name
-          artistLink {
+          link {
             itunes
           }
         }
