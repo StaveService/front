@@ -36,7 +36,7 @@ const Music: React.FC<MusicProps> = ({
   loading,
 }: MusicProps) => {
   const [mergedMusics, setMergedMusics] = useState<IMergedMusic[]>([]);
-  const ids = musics?.map((music) => music.musicLink?.itunes).join(",");
+  const ids = musics?.map((music) => music.link?.itunes).join(",");
   const columns = [
     {
       route: routes.MUSICS,
@@ -59,7 +59,7 @@ const Music: React.FC<MusicProps> = ({
     let i = 0;
     setMergedMusics(
       musics?.map((music) => {
-        if (music.musicLink?.itunes === results[i]?.trackId) {
+        if (music.link?.itunes === results[i]?.trackId) {
           const mergedMusic = {
             ...music,
             itunesArtworkUrl: results[i]?.artworkUrl60,

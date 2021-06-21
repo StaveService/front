@@ -10,7 +10,7 @@ export const artistQuery = gql`
     artist(id: $id) {
       id
       name
-      artistLink {
+      link {
         id
         itunes
         twitter
@@ -20,7 +20,7 @@ export const artistQuery = gql`
         data {
           id
           title
-          musicLink {
+          link {
             itunes
           }
           band {

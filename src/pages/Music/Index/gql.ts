@@ -10,7 +10,7 @@ const query = gql`
         id
         title
         tab
-        musicLink {
+        link {
           itunes
         }
         user {

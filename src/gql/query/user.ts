@@ -29,7 +29,7 @@ export const userQuery = gql`
             id
             name
           }
-          musicLink {
+          link {
             itunes
           }
         }
@@ -52,7 +52,7 @@ export const userQuery = gql`
             id
             name
           }
-          musicLink {
+          link {
             itunes
           }
           user {

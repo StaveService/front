@@ -5,7 +5,7 @@ export const albumQuery = gql`
     album(id: $id) {
       id
       title
-      albumLink {
+      link {
         id
         itunes
       }
@@ -13,7 +13,7 @@ export const albumQuery = gql`
         data {
           id
           title
-          musicLink {
+          link {
             itunes
           }
           band {

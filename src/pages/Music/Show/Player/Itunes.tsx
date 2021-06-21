@@ -57,42 +57,40 @@ const Player: React.FC<PlayerProps> = ({
   const handleMute = () => onMute(state, controls);
   const classes = useStyles();
   return (
-    <>
-      <AppBar position="fixed" color="inherit" className={classes.appBar}>
-        {audio}
-        <LinearProgress
-          classes={{
-            colorPrimary: classes.colorPrimary,
-            barColorPrimary: classes.barColorPrimary,
-          }}
-          variant="determinate"
-          value={(state.time / state.duration) * 100}
-        />
-        <Toolbar>
-          <Box width="100%">
-            <Box display="flex" justifyContent="space-between">
-              <ToggleButtonGroup>
-                <Volume
-                  className={classes.itunes}
-                  muted={state.muted}
-                  volume={state.volume * 100}
-                  onVolume={handleVolume}
-                  onMute={handleMute}
-                />
-                <Pause
-                  className={classes.itunes}
-                  paused={state.paused}
-                  onPause={handlePlay}
-                />
-              </ToggleButtonGroup>
-              <Box display="flex" alignItems="center">
-                {selectInput}
-              </Box>
+    <AppBar position="fixed" color="inherit" className={classes.appBar}>
+      {audio}
+      <LinearProgress
+        classes={{
+          colorPrimary: classes.colorPrimary,
+          barColorPrimary: classes.barColorPrimary,
+        }}
+        variant="determinate"
+        value={(state.time / state.duration) * 100}
+      />
+      <Toolbar>
+        <Box width="100%">
+          <Box display="flex" justifyContent="space-between">
+            <ToggleButtonGroup>
+              <Volume
+                className={classes.itunes}
+                muted={state.muted}
+                volume={state.volume * 100}
+                onVolume={handleVolume}
+                onMute={handleMute}
+              />
+              <Pause
+                className={classes.itunes}
+                paused={state.paused}
+                onPause={handlePlay}
+              />
+            </ToggleButtonGroup>
+            <Box display="flex" alignItems="center">
+              {selectInput}
             </Box>
           </Box>
-        </Toolbar>
-      </AppBar>
-    </>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

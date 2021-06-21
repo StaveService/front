@@ -10,7 +10,7 @@ export const musicsQuery = gql`
         id
         title
         tab
-        musicLink {
+        link {
           itunes
         }
         user {

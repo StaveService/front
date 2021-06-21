@@ -9,7 +9,7 @@ export const albumsQuery = gql`
       data {
         id
         title
-        albumLink {
+        link {
           itunes
         }
       }

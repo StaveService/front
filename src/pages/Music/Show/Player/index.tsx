@@ -33,7 +33,6 @@ const Player: React.FC<PlayerProps> = ({ src }: PlayerProps) => {
   ) => {
     if (!Array.isArray(newValue)) controls.volume(newValue / 100);
   };
-  console.log(srcTypes);
   useEffect(() => {
     setSelectedSrcType(srcTypes[0]);
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -9,7 +9,7 @@ export const usersQuery = gql`
       data {
         id
         nickname
-        userLink {
+        link {
           twitter
         }
       }

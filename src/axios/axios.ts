@@ -107,7 +107,10 @@ export const postAlbumMusic = (
   axios.post<IAlbumMusic>(
     `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.ALBUMS}`,
     newAlbum,
-    headers
+    {
+      ...headers,
+      ...{ "Key-inflection": "camel" },
+    }
   );
 export const deleteAlbumMusic = (
   userId: number,
@@ -239,7 +242,6 @@ export const patchMusicLink = (
     link,
     {
       ...headers,
-      ...{ "Key-Inflection": "camel" },
     }
   );
 export const patchBandLink = (
@@ -253,7 +255,6 @@ export const patchBandLink = (
     link,
     {
       ...headers,
-      ...{ "Key-Inflection": "camel" },
     }
   );
 export const patchArtistLink = (
@@ -267,7 +268,6 @@ export const patchArtistLink = (
     link,
     {
       ...headers,
-      ...{ "Key-Inflection": "camel" },
     }
   );
 export const patchAlbumLink = (
@@ -281,7 +281,6 @@ export const patchAlbumLink = (
     { itunes: itunesId },
     {
       ...headers,
-      ...{ "Key-Inflection": "camel" },
     }
   );
 
@@ -296,6 +295,5 @@ export const patchUserLink = (
     { twitter: twitterId },
     {
       ...headers,
-      ...{ "Key-Inflection": "camel" },
     }
   );

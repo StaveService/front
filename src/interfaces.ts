@@ -58,7 +58,7 @@ export interface IMusic {
   albums?: IAlbum[];
   composers?: IArtist[];
   lyrists?: IArtist[];
-  musicLink?: IMusicLink;
+  link?: IMusicLink;
 }
 export interface IMusicLink {
   id: number;

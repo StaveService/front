@@ -10,7 +10,7 @@ export const bandQuery = gql`
     band(id: $id) {
       id
       name
-      bandLink {
+      link {
         id
         itunes
         twitter
@@ -31,7 +31,7 @@ export const bandQuery = gql`
           user {
             nickname
           }
-          musicLink {
+          link {
             itunes
           }
         }

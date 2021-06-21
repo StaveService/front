@@ -6,7 +6,7 @@ export const musicQuery = gql`
       id
       title
       tab
-      musicLink {
+      link {
         id
         itunes
         musixmatch
@@ -39,7 +39,7 @@ export const musicQuery = gql`
       albums {
         id
         title
-        albumLink {
+        link {
           itunes
         }
       }
