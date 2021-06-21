@@ -7,10 +7,10 @@ import { Box } from "@material-ui/core";
 import ComposerAutocomplete from "./Autocomplete/Composer";
 import LyristAutocomplete from "./Autocomplete/Lyrist";
 import BandAutocomplete from "./Autocomplete/Band";
-import { useOpen } from "../../../../../../../hooks/useOpen";
+import useOpen from "../../../../../../../hooks/useOpen";
 
 const Edit: React.FC = () => {
-  const { open, handleOpen, handleClose } = useOpen();
+  const [open, handleOpen, handleClose] = useOpen();
   return (
     <>
       <Button onClick={handleOpen}>Edit</Button>

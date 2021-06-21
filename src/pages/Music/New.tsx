@@ -25,7 +25,7 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../slices/currentUser";
-import { useOpen } from "../../hooks/useOpen";
+import useOpen from "../../hooks/useOpen";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
@@ -34,7 +34,7 @@ import { musicsQuery } from "../../gql/query/musics";
 
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
-  const { open, handleOpen, handleClose } = useOpen();
+  const [open, handleOpen, handleClose] = useOpen();
   const [
     selectedItunesMusic,
     setSelectedItunesMusic,

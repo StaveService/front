@@ -26,9 +26,7 @@ const Root: React.FC = () => {
     const params = new URL(window.location.href).searchParams;
     const code = params.get("code");
     if (code) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const prevWindow = window.opener;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (prevWindow) prevWindow.getSpotifyCode(code);
       window.close();
     }

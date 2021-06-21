@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Autocomplete, { AutocompleteProps } from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
-import { useOpen } from "../hooks/useOpen";
+import useOpen from "../hooks/useOpen";
 
 type ControlAutocompleteTextFieldProps<T> = {
   maxLength?: number;
@@ -25,8 +25,7 @@ function ControlAutocompleteTextField<T>({
 }: ControlAutocompleteTextFieldProps<T>): JSX.Element {
   const [disabled, setDisabled] = useState(false);
   const [tags, setTags] = useState<T[]>([]);
-  // useOpen
-  const { open, handleOpen, handleClose } = useOpen();
+  const [open, onOpen, onClose] = useOpen();
   // handlers
   const handleChange = (
     _e: ChangeEvent<Record<string, unknown>>,
@@ -62,8 +61,8 @@ function ControlAutocompleteTextField<T>({
       getOptionDisabled={() => (maxLength ? tags.length >= maxLength : false)}
       noOptionsText="No Results"
       onChange={handleChange}
-      onOpen={handleOpen}
-      onClose={handleClose}
+      onOpen={onOpen}
+      onClose={onClose}
       renderInput={(params) => {
         return (
           <TextField

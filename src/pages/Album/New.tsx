@@ -19,7 +19,7 @@ import LoadingCircularProgress from "../../components/Loading/LoadingCircularPro
 import DefaultLayout from "../../layout/Default";
 import { IAlbum, IAlbumsType, IItunesAlbum } from "../../interfaces";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import { useOpen } from "../../hooks/useOpen";
+import useOpen from "../../hooks/useOpen";
 import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { albumsQuery } from "../../gql/query/albums";
@@ -29,7 +29,7 @@ import { postAlbum } from "../../axios/axios";
 
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
-  const { open, handleOpen, handleClose } = useOpen();
+  const [open, handleOpen, handleClose] = useOpen();
   const [
     selectedItunesAlbum,
     setSelectedItunesAlbum,

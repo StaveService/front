@@ -1,15 +1,10 @@
 import { useState } from "react";
 
-interface UseOpenReturn {
-  open: boolean;
-  handleOpen: () => void;
-  handleClose: () => void;
-}
-export const useOpen = (): UseOpenReturn => {
+const useOpen = (): [boolean, () => void, () => void] => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  return { open, handleOpen, handleClose };
+  return [open, handleOpen, handleClose];
 };
 
-export default undefined;
+export default useOpen;

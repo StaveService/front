@@ -30,7 +30,7 @@ import {
   IArtistsType,
   IBand,
 } from "../../../../interfaces";
-import { useOpen } from "../../../../hooks/useOpen";
+import useOpen from "../../../../hooks/useOpen";
 import { useQuerySnackbar } from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import { graphQLClient } from "../../../../gql/client";
@@ -45,7 +45,7 @@ const Artist: React.FC<ArtistProps> = ({
   albumPage,
 }: ArtistProps) => {
   const [inputValue, setInputValue] = useState("");
-  const { open, handleOpen, handleClose } = useOpen();
+  const [open, handleOpen, handleClose] = useOpen();
   // use-debounce
   const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-hook-form

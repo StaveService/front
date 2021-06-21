@@ -37,7 +37,7 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../slices/currentUser";
-import { useOpen } from "../../../../../../hooks/useOpen";
+import useOpen from "../../../../../../hooks/useOpen";
 import { useQuerySnackbar } from "../../../../../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../../../../../gql/client";
 import { artistsQuery } from "../../../../../../gql/query/artists";
@@ -46,7 +46,7 @@ import queryKey from "../../../../../../constants/queryKey.json";
 
 const Artist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
-  const { open, handleOpen, handleClose } = useOpen();
+  const [open, handleOpen, handleClose] = useOpen();
   // use-debounce
   const [debouncedInputValue] = useDebounce(inputValue, 1000);
   // eslint-disable-next-line @typescript-eslint/unbound-method

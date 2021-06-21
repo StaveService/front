@@ -30,7 +30,7 @@ import {
   IArtistAlbum,
   IArtistsType,
 } from "../../../../interfaces";
-import { useOpen } from "../../../../hooks/useOpen";
+import useOpen from "../../../../hooks/useOpen";
 import { useQuerySnackbar } from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import { graphQLClient } from "../../../../gql/client";
@@ -38,7 +38,7 @@ import { artistsQuery } from "../../../../gql/query/artists";
 
 const Artist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
-  const { open, handleOpen, handleClose } = useOpen();
+  const [open, handleOpen, handleClose] = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { register, handleSubmit, setValue } = useForm();
   // use-debounce

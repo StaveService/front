@@ -14,13 +14,13 @@ import LoadingButton from "../../../../components/Loading/LoadingButton";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import routes from "../../../../constants/routes.json";
 import { IMusic } from "../../../../interfaces";
-import { useOpen } from "../../../../hooks/useOpen";
+import useOpen from "../../../../hooks/useOpen";
 import { useQuerySnackbar } from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import { deleteMusic } from "../../../../axios/axios";
 
 const Setting: React.FC = () => {
-  const { open, handleOpen, handleClose } = useOpen();
+  const [open, handleOpen, handleClose] = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm();
   const history = useHistory();

@@ -14,7 +14,7 @@ import TwitterIcon from "../Icon/Twitter";
 import ItunesIcon from "../Icon/Itunes";
 import WikipediaIcon from "../Icon/Wikipedia";
 import SpotifyIcon from "../Icon/Spotify";
-import { useOpen } from "../../hooks/useOpen";
+import useOpen from "../../hooks/useOpen";
 
 interface RenderAndLink<T> {
   link?: T;
@@ -34,31 +34,11 @@ const Link: React.FC<LinkProps> = ({
   wikipedia,
   musixmatch,
 }: LinkProps) => {
-  const {
-    open: itunesOpen,
-    handleClose: handleItunesClose,
-    handleOpen: handleItunesOpen,
-  } = useOpen();
-  const {
-    open: twitterOpen,
-    handleClose: handleTwitterClose,
-    handleOpen: handleTwitterOpen,
-  } = useOpen();
-  const {
-    open: spotifyOpen,
-    handleClose: handleSpotifyClose,
-    handleOpen: handleSpotifyOpen,
-  } = useOpen();
-  const {
-    open: wikipediaOpen,
-    handleClose: handleWikipediaClose,
-    handleOpen: handleWikipediaOpen,
-  } = useOpen();
-  const {
-    open: musixmatchOpen,
-    handleClose: handleMusixmatchClose,
-    handleOpen: handleMusixmatchOpen,
-  } = useOpen();
+  const [itunesOpen, onItunesClose, onItunesOpen] = useOpen();
+  const [twitterOpen, onTwitterClose, onTwitterOpen] = useOpen();
+  const [spotifyOpen, onSpotifyClose, onSpotifyOpen] = useOpen();
+  const [wikipediaOpen, onWikipediaClose, onWikipediaOpen] = useOpen();
+  const [musixmatchOpen, onMusixmatchClose, onMusixmatchOpen] = useOpen();
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -80,10 +60,10 @@ const Link: React.FC<LinkProps> = ({
                 </LinkButton>
               </TableCell>
               <TableCell>
-                <Button variant="text" onClick={handleTwitterOpen}>
+                <Button variant="text" onClick={onTwitterOpen}>
                   Edit
                 </Button>
-                {twitter.renderDialog(twitterOpen, handleTwitterClose)}
+                {twitter.renderDialog(twitterOpen, onTwitterClose)}
               </TableCell>
             </TableRow>
           )}
@@ -95,11 +75,11 @@ const Link: React.FC<LinkProps> = ({
                 </LinkButton>
               </TableCell>
               <TableCell>
-                <Button variant="text" onClick={handleItunesOpen}>
+                <Button variant="text" onClick={onItunesOpen}>
                   Edit
                 </Button>
 
-                {itunes.renderDialog(itunesOpen, handleItunesClose)}
+                {itunes.renderDialog(itunesOpen, onItunesClose)}
               </TableCell>
             </TableRow>
           )}
@@ -117,11 +97,11 @@ const Link: React.FC<LinkProps> = ({
                 </LinkButton>
               </TableCell>
               <TableCell>
-                <Button variant="text" onClick={handleSpotifyOpen}>
+                <Button variant="text" onClick={onSpotifyOpen}>
                   Edit
                 </Button>
 
-                {spotify.renderDialog(spotifyOpen, handleSpotifyClose)}
+                {spotify.renderDialog(spotifyOpen, onSpotifyClose)}
               </TableCell>
             </TableRow>
           )}
@@ -136,11 +116,11 @@ const Link: React.FC<LinkProps> = ({
                 </Box>
               </TableCell>
               <TableCell>
-                <Button variant="text" onClick={handleMusixmatchOpen}>
+                <Button variant="text" onClick={onMusixmatchOpen}>
                   Edit
                 </Button>
 
-                {musixmatch.renderDialog(musixmatchOpen, handleMusixmatchClose)}
+                {musixmatch.renderDialog(musixmatchOpen, onMusixmatchClose)}
               </TableCell>
             </TableRow>
           )}
@@ -159,11 +139,11 @@ const Link: React.FC<LinkProps> = ({
                 </LinkButton>
               </TableCell>
               <TableCell>
-                <Button variant="text" onClick={handleWikipediaOpen}>
+                <Button variant="text" onClick={onWikipediaOpen}>
                   Edit
                 </Button>
 
-                {wikipedia.renderDialog(wikipediaOpen, handleWikipediaClose)}
+                {wikipedia.renderDialog(wikipediaOpen, onWikipediaClose)}
               </TableCell>
             </TableRow>
           )}
