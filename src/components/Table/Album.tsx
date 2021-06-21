@@ -13,7 +13,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Pagination from "@material-ui/lab/Pagination";
 import { IAlbum, IItunesAlbum } from "../../interfaces";
-import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import { lookupItunesAlbum } from "../../axios/itunes";

@@ -10,7 +10,7 @@ import LoadingButton from "../../../../../components/Loading/LoadingButton";
 import { issueSchema } from "../../../../../schema";
 import { selectHeaders, setHeaders } from "../../../../../slices/currentUser";
 import { IIssue } from "../../../../../interfaces";
-import { useQuerySnackbar } from "../../../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
 import { postIssue } from "../../../../../axios/axios";
 
 const New: React.FC = () => {

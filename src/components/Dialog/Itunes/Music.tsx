@@ -6,7 +6,7 @@ import { AxiosResponse } from "axios";
 import ItunesMusicCard from "../../Card/Itunes/Music";
 import { IItunesMusic, IItunesResponse } from "../../../interfaces";
 import CardSearchDialog, { DialogProps } from "../CardSearchDialog";
-import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import { searchItunesMusics } from "../../../axios/itunes";
 import queryKey from "../../../constants/queryKey.json";
 

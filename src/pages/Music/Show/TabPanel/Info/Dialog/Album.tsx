@@ -33,7 +33,7 @@ import {
   IMusic,
 } from "../../../../../../interfaces";
 import useOpen from "../../../../../../hooks/useOpen";
-import { useQuerySnackbar } from "../../../../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../../../constants/queryKey.json";
 import { graphQLClient } from "../../../../../../gql/client";
 import { albumsQuery } from "../../../../../../gql/query/albums";

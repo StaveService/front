@@ -15,7 +15,7 @@ import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import routes from "../../../../constants/routes.json";
 import { IMusic } from "../../../../interfaces";
 import useOpen from "../../../../hooks/useOpen";
-import { useQuerySnackbar } from "../../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import { deleteMusic } from "../../../../axios/axios";
 

@@ -7,7 +7,7 @@ import ItunesAlbumCard from "../../Card/Itunes/Album";
 import { IItunesAlbum, IItunesResponse } from "../../../interfaces";
 import CardSearchDialog, { DialogProps } from "../CardSearchDialog";
 import queryKey from "../../../constants/queryKey.json";
-import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import { searchItunesAlbums } from "../../../axios/itunes";
 
 function Album({

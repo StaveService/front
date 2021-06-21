@@ -38,7 +38,7 @@ import {
   IMusicType,
   ISpotifyTrack,
 } from "../../../interfaces";
-import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import { musicQuery } from "../../../gql/query/music";
 import { graphQLClient } from "../../../gql/client";
 import queryKey from "../../../constants/queryKey.json";

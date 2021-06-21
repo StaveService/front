@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import UsersTable from "../../components/Table/User";
 import DefaultLayout from "../../layout/Default";
-import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { usersQuery } from "../../gql/query/users";
 import queryKey from "../../constants/queryKey.json";

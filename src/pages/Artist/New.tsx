@@ -20,7 +20,7 @@ import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { IArtist, IArtistsType, IItunesArtist } from "../../interfaces";
 import useOpen from "../../hooks/useOpen";
-import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { artistsQuery } from "../../gql/query/artists";
 import queryKey from "../../constants/queryKey.json";

@@ -15,7 +15,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import { IItunesMusic, IMusic } from "../../interfaces";
 import routes from "../../constants/routes.json";
 import queryKey from "../../constants/queryKey.json";
-import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { lookupItunesMusic } from "../../axios/itunes";
 
 interface MusicProps {

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getTrackLyric } from "../../../../../axios/musixmatch";
 import queryKey from "../../../../../constants/queryKey.json";
-import { useQuerySnackbar } from "../../../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
 import { IMusic } from "../../../../../interfaces";
 import style from "./index.module.css";
 

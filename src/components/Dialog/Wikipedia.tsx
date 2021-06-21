@@ -10,7 +10,7 @@ import {
   IWikipediaSearch,
 } from "../../interfaces";
 import queryKey from "../../constants/queryKey.json";
-import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { searchWikipedia } from "../../axios/wikipedia";
 
 function Wikipedia({

@@ -32,7 +32,7 @@ import {
 } from "../../../../../interfaces";
 import queryKey from "../../../../../constants/queryKey.json";
 import { patchMusicLink } from "../../../../../axios/axios";
-import { useQuerySnackbar } from "../../../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
 
 const Info: React.FC = () => {
   const { onError } = useQuerySnackbar();

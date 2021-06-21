@@ -10,7 +10,7 @@ import queryKey from "../constants/queryKey.json";
 import { graphQLClient } from "../gql/client";
 import { musicsQuery } from "../gql/query/musics";
 import { IMusicsType } from "../interfaces";
-import { useQuerySnackbar } from "../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../hooks/useQuerySnackbar";
 
 const Root: React.FC = () => {
   const [page, setPage] = useState(1);

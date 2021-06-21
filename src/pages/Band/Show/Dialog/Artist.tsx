@@ -31,7 +31,7 @@ import {
   IBand,
 } from "../../../../interfaces";
 import useOpen from "../../../../hooks/useOpen";
-import { useQuerySnackbar } from "../../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import { graphQLClient } from "../../../../gql/client";
 import { artistsQuery } from "../../../../gql/query/artists";

@@ -11,13 +11,14 @@ import { ErrorMessage } from "@hookform/error-message";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 
 export type ControlTextFieldProps = TextFieldProps & {
+  name: string;
   control: Control;
   errors?: DeepMap<FieldValues, FieldError>;
   rules?: RegisterOptions;
 };
 
 const ControlTextField: React.FC<ControlTextFieldProps> = ({
-  name = "",
+  name,
   defaultValue,
   onChange,
   onKeyPress,

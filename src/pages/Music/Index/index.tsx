@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import MusicsTable from "../../../components/Table/Music";
 import DefaultLayout from "../../../layout/Default";
 import queryKey from "../../../constants/queryKey.json";
-import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import query from "./gql";
 import { graphQLClient } from "../../../gql/client";
 import { IMusicsType } from "../../../interfaces";

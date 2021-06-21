@@ -12,7 +12,7 @@ import Box from "@material-ui/core/Box";
 import SpotifyTrackCard from "../../Card/Spotify/Track";
 import SpotifyButton from "../../Button/Spotify";
 import { remove, selectSpotifyToken, setToken } from "../../../slices/spotify";
-import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
 import CardSearchDialog, { DialogProps } from "../CardSearchDialog";
 import { searchSpotifyTrack, spotifyAccount } from "../../../axios/spotify";

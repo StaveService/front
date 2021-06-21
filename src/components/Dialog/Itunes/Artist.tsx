@@ -7,7 +7,7 @@ import ItunesArtistCard from "../../Card/Itunes/Artist";
 import { IItunesArtist, IItunesResponse } from "../../../interfaces";
 import CardSearchDialog, { DialogProps } from "../CardSearchDialog";
 import queryKey from "../../../constants/queryKey.json";
-import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import { searchItunesArtists } from "../../../axios/itunes";
 
 function Artist({

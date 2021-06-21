@@ -16,7 +16,7 @@ import BookmarkTabPanel from "./TabPanel/Bookmark";
 import SettingTabPanel from "./TabPanel/Setting";
 import DefaultLayout from "../../../layout/Default";
 import { IUser, IUserType } from "../../../interfaces";
-import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../../gql/client";
 import { userQuery } from "../../../gql/query/user";
 import queryKey from "../../../constants/queryKey.json";

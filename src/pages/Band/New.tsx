@@ -20,7 +20,7 @@ import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { IBand, IBandsType, IItunesArtist } from "../../interfaces";
 import { postBand } from "../../axios/axios";
 import useOpen from "../../hooks/useOpen";
-import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { bandsQuery } from "../../gql/query/bands";
 import queryKey from "../../constants/queryKey.json";

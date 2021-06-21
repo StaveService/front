@@ -38,7 +38,7 @@ import {
   setHeaders,
 } from "../../../../../../slices/currentUser";
 import useOpen from "../../../../../../hooks/useOpen";
-import { useQuerySnackbar } from "../../../../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../../../../../gql/client";
 import { artistsQuery } from "../../../../../../gql/query/artists";
 import routes from "../../../../../../constants/routes.json";

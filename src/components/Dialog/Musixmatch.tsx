@@ -10,7 +10,7 @@ import {
 } from "../../interfaces";
 import MusixmatchCard from "../Card/Musixcmatch";
 import queryKey from "../../constants/queryKey.json";
-import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { searchTracks } from "../../axios/musixmatch";
 
 function Musixmatch({

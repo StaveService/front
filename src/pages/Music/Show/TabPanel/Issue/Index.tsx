@@ -8,7 +8,7 @@ import Box from "@material-ui/core/Box";
 import routes from "../../../../../constants/routes.json";
 import IssueTable from "../../../../../components/Table/Issue";
 import { IIssueType } from "../../../../../interfaces";
-import { useQuerySnackbar } from "../../../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../../../../gql/client";
 import queryKey from "../../../../../constants/queryKey.json";
 import { issuesQuery } from "../../../../../gql/query/issues";

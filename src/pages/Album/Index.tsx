@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import AlbumTable from "../../components/Table/Album";
 import DefaultLayout from "../../layout/Default";
-import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../gql/client";
 import { albumsQuery } from "../../gql/query/albums";
 import { IAlbumsType } from "../../interfaces";

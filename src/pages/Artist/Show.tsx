@@ -24,7 +24,7 @@ import {
   IItunesArtist,
   IWikipedia,
 } from "../../interfaces";
-import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import {
   selectCurrentUser,
   selectHeaders,

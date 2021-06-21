@@ -26,7 +26,7 @@ import {
   setHeaders,
 } from "../../slices/currentUser";
 import useOpen from "../../hooks/useOpen";
-import { useQuerySnackbar } from "../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import { graphQLClient } from "../../gql/client";

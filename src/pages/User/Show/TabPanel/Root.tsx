@@ -10,7 +10,7 @@ import TwitterDialog from "../../../../components/Dialog/Twitter";
 import { IIndexType, IMusic, IUser, IUserLink } from "../../../../interfaces";
 import { patchUserLink } from "../../../../axios/axios";
 import { selectHeaders } from "../../../../slices/currentUser";
-import { useQuerySnackbar } from "../../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 
 interface RootProps {

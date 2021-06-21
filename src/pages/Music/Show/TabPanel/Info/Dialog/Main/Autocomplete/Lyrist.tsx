@@ -15,7 +15,7 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../../../slices/currentUser";
-import { useQuerySnackbar } from "../../../../../../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
 import { graphQLClient } from "../../../../../../../../gql/client";
 import { artistsQuery } from "../../../../../../../../gql/query/artists";
 import {

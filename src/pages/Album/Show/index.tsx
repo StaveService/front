@@ -20,7 +20,7 @@ import ItunesAlbumDialog from "../../../components/Dialog/Itunes/Album";
 import DefaultLayout from "../../../layout/Default";
 import ArtistDialog from "./Dialog/Artist";
 import { patchAlbumLink } from "../../../axios/axios";
-import { useQuerySnackbar } from "../../../hooks/useQuerySnackbar";
+import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
 import { graphQLClient } from "../../../gql/client";
 import { albumQuery } from "../../../gql/query/album";

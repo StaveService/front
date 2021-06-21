@@ -1,6 +1,6 @@
 import { useSnackbar } from "notistack";
 
-export const useQuerySnackbar = (): {
+const useQuerySnackbar = (): {
   onError: (err: unknown) => void;
 } => {
   const { enqueueSnackbar } = useSnackbar();
@@ -9,4 +9,4 @@ export const useQuerySnackbar = (): {
   };
   return { onError };
 };
-export default undefined;
+export default useQuerySnackbar;
