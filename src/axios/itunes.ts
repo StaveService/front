@@ -6,7 +6,7 @@ import {
   IItunesResponse,
 } from "../interfaces";
 
-const limit = 200;
+const limit = 100;
 const itunes = axios.create({
   baseURL: "https://itunes.apple.com",
 });

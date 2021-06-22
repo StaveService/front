@@ -17,7 +17,11 @@ const Bookmark: React.FC<BookmarkProps> = ({
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <IconButton {...props} onClick={bookmarked ? onDestroy : onCreate}>
-      {bookmarked ? <StarIcon /> : <StarBorderIcon />}
+      {bookmarked ? (
+        <StarIcon color="error" />
+      ) : (
+        <StarBorderIcon color="error" />
+      )}
     </IconButton>
   );
 };

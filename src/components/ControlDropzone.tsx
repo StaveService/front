@@ -10,6 +10,7 @@ import {
 } from "react-hook-form";
 
 type ControlDropzoneProps = HTMLProps<HTMLInputElement> & {
+  name: string;
   control: Control;
   rules?: RegisterOptions;
   errors: DeepMap<FieldValues, FieldError>;
@@ -22,7 +23,7 @@ type ControlDropzoneProps = HTMLProps<HTMLInputElement> & {
 const ControlDropzone: React.FC<ControlDropzoneProps> = ({
   control,
   rules,
-  name = "",
+  name,
   defaultValue,
   onDrop,
 }: ControlDropzoneProps) => {

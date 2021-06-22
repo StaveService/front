@@ -51,7 +51,7 @@ const New: React.FC = () => {
   } = useForm<IMusic>();
   const { title } = watch();
   // use-debounce
-  const [debouncedTitle] = useDebounce(title, 1000);
+  const [debouncedTitle, { isPending }] = useDebounce(title, 1000);
   // react-redux
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
@@ -88,7 +88,7 @@ const New: React.FC = () => {
         page,
         q: { title_eq: debouncedTitle },
       }),
-    { enabled: !!debouncedTitle, onError }
+    { enabled: !isPending() && !!debouncedTitle, onError }
   );
   // handlers
   const onSubmit = (data: IMusic) => createMusicMutation.mutate(data);
@@ -169,13 +169,13 @@ const New: React.FC = () => {
             onDrop={handleDrop}
           />
           <SearchItunesButton
-            disabled={!title}
+            disabled={!debouncedTitle}
             onClick={handleOpen}
             fullWidth
             disableElevation
           />
           <ItunesMusicDialog
-            value={title}
+            value={debouncedTitle}
             open={open}
             onClose={handleClose}
             onSelect={handleSelect}
@@ -184,7 +184,7 @@ const New: React.FC = () => {
           <LoadingButton
             color="primary"
             loading={createMusicMutation.isLoading}
-            disabled={!title}
+            disabled={!debouncedTitle}
             onClick={handleSubmit(onSubmit)}
             fullWidth
           >
@@ -195,5 +195,4 @@ const New: React.FC = () => {
     </DefaultLayout>
   );
 };
-
 export default New;

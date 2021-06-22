@@ -34,6 +34,13 @@ function Layout<T>({
   onSelect,
   onChange,
 }: LayoutProps<T>): JSX.Element {
+  const handleSelect = (i: number): (() => void) => {
+    const select = () => {
+      onClose();
+      if (cards) onSelect(cards[i]);
+    };
+    return select;
+  };
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <DialogTitle>Choose {title}</DialogTitle>
@@ -49,12 +56,8 @@ function Layout<T>({
           />
         )}
         {loading && <LinearProgress />}
-        {cards?.map((card) => {
-          const handleSelect = () => {
-            onClose();
-            onSelect(card);
-          };
-          return children(card, handleSelect);
+        {cards?.map((card, i) => {
+          return children(card, handleSelect(i));
         })}
       </Box>
     </Dialog>
@@ -65,4 +68,5 @@ Layout.defaultProps = {
   showSearchBar: false,
   onChange: undefined,
 };
+Layout.whyDidYouRender = true;
 export default Layout;

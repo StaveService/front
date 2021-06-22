@@ -14,7 +14,7 @@ const Itunes: React.FC = () => {
   const classes = useStyles();
   return (
     <SvgIcon classes={{ root: classes.colorPrimary }}>
-      <FaSpotify />
+      <FaSpotify size={24} />
     </SvgIcon>
   );
 };

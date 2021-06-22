@@ -46,7 +46,7 @@ export const artistQuery = gql`
         data {
           id
           title
-          albumLink {
+          link {
             itunes
           }
         }

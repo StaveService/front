@@ -34,11 +34,11 @@ const Link: React.FC<LinkProps> = ({
   wikipedia,
   musixmatch,
 }: LinkProps) => {
-  const [itunesOpen, onItunesClose, onItunesOpen] = useOpen();
-  const [twitterOpen, onTwitterClose, onTwitterOpen] = useOpen();
-  const [spotifyOpen, onSpotifyClose, onSpotifyOpen] = useOpen();
-  const [wikipediaOpen, onWikipediaClose, onWikipediaOpen] = useOpen();
-  const [musixmatchOpen, onMusixmatchClose, onMusixmatchOpen] = useOpen();
+  const [itunesOpen, onItunesOpen, onItunesClose] = useOpen();
+  const [twitterOpen, onTwitterOpen, onTwitterClose] = useOpen();
+  const [spotifyOpen, onSpotifyOpen, onSpotifyClose] = useOpen();
+  const [wikipediaOpen, onWikipediaOpen, onWikipediaClose] = useOpen();
+  const [musixmatchOpen, onMusixmatchOpen, onMusixmatchClose] = useOpen();
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -159,4 +159,6 @@ Link.defaultProps = {
   wikipedia: undefined,
   musixmatch: undefined,
 };
+
+Link.whyDidYouRender = true;
 export default Link;
