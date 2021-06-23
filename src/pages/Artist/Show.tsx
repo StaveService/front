@@ -13,6 +13,7 @@ import AlbumsTable from "../../components/Table/Album";
 import LinkTable from "../../components/Table/Link";
 import BookmarkButton from "../../components/Button/Icon/Bookmark";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
+import SpotifyArtistDialog from "../../components/Dialog/Spotify/Artist";
 import TwitterDialog from "../../components/Dialog/Twitter";
 import WikipediaDialog from "../../components/Dialog/Wikipedia";
 import DefaultLayout from "../../layout/Default";
@@ -22,6 +23,7 @@ import {
   IArtistLink,
   IArtistType,
   IItunesArtist,
+  ISpotifyArtist,
   IWikipedia,
 } from "../../interfaces";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
@@ -127,6 +129,8 @@ const Show: React.FC = () => {
     updateLinkMutation.mutate({ itunes: selectedArtist.artistId });
   const handleWikipediaSelect = (selectedWikipedia: IWikipedia) =>
     updateLinkMutation.mutate({ wikipedia: selectedWikipedia.pageid });
+  const handleSpotifySelect = (selectedAlbum: ISpotifyArtist) =>
+    updateLinkMutation.mutate({ spotify: selectedAlbum.id });
   const handleSubmit = (value: string) =>
     updateLinkMutation.mutate({ twitter: value });
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
@@ -194,6 +198,20 @@ const Show: React.FC = () => {
                   open={open}
                   onClose={handleClose}
                   onSelect={handleWikipediaSelect}
+                  showSearchBar
+                />
+              );
+            },
+          }}
+          spotify={{
+            link: `album/${artist.data?.link?.spotify || "undefined"}`,
+            renderDialog(open, handleClose) {
+              return (
+                <SpotifyArtistDialog
+                  value={artist.data?.name}
+                  open={open}
+                  onClose={handleClose}
+                  onSelect={handleSpotifySelect}
                   showSearchBar
                 />
               );
