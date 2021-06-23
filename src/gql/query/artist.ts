@@ -15,6 +15,7 @@ export const artistQuery = gql`
         itunes
         twitter
         wikipedia
+        spotify
       }
       musics(musicPage: $musicPage) {
         data {

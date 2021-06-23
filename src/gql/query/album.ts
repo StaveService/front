@@ -15,6 +15,7 @@ export const albumQuery = gql`
           title
           link {
             itunes
+            spotify
           }
           band {
             name

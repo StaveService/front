@@ -1,5 +1,9 @@
 import axios from "axios";
-import { ISpotifySearchResponse, ISpotifyTrack } from "../interfaces";
+import {
+  ISpotifyArtist,
+  ISpotifySearchResponse,
+  ISpotifyTrack,
+} from "../interfaces";
 
 const { REACT_APP_SPOTIFY_KEY, REACT_APP_SPOTIFY_SECRET_KEY } = process.env;
 const authorization: string = btoa(
@@ -24,6 +28,19 @@ export const searchSpotifyTrack = (
   spotify
     .get<ISpotifySearchResponse<ISpotifyTrack>>("/search", {
       params: { q, type: "track" },
+      headers: {
+        ...{ Authorization: `Bearer ${accessToken || ""}` },
+      },
+    })
+    .then((res) => res.data);
+
+export const searchSpotifyArtist = (
+  q: string,
+  accessToken: string | undefined
+): Promise<ISpotifySearchResponse<ISpotifyArtist>> =>
+  spotify
+    .get<ISpotifySearchResponse<ISpotifyArtist>>("/search", {
+      params: { q, type: "artist" },
       headers: {
         ...{ Authorization: `Bearer ${accessToken || ""}` },
       },

@@ -89,8 +89,7 @@ const Link: React.FC<LinkProps> = ({
                 <LinkButton
                   startIcon={<SpotifyIcon />}
                   href={
-                    spotify.link &&
-                    `https://open.spotify.com/track/${spotify.link}`
+                    spotify.link && `https://open.spotify.com/${spotify.link}`
                   }
                 >
                   spotify

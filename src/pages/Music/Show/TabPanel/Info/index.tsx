@@ -92,7 +92,7 @@ const Info: React.FC = () => {
             },
           }}
           spotify={{
-            link: music?.link?.spotify,
+            link: `track/${music?.link?.spotify || "undefined"}`,
             renderDialog(open, handleClose) {
               return (
                 <SpotifyTrackDialog
