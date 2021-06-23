@@ -39,7 +39,7 @@
 - [graphql](https://github.com/graphql/graphql-js)
 - [graphql-request](https://github.com/prisma-labs/graphql-request)
 - [spotify-web-api-js](https://github.com/JMPerez/spotify-web-api-js)
-  custom-hooks
+- [why-did-you-render](https://github.com/welldone-software/why-did-you-render)
 
 - [react-use](https://github.com/streamich/react-use)
 - [react-script-hook](https://github.com/hupe1980/react-script-hook)

@@ -341,15 +341,21 @@ export interface ISpotifyToken {
   ["token_type"]: string;
 }
 
-export type ISpotifyKeyType = "artists" | "tracks";
-export type ISpotifyTypes = ISpotifyArtist | ISpotifyTrack;
+export type ISpotifySearchTypes =
+  | "album"
+  | "artist"
+  | "playlist"
+  | "track"
+  | "show";
+export type ISpotifyKeyTypes = "artists" | "tracks" | "albums";
+export type ISpotifyTypes = ISpotifyArtist | ISpotifyTrack | ISpotifyAlbum;
 interface ISpotifyImage {
   height: number;
   width: number;
   url: string;
 }
 export type ISpotifySearchResponse<T extends ISpotifyTypes> = {
-  [key in ISpotifyKeyType]: {
+  [key in ISpotifyKeyTypes]: {
     href: string;
     items: T[];
     limit: number;

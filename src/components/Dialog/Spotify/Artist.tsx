@@ -15,7 +15,7 @@ import { remove, selectSpotifyToken, setToken } from "../../../slices/spotify";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
 import CardSearchDialog, { DialogProps } from "../CardSearchDialog";
-import { searchSpotifyArtist, spotifyAccount } from "../../../axios/spotify";
+import { searchSpotify, spotifyAccount } from "../../../axios/spotify";
 import {
   ISpotifyArtist,
   ISpotifySearchResponse,
@@ -40,7 +40,8 @@ function SpotifyTrack({
   };
   const searchedSpotify = useQuery<ISpotifySearchResponse<ISpotifyArtist>>(
     [queryKey.SPOTIFY, debouncedSearchValue],
-    () => searchSpotifyArtist(debouncedSearchValue, spotifyToken?.access_token),
+    () =>
+      searchSpotify("artist", debouncedSearchValue, spotifyToken?.access_token),
     {
       enabled: !!(debouncedSearchValue && open && spotifyToken),
       onError: handleError,

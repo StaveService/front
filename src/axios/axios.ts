@@ -273,12 +273,12 @@ export const patchArtistLink = (
 export const patchAlbumLink = (
   albumId: number,
   linkId: number | undefined,
-  itunesId: number,
+  link: Partial<Omit<IArtistLink, "id">>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IAlbumLink>> =>
   axios.patch(
     `${routes.ALBUMS}/${albumId}${routes.LINKS}/${linkId || "undefined"}`,
-    { itunes: itunesId },
+    link,
     {
       ...headers,
     }

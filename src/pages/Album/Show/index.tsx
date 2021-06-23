@@ -12,11 +12,13 @@ import {
   IAlbumLink,
   IAlbumType,
   IItunesAlbum,
+  ISpotifyAlbum,
 } from "../../../interfaces";
 import MusicsTable from "../../../components/Table/Music";
 import ArtistTable from "../../../components/Table/Artist";
 import LinkTable from "../../../components/Table/Link";
 import ItunesAlbumDialog from "../../../components/Dialog/Itunes/Album";
+import SpotifyAlbumDialog from "../../../components/Dialog/Spotify/Album";
 import DefaultLayout from "../../../layout/Default";
 import ArtistDialog from "./Dialog/Artist";
 import { patchAlbumLink } from "../../../axios/axios";
@@ -59,14 +61,19 @@ const Show: React.FC = () => {
       lookupItunesAlbum(album.data?.link?.itunes).then((res) => res.results[0]),
     { enabled: !!album.data?.link?.itunes, onError }
   );
-  const updateLinkMutation = useMutation(
-    (itunesId: number) =>
-      patchAlbumLink(id, album.data?.link?.id, itunesId, headers),
-    { onSuccess: handleUpdateSuccess, onError }
+  const patchMutation = useMutation(
+    (link: Partial<Omit<IAlbumLink, "id">>) =>
+      patchAlbumLink(id, album.data?.link?.id, link, headers),
+    {
+      onSuccess: handleUpdateSuccess,
+      onError,
+    }
   );
   // handlers
   const handleSelect = (selectedAlbum: IItunesAlbum) =>
-    updateLinkMutation.mutate(selectedAlbum.collectionId);
+    patchMutation.mutate({ itunes: selectedAlbum.collectionId });
+  const handleSpotifySelect = (selectedAlbum: ISpotifyAlbum) =>
+    patchMutation.mutate({ spotify: selectedAlbum.id });
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
     setMusicPage(value);
   return (
@@ -88,6 +95,20 @@ const Show: React.FC = () => {
                   open={open}
                   onClose={handleClose}
                   onSelect={handleSelect}
+                  showSearchBar
+                />
+              );
+            },
+          }}
+          spotify={{
+            link: "", // link: `album/${music?.link?.spotify || "undefined"}`,
+            renderDialog(open, handleClose) {
+              return (
+                <SpotifyAlbumDialog
+                  value={album.data?.title}
+                  open={open}
+                  onClose={handleClose}
+                  onSelect={handleSpotifySelect}
                   showSearchBar
                 />
               );

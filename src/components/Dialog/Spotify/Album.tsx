@@ -9,7 +9,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Box from "@material-ui/core/Box";
-import SpotifyTrackCard from "../../Card/Spotify/Track";
+import SpotifyAlbumCard from "../../Card/Spotify/Album";
 import SpotifyButton from "../../Button/Spotify";
 import { remove, selectSpotifyToken, setToken } from "../../../slices/spotify";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
@@ -17,18 +17,18 @@ import queryKey from "../../../constants/queryKey.json";
 import CardSearchDialog, { DialogProps } from "../CardSearchDialog";
 import { searchSpotify, spotifyAccount } from "../../../axios/spotify";
 import {
+  ISpotifyAlbum,
   ISpotifySearchResponse,
   ISpotifyToken,
-  ISpotifyTrack,
 } from "../../../interfaces";
 
-function SpotifyTrack({
+function SpotifyAlbum({
   value,
   open,
   showSearchBar,
   onClose,
   onSelect,
-}: DialogProps<ISpotifyTrack>): JSX.Element {
+}: DialogProps<ISpotifyAlbum>): JSX.Element {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();
@@ -38,10 +38,10 @@ function SpotifyTrack({
     onError(err);
     dispatch(remove());
   };
-  const searchedSpotify = useQuery<ISpotifySearchResponse<ISpotifyTrack>>(
+  const searchedSpotify = useQuery<ISpotifySearchResponse<ISpotifyAlbum>>(
     [queryKey.SPOTIFY, debouncedSearchValue],
     () =>
-      searchSpotify("track", debouncedSearchValue, spotifyToken?.access_token),
+      searchSpotify("album", debouncedSearchValue, spotifyToken?.access_token),
     {
       enabled: !!(debouncedSearchValue && open && spotifyToken),
       onError: handleError,
@@ -84,14 +84,12 @@ function SpotifyTrack({
       </Dialog>
     );
   return (
-    <CardSearchDialog<ISpotifyTrack>
+    <CardSearchDialog<ISpotifyAlbum>
       title="Spotify"
       value={searchValue}
       open={open}
       loading={searchedSpotify.isLoading || isPending()}
-      cards={
-        searchedSpotify.data ? searchedSpotify.data.tracks.items : undefined
-      }
+      cards={[]}
       showSearchBar={showSearchBar}
       onSelect={onSelect}
       onClose={onClose}
@@ -99,11 +97,11 @@ function SpotifyTrack({
     >
       {(card, handleSelect) => (
         <Box key={card.id} mb={2} onClick={handleSelect}>
-          <SpotifyTrackCard track={card} />
+          <SpotifyAlbumCard album={card} />
         </Box>
       )}
     </CardSearchDialog>
   );
 }
 
-export default SpotifyTrack;
+export default SpotifyAlbum;

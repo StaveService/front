@@ -68,5 +68,4 @@ Layout.defaultProps = {
   showSearchBar: false,
   onChange: undefined,
 };
-Layout.whyDidYouRender = true;
 export default Layout;

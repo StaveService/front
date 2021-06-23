@@ -1,8 +1,9 @@
 import axios from "axios";
 import {
-  ISpotifyArtist,
   ISpotifySearchResponse,
+  ISpotifySearchTypes,
   ISpotifyTrack,
+  ISpotifyTypes,
 } from "../interfaces";
 
 const { REACT_APP_SPOTIFY_KEY, REACT_APP_SPOTIFY_SECRET_KEY } = process.env;
@@ -20,32 +21,20 @@ export const spotifyAccount = axios.create({
     "Content-Type": "application/x-www-form-urlencoded",
   },
 });
-
-export const searchSpotifyTrack = (
+export function searchSpotify<T extends ISpotifyTypes>(
+  type: ISpotifySearchTypes,
   q: string,
   accessToken: string | undefined
-): Promise<ISpotifySearchResponse<ISpotifyTrack>> =>
-  spotify
-    .get<ISpotifySearchResponse<ISpotifyTrack>>("/search", {
-      params: { q, type: "track" },
+): Promise<ISpotifySearchResponse<T>> {
+  return spotify
+    .get<ISpotifySearchResponse<T>>("/search", {
+      params: { q, type },
       headers: {
         ...{ Authorization: `Bearer ${accessToken || ""}` },
       },
     })
     .then((res) => res.data);
-
-export const searchSpotifyArtist = (
-  q: string,
-  accessToken: string | undefined
-): Promise<ISpotifySearchResponse<ISpotifyArtist>> =>
-  spotify
-    .get<ISpotifySearchResponse<ISpotifyArtist>>("/search", {
-      params: { q, type: "artist" },
-      headers: {
-        ...{ Authorization: `Bearer ${accessToken || ""}` },
-      },
-    })
-    .then((res) => res.data);
+}
 
 export const getSpotifyTrack = (
   id: string | undefined,
