@@ -29,20 +29,12 @@ import routes from "../../constants/routes.json";
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
   const [open, handleOpen, handleClose] = useOpen();
-  const [
-    selectedItunesArtist,
-    setSelectedItunesArtist,
-  ] = useState<IItunesArtist>();
+  const [selectedItunesArtist, setSelectedItunesArtist] =
+    useState<IItunesArtist>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const {
-    errors,
-    control,
-    setValue,
-    watch,
-    register,
-    handleSubmit,
-  } = useForm<IBand>();
+  const { errors, control, setValue, watch, register, handleSubmit } =
+    useForm<IBand>();
   const { name } = watch();
   // use-debounce
   const [debouncedName] = useDebounce(name, 1000);

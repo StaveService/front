@@ -28,20 +28,12 @@ import queryKey from "../../constants/queryKey.json";
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
   const [open, handleOpen, handleClose] = useOpen();
-  const [
-    selectedItunesArtist,
-    setSelectedItunesArtist,
-  ] = useState<IItunesArtist>();
+  const [selectedItunesArtist, setSelectedItunesArtist] =
+    useState<IItunesArtist>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const {
-    errors,
-    control,
-    setValue,
-    register,
-    watch,
-    handleSubmit,
-  } = useForm<IArtist>();
+  const { errors, control, setValue, register, watch, handleSubmit } =
+    useForm<IArtist>();
   const { name } = watch();
   // use-debounce
   const [debouncedName] = useDebounce(name, 1000);

@@ -35,20 +35,12 @@ import { musicsQuery } from "../../gql/query/musics";
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
   const [open, handleOpen, handleClose] = useOpen();
-  const [
-    selectedItunesMusic,
-    setSelectedItunesMusic,
-  ] = useState<IItunesMusic>();
+  const [selectedItunesMusic, setSelectedItunesMusic] =
+    useState<IItunesMusic>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const {
-    errors,
-    control,
-    watch,
-    register,
-    setValue,
-    handleSubmit,
-  } = useForm<IMusic>();
+  const { errors, control, watch, register, setValue, handleSubmit } =
+    useForm<IMusic>();
   const { title } = watch();
   // use-debounce
   const [debouncedTitle, { isPending }] = useDebounce(title, 1000);

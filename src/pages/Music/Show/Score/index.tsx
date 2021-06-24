@@ -31,8 +31,7 @@ const Tab: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { onError } = useQuerySnackbar();
   const [loading, error] = useScript({
-    src:
-      "https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js",
+    src: "https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js",
   });
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);

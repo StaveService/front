@@ -30,20 +30,12 @@ import { postAlbum } from "../../axios/axios";
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
   const [open, handleOpen, handleClose] = useOpen();
-  const [
-    selectedItunesAlbum,
-    setSelectedItunesAlbum,
-  ] = useState<IItunesAlbum>();
+  const [selectedItunesAlbum, setSelectedItunesAlbum] =
+    useState<IItunesAlbum>();
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const {
-    errors,
-    control,
-    setValue,
-    register,
-    watch,
-    handleSubmit,
-  } = useForm<IAlbum>();
+  const { errors, control, setValue, register, watch, handleSubmit } =
+    useForm<IAlbum>();
   const { title } = watch();
   const [debouncedTitle] = useDebounce(title, 1000);
   // react-redux
