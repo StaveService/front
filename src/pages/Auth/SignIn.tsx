@@ -68,8 +68,8 @@ const SignIn: React.FC = () => {
   );
   // TODO: ONLY DEVELOPMENT
   useEffect(() => {
-    setValue("email", testUser.EMAIL);
-    setValue("password", testUser.PASSWORD);
+    setValue("email", "test@test.com");
+    setValue("password", "password");
   }, [setValue]);
   const onSubmit = (data: ISignInFormValues) => mutate(data);
   return (

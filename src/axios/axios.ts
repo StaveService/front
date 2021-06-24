@@ -16,6 +16,7 @@ import {
   IMusicLink,
   ISignInFormValues,
   ISignSuccessResponse,
+  ISignUpFormValues,
   IUserLink,
 } from "../interfaces";
 import routes from "../constants/routes.json";
@@ -31,14 +32,30 @@ switch (process.env.NODE_ENV) {
     axios.defaults.baseURL = "http://localhost:3000";
 }
 
+declare module "axios" {
+  export interface AxiosRequestConfig {
+    "Key-inflection"?: string;
+  }
+}
+
 export const signIn = (
   data: ISignInFormValues
 ): Promise<AxiosResponse<ISignSuccessResponse>> =>
   axios.post<ISignSuccessResponse>("/auth/sign_in", data);
+export const signUp = (
+  data: ISignUpFormValues
+): Promise<AxiosResponse<ISignSuccessResponse>> =>
+  axios.post<ISignSuccessResponse>("/auth", data, {
+    "Key-inflection": "camel",
+  });
+export const deleteUser = (id: number): Promise<AxiosResponse> =>
+  axios.delete(`/users/${id}`);
 
 export const postMusic = (
   userId: number | undefined,
-  newMusic: Omit<IMusic, "id">,
+  newMusic: Omit<IMusic, "id"> & {
+    ["link_attributes"]: Omit<IMusicLink, "id">;
+  },
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IMusic>> =>
   axios.post<IMusic>(
@@ -101,7 +118,7 @@ export const postIssue = (
 export const postAlbumMusic = (
   userId: number,
   musicId: number,
-  newAlbum: IAlbum,
+  newAlbum: Omit<IAlbum, "id">,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IAlbumMusic>> =>
   axios.post<IAlbumMusic>(
@@ -109,7 +126,7 @@ export const postAlbumMusic = (
     newAlbum,
     {
       ...headers,
-      ...{ "Key-inflection": "camel" },
+      "Key-inflection": "camel",
     }
   );
 export const deleteAlbumMusic = (

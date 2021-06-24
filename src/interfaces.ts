@@ -64,7 +64,6 @@ export interface IMusic {
 export interface IMusicLink {
   id: number;
   itunes: number;
-  twitter: string;
   musixmatch: number;
   spotify: string;
 }

@@ -1,4 +1,7 @@
 {
-  "EMAIL": "test@test.com",
-  "PASSWORD": "password"
+  "NICKNAME": "tester",
+  "EMAIL": "test1@test.com",
+  "PASSWORD": "password",
+  "FAMILYNAME": "family",
+  "GIVENNAME": "given"
 }

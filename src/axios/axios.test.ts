@@ -3,12 +3,15 @@ import {
   deleteMusic,
   signIn,
   postBand,
-  deleteBand,
   postAlbum,
-  postMusicBookmark,
+  signUp,
+  deleteUser,
+  deleteBand,
+  deleteAlbum,
+  deleteArtist,
+  postArtist,
+  patchMusicLink,
 } from "./axios";
-import testUser from "../constants/user.json";
-import routes from "../constants/routes.json";
 import {
   IAlbum,
   IArtist,
@@ -18,11 +21,26 @@ import {
   ITokenHeaders,
   IUser,
 } from "../interfaces";
+import testUser from "../constants/user.json";
+import routes from "../constants/routes.json";
 
 let headers: IHeaders;
 let user: IUser;
 
 // helpers
+const signUpTest = async () => {
+  const res = await signUp({
+    nickname: testUser.NICKNAME,
+    familyname: testUser.FAMILYNAME,
+    givenname: testUser.GIVENNAME,
+    email: testUser.EMAIL,
+    password: testUser.PASSWORD,
+    password_confirmation: testUser.PASSWORD,
+  });
+  headers = { headers: res.headers };
+  user = res.data.data;
+  return res;
+};
 const signInTest = async () => {
   const res = await signIn({
     email: testUser.EMAIL,
@@ -50,8 +68,12 @@ const setHeaders = (newHeaders: ITokenHeaders) => {
     },
   };
 };
-describe("/signin", () => {
-  it("", async () => {
+describe("/sign", () => {
+  it("up", async () => {
+    const res = await signUpTest();
+    expect(res.status).toBe(200);
+  });
+  it("in", async () => {
     const res = await signInTest();
     expect(res.status).toBe(200);
   });
@@ -62,12 +84,33 @@ describe(routes.MUSICS, () => {
   it("POST", async () => {
     const res = await postMusic(
       user.id,
-      { title: "testMusic", tab: "" },
+      {
+        title: "testMusic",
+        tab: "",
+        link_attributes: {
+          itunes: 0,
+          musixmatch: 0,
+          spotify: "spotify",
+        },
+      },
       headers
     );
     music = res.data;
     setHeaders(res.headers);
     expect(res.status).toBe(201);
+  });
+  describe(routes.LINKS, () => {
+    it("PATCH", async () => {
+      const res = await patchMusicLink(
+        user.id,
+        music.id,
+        music.link?.id,
+        { itunes: 0 },
+        headers
+      );
+      setHeaders(res.headers);
+      expect(res.status).toBe(200);
+    });
   });
   it("DELETE", async () => {
     const res = await deleteMusic(user.id, music.id, headers);
@@ -84,7 +127,7 @@ describe(routes.ALBUMS, () => {
     expect(res.status).toBe(201);
   });
   it("DELETE", async () => {
-    const res = await deleteMusic(user.id, album.id, headers);
+    const res = await deleteAlbum(album.id, headers);
     setHeaders(res.headers);
     expect(res.status).toBe(204);
   });
@@ -107,14 +150,21 @@ describe(routes.BANDS, () => {
 describe(routes.ARTISTS, () => {
   let artist: IArtist;
   it("POST", async () => {
-    const res = await postBand({ name: "testArtist" }, headers);
+    const res = await postArtist({ name: "testArtist" }, headers);
     artist = res.data;
     setHeaders(res.headers);
     expect(res.status).toBe(201);
   });
   it("DELETE", async () => {
-    const res = await deleteBand(artist.id, headers);
+    const res = await deleteArtist(artist.id, headers);
     setHeaders(res.headers);
+    expect(res.status).toBe(204);
+  });
+});
+
+describe("/user", () => {
+  it("DELETE", async () => {
+    const res = await deleteUser(user.id);
     expect(res.status).toBe(204);
   });
 });
