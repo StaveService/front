@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import ArtistsTable from "../../components/Table/Artist";
 import DefaultLayout from "../../layout/Default";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import { graphQLClient } from "../../gql/client";
+import GraphQLClient from "../../gql/client";
 import { artistsQuery } from "../../gql/query/artists";
 import queryKey from "../../constants/queryKey.json";
 import { IArtistsType } from "../../interfaces";
@@ -13,7 +13,7 @@ const Index: React.FC = () => {
   const { onError } = useQuerySnackbar();
   const { isLoading, data } = useQuery<IArtistsType>(
     [queryKey.ARTISTS, page],
-    () => graphQLClient.request(artistsQuery, { page }),
+    () => GraphQLClient.request(artistsQuery, { page }),
     { onError }
   );
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>

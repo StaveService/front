@@ -21,7 +21,7 @@ import { IBand, IBandsType, IItunesArtist } from "../../interfaces";
 import { postBand } from "../../axios/axios";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import { graphQLClient } from "../../gql/client";
+import GraphQLClient from "../../gql/client";
 import { bandsQuery } from "../../gql/query/bands";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
@@ -76,7 +76,7 @@ const New: React.FC = () => {
   const searchQuery = useQuery<IBandsType>(
     [queryKey.BANDS, { page, query: debouncedName }],
     () =>
-      graphQLClient.request(bandsQuery, {
+      GraphQLClient.request(bandsQuery, {
         page,
         q: { name_eq: debouncedName },
       }),

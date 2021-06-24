@@ -39,7 +39,7 @@ import {
 } from "../../../../../../slices/currentUser";
 import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
-import { graphQLClient } from "../../../../../../gql/client";
+import GraphQLClient from "../../../../../../gql/client";
 import { artistsQuery } from "../../../../../../gql/query/artists";
 import routes from "../../../../../../constants/routes.json";
 import queryKey from "../../../../../../constants/queryKey.json";
@@ -109,12 +109,10 @@ const Artist: React.FC = () => {
   const artists = useQuery<IArtist[]>(
     [queryKey.ARTISTS, { query: debouncedInputValue }],
     () =>
-      graphQLClient
-        .request<IArtistsType>(artistsQuery, {
-          q: { name_cont: debouncedInputValue },
-          page: 1,
-        })
-        .then((res) => res.artists?.data || []),
+      GraphQLClient.request<IArtistsType>(artistsQuery, {
+        q: { name_cont: debouncedInputValue },
+        page: 1,
+      }).then((res) => res.artists?.data || []),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers

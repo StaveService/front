@@ -29,7 +29,7 @@ import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
-import { graphQLClient } from "../../gql/client";
+import GraphQLClient from "../../gql/client";
 import { musicsQuery } from "../../gql/query/musics";
 
 const New: React.FC = () => {
@@ -84,7 +84,7 @@ const New: React.FC = () => {
   const searchQuery = useQuery(
     [queryKey.MUSICS, { page, query: debouncedTitle }],
     () =>
-      graphQLClient.request<IMusicsType>(musicsQuery, {
+      GraphQLClient.request<IMusicsType>(musicsQuery, {
         page,
         q: { title_eq: debouncedTitle },
       }),

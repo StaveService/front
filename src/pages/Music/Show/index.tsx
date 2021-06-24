@@ -40,7 +40,7 @@ import {
 } from "../../../interfaces";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import { musicQuery } from "../../../gql/query/music";
-import { graphQLClient } from "../../../gql/client";
+import GraphQLClient from "../../../gql/client";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
 import { lookupItunesMusic } from "../../../axios/itunes";
@@ -84,12 +84,10 @@ const Show: React.FC = () => {
   const music = useQuery<IMusic>(
     [queryKey.MUSIC, id],
     () =>
-      graphQLClient
-        .request<IMusicType>(musicQuery, {
-          id,
-          currentUserId: currentUser?.id,
-        })
-        .then((res) => res.music),
+      GraphQLClient.request<IMusicType>(musicQuery, {
+        id,
+        currentUserId: currentUser?.id,
+      }).then((res) => res.music),
     { onError }
   );
   const itunesMusic = useQuery<IItunesMusic>(

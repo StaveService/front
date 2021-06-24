@@ -9,7 +9,7 @@ import MusicsTable from "../components/Table/Music";
 import MenuCard from "../components/Card/Menu";
 import DefaultLayout from "../layout/Default";
 import queryKey from "../constants/queryKey.json";
-import { graphQLClient } from "../gql/client";
+import GraphQLClient from "../gql/client";
 import { musicsQuery } from "../gql/query/musics";
 import { IMusicsType } from "../interfaces";
 import useQuerySnackbar from "../hooks/useQuerySnackbar";
@@ -19,7 +19,7 @@ const Root: React.FC = () => {
   const { onError } = useQuerySnackbar();
   const { isLoading, data } = useQuery<IMusicsType>(
     [queryKey.MUSICS, page],
-    () => graphQLClient.request(musicsQuery, { page }),
+    () => GraphQLClient.request(musicsQuery, { page }),
     { onError }
   );
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>

@@ -13,7 +13,7 @@ import {
   setHeaders,
 } from "../../../../../../../../slices/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
-import { graphQLClient } from "../../../../../../../../gql/client";
+import GraphQLClient from "../../../../../../../../gql/client";
 import { bandsQuery } from "../../../../../../../../gql/query/bands";
 
 interface MutateVariables {
@@ -72,12 +72,10 @@ const Band: React.FC = () => {
   const bands = useQuery<IBand[]>(
     [queryKey.BANDS, { query: debouncedInputValue }],
     () =>
-      graphQLClient
-        .request<IBandsType>(bandsQuery, {
-          q: { name_cont: debouncedInputValue },
-          page: 1,
-        })
-        .then((res) => res.bands?.data || []),
+      GraphQLClient.request<IBandsType>(bandsQuery, {
+        q: { name_cont: debouncedInputValue },
+        page: 1,
+      }).then((res) => res.bands?.data || []),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers

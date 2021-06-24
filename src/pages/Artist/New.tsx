@@ -21,7 +21,7 @@ import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { IArtist, IArtistsType, IItunesArtist } from "../../interfaces";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import { graphQLClient } from "../../gql/client";
+import GraphQLClient from "../../gql/client";
 import { artistsQuery } from "../../gql/query/artists";
 import queryKey from "../../constants/queryKey.json";
 
@@ -76,7 +76,7 @@ const New: React.FC = () => {
   const searchQuery = useQuery(
     [queryKey.ARTISTS, { page, query: debouncedName }],
     () =>
-      graphQLClient.request<IArtistsType>(artistsQuery, {
+      GraphQLClient.request<IArtistsType>(artistsQuery, {
         page,
         q: { name_eq: debouncedName },
       }),

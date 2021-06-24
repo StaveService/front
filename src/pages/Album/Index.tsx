@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import AlbumTable from "../../components/Table/Album";
 import DefaultLayout from "../../layout/Default";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import { graphQLClient } from "../../gql/client";
+import GraphQLClient from "../../gql/client";
 import { albumsQuery } from "../../gql/query/albums";
 import { IAlbumsType } from "../../interfaces";
 import queryKey from "../../constants/queryKey.json";
@@ -13,7 +13,7 @@ const Index: React.FC = () => {
   const { onError } = useQuerySnackbar();
   const { isLoading, data } = useQuery<IAlbumsType>(
     [queryKey.ALBUMS, page],
-    () => graphQLClient.request(albumsQuery, { page }),
+    () => GraphQLClient.request(albumsQuery, { page }),
     { onError }
   );
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>

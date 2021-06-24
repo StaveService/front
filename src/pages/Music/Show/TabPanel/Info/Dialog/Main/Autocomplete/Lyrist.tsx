@@ -16,7 +16,7 @@ import {
   setHeaders,
 } from "../../../../../../../../slices/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
-import { graphQLClient } from "../../../../../../../../gql/client";
+import GraphQLClient from "../../../../../../../../gql/client";
 import { artistsQuery } from "../../../../../../../../gql/query/artists";
 import {
   deleteLyristMusic,
@@ -86,12 +86,10 @@ const Lyrist: React.FC = () => {
   const lyrists = useQuery<IArtist[]>(
     [queryKey.ARTISTS, { query: debouncedInputValue }],
     () =>
-      graphQLClient
-        .request<IArtistsType>(artistsQuery, {
-          q: { name_eq: debouncedInputValue },
-          page: 1,
-        })
-        .then((res) => res.artists?.data || []),
+      GraphQLClient.request<IArtistsType>(artistsQuery, {
+        q: { name_eq: debouncedInputValue },
+        page: 1,
+      }).then((res) => res.artists?.data || []),
     { enabled: !!debouncedInputValue, onError }
   );
 

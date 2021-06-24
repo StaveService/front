@@ -24,7 +24,7 @@ import ArtistDialog from "./Dialog/Artist";
 import { patchAlbumLink } from "../../../axios/axios";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
-import { graphQLClient } from "../../../gql/client";
+import GraphQLClient from "../../../gql/client";
 import { albumQuery } from "../../../gql/query/album";
 import { selectHeaders, setHeaders } from "../../../slices/currentUser";
 import { lookupItunesAlbum } from "../../../axios/itunes";
@@ -50,9 +50,9 @@ const Show: React.FC = () => {
   const album = useQuery<IAlbum>(
     [queryKey.ALBUM, id],
     () =>
-      graphQLClient
-        .request<IAlbumType>(albumQuery, { id, musicPage })
-        .then((res) => res.album),
+      GraphQLClient.request<IAlbumType>(albumQuery, { id, musicPage }).then(
+        (res) => res.album
+      ),
     { onError }
   );
   const itunesAlbum = useQuery<IItunesAlbum>(

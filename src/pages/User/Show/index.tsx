@@ -17,7 +17,7 @@ import SettingTabPanel from "./TabPanel/Setting";
 import DefaultLayout from "../../../layout/Default";
 import { IUser, IUserType } from "../../../interfaces";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
-import { graphQLClient } from "../../../gql/client";
+import GraphQLClient from "../../../gql/client";
 import { userQuery } from "../../../gql/query/user";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
@@ -48,15 +48,13 @@ const Show: React.FC = () => {
       },
     ],
     () =>
-      graphQLClient
-        .request<IUserType>(userQuery, {
-          id,
-          musicPage,
-          bookmarkedMusicPage,
-          bookmarkedBandPage,
-          bookmarkedArtistPage,
-        })
-        .then((res) => res.user),
+      GraphQLClient.request<IUserType>(userQuery, {
+        id,
+        musicPage,
+        bookmarkedMusicPage,
+        bookmarkedBandPage,
+        bookmarkedArtistPage,
+      }).then((res) => res.user),
     { onError }
   );
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>

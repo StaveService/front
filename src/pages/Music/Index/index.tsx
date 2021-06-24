@@ -5,7 +5,7 @@ import DefaultLayout from "../../../layout/Default";
 import queryKey from "../../../constants/queryKey.json";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import query from "./gql";
-import { graphQLClient } from "../../../gql/client";
+import GraphQLClient from "../../../gql/client";
 import { IMusicsType } from "../../../interfaces";
 
 const Index: React.FC = () => {
@@ -13,7 +13,7 @@ const Index: React.FC = () => {
   const { onError } = useQuerySnackbar();
   const { isLoading, data } = useQuery<IMusicsType>(
     [queryKey.MUSICS, page],
-    () => graphQLClient.request(query, { page }),
+    () => GraphQLClient.request(query, { page }),
     { onError }
   );
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>

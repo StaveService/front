@@ -35,7 +35,7 @@ import {
 import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../../../constants/queryKey.json";
-import { graphQLClient } from "../../../../../../gql/client";
+import GraphQLClient from "../../../../../../gql/client";
 import { albumsQuery } from "../../../../../../gql/query/albums";
 import {
   deleteAlbumMusic,
@@ -103,12 +103,10 @@ const Album: React.FC = () => {
   const albums = useQuery<IAlbum[]>(
     [queryKey.ALBUMS, { query: debouncedInputValue }],
     () =>
-      graphQLClient
-        .request<IAlbumsType>(albumsQuery, {
-          page: 1,
-          q: { title_cont: debouncedInputValue },
-        })
-        .then((res) => res.albums?.data || []),
+      GraphQLClient.request<IAlbumsType>(albumsQuery, {
+        page: 1,
+        q: { title_cont: debouncedInputValue },
+      }).then((res) => res.albums?.data || []),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers

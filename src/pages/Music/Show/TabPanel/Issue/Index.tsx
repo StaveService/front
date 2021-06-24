@@ -9,7 +9,7 @@ import routes from "../../../../../constants/routes.json";
 import IssueTable from "../../../../../components/Table/Issue";
 import { IIssueType } from "../../../../../interfaces";
 import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
-import { graphQLClient } from "../../../../../gql/client";
+import GraphQLClient from "../../../../../gql/client";
 import queryKey from "../../../../../constants/queryKey.json";
 import { issuesQuery } from "../../../../../gql/query/issues";
 
@@ -26,7 +26,7 @@ const Index: React.FC = () => {
       ? [queryKey.ISSUES, searchValue, page]
       : [queryKey.ISSUES, page],
     () =>
-      graphQLClient.request(issuesQuery, {
+      GraphQLClient.request(issuesQuery, {
         page,
         musicId: Number(match.params.id),
       }),

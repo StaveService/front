@@ -11,7 +11,7 @@ import { IAlphaTab, IMusicType } from "../../../../interfaces";
 import styles from "./index.module.css";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
-import { graphQLClient } from "../../../../gql/client";
+import GraphQLClient from "../../../../gql/client";
 import { musicQuery } from "../../../../gql/query/music";
 
 const settings = {
@@ -40,7 +40,7 @@ const Tab: React.FC = () => {
   // react-query
   useQuery<IMusicType>(
     [queryKey.MUSIC, id],
-    () => graphQLClient.request(musicQuery, { id }),
+    () => GraphQLClient.request(musicQuery, { id }),
     { onSuccess, onError, enabled: loading }
   );
   // handlers

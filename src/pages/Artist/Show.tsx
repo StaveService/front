@@ -32,7 +32,7 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../slices/currentUser";
-import { graphQLClient } from "../../gql/client";
+import GraphQLClient from "../../gql/client";
 import { artistQuery } from "../../gql/query/artist";
 import queryKey from "../../constants/queryKey.json";
 import { lookupItunesArtist } from "../../axios/itunes";
@@ -80,14 +80,12 @@ const Show: React.FC = () => {
   const artist = useQuery<IArtist>(
     [queryKey.ARTIST, id, { musicPage, albumPage }],
     () =>
-      graphQLClient
-        .request<IArtistType>(artistQuery, {
-          id,
-          currentUserId: currentUser?.id,
-          musicPage,
-          albumPage,
-        })
-        .then((res) => res.artist),
+      GraphQLClient.request<IArtistType>(artistQuery, {
+        id,
+        currentUserId: currentUser?.id,
+        musicPage,
+        albumPage,
+      }).then((res) => res.artist),
     { onError }
   );
   const wikipedia = useQuery<IWikipedia>(
