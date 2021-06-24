@@ -16,7 +16,7 @@ const Index: React.FC = () => {
     () => GraphQLClient.request(usersQuery, { page }),
     { onError }
   );
-  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   return (
     <DefaultLayout>
