@@ -17,7 +17,7 @@ switch (process.env.NODE_ENV) {
     axios.defaults.baseURL = "http://localhost:3000";
     break;
   case "production":
-    axios.defaults.baseURL = "";
+    axios.defaults.baseURL = "https://stave-back.herokuapp.com/";
     break;
   default:
     axios.defaults.baseURL = "http://localhost:3000";
