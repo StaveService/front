@@ -191,7 +191,8 @@ const Show: React.FC = () => {
             },
           }}
           spotify={{
-            link: `artist/${band.data?.link?.spotify || "undefined"}`,
+            type: "artist",
+            link: band.data?.link?.spotify,
             renderDialog(open, handleClose) {
               return (
                 <SpotifyArtistDialog

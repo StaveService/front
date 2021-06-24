@@ -101,7 +101,8 @@ const Show: React.FC = () => {
             },
           }}
           spotify={{
-            link: `album/${album.data?.link?.spotify || "undefined"}`,
+            type: "album",
+            link: album.data?.link?.spotify,
             renderDialog(open, handleClose) {
               return (
                 <SpotifyAlbumDialog

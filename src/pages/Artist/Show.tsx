@@ -129,8 +129,8 @@ const Show: React.FC = () => {
     updateLinkMutation.mutate({ itunes: selectedArtist.artistId });
   const handleWikipediaSelect = (selectedWikipedia: IWikipedia) =>
     updateLinkMutation.mutate({ wikipedia: selectedWikipedia.pageid });
-  const handleSpotifySelect = (selectedAlbum: ISpotifyArtist) =>
-    updateLinkMutation.mutate({ spotify: selectedAlbum.id });
+  const handleSpotifySelect = (selectedArtist: ISpotifyArtist) =>
+    updateLinkMutation.mutate({ spotify: selectedArtist.id });
   const handleSubmit = (value: string) =>
     updateLinkMutation.mutate({ twitter: value });
   const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
@@ -204,7 +204,8 @@ const Show: React.FC = () => {
             },
           }}
           spotify={{
-            link: `album/${artist.data?.link?.spotify || "undefined"}`,
+            type: "artist",
+            link: artist.data?.link?.spotify,
             renderDialog(open, handleClose) {
               return (
                 <SpotifyArtistDialog

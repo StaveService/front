@@ -89,7 +89,9 @@ function SpotifyAlbum({
       value={searchValue}
       open={open}
       loading={searchedSpotify.isLoading || isPending()}
-      cards={[]}
+      cards={
+        searchedSpotify.data ? searchedSpotify.data.albums.items : undefined
+      }
       showSearchBar={showSearchBar}
       onSelect={onSelect}
       onClose={onClose}

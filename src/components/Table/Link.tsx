@@ -23,7 +23,7 @@ interface RenderAndLink<T> {
 interface LinkProps {
   itunes?: RenderAndLink<string>;
   twitter?: RenderAndLink<string>;
-  spotify?: RenderAndLink<string>;
+  spotify?: RenderAndLink<string> & { type: string };
   wikipedia?: RenderAndLink<number>;
   musixmatch?: RenderAndLink<number>;
 }
@@ -89,7 +89,8 @@ const Link: React.FC<LinkProps> = ({
                 <LinkButton
                   startIcon={<SpotifyIcon />}
                   href={
-                    spotify.link && `https://open.spotify.com/${spotify.link}`
+                    spotify.link &&
+                    `https://open.spotify.com/${spotify.type}/${spotify.link}`
                   }
                 >
                   spotify
