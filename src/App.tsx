@@ -12,16 +12,6 @@ import Routes from "./Routes";
 import Header from "./components/Header";
 import theme from "./theme";
 
-switch (process.env.NODE_ENV) {
-  case "development":
-    axios.defaults.baseURL = "http://localhost:3000";
-    break;
-  case "production":
-    axios.defaults.baseURL = "https://stave-back.herokuapp.com/";
-    break;
-  default:
-    axios.defaults.baseURL = "http://localhost:3000";
-}
 const queryClient = new QueryClient();
 const App: React.FC = () => (
   <Provider store={store}>
