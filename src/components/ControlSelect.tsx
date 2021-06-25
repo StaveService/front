@@ -3,12 +3,13 @@ import { Control, RegisterOptions, useController } from "react-hook-form";
 import Select, { SelectProps } from "@material-ui/core/Select";
 
 type ControlSelectProps = SelectProps & {
+  name: string;
   control: Control;
   rules?: RegisterOptions;
 };
 
 const ControlSelect: React.FC<ControlSelectProps> = ({
-  name = "",
+  name,
   defaultValue,
   onChange,
   onKeyPress,
