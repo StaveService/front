@@ -6,23 +6,21 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Box from "@material-ui/core/Box";
-import SpotifyAlbumCard from "../../Card/Spotify/Album";
 import SpotifyButton from "../../Button/Spotify";
 import { remove, selectSpotifyToken, setToken } from "../../../slices/spotify";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
-import queryKey from "../../../constants/queryKey.json";
-import CardSearchDialogTest, { DialogProps } from "../CardSearchDialogTest";
-import { searchSpotify, spotifyAccount } from "../../../axios/spotify";
-import { ISpotifyAlbum, ISpotifyToken } from "../../../interfaces";
+import { DialogProps } from "../CardSearchDialogTest";
+import { spotifyAccount } from "../../../axios/spotify";
+import { ISpotifyToken, ISpotifyTypes } from "../../../interfaces";
 
-function Album({
-  defaultValue,
+interface LayoutProps<T extends ISpotifyTypes> extends DialogProps<T> {
+  children: (props: { handleError: (err: unknown) => void }) => React.ReactNode;
+}
+function Layout<T extends ISpotifyTypes>({
   open,
-  showSearchBar,
   onClose,
-  onSelect,
-}: DialogProps<ISpotifyAlbum>): JSX.Element {
+  children,
+}: Omit<LayoutProps<T>, "onSelect">): JSX.Element {
   const { onError } = useQuerySnackbar();
   const spotifyToken = useSelector(selectSpotifyToken);
   const dispatch = useDispatch();
@@ -61,32 +59,7 @@ function Album({
         </DialogActions>
       </Dialog>
     );
-  return (
-    <CardSearchDialogTest<ISpotifyAlbum>
-      defaultValue={defaultValue}
-      title="Spotify"
-      open={open}
-      useQueryArgs={{
-        key: [queryKey.SPOTIFY, queryKey.ALBUMS],
-        fn: (term: string) =>
-          searchSpotify<ISpotifyAlbum>(
-            "album",
-            term,
-            spotifyToken?.access_token
-          ).then((res) => res.albums.items),
-        options: { onError: handleError },
-      }}
-      showSearchBar={showSearchBar}
-      onSelect={onSelect}
-      onClose={onClose}
-    >
-      {(card, handleSelect) => (
-        <Box key={card.id} mb={2} onClick={handleSelect}>
-          <SpotifyAlbumCard album={card} />
-        </Box>
-      )}
-    </CardSearchDialogTest>
-  );
+  return <>{children({ handleError })}</>;
 }
 
-export default Album;
+export default Layout;
