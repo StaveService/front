@@ -10,10 +10,12 @@ import {
   IItunesAlbum,
   IItunesArtist,
   IItunesMusic,
+  IMusixmatchTrack,
   ISpotifyAlbum,
   ISpotifyArtist,
   ISpotifyTrack,
   ISpotifyTypes,
+  IWikipedia,
 } from "../../interfaces";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 
@@ -23,7 +25,9 @@ type TCardTypes =
   | IItunesMusic
   | ISpotifyAlbum
   | ISpotifyArtist
-  | ISpotifyTrack;
+  | ISpotifyTrack
+  | IMusixmatchTrack
+  | IWikipedia;
 
 export interface LayoutProps<TCard> {
   defaultValue?: string;

@@ -1,59 +1,37 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React from "react";
 import Box from "@material-ui/core/Box";
-import { useQuery } from "react-query";
-import { useDebounce } from "use-debounce/lib";
-import CardSearchDialog, { DialogProps } from "./CardSearchDialog";
+import CardSearchDialogTest, { DialogProps } from "./CardSearchDialogTest";
 import WikipediaCard from "../Card/Wikipedia";
-import {
-  IWikipedia,
-  IWikipediaResponse,
-  IWikipediaSearch,
-} from "../../interfaces";
+import { IWikipedia } from "../../interfaces";
 import queryKey from "../../constants/queryKey.json";
-import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { searchWikipedia } from "../../axios/wikipedia";
 
 function Wikipedia({
-  value,
+  defaultValue,
   open,
   showSearchBar,
   onClose,
   onSelect,
 }: DialogProps<IWikipedia>): JSX.Element {
-  const [searchValue, setSearchValue] = useState("");
-  const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
-  const { onError } = useQuerySnackbar();
-  const searchedWikipedia = useQuery<IWikipediaResponse<IWikipediaSearch>>(
-    [queryKey.WIKIPEDIA, debouncedSearchValue],
-    () => searchWikipedia(debouncedSearchValue),
-    {
-      enabled: !!debouncedSearchValue && open,
-      onError,
-    }
-  );
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setSearchValue(e.target.value);
-  useEffect(() => {
-    if (value) setSearchValue(value);
-  }, [value]);
   return (
-    <CardSearchDialog<IWikipedia>
+    <CardSearchDialogTest<IWikipedia>
+      defaultValue={defaultValue}
       title="Wikipedia"
-      value={searchValue}
       open={open}
-      loading={searchedWikipedia.isLoading || isPending()}
-      cards={searchedWikipedia.data?.query.search}
       showSearchBar={showSearchBar}
+      useQueryArgs={{
+        key: [queryKey.WIKIPEDIA],
+        fn: (term) => searchWikipedia(term).then((res) => res.query.search),
+      }}
       onSelect={onSelect}
       onClose={onClose}
-      onChange={handleChange}
     >
       {(card, handleSelect) => (
         <Box key={card.pageid} mb={2} onClick={handleSelect}>
           <WikipediaCard wikipedia={card} />
         </Box>
       )}
-    </CardSearchDialog>
+    </CardSearchDialogTest>
   );
 }
 

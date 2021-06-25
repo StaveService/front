@@ -2,10 +2,10 @@ import React from "react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import { IMusicmatchTrack } from "../../interfaces";
+import { IMusixmatchTrack } from "../../interfaces";
 
 interface IMusixmatchProps {
-  music: IMusicmatchTrack;
+  music: IMusixmatchTrack;
 }
 const Musixmatch: React.FC<IMusixmatchProps> = ({
   music: { track },

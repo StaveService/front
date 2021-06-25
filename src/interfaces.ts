@@ -300,7 +300,7 @@ export interface IMusixmatchResponse<T extends ISearchTrack | IGetTrackLyric> {
   };
 }
 export interface ISearchTrack {
-  ["track_list"]: IMusicmatchTrack[];
+  ["track_list"]: IMusixmatchTrack[];
 }
 export interface IGetTrackLyric {
   lyrics: {
@@ -310,7 +310,7 @@ export interface IGetTrackLyric {
     ["lyrics_id"]: number;
   };
 }
-export interface IMusicmatchTrack {
+export interface IMusixmatchTrack {
   track: {
     ["album_id"]: number;
     ["album_name"]: string;

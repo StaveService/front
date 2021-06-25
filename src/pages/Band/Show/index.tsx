@@ -179,7 +179,7 @@ const Show: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <WikipediaDialog
-                  value={band.data?.name}
+                  defaultValue={band.data?.name}
                   open={open}
                   onClose={handleClose}
                   onSelect={handleWikipediaSelect}
