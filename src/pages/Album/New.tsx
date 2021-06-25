@@ -8,14 +8,13 @@ import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
 import ControlTextField from "../../components/ControlTextField";
 import AlbumTable from "../../components/Table/Album";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesAlbumDialog from "../../components/Dialog/Itunes/Album";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
+import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
 import {
   IAlbum,
@@ -78,7 +77,7 @@ const New: React.FC = () => {
   // handlers
   const onSubmit = (data: PostParams<IAlbum, IAlbumLink>) =>
     createMutation.mutate(data);
-  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   const handleSelect = (selectedItem: IItunesAlbum) =>
     setSelectedItunesAlbum(selectedItem);
@@ -90,29 +89,6 @@ const New: React.FC = () => {
       setValue("link_attributes.itunes", collectionId);
     }
   }, [register, setValue, selectedItunesAlbum]);
-
-  const SearchedArtistCards = () => {
-    if (!searchQuery.data?.albums?.data.length) return null;
-    return (
-      <>
-        <Box my={3}>
-          <Alert severity="warning">
-            <AlertTitle>Warning</AlertTitle>
-            Album Already Existed — <strong>check it out!</strong>
-          </Alert>
-        </Box>
-        <Box mb={3}>
-          <AlbumTable
-            albums={searchQuery.data?.albums.data}
-            page={page}
-            pageCount={searchQuery.data?.albums.pagination.totalPages}
-            onPage={handlePage}
-            loading={searchQuery.isLoading}
-          />
-        </Box>
-      </>
-    );
-  };
 
   return (
     <DefaultLayout>
@@ -153,7 +129,15 @@ const New: React.FC = () => {
             onClose={handleClose}
             onSelect={handleSelect}
           />
-          <SearchedArtistCards />
+          <ExistAlert<IAlbum> data={searchQuery.data?.albums?.data}>
+            <AlbumTable
+              albums={searchQuery.data?.albums?.data}
+              page={page}
+              pageCount={searchQuery.data?.albums?.pagination.totalPages}
+              onPage={handlePage}
+              loading={searchQuery.isLoading}
+            />
+          </ExistAlert>
           <LoadingButton
             color="primary"
             loading={createMutation.isLoading}

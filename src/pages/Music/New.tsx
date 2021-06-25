@@ -7,8 +7,6 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import Image from "material-ui-image";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import ControlTextField from "../../components/ControlTextField";
 import ControlDropzone from "../../components/ControlDropzone";
@@ -16,6 +14,7 @@ import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import MusicTable from "../../components/Table/Music";
+import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
 import ItunesMusicDialog from "../../components/Dialog/Itunes/Music";
 import {
@@ -96,7 +95,7 @@ const New: React.FC = () => {
     reader.onload = (e) => setValue("tab", e.target?.result);
     reader.readAsText(acceptedFiles[0]);
   };
-  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   const handleSelect = (selectedCard: IItunesMusic) =>
     setSelectedItunesMusic(selectedCard);
@@ -109,28 +108,6 @@ const New: React.FC = () => {
     }
   }, [register, selectedItunesMusic, setValue]);
 
-  const SearchedMusicCards: React.FC = () => {
-    if (!searchQuery.data?.musics?.data.length) return null;
-    return (
-      <>
-        <Box my={3}>
-          <Alert severity="warning">
-            <AlertTitle>Warning</AlertTitle>
-            Music Already Existed — <strong>check it out!</strong>
-          </Alert>
-        </Box>
-        <Box mb={3}>
-          <MusicTable
-            musics={searchQuery.data.musics.data}
-            page={page}
-            pageCount={searchQuery.data?.musics.pagination.totalPages}
-            onPage={handlePage}
-            loading={searchQuery.isLoading}
-          />
-        </Box>
-      </>
-    );
-  };
   return (
     <DefaultLayout>
       <Paper>
@@ -179,7 +156,15 @@ const New: React.FC = () => {
             onClose={handleClose}
             onSelect={handleSelect}
           />
-          <SearchedMusicCards />
+          <ExistAlert<IMusic> data={searchQuery.data?.musics?.data}>
+            <MusicTable
+              musics={searchQuery.data?.musics?.data}
+              page={page}
+              pageCount={searchQuery.data?.musics?.pagination.totalPages}
+              onPage={handlePage}
+              loading={searchQuery.isLoading}
+            />
+          </ExistAlert>
           <LoadingButton
             color="primary"
             loading={createMusicMutation.isLoading}

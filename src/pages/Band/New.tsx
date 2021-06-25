@@ -7,14 +7,13 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import BandTable from "../../components/Table/Band";
+import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import { IBand, IBandLink, IBandsType, IItunesArtist } from "../../interfaces";
@@ -77,7 +76,7 @@ const New: React.FC = () => {
   // handlers
   const onSubmit = (data: PostParams<IBand, IBandLink>) =>
     createMutation.mutate(data);
-  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   const handleSelect = (selectedItem: IItunesArtist) =>
     setSelectedItunesArtist(selectedItem);
@@ -90,29 +89,6 @@ const New: React.FC = () => {
       setValue("name", artistName);
     }
   }, [register, selectedItunesArtist, setValue]);
-
-  const SearchedBandCards = () => {
-    if (!searchQuery.data?.bands?.data.length) return null;
-    return (
-      <>
-        <Box my={3}>
-          <Alert severity="warning">
-            <AlertTitle>Warning</AlertTitle>
-            Band Already Existed — <strong>check it out!</strong>
-          </Alert>
-        </Box>
-        <Box mb={3}>
-          <BandTable
-            bands={searchQuery.data?.bands.data}
-            page={page}
-            pageCount={searchQuery.data?.bands.pagination.totalPages}
-            onPage={handlePage}
-            loading={searchQuery.isLoading}
-          />
-        </Box>
-      </>
-    );
-  };
 
   return (
     <DefaultLayout>
@@ -150,7 +126,15 @@ const New: React.FC = () => {
             onClose={handleClose}
             onSelect={handleSelect}
           />
-          <SearchedBandCards />
+          <ExistAlert<IBand> data={searchQuery.data?.bands?.data}>
+            <BandTable
+              bands={searchQuery.data?.bands?.data}
+              page={page}
+              pageCount={searchQuery.data?.bands?.pagination.totalPages}
+              onPage={handlePage}
+              loading={searchQuery.isLoading}
+            />
+          </ExistAlert>
           <LoadingButton
             color="primary"
             loading={createMutation.isLoading}

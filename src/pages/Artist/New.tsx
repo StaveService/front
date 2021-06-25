@@ -7,14 +7,13 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
 import { postArtist, PostParams } from "../../axios/axios";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import ArtistTable from "../../components/Table/Artist";
+import ExistAlert from "../../components/Alert/Exist";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
@@ -83,7 +82,7 @@ const New: React.FC = () => {
   // handlers
   const onSubmit = (data: PostParams<IArtist, IArtistLink>) =>
     createMutation.mutate(data);
-  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   const handleSelect = (selectedItem: IItunesArtist) =>
     setSelectedItunesArtist(selectedItem);
@@ -96,29 +95,6 @@ const New: React.FC = () => {
       setValue("name", artistName);
     }
   }, [register, selectedItunesArtist, setValue]);
-
-  const SearchedArtistsCard = () => {
-    if (!searchQuery.data?.artists?.data.length) return <></>;
-    return (
-      <>
-        <Box my={3}>
-          <Alert severity="warning">
-            <AlertTitle>Warning</AlertTitle>
-            Album Already Existed — <strong>check it out!</strong>
-          </Alert>
-        </Box>
-        <Box mb={3}>
-          <ArtistTable
-            artists={searchQuery.data?.artists.data}
-            page={page}
-            pageCount={searchQuery.data?.artists.pagination.totalPages}
-            onPage={handlePage}
-            loading={searchQuery.isLoading}
-          />
-        </Box>
-      </>
-    );
-  };
 
   return (
     <DefaultLayout>
@@ -156,7 +132,15 @@ const New: React.FC = () => {
             onClose={handleClose}
             onSelect={handleSelect}
           />
-          <SearchedArtistsCard />
+          <ExistAlert<IArtist> data={searchQuery.data?.artists?.data}>
+            <ArtistTable
+              artists={searchQuery.data?.artists?.data}
+              page={page}
+              pageCount={searchQuery.data?.artists?.pagination.totalPages}
+              onPage={handlePage}
+              loading={searchQuery.isLoading}
+            />
+          </ExistAlert>
           <LoadingButton
             color="primary"
             disabled={!name}
