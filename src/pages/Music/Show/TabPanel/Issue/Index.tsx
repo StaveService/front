@@ -32,7 +32,7 @@ const Index: React.FC = () => {
       }),
     { onError }
   );
-  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   return (
     <>

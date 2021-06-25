@@ -122,9 +122,9 @@ const Show: React.FC = () => {
     updateLinkMutation.mutate({ twitter: value });
   const handleCreateBookmarkMutation = () => createBookmarkMutation.mutate();
   const handleDestroyBookmarkMutation = () => destroyBookmarkMutation.mutate();
-  const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
+  const handleMusicPage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setMusicPage(value);
-  const handleAlbumPage = (event: React.ChangeEvent<unknown>, value: number) =>
+  const handleAlbumPage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setAlbumPage(value);
   return (
     <DefaultLayout>

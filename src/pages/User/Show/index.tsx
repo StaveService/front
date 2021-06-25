@@ -57,7 +57,7 @@ const Show: React.FC = () => {
       }).then((res) => res.user),
     { onError }
   );
-  const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
+  const handleMusicPage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setMusicPage(value);
   const handleBookmarkedMusicPage = (
     event: React.ChangeEvent<unknown>,
