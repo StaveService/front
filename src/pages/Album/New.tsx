@@ -17,7 +17,12 @@ import ItunesAlbumDialog from "../../components/Dialog/Itunes/Album";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import DefaultLayout from "../../layout/Default";
-import { IAlbum, IAlbumsType, IItunesAlbum } from "../../interfaces";
+import {
+  IAlbum,
+  IAlbumLink,
+  IAlbumsType,
+  IItunesAlbum,
+} from "../../interfaces";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
@@ -25,7 +30,7 @@ import GraphQLClient from "../../gql/client";
 import { albumsQuery } from "../../gql/query/albums";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
-import { postAlbum } from "../../axios/axios";
+import { postAlbum, PostParams } from "../../axios/axios";
 
 const New: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -58,7 +63,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newAlbum: IAlbum) => postAlbum(newAlbum, headers),
+    (newAlbum: PostParams<IAlbum, IAlbumLink>) => postAlbum(newAlbum, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -71,17 +76,18 @@ const New: React.FC = () => {
     { enabled: !!debouncedTitle, onError }
   );
   // handlers
-  const onSubmit = (data: IAlbum) => createMutation.mutate(data);
+  const onSubmit = (data: PostParams<IAlbum, IAlbumLink>) =>
+    createMutation.mutate(data);
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   const handleSelect = (selectedItem: IItunesAlbum) =>
     setSelectedItunesAlbum(selectedItem);
   useEffect(() => {
-    register("album_link_attributes.itunes");
+    register("link_attributes.itunes");
     if (selectedItunesAlbum) {
       const { collectionName, collectionId } = selectedItunesAlbum;
       setValue("title", collectionName);
-      setValue("album_link_attributes.itunes", collectionId);
+      setValue("link_attributes.itunes", collectionId);
     }
   }, [register, setValue, selectedItunesAlbum]);
 

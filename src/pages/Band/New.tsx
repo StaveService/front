@@ -17,8 +17,8 @@ import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import BandTable from "../../components/Table/Band";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import { IBand, IBandsType, IItunesArtist } from "../../interfaces";
-import { postBand } from "../../axios/axios";
+import { IBand, IBandLink, IBandsType, IItunesArtist } from "../../interfaces";
+import { postBand, PostParams } from "../../axios/axios";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import GraphQLClient from "../../gql/client";
@@ -62,7 +62,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newBand: IBand) => postBand(newBand, headers),
+    (newBand: PostParams<IBand, IBandLink>) => postBand(newBand, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery<IBandsType>(
@@ -75,17 +75,18 @@ const New: React.FC = () => {
     { enabled: !!debouncedName, onError }
   );
   // handlers
-  const onSubmit = (data: IBand) => createMutation.mutate(data);
+  const onSubmit = (data: PostParams<IBand, IBandLink>) =>
+    createMutation.mutate(data);
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   const handleSelect = (selectedItem: IItunesArtist) =>
     setSelectedItunesArtist(selectedItem);
 
   useEffect(() => {
-    register("band_link_attributes.itunes");
+    register("link_attributes.itunes");
     if (selectedItunesArtist) {
       const { artistName, artistId } = selectedItunesArtist;
-      setValue("band_link_attributes.itunes", artistId);
+      setValue("link_attributes.itunes", artistId);
       setValue("name", artistName);
     }
   }, [register, selectedItunesArtist, setValue]);

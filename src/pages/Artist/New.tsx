@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
-import { postArtist } from "../../axios/axios";
+import { postArtist, PostParams } from "../../axios/axios";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
@@ -18,7 +18,12 @@ import ArtistTable from "../../components/Table/Artist";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import { IArtist, IArtistsType, IItunesArtist } from "../../interfaces";
+import {
+  IArtist,
+  IArtistLink,
+  IArtistsType,
+  IItunesArtist,
+} from "../../interfaces";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import GraphQLClient from "../../gql/client";
@@ -62,7 +67,8 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newArtist: IArtist) => postArtist(newArtist, headers),
+    (newArtist: PostParams<IArtist, IArtistLink>) =>
+      postArtist(newArtist, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -75,17 +81,18 @@ const New: React.FC = () => {
     { enabled: !!debouncedName, onError }
   );
   // handlers
-  const onSubmit = (data: IArtist) => createMutation.mutate(data);
+  const onSubmit = (data: PostParams<IArtist, IArtistLink>) =>
+    createMutation.mutate(data);
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   const handleSelect = (selectedItem: IItunesArtist) =>
     setSelectedItunesArtist(selectedItem);
 
   useEffect(() => {
-    register("artist_link_attributes.itunes");
+    register("link_attributes.itunes");
     if (selectedItunesArtist) {
       const { artistName, artistId } = selectedItunesArtist;
-      setValue("artist_link_attributes.itunes", artistId);
+      setValue("link_attributes.itunes", artistId);
       setValue("name", artistName);
     }
   }, [register, selectedItunesArtist, setValue]);

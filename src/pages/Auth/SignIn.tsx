@@ -21,7 +21,6 @@ import {
 import { signInSchema } from "../../schema";
 import { signIn } from "../../axios/axios";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
-import testUser from "../../constants/user.json";
 
 const SignIn: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();

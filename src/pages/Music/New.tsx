@@ -18,8 +18,13 @@ import LoadingCircularProgress from "../../components/Loading/LoadingCircularPro
 import MusicTable from "../../components/Table/Music";
 import DefaultLayout from "../../layout/Default";
 import ItunesMusicDialog from "../../components/Dialog/Itunes/Music";
-import { IItunesMusic, IMusic, IMusicsType } from "../../interfaces";
-import { postMusic } from "../../axios/axios";
+import {
+  IItunesMusic,
+  IMusic,
+  IMusicLink,
+  IMusicsType,
+} from "../../interfaces";
+import { postMusic, PostParams } from "../../axios/axios";
 import {
   selectCurrentUser,
   selectHeaders,
@@ -70,7 +75,8 @@ const New: React.FC = () => {
       );
   };
   const createMusicMutation = useMutation(
-    (newMusic: IMusic) => postMusic(currentUser?.id, newMusic, headers),
+    (newMusic: PostParams<IMusic, IMusicLink>) =>
+      postMusic(currentUser?.id, newMusic, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -83,7 +89,8 @@ const New: React.FC = () => {
     { enabled: !isPending() && !!debouncedTitle, onError }
   );
   // handlers
-  const onSubmit = (data: IMusic) => createMusicMutation.mutate(data);
+  const onSubmit = (data: PostParams<IMusic, IMusicLink>) =>
+    createMusicMutation.mutate(data);
   const handleDrop = (acceptedFiles: File[]) => {
     const reader = new FileReader();
     reader.onload = (e) => setValue("tab", e.target?.result);

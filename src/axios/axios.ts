@@ -21,6 +21,18 @@ import {
 } from "../interfaces";
 import routes from "../constants/routes.json";
 
+export type PostParams<
+  T extends IMusic | IAlbum | IBand | IArtist,
+  K extends IMusicLink | IAlbumLink | IBandLink | IArtistLink
+> = Omit<T, "id"> & {
+  ["link_attributes"]: Omit<K, "id">;
+};
+declare module "axios" {
+  export interface AxiosRequestConfig {
+    "Key-inflection"?: string;
+  }
+}
+
 switch (process.env.NODE_ENV) {
   case "development":
     axios.defaults.baseURL = "http://localhost:3000";
@@ -30,12 +42,6 @@ switch (process.env.NODE_ENV) {
     break;
   default:
     axios.defaults.baseURL = "http://localhost:3000";
-}
-
-declare module "axios" {
-  export interface AxiosRequestConfig {
-    "Key-inflection"?: string;
-  }
 }
 
 export const signIn = (
@@ -51,15 +57,9 @@ export const signUp = (
 export const deleteUser = (id: number): Promise<AxiosResponse> =>
   axios.delete(`/users/${id}`);
 
-type postParams<
-  T extends IMusic | IAlbum | IBand | IArtist,
-  K extends IMusicLink | IAlbumLink | IBandLink | IArtistLink
-> = Omit<T, "id"> & {
-  ["link_attributes"]: Omit<K, "id">;
-};
 export const postMusic = (
   userId: number | undefined,
-  newMusic: postParams<IMusic, IMusicLink>,
+  newMusic: PostParams<IMusic, IMusicLink>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IMusic>> =>
   axios.post<IMusic>(
@@ -75,7 +75,7 @@ export const deleteMusic = (
   axios.delete(`${routes.USERS}/${userId}${routes.MUSICS}/${musicId}`, headers);
 
 export const postAlbum = (
-  newAlbum: postParams<IAlbum, IAlbumLink>,
+  newAlbum: PostParams<IAlbum, IAlbumLink>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IAlbum>> =>
   axios.post<IAlbum>(routes.ALBUMS, newAlbum, headers);
@@ -86,7 +86,7 @@ export const deleteAlbum = (
   axios.delete(`${routes.ALBUMS}/${albumId}`, headers);
 
 export const postBand = (
-  newBand: postParams<IBand, IBandLink>,
+  newBand: PostParams<IBand, IBandLink>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IBand>> =>
   axios.post<IBand>(routes.BANDS, newBand, headers);
@@ -97,7 +97,7 @@ export const deleteBand = (
   axios.delete(`${routes.BANDS}/${bandId}`, headers);
 
 export const postArtist = (
-  newArtist: postParams<IArtist, IArtistLink>,
+  newArtist: PostParams<IArtist, IArtistLink>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IArtist>> =>
   axios.post<IBand>(routes.ARTISTS, newArtist, headers);
