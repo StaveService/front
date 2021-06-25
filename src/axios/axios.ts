@@ -51,11 +51,15 @@ export const signUp = (
 export const deleteUser = (id: number): Promise<AxiosResponse> =>
   axios.delete(`/users/${id}`);
 
+type postParams<
+  T extends IMusic | IAlbum | IBand | IArtist,
+  K extends IMusicLink | IAlbumLink | IBandLink | IArtistLink
+> = Omit<T, "id"> & {
+  ["link_attributes"]: Omit<K, "id">;
+};
 export const postMusic = (
   userId: number | undefined,
-  newMusic: Omit<IMusic, "id"> & {
-    ["link_attributes"]: Omit<IMusicLink, "id">;
-  },
+  newMusic: postParams<IMusic, IMusicLink>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IMusic>> =>
   axios.post<IMusic>(
@@ -71,7 +75,7 @@ export const deleteMusic = (
   axios.delete(`${routes.USERS}/${userId}${routes.MUSICS}/${musicId}`, headers);
 
 export const postAlbum = (
-  newAlbum: Omit<IAlbum, "id">,
+  newAlbum: postParams<IAlbum, IAlbumLink>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IAlbum>> =>
   axios.post<IAlbum>(routes.ALBUMS, newAlbum, headers);
@@ -82,7 +86,7 @@ export const deleteAlbum = (
   axios.delete(`${routes.ALBUMS}/${albumId}`, headers);
 
 export const postBand = (
-  newBand: Omit<IBand, "id">,
+  newBand: postParams<IBand, IBandLink>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IBand>> =>
   axios.post<IBand>(routes.BANDS, newBand, headers);
@@ -93,7 +97,7 @@ export const deleteBand = (
   axios.delete(`${routes.BANDS}/${bandId}`, headers);
 
 export const postArtist = (
-  newArtist: Omit<IArtist, "id">,
+  newArtist: postParams<IArtist, IArtistLink>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IArtist>> =>
   axios.post<IBand>(routes.ARTISTS, newArtist, headers);

@@ -11,13 +11,25 @@ import {
   deleteArtist,
   postArtist,
   patchMusicLink,
+  postMusicBookmark,
+  deleteMusicBookmark,
+  postBandBookmark,
+  deleteArtistBookmark,
+  postArtistBookmark,
+  patchAlbumLink,
+  deleteBandBookmark,
+  patchArtistLink,
+  patchBandLink,
 } from "./axios";
 import {
   IAlbum,
   IArtist,
+  IArtistBookmark,
   IBand,
+  IBandBookmark,
   IHeaders,
   IMusic,
+  IMusicBookmark,
   ITokenHeaders,
   IUser,
 } from "../interfaces";
@@ -99,6 +111,25 @@ describe(routes.MUSICS, () => {
     setHeaders(res.headers);
     expect(res.status).toBe(201);
   });
+  describe(routes.BOOKMARKS, () => {
+    let bookmark: IMusicBookmark;
+    it("POST", async () => {
+      const res = await postMusicBookmark(user.id, music.id, headers);
+      bookmark = res.data;
+      setHeaders(res.headers);
+      expect(res.status).toBe(201);
+    });
+    it("DELETE", async () => {
+      const res = await deleteMusicBookmark(
+        user.id,
+        music.id,
+        bookmark.id,
+        headers
+      );
+      setHeaders(res.headers);
+      expect(res.status).toBe(204);
+    });
+  });
   describe(routes.LINKS, () => {
     it("PATCH", async () => {
       const res = await patchMusicLink(
@@ -121,10 +152,28 @@ describe(routes.MUSICS, () => {
 describe(routes.ALBUMS, () => {
   let album: IAlbum;
   it("POST", async () => {
-    const res = await postAlbum({ title: "testAlbum" }, headers);
+    const res = await postAlbum(
+      {
+        title: "testAlbum",
+        link_attributes: { itunes: 0, spotify: "spotify" },
+      },
+      headers
+    );
     album = res.data;
     setHeaders(res.headers);
     expect(res.status).toBe(201);
+  });
+  describe(routes.LINKS, () => {
+    it("PATCH", async () => {
+      const res = await patchAlbumLink(
+        album.id,
+        album.link?.id,
+        { itunes: 0 },
+        headers
+      );
+      setHeaders(res.headers);
+      expect(res.status).toBe(200);
+    });
   });
   it("DELETE", async () => {
     const res = await deleteAlbum(album.id, headers);
@@ -136,10 +185,47 @@ describe(routes.ALBUMS, () => {
 describe(routes.BANDS, () => {
   let band: IBand;
   it("POST", async () => {
-    const res = await postBand({ name: "testBand" }, headers);
+    const res = await postBand(
+      {
+        name: "testBand",
+        link_attributes: {
+          itunes: 0,
+          spotify: "spotify",
+          wikipedia: 0,
+          twitter: "string",
+        },
+      },
+      headers
+    );
     band = res.data;
     setHeaders(res.headers);
     expect(res.status).toBe(201);
+  });
+  describe(routes.BOOKMARKS, () => {
+    let bookmark: IBandBookmark;
+    it("POST", async () => {
+      const res = await postBandBookmark(band.id, headers);
+      bookmark = res.data;
+      setHeaders(res.headers);
+      expect(res.status).toBe(201);
+    });
+    it("DELETE", async () => {
+      const res = await deleteBandBookmark(band.id, bookmark.id, headers);
+      setHeaders(res.headers);
+      expect(res.status).toBe(204);
+    });
+  });
+  describe(routes.LINKS, () => {
+    it("PATCH", async () => {
+      const res = await patchBandLink(
+        band.id,
+        band.link?.id,
+        { itunes: 0 },
+        headers
+      );
+      setHeaders(res.headers);
+      expect(res.status).toBe(200);
+    });
   });
   it("DELETE", async () => {
     const res = await deleteBand(band.id, headers);
@@ -150,10 +236,47 @@ describe(routes.BANDS, () => {
 describe(routes.ARTISTS, () => {
   let artist: IArtist;
   it("POST", async () => {
-    const res = await postArtist({ name: "testArtist" }, headers);
+    const res = await postArtist(
+      {
+        name: "testArtist",
+        link_attributes: {
+          itunes: 0,
+          spotify: "spotify",
+          wikipedia: 0,
+          twitter: "string",
+        },
+      },
+      headers
+    );
     artist = res.data;
     setHeaders(res.headers);
     expect(res.status).toBe(201);
+  });
+  describe(routes.BOOKMARKS, () => {
+    let bookmark: IArtistBookmark;
+    it("POST", async () => {
+      const res = await postArtistBookmark(artist.id, headers);
+      bookmark = res.data;
+      setHeaders(res.headers);
+      expect(res.status).toBe(201);
+    });
+    it("DELETE", async () => {
+      const res = await deleteArtistBookmark(artist.id, bookmark.id, headers);
+      setHeaders(res.headers);
+      expect(res.status).toBe(204);
+    });
+  });
+  describe(routes.LINKS, () => {
+    it("PATCH", async () => {
+      const res = await patchArtistLink(
+        artist.id,
+        artist.link?.id,
+        { itunes: 0 },
+        headers
+      );
+      setHeaders(res.headers);
+      expect(res.status).toBe(200);
+    });
   });
   it("DELETE", async () => {
     const res = await deleteArtist(artist.id, headers);

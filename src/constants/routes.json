@@ -19,9 +19,6 @@
   "ARTIST_BANDS": "/artist_bands",
   "ARTIST_ALBUMS": "/artist_albums",
   "BAND_ALBUMS": "/band_albums",
-  "MUSIC_BOOKMARKS": "/music_bookmarks",
-  "BAND_BOOKMARKS": "/band_bookmarks",
-  "ARTIST_BOOKMARKS": "/artist_bookmarks",
   "TAB": "/tab",
   "NEW": "/new",
   "LYRIC": "/lyric"
