@@ -106,7 +106,7 @@ const Show: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <SpotifyAlbumDialog
-                  value={album.data?.title}
+                  defaultValue={album.data?.title}
                   open={open}
                   onClose={handleClose}
                   onSelect={handleSpotifySelect}

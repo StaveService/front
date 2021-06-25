@@ -97,7 +97,7 @@ const Info: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <SpotifyTrackDialog
-                  value={music?.title}
+                  defaultValue={music?.title}
                   open={open}
                   onClose={handleClose}
                   onSelect={handleSpotifySelect}

@@ -4,10 +4,26 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import TextField from "@material-ui/core/TextField";
-import { useQuery } from "react-query";
+import { useQuery, UseQueryOptions } from "react-query";
 import { useDebounce } from "use-debounce/lib";
-import { IItunesAlbum, IItunesArtist, IItunesMusic } from "../../interfaces";
+import {
+  IItunesAlbum,
+  IItunesArtist,
+  IItunesMusic,
+  ISpotifyAlbum,
+  ISpotifyArtist,
+  ISpotifyTrack,
+  ISpotifyTypes,
+} from "../../interfaces";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
+
+type TCardTypes =
+  | IItunesAlbum
+  | IItunesArtist
+  | IItunesMusic
+  | ISpotifyAlbum
+  | ISpotifyArtist
+  | ISpotifyTrack;
 
 export interface LayoutProps<TCard> {
   defaultValue?: string;
@@ -16,17 +32,23 @@ export interface LayoutProps<TCard> {
   showSearchBar?: boolean;
   useQueryArgs: {
     key: string[];
-    fn: (term: string) => Promise<TCard[]>;
+    fn: (
+      term: string,
+      spotifyType?: ISpotifyTypes,
+      spotifyAccessToken?: string
+    ) => Promise<TCard[]>;
+    options?: UseQueryOptions<TCard[]>;
   };
   children: (card: TCard, handleSelect: () => void) => React.ReactNode;
   onClose: () => void;
   onSelect: (selectedCard: TCard) => void;
 }
-export type DialogProps<
-  TCard extends IItunesAlbum | IItunesArtist | IItunesMusic
-> = Omit<LayoutProps<TCard>, "useQueryArgs" | "title" | "children">;
+export type DialogProps<TCard extends TCardTypes> = Omit<
+  LayoutProps<TCard>,
+  "useQueryArgs" | "title" | "children"
+>;
 
-function Layout<TCard extends IItunesAlbum | IItunesArtist | IItunesMusic>({
+function Layout<TCard extends TCardTypes>({
   defaultValue,
   open,
   title,
@@ -45,6 +67,7 @@ function Layout<TCard extends IItunesAlbum | IItunesArtist | IItunesMusic>({
     {
       enabled: !!debouncedSearchValue && !isPending() && open,
       onError,
+      ...useQueryArgs.options,
     }
   );
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>

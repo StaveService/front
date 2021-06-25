@@ -194,7 +194,7 @@ const Show: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <SpotifyArtistDialog
-                  value={band.data?.name}
+                  defaultValue={band.data?.name}
                   open={open}
                   onClose={handleClose}
                   onSelect={handleSpotifySelect}
