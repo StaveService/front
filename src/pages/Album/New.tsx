@@ -124,7 +124,7 @@ const New: React.FC = () => {
             disableElevation
           />
           <ItunesAlbumDialog
-            value={title}
+            defaultValue={title}
             open={open}
             onClose={handleClose}
             onSelect={handleSelect}

@@ -151,7 +151,7 @@ const New: React.FC = () => {
             disableElevation
           />
           <ItunesMusicDialog
-            value={debouncedTitle}
+            defaultValue={debouncedTitle}
             open={open}
             onClose={handleClose}
             onSelect={handleSelect}

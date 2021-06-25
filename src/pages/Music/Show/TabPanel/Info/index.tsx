@@ -82,7 +82,7 @@ const Info: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <ItunesMusicDialog
-                  value={music?.title}
+                  defaultValue={music?.title}
                   open={open}
                   onClose={handleClose}
                   onSelect={handleItunesSelect}

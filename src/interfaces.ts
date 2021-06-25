@@ -254,9 +254,7 @@ export interface IItunesAlbum extends IItunesArtwork {
   trackCount: number;
   wrapperType: "collection";
 }
-export interface IItunesResponse<
-  T extends IItunesAlbum | IItunesArtist | IItunesMusic
-> {
+export interface IItunesResponse<T> {
   resultCount: number;
   results: T[];
 }

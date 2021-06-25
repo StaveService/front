@@ -165,7 +165,7 @@ const Show: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <ItunesArtistDialog
-                  value={band.data?.name}
+                  defaultValue={band.data?.name}
                   open={open}
                   onClose={handleClose}
                   onSelect={handleItunesSelect}

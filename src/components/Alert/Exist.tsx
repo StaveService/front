@@ -12,7 +12,7 @@ function Exist<T extends IArtist | IAlbum>({
   data,
   children,
 }: ExistProps<T>): JSX.Element {
-  if (data?.length) return <></>;
+  if (!data?.length) return <></>;
   return (
     <>
       <Box my={3}>
