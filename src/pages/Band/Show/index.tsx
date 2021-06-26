@@ -137,6 +137,7 @@ const Show: React.FC = () => {
         </Grid>
         <Grid xs={1}>
           <BookmarkButton
+            count={band.data?.bookmarksCount}
             bookmarked={!!band.data?.bookmark || false}
             onCreate={handleCreateBookmarkMutation}
             onDestroy={handleDestroyBookmarkMutation}

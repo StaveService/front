@@ -59,6 +59,7 @@ export const bandQuery = gql`
       bookmark(currentUserId: $currentUserId) {
         id
       }
+      bookmarksCount
     }
   }
 `;

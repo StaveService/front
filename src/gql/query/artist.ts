@@ -65,6 +65,7 @@ export const artistQuery = gql`
       bookmark(currentUserId: $currentUserId) {
         id
       }
+      bookmarksCount
     }
   }
 `;

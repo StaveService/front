@@ -100,7 +100,7 @@ export const postArtist = (
   newArtist: PostParams<IArtist, IArtistLink>,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IArtist>> =>
-  axios.post<IBand>(routes.ARTISTS, newArtist, headers);
+  axios.post<IArtist>(routes.ARTISTS, newArtist, headers);
 export const deleteArtist = (
   artistId: number,
   headers: IHeaders | undefined

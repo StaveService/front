@@ -46,6 +46,7 @@ export const musicQuery = gql`
       bookmark(currentUserId: $currentUserId) {
         id
       }
+      bookmarksCount
     }
   }
 `;

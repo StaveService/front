@@ -46,9 +46,8 @@ import { getWikipedia } from "../../axios/wikipedia";
 const Show: React.FC = () => {
   const [albumPage, setAlbumPage] = useState(1);
   const [musicPage, setMusicPage] = useState(1);
-  const params = useParams<{ id: string; artistId: string }>();
+  const params = useParams<{ id: string }>();
   const id = Number(params.id);
-  const artistId = Number(params.artistId);
   const { onError } = useQuerySnackbar();
   // react-redux
   const headers = useSelector(selectHeaders);
@@ -101,15 +100,12 @@ const Show: React.FC = () => {
       ),
     { enabled: !!artist.data?.link?.itunes, onError }
   );
-  const createMutation = useMutation(
-    () => postArtistBookmark(artistId, headers),
-    {
-      onSuccess: handleCreateSuccess,
-      onError,
-    }
-  );
+  const createMutation = useMutation(() => postArtistBookmark(id, headers), {
+    onSuccess: handleCreateSuccess,
+    onError,
+  });
   const destroyMutation = useMutation(
-    () => deleteArtistBookmark(artistId, artist.data?.bookmark?.id, headers),
+    () => deleteArtistBookmark(id, artist.data?.bookmark?.id, headers),
     {
       onSuccess: handleDestroySuccess,
       onError,
@@ -147,6 +143,7 @@ const Show: React.FC = () => {
         </Grid>
         <Grid xs={1}>
           <BookmarkButton
+            count={artist.data?.bookmarksCount}
             bookmarked={!!artist.data?.bookmark || false}
             onCreate={handleCreateMutation}
             onDestroy={handleDestroyMutation}

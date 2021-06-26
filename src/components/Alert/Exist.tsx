@@ -2,13 +2,13 @@ import Box from "@material-ui/core/Box";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import React from "react";
-import { IAlbum, IArtist } from "../../interfaces";
+import { IAlbum, IArtist, IBand } from "../../interfaces";
 
 interface ExistProps<T> {
   data: T[] | undefined;
   children: React.ReactChild;
 }
-function Exist<T extends IArtist | IAlbum>({
+function Exist<T extends IArtist | IAlbum | IBand>({
   data,
   children,
 }: ExistProps<T>): JSX.Element {

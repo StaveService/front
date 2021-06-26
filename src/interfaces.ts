@@ -36,6 +36,7 @@ export interface IBand extends IMusicsType, IAlbumsType {
   id: number;
   name: string;
   bookmark?: IBandBookmark;
+  bookmarksCount: number;
   artists?: IArtist[];
   link?: IBandLink;
 }
@@ -53,6 +54,7 @@ export interface IMusic {
   ["created_at"]?: string;
   ["updated_at"]?: string;
   bookmark?: IMusicBookmark;
+  bookmarksCount: number;
   user?: IUser;
   band?: IBand;
   artistMusics?: IArtistMusic[];
@@ -71,6 +73,7 @@ export interface IArtist extends IMusicsType, IAlbumsType {
   id: number;
   name: string;
   bookmark?: IArtistBookmark;
+  bookmarksCount: number;
   bands?: IBand[];
   link?: IArtistLink;
 }
