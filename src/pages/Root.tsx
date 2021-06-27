@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import Grid from "@material-ui/core/Grid";
@@ -22,7 +19,7 @@ const Root: React.FC = () => {
     () => GraphQLClient.request(musicsQuery, { page }),
     { onError }
   );
-  const handlePage = (event: React.ChangeEvent<unknown>, value: number) =>
+  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;

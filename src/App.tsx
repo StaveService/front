@@ -10,6 +10,7 @@ import { store, persistor } from "./store";
 import Routes from "./Routes";
 import Header from "./components/Header";
 import theme from "./theme";
+import AuthDialog from "./components/Dialog/Auth";
 
 const queryClient = new QueryClient();
 const App: React.FC = () => (
@@ -22,6 +23,7 @@ const App: React.FC = () => (
             <Router>
               <Header />
               <Routes />
+              <AuthDialog />
             </Router>
           </ThemeProvider>
         </PersistGate>
