@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import React, { useState } from "react";
 import {
   useLocation,
@@ -10,18 +10,29 @@ import {
 import Typography from "@material-ui/core/Typography";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Grid from "@material-ui/core/Grid";
+import { AxiosResponse } from "axios";
+import FollowButton from "../../../components/Button/Follow";
 import RootTabPanel from "./TabPanel/Root";
 import BookmarkTabPanel from "./TabPanel/Bookmark";
 import SettingTabPanel from "./TabPanel/Setting";
 import DefaultLayout from "../../../layout/Default";
-import { IUser, IUserType } from "../../../interfaces";
+import { IUser, IUserRelationship, IUserType } from "../../../interfaces";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import GraphQLClient from "../../../gql/client";
 import { userQuery } from "../../../gql/query/user";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
-import { selectCurrentUser } from "../../../slices/currentUser";
+import {
+  selectCurrentUser,
+  selectHeaders,
+  setHeaders,
+} from "../../../slices/currentUser";
+import {
+  deleteUserRelationship,
+  postUserRelationship,
+} from "../../../axios/axios";
 
 const Show: React.FC = () => {
   const [musicPage, setMusicPage] = useState(1);
@@ -30,12 +41,15 @@ const Show: React.FC = () => {
   const [bookmarkedArtistPage, setBookmarkedArtistPage] = useState(1);
   const { onError } = useQuerySnackbar();
   // react-redux
+  const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
+  const headers = useSelector(selectHeaders);
   // react-hook-form
   const match = useRouteMatch<{ id: string }>();
   const location = useLocation();
   const id = Number(match.params.id);
   // react-query
+  const queryClient = useQueryClient();
   const { isLoading, data } = useQuery<IUser>(
     [
       queryKey.USER,
@@ -51,29 +65,90 @@ const Show: React.FC = () => {
       GraphQLClient.request<IUserType>(userQuery, {
         id,
         musicPage,
+        currentUserId: currentUser?.id,
         bookmarkedMusicPage,
         bookmarkedBandPage,
         bookmarkedArtistPage,
       }).then((res) => res.user),
     { onError }
   );
+  const handleCreateSuccess = (res: AxiosResponse<IUserRelationship>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IUser | undefined>(
+      [
+        queryKey.USER,
+        id,
+        {
+          musicPage,
+          bookmarkedMusicPage,
+          bookmarkedBandPage,
+          bookmarkedArtistPage,
+        },
+      ],
+      (prev) => prev && { ...prev, followed: res.data }
+    );
+  };
+
+  const handleDeleteSuccess = (res: AxiosResponse) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IUser | undefined>(
+      [
+        queryKey.USER,
+        id,
+        {
+          musicPage,
+          bookmarkedMusicPage,
+          bookmarkedBandPage,
+          bookmarkedArtistPage,
+        },
+      ],
+      (prev) => prev && { ...prev, followed: undefined }
+    );
+  };
+  const createMutate = useMutation(() => postUserRelationship(id, headers), {
+    onSuccess: handleCreateSuccess,
+    onError,
+  });
+  const deleteMutate = useMutation(
+    () => deleteUserRelationship(id, data?.followed?.id, headers),
+    {
+      onSuccess: handleDeleteSuccess,
+      onError,
+    }
+  );
+  // handlers
   const handleMusicPage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setMusicPage(value);
   const handleBookmarkedMusicPage = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     value: number
   ) => setBookmarkedMusicPage(value);
   const handleBookmarkedBandPage = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     value: number
   ) => setBookmarkedBandPage(value);
   const handleBookmarkedArtistPage = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     value: number
   ) => setBookmarkedArtistPage(value);
+  const handleFollow = () => createMutate.mutate();
+  const handleUnfollow = () => deleteMutate.mutate();
   return (
     <DefaultLayout>
-      <Typography variant="h6">{data?.nickname}</Typography>
+      <Grid container>
+        <Grid item xs={11}>
+          <Typography variant="h6">{data?.nickname}</Typography>
+        </Grid>
+        <Grid item xs={1}>
+          <FollowButton
+            followed={!!data?.followed}
+            onFollow={handleFollow}
+            onUnfollow={handleUnfollow}
+          >
+            Follow
+          </FollowButton>
+        </Grid>
+      </Grid>
       <Tabs
         value={
           location.pathname.includes("issues")

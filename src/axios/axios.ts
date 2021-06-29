@@ -18,6 +18,7 @@ import {
   ISignSuccessResponse,
   ISignUpFormValues,
   IUserLink,
+  IUserRelationship,
 } from "../interfaces";
 import routes from "../constants/routes.json";
 
@@ -56,6 +57,26 @@ export const signUp = (
   });
 export const deleteUser = (id: number): Promise<AxiosResponse> =>
   axios.delete(`/users/${id}`);
+export const postUserRelationship = (
+  userId: number,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IUserRelationship>> =>
+  axios.post(`${routes.USERS}/${userId}${routes.RELATIONSHIPS}`, undefined, {
+    ...headers,
+  });
+export const deleteUserRelationship = (
+  userId: number,
+  followedId: number | undefined,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse> =>
+  axios.delete(
+    `${routes.USERS}/${userId}${routes.RELATIONSHIPS}/${
+      followedId || "undefined"
+    }`,
+    {
+      ...headers,
+    }
+  );
 
 export const postMusic = (
   userId: number | undefined,

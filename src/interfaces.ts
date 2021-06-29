@@ -27,10 +27,16 @@ export interface IUser
   introduction: string | null;
   ["created_at"]: string;
   link: IUserLink;
+  followed?: IUserRelationship;
 }
 export interface IUserLink {
   id: number;
   twitter: string;
+}
+export interface IUserRelationship {
+  id: number;
+  followedId: number;
+  followerId: number;
 }
 export interface IBand extends IMusicsType, IAlbumsType {
   id: number;

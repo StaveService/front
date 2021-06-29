@@ -3,6 +3,7 @@ import { gql } from "graphql-request";
 export const userQuery = gql`
   query getUser(
     $id: Int!
+    $currentUserId: Int
     $musicPage: Int!
     $bookmarkedMusicPage: Int!
     $bookmarkedBandPage: Int!
@@ -13,6 +14,9 @@ export const userQuery = gql`
       link {
         id
         twitter
+      }
+      followed(currentUserId: $currentUserId) {
+        id
       }
       musics(musicPage: $musicPage) {
         data {
