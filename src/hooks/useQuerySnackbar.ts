@@ -2,6 +2,7 @@
 import { useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
 import { open } from "../slices/authModal";
+import { remove } from "../slices/currentUser";
 
 const useQuerySnackbar = (): {
   onError: (err: unknown) => void;
@@ -11,7 +12,10 @@ const useQuerySnackbar = (): {
   const onError = (err: unknown) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    if (err.response?.status === 401) dispatch(open());
+    if (err.response?.status === 401) {
+      dispatch(remove());
+      dispatch(open());
+    }
     enqueueSnackbar(String(err), { variant: "error" });
   };
   return { onError };
