@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useRouteMatch } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -28,9 +28,10 @@ import GraphQLClient from "../../../gql/client";
 import { albumQuery } from "../../../gql/query/album";
 import { selectHeaders, setHeaders } from "../../../slices/currentUser";
 import { lookupItunesAlbum } from "../../../axios/itunes";
+import usePagenate from "../../../hooks/usePaginate";
 
 const Show: React.FC = () => {
-  const [musicPage, setMusicPage] = useState(1);
+  const [musicPage, handleMusicPage] = usePagenate();
   const { onError } = useQuerySnackbar();
   // react-router
   const match = useRouteMatch<{ id: string }>();
@@ -74,8 +75,6 @@ const Show: React.FC = () => {
     patchMutation.mutate({ itunes: selectedAlbum.collectionId });
   const handleSpotifySelect = (selectedAlbum: ISpotifyAlbum) =>
     patchMutation.mutate({ spotify: selectedAlbum.id });
-  const handleMusicPage = (event: React.ChangeEvent<unknown>, value: number) =>
-    setMusicPage(value);
   return (
     <DefaultLayout>
       <Typography variant="h5">

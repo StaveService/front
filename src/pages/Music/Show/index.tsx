@@ -67,14 +67,24 @@ const Show: React.FC = () => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
       [queryKey.MUSIC, id],
-      (prev) => prev && { ...prev, bookmark: res.data }
+      (prev) =>
+        prev && {
+          ...prev,
+          bookmark: res.data,
+          bookmarksCount: prev.bookmarksCount + 1,
+        }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
       [queryKey.MUSIC, id],
-      (prev) => prev && { ...prev, bookmark: undefined }
+      (prev) =>
+        prev && {
+          ...prev,
+          bookmark: undefined,
+          bookmarksCount: prev.bookmarksCount - 1,
+        }
     );
   };
   const handleError = (err: unknown) => {

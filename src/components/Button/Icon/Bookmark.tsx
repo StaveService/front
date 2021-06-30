@@ -22,7 +22,7 @@ const Bookmark: React.FC<BookmarkProps> = ({
     <IconButton {...props} onClick={bookmarked ? onDestroy : onCreate}>
       {bookmarked ? (
         <>
-          <Typography>{(count || 0) + 1}</Typography>
+          <Typography>{count || 0}</Typography>
           <StarIcon color="error" />
         </>
       ) : (

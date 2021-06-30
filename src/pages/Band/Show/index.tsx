@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
@@ -43,10 +43,11 @@ import {
   patchBandLink,
 } from "../../../axios/axios";
 import { getWikipedia } from "../../../axios/wikipedia";
+import usePagenate from "../../../hooks/usePaginate";
 
 const Show: React.FC = () => {
-  const [albumPage, setAlbumPage] = useState(1);
-  const [musicPage, setMusicPage] = useState(1);
+  const [albumPage, handleAlbumPage] = usePagenate();
+  const [musicPage, handleMusicPage] = usePagenate();
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const { onError } = useQuerySnackbar();
@@ -59,14 +60,24 @@ const Show: React.FC = () => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
       [queryKey.BAND, id, { musicPage, albumPage }],
-      (prev) => prev && { ...prev, bookmark: res.data }
+      (prev) =>
+        prev && {
+          ...prev,
+          bookmark: res.data,
+          bookmarksCount: prev.bookmarksCount + 1,
+        }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
       [queryKey.BAND, id, { musicPage, albumPage }],
-      (prev) => prev && { ...prev, bookmark: undefined }
+      (prev) =>
+        prev && {
+          ...prev,
+          bookmark: undefined,
+          bookmarksCount: prev.bookmarksCount - 1,
+        }
     );
   };
   const handleUpdateSuccess = (res: AxiosResponse<IBandLink>) => {
@@ -122,10 +133,6 @@ const Show: React.FC = () => {
     updateLinkMutation.mutate({ twitter: value });
   const handleCreateBookmarkMutation = () => createBookmarkMutation.mutate();
   const handleDestroyBookmarkMutation = () => destroyBookmarkMutation.mutate();
-  const handleMusicPage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setMusicPage(value);
-  const handleAlbumPage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setAlbumPage(value);
   return (
     <DefaultLayout>
       <Grid container>

@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import React, { useState } from "react";
+import React from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
@@ -42,10 +42,11 @@ import {
   postArtistBookmark,
 } from "../../axios/axios";
 import { getWikipedia } from "../../axios/wikipedia";
+import usePagenate from "../../hooks/usePaginate";
 
 const Show: React.FC = () => {
-  const [albumPage, setAlbumPage] = useState(1);
-  const [musicPage, setMusicPage] = useState(1);
+  const [albumPage, handleAlbumPage] = usePagenate();
+  const [musicPage, handleMusicPage] = usePagenate();
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const { onError } = useQuerySnackbar();
@@ -59,14 +60,24 @@ const Show: React.FC = () => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
       [queryKey.ARTIST, id, { musicPage, albumPage }],
-      (prev) => prev && { ...prev, bookmark: res.data }
+      (prev) =>
+        prev && {
+          ...prev,
+          bookmark: res.data,
+          bookmarksCount: prev.bookmarksCount + 1,
+        }
     );
   };
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
       [queryKey.ARTIST, id, { musicPage, albumPage }],
-      (prev) => prev && { ...prev, bookmark: undefined }
+      (prev) =>
+        prev && {
+          ...prev,
+          bookmark: undefined,
+          bookmarksCount: prev.bookmarksCount - 1,
+        }
     );
   };
   const handleUpdateSuccess = (res: AxiosResponse<IArtistLink>) => {
@@ -127,21 +138,17 @@ const Show: React.FC = () => {
     updateLinkMutation.mutate({ spotify: selectedArtist.id });
   const handleSubmit = (value: string) =>
     updateLinkMutation.mutate({ twitter: value });
-  const handleMusicPage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setMusicPage(value);
-  const handleAlbumPage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setAlbumPage(value);
 
   return (
     <DefaultLayout>
       <Grid container>
-        <Grid xs={11}>
+        <Grid item xs={11}>
           <Typography variant="h5">
             <AccessibilityNewIcon />
             {artist.data?.name}
           </Typography>
         </Grid>
-        <Grid xs={1}>
+        <Grid item xs={1}>
           <BookmarkButton
             count={artist.data?.bookmarksCount}
             bookmarked={!!artist.data?.bookmark || false}
