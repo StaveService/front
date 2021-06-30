@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 
-const usePagenate = (): [
+const usePaginate = (): [
   number,
   (_event: React.ChangeEvent<unknown>, value: number) => void
 ] => {
@@ -12,4 +12,4 @@ const usePagenate = (): [
   return [page, onPage];
 };
 
-export default usePagenate;
+export default usePaginate;

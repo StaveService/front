@@ -28,10 +28,10 @@ import GraphQLClient from "../../../gql/client";
 import { albumQuery } from "../../../gql/query/album";
 import { selectHeaders, setHeaders } from "../../../slices/currentUser";
 import { lookupItunesAlbum } from "../../../axios/itunes";
-import usePagenate from "../../../hooks/usePaginate";
+import usePaginate from "../../../hooks/usePaginate";
 
 const Show: React.FC = () => {
-  const [musicPage, handleMusicPage] = usePagenate();
+  const [musicPage, handleMusicPage] = usePaginate();
   const { onError } = useQuerySnackbar();
   // react-router
   const match = useRouteMatch<{ id: string }>();

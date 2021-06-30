@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useQuery } from "react-query";
 import UsersTable from "../../components/Table/User";
 import DefaultLayout from "../../layout/Default";
@@ -7,17 +7,16 @@ import GraphQLClient from "../../gql/client";
 import { usersQuery } from "../../gql/query/users";
 import queryKey from "../../constants/queryKey.json";
 import { IUsersType } from "../../interfaces";
+import usePaginate from "../../hooks/usePaginate";
 
 const Index: React.FC = () => {
-  const [page, setPage] = useState(1);
+  const [page, handlePage] = usePaginate();
   const { onError } = useQuerySnackbar();
   const { isLoading, data } = useQuery<IUsersType>(
     [queryKey.USERS, page],
     () => GraphQLClient.request(usersQuery, { page }),
     { onError }
   );
-  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setPage(value);
   return (
     <DefaultLayout>
       <UsersTable

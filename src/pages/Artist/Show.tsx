@@ -42,11 +42,11 @@ import {
   postArtistBookmark,
 } from "../../axios/axios";
 import { getWikipedia } from "../../axios/wikipedia";
-import usePagenate from "../../hooks/usePaginate";
+import usePaginate from "../../hooks/usePaginate";
 
 const Show: React.FC = () => {
-  const [albumPage, handleAlbumPage] = usePagenate();
-  const [musicPage, handleMusicPage] = usePagenate();
+  const [albumPage, handleAlbumPage] = usePaginate();
+  const [musicPage, handleMusicPage] = usePaginate();
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const { onError } = useQuerySnackbar();

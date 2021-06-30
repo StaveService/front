@@ -10,12 +10,12 @@ import queryKey from "../../../../constants/queryKey.json";
 import graphQLCilent from "../../../../gql/client";
 import userBookmarkArtistsQuery from "../../../../gql/query/user/bookmarkArtists";
 import userBookmarkBandsQuery from "../../../../gql/query/user/bookmarkBands";
-import usePagenate from "../../../../hooks/usePaginate";
+import usePaginate from "../../../../hooks/usePaginate";
 
 const Bookmark: React.FC = () => {
-  const [bookmarkedMusicPage, handleBookmarkedMusicPage] = usePagenate();
-  const [bookmarkedArtistPage, handleBookmarkedArtistPage] = usePagenate();
-  const [bookmarkedBandPage, handleBookmarkedBandPage] = usePagenate();
+  const [bookmarkedMusicPage, handleBookmarkedMusicPage] = usePaginate();
+  const [bookmarkedArtistPage, handleBookmarkedArtistPage] = usePaginate();
+  const [bookmarkedBandPage, handleBookmarkedBandPage] = usePaginate();
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const bookmarkedMusics = useQuery(

@@ -10,6 +10,9 @@ const userBookmarkBandsQuery = gql`
           link {
             itunes
           }
+          user {
+            nickname
+          }
         }
         pagination {
           totalPages

@@ -5,11 +5,11 @@ import MusicTable from "../../../../components/Table/Music";
 import queryKey from "../../../../constants/queryKey.json";
 import GraphQLClient from "../../../../gql/client";
 import userMusicsQuery from "../../../../gql/query/user/musics";
-import usePagenate from "../../../../hooks/usePaginate";
+import usePaginate from "../../../../hooks/usePaginate";
 import { IUserType } from "../../../../interfaces";
 
 const Posted: React.FC = () => {
-  const [page, handlePage] = usePagenate();
+  const [page, handlePage] = usePaginate();
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const musics = useQuery([queryKey.USER, id, queryKey.MUSICS, page], () =>
