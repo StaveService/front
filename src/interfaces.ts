@@ -390,7 +390,7 @@ export interface ISpotifyArtist {
 }
 export interface ISpotifyTrack {
   artists: ISpotifyArtist[];
-  albums: ISpotifyAlbum[];
+  album: ISpotifyAlbum;
   ["available_markets"]: string[];
   ["disc_number"]: number;
   ["duration_ms"]: number;
@@ -418,7 +418,7 @@ export interface ISpotifyAlbum {
   };
   href: string;
   id: string;
-  images: ISpotifyImage;
+  images: ISpotifyImage[];
   name: string;
   ["release_date"]: string;
   ["release_date_precision"]: string;

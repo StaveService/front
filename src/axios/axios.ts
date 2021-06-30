@@ -25,7 +25,7 @@ import routes from "../constants/routes.json";
 export type PostParams<
   T extends IMusic | IAlbum | IBand | IArtist,
   K extends IMusicLink | IAlbumLink | IBandLink | IArtistLink
-> = Omit<T, "id"> & {
+> = Omit<T, "id" | "bookmarksCount"> & {
   ["link_attributes"]: Omit<K, "id">;
 };
 declare module "axios" {

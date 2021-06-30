@@ -17,22 +17,25 @@ interface ISpotifyTrackCard {
   track: ISpotifyTrack;
 }
 const SpotifyTrackCard: React.FC<ISpotifyTrackCard> = ({
-  track: { name, preview_url: previewUrl, artists },
+  track,
 }: ISpotifyTrackCard) => {
   const classes = useStyles();
   return (
     <Card>
       <Box display="flex">
         <Box display="flex" justifyItems="center" alignItems="center" mx={1}>
-          <CardMedia image={previewUrl} className={classes.media} />
+          <CardMedia
+            image={track.album.images[0].url}
+            className={classes.media}
+          />
         </Box>
         <CardContent>
-          <Typography noWrap>{name}</Typography>
+          <Typography noWrap>{track.name}</Typography>
           <Typography color="textSecondary" noWrap>
             {}
           </Typography>
           <Typography color="textSecondary" noWrap>
-            {artists.map((artist) => artist.name)}
+            {track.artists.map((artist) => artist.name)}
           </Typography>
         </CardContent>
       </Box>
