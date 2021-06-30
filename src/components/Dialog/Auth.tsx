@@ -35,10 +35,10 @@ const Auth: React.FC = () => {
             <Tab label="SignUp" value="up" />
           </TabList>
           <TabPanel value="in">
-            <SignInForm />
+            <SignInForm onSuccess={handleClose} />
           </TabPanel>
           <TabPanel value="up">
-            <SignUpForm />
+            <SignUpForm onSuccess={handleClose} />
           </TabPanel>
         </Paper>
       </TabContext>

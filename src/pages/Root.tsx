@@ -17,7 +17,7 @@ const Root: React.FC = () => {
   const { isLoading, data } = useQuery<IMusicsType>(
     [queryKey.MUSICS, page],
     () => GraphQLClient.request(musicsQuery, { page }),
-    { onError }
+    { onError, keepPreviousData: true }
   );
   const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
     setPage(value);
@@ -25,7 +25,7 @@ const Root: React.FC = () => {
     const params = new URL(window.location.href).searchParams;
     const code = params.get("code");
     if (code) {
-      const prevWindow = window.opener;
+      const prevWindow = window.opener as Window;
       if (prevWindow) prevWindow.getSpotifyCode(code);
       window.close();
     }

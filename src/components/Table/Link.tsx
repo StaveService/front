@@ -8,7 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
 import TextFieldsIcon from "@material-ui/icons/TextFields";
-import { Box } from "@material-ui/core";
+import { Box, LinearProgress } from "@material-ui/core";
 import LinkButton from "../Button/Link";
 import TwitterIcon from "../Icon/Twitter";
 import ItunesIcon from "../Icon/Itunes";
@@ -26,6 +26,7 @@ interface LinkProps {
   spotify?: RenderAndLink<string> & { type: string };
   wikipedia?: RenderAndLink<number>;
   musixmatch?: RenderAndLink<number>;
+  loading?: boolean;
 }
 const Link: React.FC<LinkProps> = ({
   itunes,
@@ -33,6 +34,7 @@ const Link: React.FC<LinkProps> = ({
   spotify,
   wikipedia,
   musixmatch,
+  loading,
 }: LinkProps) => {
   const [itunesOpen, onItunesOpen, onItunesClose] = useOpen();
   const [twitterOpen, onTwitterOpen, onTwitterClose] = useOpen();
@@ -149,6 +151,7 @@ const Link: React.FC<LinkProps> = ({
           )}
         </TableBody>
       </Table>
+      {loading && <LinearProgress />}
     </TableContainer>
   );
 };
@@ -158,6 +161,7 @@ Link.defaultProps = {
   spotify: undefined,
   wikipedia: undefined,
   musixmatch: undefined,
+  loading: false,
 };
 
 Link.whyDidYouRender = true;

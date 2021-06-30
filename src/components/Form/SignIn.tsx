@@ -2,7 +2,6 @@ import { AxiosError, AxiosResponse } from "axios";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
 import { useMutation } from "react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSnackbar } from "notistack";
@@ -19,15 +18,17 @@ import { signInSchema } from "../../schema";
 import { signIn } from "../../axios/axios";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
 
-const SignIn: React.FC = () => {
+interface SignInProps {
+  onSuccess: () => void;
+}
+const SignIn: React.FC<SignInProps> = ({ onSuccess }: SignInProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-  const history = useHistory();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, setValue, handleSubmit } = useForm({
     resolver: yupResolver(signInSchema),
   });
-  const onSuccess = (res: AxiosResponse<ISignSuccessResponse>) => {
+  const handleSuccess = (res: AxiosResponse<ISignSuccessResponse>) => {
     dispatch(setCurrentUser(res.data.data));
     dispatch(setHeaders(res.headers));
     enqueueSnackbar("SignIn successful", {
@@ -37,7 +38,7 @@ const SignIn: React.FC = () => {
         horizontal: "center",
       },
     });
-    history.push("/");
+    onSuccess();
   };
   const onError = (err: AxiosError<ISignErrorResponse<string[]>>) => {
     if (err.response) {
@@ -60,7 +61,7 @@ const SignIn: React.FC = () => {
   };
   const { isLoading, mutate } = useMutation(
     (user: ISignInFormValues) => signIn(user),
-    { onSuccess, onError }
+    { onSuccess: handleSuccess, onError }
   );
   // TODO: ONLY DEVELOPMENT
   useEffect(() => {

@@ -19,5 +19,7 @@
   "ITUNES": "itunes",
   "WIKIPEDIA": "wikipedia",
   "MUSIXMATCH": "musixmatch",
-  "SPOTIFY": "spotify"
+  "SPOTIFY": "spotify",
+
+  "BOOKMARKS": "bookmarks"
 }

@@ -8,7 +8,6 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Grid from "@material-ui/core/Grid";
-import { useHistory } from "react-router-dom";
 import ControlTextField from "../ControlTextField";
 import LoadingButton from "../Loading/LoadingButton";
 import DefaultLayout from "../../layout/Default";
@@ -20,14 +19,16 @@ import {
 import { signUpSchema } from "../../schema";
 import { setHeaders, setCurrentUser } from "../../slices/currentUser";
 
-const SignUp: React.FC = () => {
+interface SignUpProps {
+  onSuccess: () => void;
+}
+const SignUp: React.FC<SignUpProps> = ({ onSuccess }: SignUpProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const history = useHistory();
   const dispatch = useDispatch();
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(signUpSchema),
   });
-  const onSuccess = (res: AxiosResponse<ISignSuccessResponse>) => {
+  const handleSuccess = (res: AxiosResponse<ISignSuccessResponse>) => {
     dispatch(setCurrentUser(res.data.data));
     dispatch(setHeaders(res.headers));
     enqueueSnackbar("SignUp successful", {
@@ -37,7 +38,7 @@ const SignUp: React.FC = () => {
         horizontal: "center",
       },
     });
-    history.push("/");
+    onSuccess();
   };
   const onError = (
     err: AxiosError<ISignErrorResponse<{ ["full_messages"]: string[] }>>
@@ -65,7 +66,7 @@ const SignUp: React.FC = () => {
   const { isLoading, mutate } = useMutation(
     (newUser: ISignUpFormValues) =>
       axios.post<ISignSuccessResponse>("/auth", newUser),
-    { onSuccess, onError }
+    { onSuccess: handleSuccess, onError }
   );
   const onSubmit = (data: ISignUpFormValues) => mutate(data);
   return (
@@ -96,6 +97,7 @@ const SignUp: React.FC = () => {
                 control={control}
                 errors={errors}
                 disabled={isLoading}
+                fullWidth
               />
             </Grid>
             <Grid item xs={6}>
@@ -107,6 +109,7 @@ const SignUp: React.FC = () => {
                 control={control}
                 errors={errors}
                 disabled={isLoading}
+                fullWidth
               />
             </Grid>
           </Grid>
