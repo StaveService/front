@@ -1,3 +1,4 @@
+import { GraphQLClient } from "graphql-request";
 import {
   IAlbum,
   IAlbumsType,
@@ -19,7 +20,6 @@ import {
   IUsersType,
   IUserType,
 } from "../interfaces";
-import graphQLCilent from "./client";
 import albumQuery from "./query/album";
 import albumMusicsQuery from "./query/album/musics";
 import albumsQuery from "./query/albums";
@@ -44,6 +44,19 @@ import userFollowingQuery from "./query/user/following";
 import userMusicsQuery from "./query/user/musics";
 import userProfileQuery from "./query/user/profile";
 import usersQuery from "./query/users";
+
+let url;
+switch (process.env.NODE_ENV) {
+  case "development":
+    url = "http://localhost:3000";
+    break;
+  case "production":
+    url = "https://stave-back.herokuapp.com";
+    break;
+  default:
+    url = "http://localhost:3000";
+}
+const graphQLCilent = new GraphQLClient(`${url}/graphql`);
 
 export const getUsers = (page: number) => (): Promise<IIndexType<IUser>> =>
   graphQLCilent

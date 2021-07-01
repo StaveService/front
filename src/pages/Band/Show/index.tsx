@@ -218,7 +218,7 @@ const Show: React.FC = () => {
         />
       </Box>
       <Box mb={3}>
-        <ArtistDialog musicPage={musicPage} albumPage={albumPage} />
+        <ArtistDialog />
         <ArtistsTable artists={band.data?.artists} loading={band.isLoading} />
       </Box>
       <Box mb={3}>

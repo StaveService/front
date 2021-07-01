@@ -36,14 +36,7 @@ import queryKey from "../../../../constants/queryKey.json";
 import GraphQLClient from "../../../../gql/client";
 import artistsQuery from "../../../../gql/query/artists";
 
-interface ArtistProps {
-  musicPage: number;
-  albumPage: number;
-}
-const Artist: React.FC<ArtistProps> = ({
-  musicPage,
-  albumPage,
-}: ArtistProps) => {
+const Artist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const [open, handleOpen, handleClose] = useOpen();
   // use-debounce
@@ -62,15 +55,11 @@ const Artist: React.FC<ArtistProps> = ({
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
-  const band = queryClient.getQueryData<IBand>([
-    queryKey.BAND,
-    id,
-    { musicPage, albumPage },
-  ]);
+  const band = queryClient.getQueryData<IBand>([queryKey.BAND, id]);
   const handleCreateSuccess = (res: AxiosResponse<IArtistBand>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id, { musicPage, albumPage }],
+      [queryKey.BAND, id],
       (prev) =>
         prev && {
           ...prev,
@@ -81,7 +70,7 @@ const Artist: React.FC<ArtistProps> = ({
   const handleDestroySuccess = (res: AxiosResponse<IBand>, artist: IArtist) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id, { musicPage, albumPage }],
+      [queryKey.BAND, id],
       (prev) =>
         prev && {
           ...prev,
