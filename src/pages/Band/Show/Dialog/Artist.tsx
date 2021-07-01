@@ -34,7 +34,7 @@ import useOpen from "../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import GraphQLClient from "../../../../gql/client";
-import { artistsQuery } from "../../../../gql/query/artists";
+import artistsQuery from "../../../../gql/query/artists";
 
 interface ArtistProps {
   musicPage: number;

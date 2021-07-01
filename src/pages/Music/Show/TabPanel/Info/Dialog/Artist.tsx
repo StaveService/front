@@ -40,7 +40,7 @@ import {
 import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
 import GraphQLClient from "../../../../../../gql/client";
-import { artistsQuery } from "../../../../../../gql/query/artists";
+import artistsQuery from "../../../../../../gql/query/artists";
 import routes from "../../../../../../constants/routes.json";
 import queryKey from "../../../../../../constants/queryKey.json";
 

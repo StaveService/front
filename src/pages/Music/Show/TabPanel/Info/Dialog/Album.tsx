@@ -36,7 +36,7 @@ import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../../../constants/queryKey.json";
 import GraphQLClient from "../../../../../../gql/client";
-import { albumsQuery } from "../../../../../../gql/query/albums";
+import albumsQuery from "../../../../../../gql/query/albums";
 import {
   deleteAlbumMusic,
   postAlbumMusic,

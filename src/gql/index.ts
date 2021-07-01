@@ -1,0 +1,219 @@
+import {
+  IAlbum,
+  IAlbumsType,
+  IAlbumType,
+  IArtist,
+  IArtistsType,
+  IArtistType,
+  IBand,
+  IBandsType,
+  IBandType,
+  IIndexType,
+  IIssue,
+  IIssuesType,
+  IIssueType,
+  IMusic,
+  IMusicsType,
+  IMusicType,
+  IUser,
+  IUsersType,
+  IUserType,
+} from "../interfaces";
+import graphQLCilent from "./client";
+import albumQuery from "./query/album";
+import albumMusicsQuery from "./query/album/musics";
+import albumsQuery from "./query/albums";
+import artistQuery from "./query/artist";
+import artistAlbumsQuery from "./query/artist/album";
+import artistMusicsQuery from "./query/artist/musics";
+import artistsQuery from "./query/artists";
+import bandQuery from "./query/band";
+import bandAlbumsQuery from "./query/band/albums";
+import bandMusicsQuery from "./query/band/musics";
+import issueQuery from "./query/issue";
+import bandsQuery from "./query/issues";
+import musicQuery from "./query/music";
+import musicScoreQuery from "./query/music/score";
+import musicsQuery from "./query/musics";
+import userQuery from "./query/user";
+import userBookmarkArtistsQuery from "./query/user/bookmarkArtists";
+import userBookmarkBandsQuery from "./query/user/bookmarkBands";
+import userBookmarkMusicsQuery from "./query/user/bookmarkMusics";
+import userFollowerQuery from "./query/user/followers";
+import userFollowingQuery from "./query/user/following";
+import userMusicsQuery from "./query/user/musics";
+import userProfileQuery from "./query/user/profile";
+import usersQuery from "./query/users";
+
+export const getUsers = (page: number) => (): Promise<IIndexType<IUser>> =>
+  graphQLCilent
+    .request<IUsersType>(usersQuery, { page })
+    .then((res) => res.users);
+export const getUser =
+  (id: number, currentUserId: undefined | number) => (): Promise<IUser> =>
+    graphQLCilent
+      .request<IUserType>(userQuery, { id, currentUserId })
+      .then((res) => res.user);
+export const getUserProfile = (id: number) => (): Promise<IUser> =>
+  graphQLCilent
+    .request<IUserType>(userProfileQuery, { id })
+    .then((res) => res.user);
+export const getUserMusics =
+  (id: number, page: number) => (): Promise<IIndexType<IMusic>> =>
+    graphQLCilent
+      .request<IUserType>(userMusicsQuery, { id, musicPage: page })
+      .then((res) => res.user.musics);
+export const getUserBookmarkedMusics =
+  (id: number, page: number) => (): Promise<IIndexType<IMusic>> =>
+    graphQLCilent
+      .request<IUserType>(userBookmarkMusicsQuery, {
+        id,
+        bookmarkedMusicPage: page,
+      })
+      .then((res) => res.user.bookmarkedMusics);
+export const getUserBookmarkedArtists =
+  (id: number, page: number) => (): Promise<IIndexType<IArtist>> =>
+    graphQLCilent
+      .request<IUserType>(userBookmarkArtistsQuery, {
+        id,
+        bookmarkedArtistPage: page,
+      })
+      .then((res) => res.user.bookmarkedArtists);
+export const getUserBookmarkedBands =
+  (id: number, page: number) => (): Promise<IIndexType<IBand>> =>
+    graphQLCilent
+      .request<IUserType>(userBookmarkBandsQuery, {
+        id,
+        bookmarkedBandPage: page,
+      })
+      .then((res) => res.user.bookmarkedBands);
+export const getUserFollower =
+  (id: number, page: number) => (): Promise<IIndexType<IUser>> =>
+    graphQLCilent
+      .request<IUserType>(userFollowerQuery, {
+        id,
+        followerPage: page,
+      })
+      .then((res) => res.user.followers);
+export const getUserFollowing =
+  (id: number, page: number) => (): Promise<IIndexType<IUser>> =>
+    graphQLCilent
+      .request<IUserType>(userFollowingQuery, {
+        id,
+        followingPage: page,
+      })
+      .then((res) => res.user.followers);
+export const getMusics = (page: number) => (): Promise<IIndexType<IMusic>> =>
+  graphQLCilent
+    .request<IMusicsType>(musicsQuery, {
+      page,
+    })
+    .then((res) => res.musics);
+export const getMusic =
+  (id: number, currentUserId: number | undefined) => (): Promise<IMusic> =>
+    graphQLCilent
+      .request<IMusicType>(musicQuery, {
+        id,
+        currentUserId,
+      })
+      .then((res) => res.music);
+export const getMusicScore = (id: number) => (): Promise<IMusic> =>
+  graphQLCilent
+    .request<IMusicType>(musicScoreQuery, {
+      id,
+    })
+    .then((res) => res.music);
+export const getIssues =
+  (musicId: number, page: number) => (): Promise<IIndexType<IIssue>> =>
+    graphQLCilent
+      .request<IIssuesType>(bandsQuery, {
+        musicId,
+        page,
+      })
+      .then((res) => res.issues);
+export const getIssue = (id: number) => (): Promise<IIssue> =>
+  graphQLCilent
+    .request<IIssueType>(issueQuery, {
+      id,
+    })
+    .then((res) => res.issue);
+export const getBands = (page: number) => (): Promise<IIndexType<IBand>> =>
+  graphQLCilent
+    .request<IBandsType>(bandsQuery, {
+      page,
+    })
+    .then((res) => res.bands);
+export const getBand =
+  (id: number, currentUserId: number | undefined) => (): Promise<IBand> =>
+    graphQLCilent
+      .request<IBandType>(bandQuery, {
+        id,
+        currentUserId,
+      })
+      .then((res) => res.band);
+export const getBandAlbums =
+  (id: number, page: number) => (): Promise<IIndexType<IAlbum>> =>
+    graphQLCilent
+      .request<IBandType>(bandAlbumsQuery, {
+        id,
+        albumPage: page,
+      })
+      .then((res) => res.band.albums);
+export const getBandMusics =
+  (id: number, page: number) => (): Promise<IIndexType<IMusic>> =>
+    graphQLCilent
+      .request<IBandType>(bandMusicsQuery, {
+        id,
+        musicPage: page,
+      })
+      .then((res) => res.band.musics);
+export const getArtists = (page: number) => (): Promise<IIndexType<IArtist>> =>
+  graphQLCilent
+    .request<IArtistsType>(artistsQuery, {
+      page,
+    })
+    .then((res) => res.artists);
+export const getArtist =
+  (id: number, currentUserId: number | undefined) => (): Promise<IArtist> =>
+    graphQLCilent
+      .request<IArtistType>(artistQuery, {
+        id,
+        currentUserId,
+      })
+      .then((res) => res.artist);
+export const getArtistAlbums =
+  (id: number, page: number) => (): Promise<IIndexType<IAlbum>> =>
+    graphQLCilent
+      .request<IArtistType>(artistAlbumsQuery, {
+        id,
+        albumPage: page,
+      })
+      .then((res) => res.artist.albums);
+export const getArtistMusics =
+  (id: number, page: number) => (): Promise<IIndexType<IMusic>> =>
+    graphQLCilent
+      .request<IArtistType>(artistMusicsQuery, {
+        id,
+        Page: page,
+      })
+      .then((res) => res.artist.musics);
+export const getAlbums = (page: number) => (): Promise<IIndexType<IAlbum>> =>
+  graphQLCilent
+    .request<IAlbumsType>(albumsQuery, {
+      page,
+    })
+    .then((res) => res.albums);
+export const getAlbum = (id: number) => (): Promise<IAlbum> =>
+  graphQLCilent
+    .request<IAlbumType>(albumQuery, {
+      id,
+    })
+    .then((res) => res.album);
+export const getAlbumMusics =
+  (id: number, page: number) => (): Promise<IIndexType<IMusic>> =>
+    graphQLCilent
+      .request<IAlbumType>(albumMusicsQuery, {
+        id,
+        musicPage: page,
+      })
+      .then((res) => res.album.musics);

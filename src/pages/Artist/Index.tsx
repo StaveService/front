@@ -3,27 +3,25 @@ import { useQuery } from "react-query";
 import ArtistsTable from "../../components/Table/Artist";
 import DefaultLayout from "../../layout/Default";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../gql/client";
-import { artistsQuery } from "../../gql/query/artists";
 import queryKey from "../../constants/queryKey.json";
-import { IArtistsType } from "../../interfaces";
 import usePaginate from "../../hooks/usePaginate";
+import { getArtists } from "../../gql";
 
 const Index: React.FC = () => {
   const [page, handlePage] = usePaginate();
   const { onError } = useQuerySnackbar();
-  const { isLoading, data } = useQuery<IArtistsType>(
+  const { isLoading, data } = useQuery(
     [queryKey.ARTISTS, page],
-    () => GraphQLClient.request(artistsQuery, { page }),
+    getArtists(page),
     { onError }
   );
   return (
     <DefaultLayout>
       <ArtistsTable
-        artists={data?.artists?.data}
+        artists={data?.data}
         loading={isLoading}
         page={page}
-        pageCount={data?.artists?.pagination.totalPages}
+        pageCount={data?.pagination.totalPages}
         onPage={handlePage}
       />
     </DefaultLayout>

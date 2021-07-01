@@ -175,37 +175,40 @@ export interface IMusicType {
   music: IMusic;
 }
 export interface IMusicsType {
-  musics?: IIndexType<IMusic>;
+  musics: IIndexType<IMusic>;
 }
 export interface IBookmarkedMusicsType {
-  bookmarkedMusics?: IIndexType<IMusic>;
+  bookmarkedMusics: IIndexType<IMusic>;
 }
 export interface IArtistType {
   artist: IArtist;
 }
 export interface IArtistsType {
-  artists?: IIndexType<IArtist>;
+  artists: IIndexType<IArtist>;
 }
 export interface IBookmarkedArtistsType {
-  bookmarkedArtists?: IIndexType<IArtist>;
+  bookmarkedArtists: IIndexType<IArtist>;
 }
 export interface IIssueType {
-  issues?: IIndexType<IIssue>;
+  issue: IIssue;
+}
+export interface IIssuesType {
+  issues: IIndexType<IIssue>;
 }
 export interface IBandType {
   band: IBand;
 }
 export interface IBandsType {
-  bands?: IIndexType<IBand>;
+  bands: IIndexType<IBand>;
 }
 export interface IBookmarkedBandsType {
-  bookmarkedBands?: IIndexType<IBand>;
+  bookmarkedBands: IIndexType<IBand>;
 }
 export interface IAlbumType {
   album: IAlbum;
 }
 export interface IAlbumsType {
-  albums?: IIndexType<IAlbum>;
+  albums: IIndexType<IAlbum>;
 }
 export interface ISignInFormValues {
   email: string;

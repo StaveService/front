@@ -1,21 +1,14 @@
 import { gql } from "graphql-request";
 
-export const albumQuery = gql`
-  query getAlbum($id: Int!, $musicPage: Int!) {
-    album(id: $id) {
-      id
-      title
-      link {
-        id
-        itunes
-      }
+const artistMusicsQuery = gql`
+  query getArtist($id: Int!, $musicPage: Int!) {
+    artist(id: $id) {
       musics(musicPage: $musicPage) {
         data {
           id
           title
           link {
             itunes
-            spotify
           }
           band {
             name
@@ -28,16 +21,15 @@ export const albumQuery = gql`
             id
             name
           }
+          user {
+            nickname
+          }
         }
         pagination {
           totalPages
         }
       }
-      artists {
-        id
-        name
-      }
     }
   }
 `;
-export default undefined;
+export default artistMusicsQuery;

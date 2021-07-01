@@ -1,6 +1,6 @@
 import { gql } from "graphql-request";
 
-export const usersQuery = gql`
+const usersQuery = gql`
   query getUsers($page: Int!) {
     users(page: $page) {
       pagination {
@@ -16,4 +16,4 @@ export const usersQuery = gql`
     }
   }
 `;
-export default undefined;
+export default usersQuery;

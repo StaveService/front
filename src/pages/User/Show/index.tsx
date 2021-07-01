@@ -20,10 +20,8 @@ import ProfileTabPanel from "./TabPanel/Profile";
 import BookmarkTabPanel from "./TabPanel/Bookmark";
 import SettingTabPanel from "./TabPanel/Setting";
 import DefaultLayout from "../../../layout/Default";
-import { IUser, IUserRelationship, IUserType } from "../../../interfaces";
+import { IUser, IUserRelationship } from "../../../interfaces";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../../gql/client";
-import userQuery from "../../../gql/query/user";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
 import {
@@ -35,6 +33,7 @@ import {
   deleteUserRelationship,
   postUserRelationship,
 } from "../../../axios/axios";
+import { getUser } from "../../../gql";
 
 const Show: React.FC = () => {
   const { onError } = useQuerySnackbar();
@@ -48,13 +47,9 @@ const Show: React.FC = () => {
   const id = Number(match.params.id);
   // react-query
   const queryClient = useQueryClient();
-  const { isLoading, data } = useQuery<IUser>(
+  const { isLoading, data } = useQuery(
     [queryKey.USER, id],
-    () =>
-      GraphQLClient.request<IUserType>(userQuery, {
-        id,
-        currentUserId: currentUser?.id,
-      }).then((res) => res.user),
+    getUser(id, currentUser?.id),
     { onError }
   );
   const handleCreateSuccess = (res: AxiosResponse<IUserRelationship>) => {

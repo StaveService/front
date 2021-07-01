@@ -7,12 +7,11 @@ import { useQuery } from "react-query";
 import { useRouteMatch } from "react-router-dom";
 import Header from "./Header";
 import Tracks, { Track } from "../../../../ui/Tracks";
-import { IAlphaTab, IMusicType } from "../../../../interfaces";
+import { IAlphaTab, IMusic } from "../../../../interfaces";
 import styles from "./index.module.css";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
-import GraphQLClient from "../../../../gql/client";
-import { musicQuery } from "../../../../gql/query/music";
+import { getMusicScore } from "../../../../gql";
 
 const settings = {
   tex: true,
@@ -35,13 +34,13 @@ const Tab: React.FC = () => {
   });
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);
-  const onSuccess = (res: IMusicType) => alphaTabApi?.tex(res.music.tab);
+  const onSuccess = (res: IMusic) => alphaTabApi?.tex(res.tab);
   // react-query
-  useQuery<IMusicType>(
-    [queryKey.MUSIC, id],
-    () => GraphQLClient.request(musicQuery, { id }),
-    { onSuccess, onError, enabled: loading }
-  );
+  useQuery([queryKey.MUSIC, id, queryKey.SCORE], getMusicScore(id), {
+    onSuccess,
+    onError,
+    enabled: loading,
+  });
   // handlers
   const handleListItemClick = (track: typeof Track, i: number) => {
     setSelectedIndex(i);

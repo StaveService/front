@@ -14,7 +14,7 @@ import {
 } from "../../../../../../../../slices/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
 import GraphQLClient from "../../../../../../../../gql/client";
-import { bandsQuery } from "../../../../../../../../gql/query/bands";
+import bandsQuery from "../../../../../../../../gql/query/bands";
 
 interface MutateVariables {
   option: IBand;

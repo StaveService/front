@@ -6,13 +6,12 @@ import { useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
 import LinkTable from "../../../../components/Table/Link";
 import TwitterDialog from "../../../../components/Dialog/Twitter";
-import { IUser, IUserLink, IUserType } from "../../../../interfaces";
+import { IUser, IUserLink } from "../../../../interfaces";
 import { patchUserLink } from "../../../../axios/axios";
 import { selectHeaders } from "../../../../slices/currentUser";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
-import userProfileQuery from "../../../../gql/query/user/profile";
-import GraphQLClient from "../../../../gql/client";
+import { getUserProfile } from "../../../../gql";
 
 const Post: React.FC = () => {
   const { onError } = useQuerySnackbar();
@@ -23,16 +22,19 @@ const Post: React.FC = () => {
   const headers = useSelector(selectHeaders);
   // react-query
   const queryClient = useQueryClient();
-  const { isLoading, data } = useQuery([queryKey.USER, id, "Profile"], () =>
-    GraphQLClient.request<IUserType>(userProfileQuery, { id }).then(
-      (res) => res.user
-    )
+  const { isLoading, data } = useQuery(
+    [queryKey.USER, id, queryKey.PROFILE],
+    getUserProfile(id)
   );
-  const user = queryClient.getQueryData<IUser>([queryKey.USER, id, "Profile"]);
+  const user = queryClient.getQueryData<IUser>([
+    queryKey.USER,
+    id,
+    queryKey.PROFILE,
+  ]);
   const onSuccess = (res: AxiosResponse<IUserLink>) => {
     queryClient.setQueryData<IUser | undefined>(
-      [queryKey.USER, id, "Profile"],
-      (prev) => prev && { ...prev, userLink: res.data }
+      [queryKey.USER, id, queryKey.PROFILE],
+      (prev) => prev && { ...prev, link: res.data }
     );
   };
   const userLinkMutation = useMutation(

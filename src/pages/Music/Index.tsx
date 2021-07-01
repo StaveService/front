@@ -1,22 +1,24 @@
 import React from "react";
 import { useQuery } from "react-query";
-import UsersTable from "../../components/Table/User";
+import MusicsTable from "../../components/Table/Music";
 import DefaultLayout from "../../layout/Default";
-import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import usePaginate from "../../hooks/usePaginate";
-import { getUsers } from "../../gql";
+import { getMusics } from "../../gql";
 
 const Index: React.FC = () => {
   const [page, handlePage] = usePaginate();
   const { onError } = useQuerySnackbar();
-  const { isLoading, data } = useQuery([queryKey.USERS, page], getUsers(page), {
-    onError,
-  });
+  const { isLoading, data } = useQuery(
+    [queryKey.MUSICS, page],
+    getMusics(page),
+    { onError }
+  );
   return (
     <DefaultLayout>
-      <UsersTable
-        data={data?.data}
+      <MusicsTable
+        musics={data?.data}
         loading={isLoading}
         page={page}
         pageCount={data?.pagination.totalPages}
@@ -25,5 +27,4 @@ const Index: React.FC = () => {
     </DefaultLayout>
   );
 };
-
 export default Index;

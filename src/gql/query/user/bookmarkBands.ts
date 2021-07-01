@@ -1,7 +1,7 @@
 import { gql } from "graphql-request";
 
 const userBookmarkBandsQuery = gql`
-  query getUserMusics($id: Int!, $bookmarkedBandPage: Int!) {
+  query getBookmarkBands($id: Int!, $bookmarkedBandPage: Int!) {
     user(id: $id) {
       bookmarkedBands(bookmarkedBandPage: $bookmarkedBandPage) {
         data {

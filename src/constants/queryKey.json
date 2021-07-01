@@ -10,14 +10,17 @@
 
   "MUSICS": "musics",
   "MUSIC": "music",
+  "SCORE": "score",
 
   "USERS": "users",
   "USER": "user",
+  "PROFILE": "profile",
 
   "FOLLOWERS": "followers",
   "FOLLOWING": "following",
 
   "ISSUES": "issues",
+  "ISSUE": "issue",
 
   "BOOKMARKS": "bookmarks",
 

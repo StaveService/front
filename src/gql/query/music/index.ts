@@ -1,6 +1,6 @@
 import { gql } from "graphql-request";
 
-export const musicQuery = gql`
+const musicQuery = gql`
   query getMusic($id: Int!, $currentUserId: Int) {
     music(id: $id) {
       id
@@ -50,4 +50,5 @@ export const musicQuery = gql`
     }
   }
 `;
-export default undefined;
+
+export default musicQuery;

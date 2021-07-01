@@ -1,6 +1,6 @@
 import { gql } from "graphql-request";
 
-export const issuesQuery = gql`
+const issuesQuery = gql`
   query getIssues($musicId: Int!, $page: Int!) {
     issues(musicId: $musicId, page: $page) {
       pagination {
@@ -14,4 +14,4 @@ export const issuesQuery = gql`
     }
   }
 `;
-export default undefined;
+export default issuesQuery;

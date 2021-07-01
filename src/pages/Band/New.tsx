@@ -21,12 +21,13 @@ import { postBand, PostParams } from "../../axios/axios";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import GraphQLClient from "../../gql/client";
-import { bandsQuery } from "../../gql/query/bands";
+import bandsQuery from "../../gql/query/bands";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
+import usePaginate from "../../hooks/usePaginate";
 
 const New: React.FC = () => {
-  const [page, setPage] = useState(1);
+  const [page, handlePage] = usePaginate();
   const [open, handleOpen, handleClose] = useOpen();
   const [selectedItunesArtist, setSelectedItunesArtist] =
     useState<IItunesArtist>();
@@ -76,8 +77,6 @@ const New: React.FC = () => {
   // handlers
   const onSubmit = (data: PostParams<IBand, IBandLink>) =>
     createMutation.mutate(data);
-  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setPage(value);
   const handleSelect = (selectedItem: IItunesArtist) =>
     setSelectedItunesArtist(selectedItem);
 

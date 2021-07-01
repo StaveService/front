@@ -1,6 +1,6 @@
 import { gql } from "graphql-request";
 
-export const bandsQuery = gql`
+const bandsQuery = gql`
   query getBands($page: Int!, $q: JSON) {
     bands(page: $page, q: $q) {
       pagination {
@@ -13,4 +13,4 @@ export const bandsQuery = gql`
     }
   }
 `;
-export default undefined;
+export default bandsQuery;

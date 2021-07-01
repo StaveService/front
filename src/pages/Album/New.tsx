@@ -26,13 +26,14 @@ import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import GraphQLClient from "../../gql/client";
-import { albumsQuery } from "../../gql/query/albums";
+import albumsQuery from "../../gql/query/albums";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import { postAlbum, PostParams } from "../../axios/axios";
+import usePaginate from "../../hooks/usePaginate";
 
 const New: React.FC = () => {
-  const [page, setPage] = useState(1);
+  const [page, handlePage] = usePaginate();
   const [open, handleOpen, handleClose] = useOpen();
   const [selectedItunesAlbum, setSelectedItunesAlbum] =
     useState<IItunesAlbum>();
@@ -77,8 +78,6 @@ const New: React.FC = () => {
   // handlers
   const onSubmit = (data: PostParams<IAlbum, IAlbumLink>) =>
     createMutation.mutate(data);
-  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setPage(value);
   const handleSelect = (selectedItem: IItunesAlbum) =>
     setSelectedItunesAlbum(selectedItem);
   useEffect(() => {

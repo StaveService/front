@@ -3,27 +3,25 @@ import { useQuery } from "react-query";
 import AlbumTable from "../../components/Table/Album";
 import DefaultLayout from "../../layout/Default";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../gql/client";
-import { albumsQuery } from "../../gql/query/albums";
-import { IAlbumsType } from "../../interfaces";
 import queryKey from "../../constants/queryKey.json";
 import usePaginate from "../../hooks/usePaginate";
+import { getAlbums } from "../../gql";
 
 const Index: React.FC = () => {
   const [page, handlePage] = usePaginate();
   const { onError } = useQuerySnackbar();
-  const { isLoading, data } = useQuery<IAlbumsType>(
+  const { isLoading, data } = useQuery(
     [queryKey.ALBUMS, page],
-    () => GraphQLClient.request(albumsQuery, { page }),
+    getAlbums(page),
     { onError }
   );
   return (
     <DefaultLayout>
       <AlbumTable
-        albums={data?.albums?.data}
+        albums={data?.data}
         loading={isLoading}
         page={page}
-        pageCount={data?.albums?.pagination.totalPages}
+        pageCount={data?.pagination.totalPages}
         onPage={handlePage}
       />
     </DefaultLayout>

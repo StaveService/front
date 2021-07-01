@@ -35,18 +35,16 @@ import {
   IItunesMusic,
   IMusic,
   IMusicBookmark,
-  IMusicType,
   ISpotifyTrack,
 } from "../../../interfaces";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
-import { musicQuery } from "../../../gql/query/music";
-import GraphQLClient from "../../../gql/client";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
 import { lookupItunesMusic } from "../../../axios/itunes";
 import { deleteMusicBookmark, postMusicBookmark } from "../../../axios/axios";
 import { getSpotifyTrack } from "../../../axios/spotify";
 import { remove, selectSpotifyToken } from "../../../slices/spotify";
+import { getMusic } from "../../../gql";
 
 const Show: React.FC = () => {
   // react-hook-form
@@ -91,15 +89,9 @@ const Show: React.FC = () => {
     dispatch(remove());
     onError(err);
   };
-  const music = useQuery<IMusic>(
-    [queryKey.MUSIC, id],
-    () =>
-      GraphQLClient.request<IMusicType>(musicQuery, {
-        id,
-        currentUserId: currentUser?.id,
-      }).then((res) => res.music),
-    { onError }
-  );
+  const music = useQuery([queryKey.MUSIC, id], getMusic(id, currentUser?.id), {
+    onError,
+  });
   const itunesMusic = useQuery<IItunesMusic>(
     [queryKey.ITUNES, queryKey.MUSIC, music.data?.link?.itunes],
     () =>

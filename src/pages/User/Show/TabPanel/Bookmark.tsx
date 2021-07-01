@@ -4,13 +4,13 @@ import { useParams } from "react-router-dom";
 import MusicTable from "../../../../components/Table/Music";
 import BandTable from "../../../../components/Table/Band";
 import ArtistTable from "../../../../components/Table/Artist";
-import { IUserType } from "../../../../interfaces";
-import userBookmarkMusicsQuery from "../../../../gql/query/user/bookmarkMusics";
 import queryKey from "../../../../constants/queryKey.json";
-import graphQLCilent from "../../../../gql/client";
-import userBookmarkArtistsQuery from "../../../../gql/query/user/bookmarkArtists";
-import userBookmarkBandsQuery from "../../../../gql/query/user/bookmarkBands";
 import usePaginate from "../../../../hooks/usePaginate";
+import {
+  getUserBookmarkedArtists,
+  getUserBookmarkedBands,
+  getUserBookmarkedMusics,
+} from "../../../../gql";
 
 const Bookmark: React.FC = () => {
   const [bookmarkedMusicPage, handleBookmarkedMusicPage] = usePaginate();
@@ -26,23 +26,11 @@ const Bookmark: React.FC = () => {
       queryKey.MUSICS,
       bookmarkedMusicPage,
     ],
-    () =>
-      graphQLCilent
-        .request<IUserType>(userBookmarkMusicsQuery, {
-          id,
-          bookmarkedMusicPage,
-        })
-        .then((res) => res.user.bookmarkedMusics)
+    getUserBookmarkedMusics(id, bookmarkedMusicPage)
   );
   const bookmarkedBands = useQuery(
     [queryKey.USER, id, queryKey.BOOKMARKS, queryKey.BANDS, bookmarkedBandPage],
-    () =>
-      graphQLCilent
-        .request<IUserType>(userBookmarkBandsQuery, {
-          id,
-          bookmarkedBandPage,
-        })
-        .then((res) => res.user.bookmarkedBands)
+    getUserBookmarkedBands(id, bookmarkedBandPage)
   );
   const bookmarkedArtists = useQuery(
     [
@@ -52,13 +40,7 @@ const Bookmark: React.FC = () => {
       queryKey.ARTISTS,
       bookmarkedArtistPage,
     ],
-    () =>
-      graphQLCilent
-        .request<IUserType>(userBookmarkArtistsQuery, {
-          id,
-          bookmarkedArtistPage,
-        })
-        .then((res) => res.user.bookmarkedArtists)
+    getUserBookmarkedArtists(id, bookmarkedArtistPage)
   );
 
   return (

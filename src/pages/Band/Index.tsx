@@ -3,27 +3,23 @@ import { useQuery } from "react-query";
 import BandsTable from "../../components/Table/Band";
 import DefaultLayout from "../../layout/Default";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../gql/client";
-import { bandsQuery } from "../../gql/query/bands";
 import queryKey from "../../constants/queryKey.json";
-import { IBandsType } from "../../interfaces";
 import usePaginate from "../../hooks/usePaginate";
+import { getBands } from "../../gql";
 
 const Index: React.FC = () => {
   const [page, handlePage] = usePaginate();
   const { onError } = useQuerySnackbar();
-  const { isLoading, data } = useQuery<IBandsType>(
-    [queryKey.BANDS, page],
-    () => GraphQLClient.request(bandsQuery, { page }),
-    { onError }
-  );
+  const { isLoading, data } = useQuery([queryKey.BANDS, page], getBands(page), {
+    onError,
+  });
   return (
     <DefaultLayout>
       <BandsTable
-        bands={data?.bands?.data}
+        bands={data?.data}
         loading={isLoading}
         page={page}
-        pageCount={data?.bands?.pagination.totalPages}
+        pageCount={data?.pagination.totalPages}
         onPage={handlePage}
       />
     </DefaultLayout>

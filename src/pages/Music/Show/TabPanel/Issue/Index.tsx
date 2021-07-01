@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useQuery } from "react-query";
 import Button from "@material-ui/core/Button";
@@ -7,33 +7,26 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import routes from "../../../../../constants/routes.json";
 import IssueTable from "../../../../../components/Table/Issue";
-import { IIssueType } from "../../../../../interfaces";
 import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../../../../gql/client";
 import queryKey from "../../../../../constants/queryKey.json";
-import { issuesQuery } from "../../../../../gql/query/issues";
+import usePaginate from "../../../../../hooks/usePaginate";
+import { getIssues } from "../../../../../gql";
 
 const Index: React.FC = () => {
-  const [page, setPage] = useState(1);
-  const [searchValue, setSearchValue] = useState("");
+  const [page, handlePage] = usePaginate();
+  // const [searchValue, setSearchValue] = useState("");
   const match = useRouteMatch<{ id: string }>();
   const { onError } = useQuerySnackbar();
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter") setSearchValue((e.target as HTMLInputElement).value);
-  };
-  const { data, isLoading } = useQuery<IIssueType>(
-    searchValue
-      ? [queryKey.ISSUES, searchValue, page]
-      : [queryKey.ISSUES, page],
-    () =>
-      GraphQLClient.request(issuesQuery, {
-        page,
-        musicId: Number(match.params.id),
-      }),
+  const handleKeyPress = () =>
+    /* e: React.KeyboardEvent<HTMLDivElement> */
+    {
+      // if (e.key === "Enter") setSearchValue((e.target as HTMLInputElement).value);
+    };
+  const { data, isLoading } = useQuery(
+    [queryKey.ISSUES, page],
+    getIssues(Number(match.params.id), page),
     { onError }
   );
-  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setPage(value);
   return (
     <>
       <Box mb={3}>
@@ -58,10 +51,10 @@ const Index: React.FC = () => {
         </Grid>
       </Box>
       <IssueTable
-        issues={data?.issues?.data}
+        issues={data?.data}
         loading={isLoading}
         page={page}
-        pageCount={data?.issues?.pagination.totalPages}
+        pageCount={data?.pagination.totalPages}
         onPage={handlePage}
       />
     </>

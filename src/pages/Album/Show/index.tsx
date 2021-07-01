@@ -10,7 +10,6 @@ import { AxiosResponse } from "axios";
 import {
   IAlbum,
   IAlbumLink,
-  IAlbumType,
   IItunesAlbum,
   ISpotifyAlbum,
 } from "../../../interfaces";
@@ -24,11 +23,10 @@ import ArtistDialog from "./Dialog/Artist";
 import { patchAlbumLink } from "../../../axios/axios";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
-import GraphQLClient from "../../../gql/client";
-import { albumQuery } from "../../../gql/query/album";
 import { selectHeaders, setHeaders } from "../../../slices/currentUser";
 import { lookupItunesAlbum } from "../../../axios/itunes";
 import usePaginate from "../../../hooks/usePaginate";
+import { getAlbum, getAlbumMusics } from "../../../gql";
 
 const Show: React.FC = () => {
   const [musicPage, handleMusicPage] = usePaginate();
@@ -48,13 +46,15 @@ const Show: React.FC = () => {
       (prev) => prev && { ...prev, link: res.data }
     );
   };
-  const album = useQuery<IAlbum>(
-    [queryKey.ALBUM, id],
-    () =>
-      GraphQLClient.request<IAlbumType>(albumQuery, { id, musicPage }).then(
-        (res) => res.album
-      ),
-    { onError }
+  const album = useQuery([queryKey.ALBUM, id], getAlbum(id), {
+    onError,
+  });
+  const albumMusics = useQuery(
+    [queryKey.ALBUM, id, queryKey.MUSICS, musicPage],
+    getAlbumMusics(id, musicPage),
+    {
+      onError,
+    }
   );
   const itunesAlbum = useQuery<IItunesAlbum>(
     [queryKey.ITUNES, queryKey.ALBUM, album.data?.link?.itunes],
@@ -118,10 +118,10 @@ const Show: React.FC = () => {
       </Box>
       <Box mb={3}>
         <MusicsTable
-          musics={album.data?.musics?.data}
-          loading={album.isLoading}
+          musics={albumMusics.data?.data}
+          loading={albumMusics.isLoading}
           page={musicPage}
-          pageCount={album.data?.musics?.pagination.totalPages}
+          pageCount={albumMusics.data?.pagination.totalPages}
           onPage={handleMusicPage}
         />
       </Box>

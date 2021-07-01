@@ -26,11 +26,12 @@ import {
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import GraphQLClient from "../../gql/client";
-import { artistsQuery } from "../../gql/query/artists";
+import artistsQuery from "../../gql/query/artists";
 import queryKey from "../../constants/queryKey.json";
+import usePaginate from "../../hooks/usePaginate";
 
 const New: React.FC = () => {
-  const [page, setPage] = useState(1);
+  const [page, handlePage] = usePaginate();
   const [open, handleOpen, handleClose] = useOpen();
   const [selectedItunesArtist, setSelectedItunesArtist] =
     useState<IItunesArtist>();
@@ -82,8 +83,6 @@ const New: React.FC = () => {
   // handlers
   const onSubmit = (data: PostParams<IArtist, IArtistLink>) =>
     createMutation.mutate(data);
-  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setPage(value);
   const handleSelect = (selectedItem: IItunesArtist) =>
     setSelectedItunesArtist(selectedItem);
 

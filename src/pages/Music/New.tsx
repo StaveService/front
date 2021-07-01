@@ -34,10 +34,11 @@ import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import GraphQLClient from "../../gql/client";
-import { musicsQuery } from "../../gql/query/musics";
+import musicsQuery from "../../gql/query/musics";
+import usePaginate from "../../hooks/usePaginate";
 
 const New: React.FC = () => {
-  const [page, setPage] = useState(1);
+  const [page, handlePage] = usePaginate();
   const [open, handleOpen, handleClose] = useOpen();
   const [selectedItunesMusic, setSelectedItunesMusic] =
     useState<IItunesMusic>();
@@ -95,8 +96,6 @@ const New: React.FC = () => {
     reader.onload = (e) => setValue("tab", e.target?.result);
     reader.readAsText(acceptedFiles[0]);
   };
-  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setPage(value);
   const handleSelect = (selectedCard: IItunesMusic) =>
     setSelectedItunesMusic(selectedCard);
   useEffect(() => {

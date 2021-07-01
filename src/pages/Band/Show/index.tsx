@@ -22,7 +22,6 @@ import {
   IBand,
   IBandBookmark,
   IBandLink,
-  IBandType,
   IItunesArtist,
   ISpotifyArtist,
   IWikipedia,
@@ -33,9 +32,7 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../../slices/currentUser";
-import GraphQLClient from "../../../gql/client";
 import queryKey from "../../../constants/queryKey.json";
-import { bandQuery } from "../../../gql/query/band";
 import { lookupItunesArtist } from "../../../axios/itunes";
 import {
   postBandBookmark,
@@ -44,6 +41,7 @@ import {
 } from "../../../axios/axios";
 import { getWikipedia } from "../../../axios/wikipedia";
 import usePaginate from "../../../hooks/usePaginate";
+import { getBand, getBandAlbums, getBandMusics } from "../../../gql";
 
 const Show: React.FC = () => {
   const [albumPage, handleAlbumPage] = usePaginate();
@@ -59,7 +57,7 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IBandBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id, { musicPage, albumPage }],
+      [queryKey.BAND, id],
       (prev) =>
         prev && {
           ...prev,
@@ -71,7 +69,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id, { musicPage, albumPage }],
+      [queryKey.BAND, id],
       (prev) =>
         prev && {
           ...prev,
@@ -83,20 +81,26 @@ const Show: React.FC = () => {
   const handleUpdateSuccess = (res: AxiosResponse<IBandLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id, { musicPage, albumPage }],
+      [queryKey.BAND, id],
       (prev) => prev && { ...prev, link: res.data }
     );
   };
-  const band = useQuery<IBand>(
-    [queryKey.BAND, id, { musicPage, albumPage }],
-    () =>
-      GraphQLClient.request<IBandType>(bandQuery, {
-        id,
-        currentUserId: currentUser?.id,
-        musicPage,
-        albumPage,
-      }).then((res) => res.band),
-    { onError }
+  const band = useQuery([queryKey.BAND, id], getBand(id, currentUser?.id), {
+    onError,
+  });
+  const bandAlbums = useQuery(
+    [queryKey.BAND, id, queryKey.ALBUMS, albumPage],
+    getBandAlbums(id, albumPage),
+    {
+      onError,
+    }
+  );
+  const bandMusics = useQuery(
+    [queryKey.BAND, id, queryKey.MUSICS, musicPage],
+    getBandMusics(id, musicPage),
+    {
+      onError,
+    }
   );
   const itunesArtist = useQuery<IItunesArtist>(
     [queryKey.ITUNES, queryKey.BAND, band.data?.link?.itunes],
@@ -219,19 +223,19 @@ const Show: React.FC = () => {
       </Box>
       <Box mb={3}>
         <MusicsTable
-          musics={band.data?.musics?.data}
-          loading={band.isLoading}
+          musics={bandMusics.data?.data}
+          loading={bandMusics.isLoading}
           page={musicPage}
-          pageCount={band.data?.musics?.pagination.totalPages}
+          pageCount={bandMusics.data?.pagination.totalPages}
           onPage={handleMusicPage}
         />
       </Box>
       <Box mb={3}>
         <AlbumsTable
-          albums={band.data?.albums?.data}
+          albums={bandAlbums.data?.data}
           loading={band.isLoading}
           page={albumPage}
-          pageCount={band.data?.albums?.pagination.totalPages}
+          pageCount={bandAlbums.data?.pagination.totalPages}
           onPage={handleAlbumPage}
         />
       </Box>

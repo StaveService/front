@@ -17,7 +17,7 @@ import {
 } from "../../../../../../../../slices/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
 import GraphQLClient from "../../../../../../../../gql/client";
-import { artistsQuery } from "../../../../../../../../gql/query/artists";
+import artistsQuery from "../../../../../../../../gql/query/artists";
 import {
   deleteComposerMusic,
   postComposerMusic,

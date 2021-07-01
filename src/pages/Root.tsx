@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "react-query";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
@@ -6,21 +6,18 @@ import MusicsTable from "../components/Table/Music";
 import MenuCard from "../components/Card/Menu";
 import DefaultLayout from "../layout/Default";
 import queryKey from "../constants/queryKey.json";
-import GraphQLClient from "../gql/client";
-import { musicsQuery } from "../gql/query/musics";
-import { IMusicsType } from "../interfaces";
 import useQuerySnackbar from "../hooks/useQuerySnackbar";
+import { getMusics } from "../gql";
+import usePaginate from "../hooks/usePaginate";
 
 const Root: React.FC = () => {
-  const [page, setPage] = useState(1);
+  const [page, handlePage] = usePaginate();
   const { onError } = useQuerySnackbar();
-  const { isLoading, data } = useQuery<IMusicsType>(
+  const { isLoading, data } = useQuery(
     [queryKey.MUSICS, page],
-    () => GraphQLClient.request(musicsQuery, { page }),
-    { onError, keepPreviousData: true }
+    getMusics(page),
+    { onError }
   );
-  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setPage(value);
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;
     const code = params.get("code");
@@ -49,10 +46,10 @@ const Root: React.FC = () => {
         </Grid>
       </Box>
       <MusicsTable
-        musics={data?.musics?.data}
+        musics={data?.data}
         loading={isLoading}
         page={page}
-        pageCount={data?.musics?.pagination?.totalPages}
+        pageCount={data?.pagination?.totalPages}
         onPage={handlePage}
       />
     </DefaultLayout>
