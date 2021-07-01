@@ -7,7 +7,7 @@ import {
 } from "../interfaces";
 
 const wikipedia = axios.create({
-  baseURL: "http://ja.wikipedia.org/w/api.php",
+  baseURL: "https://ja.wikipedia.org/w/api.php",
 });
 
 export const searchWikipedia = (

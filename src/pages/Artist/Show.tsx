@@ -197,6 +197,7 @@ const Show: React.FC = () => {
             renderDialog(open, handleClose) {
               return (
                 <WikipediaDialog
+                  defaultValue={artist.data?.name}
                   open={open}
                   onClose={handleClose}
                   onSelect={handleWikipediaSelect}
