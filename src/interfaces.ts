@@ -12,6 +12,8 @@ export interface ITokenHeaders {
 }
 export interface IUser
   extends IMusicsType,
+    IFollowersType,
+    IFollowingType,
     IBookmarkedMusicsType,
     IBookmarkedBandsType,
     IBookmarkedArtistsType {
@@ -162,6 +164,12 @@ export interface IUserType {
 }
 export interface IUsersType {
   users: IIndexType<IUser>;
+}
+export interface IFollowersType {
+  followers: IIndexType<IUser>;
+}
+export interface IFollowingType {
+  following: IIndexType<IUser>;
 }
 export interface IMusicType {
   music: IMusic;

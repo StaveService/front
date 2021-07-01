@@ -8,7 +8,6 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import SpotifyButton from "../../Button/Spotify";
 import { remove, selectSpotifyToken, setToken } from "../../../slices/spotify";
-import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import { DialogProps } from "../CardSearchDialogTest";
 import { spotifyAccount } from "../../../axios/spotify";
 import { ISpotifyToken, ISpotifyTypes } from "../../../interfaces";
@@ -21,11 +20,9 @@ function Layout<T extends ISpotifyTypes>({
   onClose,
   children,
 }: Omit<LayoutProps<T>, "onSelect">): JSX.Element {
-  const { onError } = useQuerySnackbar();
   const spotifyToken = useSelector(selectSpotifyToken);
   const dispatch = useDispatch();
-  const handleError = (err: unknown) => {
-    onError(err);
+  const handleError = () => {
     dispatch(remove());
   };
   const getSpotifyCode = useCallback(

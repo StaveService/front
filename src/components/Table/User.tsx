@@ -35,6 +35,7 @@ const User: React.FC<UserProps> = ({
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
+            <TableCell>{/* twitter */}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -45,7 +46,6 @@ const User: React.FC<UserProps> = ({
                   {user.nickname}
                 </Link>
               </TableCell>
-              <TableCell />
               <TableCell>
                 <LinkIconButton
                   href={

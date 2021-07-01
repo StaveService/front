@@ -136,13 +136,13 @@ const Show: React.FC = () => {
   return (
     <DefaultLayout>
       <Grid container>
-        <Grid xs={11}>
+        <Grid item xs={11}>
           <Typography variant="h5">
             <GroupIcon />
             {band.data?.name}
           </Typography>
         </Grid>
-        <Grid xs={1}>
+        <Grid item xs={1}>
           <BookmarkButton
             count={band.data?.bookmarksCount}
             bookmarked={!!band.data?.bookmark || false}

@@ -13,6 +13,7 @@ import Tab from "@material-ui/core/Tab";
 import { useDispatch, useSelector } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import { AxiosResponse } from "axios";
+import Link from "@material-ui/core/Link";
 import FollowButton from "../../../components/Button/Follow";
 import MusicsTabPanel from "./TabPanel/Musics";
 import ProfileTabPanel from "./TabPanel/Profile";
@@ -104,6 +105,18 @@ const Show: React.FC = () => {
           )}
         </Grid>
       </Grid>
+      <Link
+        component={RouterLink}
+        to={`${routes.USERS}/${id}${routes.FOLLOWERS}`}
+      >
+        Followers
+      </Link>
+      <Link
+        component={RouterLink}
+        to={`${routes.USERS}/${id}${routes.FOLLOWING}`}
+      >
+        Following
+      </Link>
       <Tabs
         value={
           location.pathname.includes("issues")
@@ -148,6 +161,11 @@ const Show: React.FC = () => {
           exact
           path={match.path + routes.SETTING}
           component={SettingTabPanel}
+        />
+        <Route
+          exact
+          path={match.path + routes.BOOKMARKS}
+          component={BookmarkTabPanel}
         />
         <Route
           exact

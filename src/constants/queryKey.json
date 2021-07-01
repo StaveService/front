@@ -14,12 +14,15 @@
   "USERS": "users",
   "USER": "user",
 
+  "FOLLOWERS": "followers",
+  "FOLLOWING": "following",
+
   "ISSUES": "issues",
+
+  "BOOKMARKS": "bookmarks",
 
   "ITUNES": "itunes",
   "WIKIPEDIA": "wikipedia",
   "MUSIXMATCH": "musixmatch",
-  "SPOTIFY": "spotify",
-
-  "BOOKMARKS": "bookmarks"
+  "SPOTIFY": "spotify"
 }

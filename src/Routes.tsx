@@ -21,6 +21,8 @@ import NewBand from "./pages/Band/New";
 
 import Users from "./pages/User/Index";
 import User from "./pages/User/Show";
+import UserFollower from "./pages/User/Show/Follower";
+import UserFollowing from "./pages/User/Show/Following";
 
 import Albums from "./pages/Album/Index";
 import Album from "./pages/Album/Show";
@@ -44,6 +46,16 @@ const Routes: React.FC = () => (
 
     {/* USER */}
     <Route exact path={routes.USERS} component={Users} />
+    <Route
+      exact
+      path={`${routes.USERS}/:id${routes.FOLLOWERS}`}
+      component={UserFollower}
+    />
+    <Route
+      exact
+      path={`${routes.USERS}/:id${routes.FOLLOWING}`}
+      component={UserFollowing}
+    />
     <Route strict path={`${routes.USERS}/:id`} component={User} />
 
     {/* BAND */}
