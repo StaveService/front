@@ -24,17 +24,11 @@ import LoadingButton from "../../../../components/Loading/LoadingButton";
 import AutocompleteTextField from "../../../../components/AutocompleteTextField";
 import routes from "../../../../constants/routes.json";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
-import {
-  IAlbum,
-  IArtist,
-  IArtistAlbum,
-  IArtistsType,
-} from "../../../../interfaces";
+import { IAlbum, IArtist, IArtistAlbum } from "../../../../interfaces";
 import useOpen from "../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
-import GraphQLClient from "../../../../gql/client";
-import artistsQuery from "../../../../gql/query/artists";
+import { getArtists } from "../../../../gql";
 
 const Artist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -88,13 +82,9 @@ const Artist: React.FC = () => {
     (artist: IArtist) => axios.delete(`${route}/${artist.id}`, headers),
     { onSuccess: handleDestorySuccess, onError }
   );
-  const artists = useQuery<IArtist[]>(
+  const artists = useQuery(
     [queryKey.ARTISTS, { query: debouncedInputValue }],
-    () =>
-      GraphQLClient.request<IArtistsType>(artistsQuery, {
-        page: 1,
-        q: { name_cont: debouncedInputValue },
-      }).then((res) => res.artists?.data || []),
+    getArtists(1, { name_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
@@ -158,8 +148,8 @@ const Artist: React.FC = () => {
                 margin: "normal",
               }}
               autocompleteProps={{
-                value: artists.data,
-                options: artists.data || [],
+                value: artists.data?.data,
+                options: artists.data?.data || [],
                 loading:
                   createMutation.isLoading ||
                   destroyMutation.isLoading ||

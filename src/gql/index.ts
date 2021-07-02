@@ -36,9 +36,9 @@ import musicQuery from "./query/music";
 import musicScoreQuery from "./query/music/score";
 import musicsQuery from "./query/musics";
 import userQuery from "./query/user";
-import userBookmarkArtistsQuery from "./query/user/bookmarkArtists";
-import userBookmarkBandsQuery from "./query/user/bookmarkBands";
-import userBookmarkMusicsQuery from "./query/user/bookmarkMusics";
+import userBookmarkedArtistsQuery from "./query/user/bookmarkedArtists";
+import userBookmarkedBandsQuery from "./query/user/bookmarkedBands";
+import userBookmarkedMusicsQuery from "./query/user/bookmarkedMusics";
 import userFollowerQuery from "./query/user/followers";
 import userFollowingQuery from "./query/user/following";
 import userMusicsQuery from "./query/user/musics";
@@ -58,10 +58,12 @@ switch (process.env.NODE_ENV) {
 }
 const graphQLCilent = new GraphQLClient(`${url}/graphql`);
 
-export const getUsers = (page: number) => (): Promise<IIndexType<IUser>> =>
-  graphQLCilent
-    .request<IUsersType>(usersQuery, { page })
-    .then((res) => res.users);
+export const getUsers =
+  (page: number, q?: { [key: string]: string }) =>
+  (): Promise<IIndexType<IUser>> =>
+    graphQLCilent
+      .request<IUsersType>(usersQuery, { page, q })
+      .then((res) => res.users);
 export const getUser =
   (id: number, currentUserId: undefined | number) => (): Promise<IUser> =>
     graphQLCilent
@@ -79,7 +81,7 @@ export const getUserMusics =
 export const getUserBookmarkedMusics =
   (id: number, page: number) => (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
-      .request<IUserType>(userBookmarkMusicsQuery, {
+      .request<IUserType>(userBookmarkedMusicsQuery, {
         id,
         bookmarkedMusicPage: page,
       })
@@ -87,7 +89,7 @@ export const getUserBookmarkedMusics =
 export const getUserBookmarkedArtists =
   (id: number, page: number) => (): Promise<IIndexType<IArtist>> =>
     graphQLCilent
-      .request<IUserType>(userBookmarkArtistsQuery, {
+      .request<IUserType>(userBookmarkedArtistsQuery, {
         id,
         bookmarkedArtistPage: page,
       })
@@ -95,7 +97,7 @@ export const getUserBookmarkedArtists =
 export const getUserBookmarkedBands =
   (id: number, page: number) => (): Promise<IIndexType<IBand>> =>
     graphQLCilent
-      .request<IUserType>(userBookmarkBandsQuery, {
+      .request<IUserType>(userBookmarkedBandsQuery, {
         id,
         bookmarkedBandPage: page,
       })
@@ -116,12 +118,15 @@ export const getUserFollowing =
         followingPage: page,
       })
       .then((res) => res.user.followers);
-export const getMusics = (page: number) => (): Promise<IIndexType<IMusic>> =>
-  graphQLCilent
-    .request<IMusicsType>(musicsQuery, {
-      page,
-    })
-    .then((res) => res.musics);
+export const getMusics =
+  (page: number, q?: { [key: string]: string }) =>
+  (): Promise<IIndexType<IMusic>> =>
+    graphQLCilent
+      .request<IMusicsType>(musicsQuery, {
+        page,
+        q,
+      })
+      .then((res) => res.musics);
 export const getMusic =
   (id: number, currentUserId: number | undefined) => (): Promise<IMusic> =>
     graphQLCilent
@@ -137,11 +142,13 @@ export const getMusicScore = (id: number) => (): Promise<IMusic> =>
     })
     .then((res) => res.music);
 export const getIssues =
-  (musicId: number, page: number) => (): Promise<IIndexType<IIssue>> =>
+  (musicId: number, page: number, q?: { [key: string]: string }) =>
+  (): Promise<IIndexType<IIssue>> =>
     graphQLCilent
       .request<IIssuesType>(bandsQuery, {
         musicId,
         page,
+        q,
       })
       .then((res) => res.issues);
 export const getIssue = (id: number) => (): Promise<IIssue> =>
@@ -150,12 +157,15 @@ export const getIssue = (id: number) => (): Promise<IIssue> =>
       id,
     })
     .then((res) => res.issue);
-export const getBands = (page: number) => (): Promise<IIndexType<IBand>> =>
-  graphQLCilent
-    .request<IBandsType>(bandsQuery, {
-      page,
-    })
-    .then((res) => res.bands);
+export const getBands =
+  (page: number, q?: { [key: string]: string }) =>
+  (): Promise<IIndexType<IBand>> =>
+    graphQLCilent
+      .request<IBandsType>(bandsQuery, {
+        page,
+        q,
+      })
+      .then((res) => res.bands);
 export const getBand =
   (id: number, currentUserId: number | undefined) => (): Promise<IBand> =>
     graphQLCilent
@@ -180,12 +190,15 @@ export const getBandMusics =
         musicPage: page,
       })
       .then((res) => res.band.musics);
-export const getArtists = (page: number) => (): Promise<IIndexType<IArtist>> =>
-  graphQLCilent
-    .request<IArtistsType>(artistsQuery, {
-      page,
-    })
-    .then((res) => res.artists);
+export const getArtists =
+  (page: number, q?: { [key: string]: string }) =>
+  (): Promise<IIndexType<IArtist>> =>
+    graphQLCilent
+      .request<IArtistsType>(artistsQuery, {
+        page,
+        q,
+      })
+      .then((res) => res.artists);
 export const getArtist =
   (id: number, currentUserId: number | undefined) => (): Promise<IArtist> =>
     graphQLCilent
@@ -210,12 +223,15 @@ export const getArtistMusics =
         Page: page,
       })
       .then((res) => res.artist.musics);
-export const getAlbums = (page: number) => (): Promise<IIndexType<IAlbum>> =>
-  graphQLCilent
-    .request<IAlbumsType>(albumsQuery, {
-      page,
-    })
-    .then((res) => res.albums);
+export const getAlbums =
+  (page: number, q?: { [key: string]: string }) =>
+  (): Promise<IIndexType<IAlbum>> =>
+    graphQLCilent
+      .request<IAlbumsType>(albumsQuery, {
+        page,
+        q,
+      })
+      .then((res) => res.albums);
 export const getAlbum = (id: number) => (): Promise<IAlbum> =>
   graphQLCilent
     .request<IAlbumType>(albumQuery, {

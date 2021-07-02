@@ -26,21 +26,15 @@ import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../slices/currentUser";
-import {
-  IAlbum,
-  IAlbumMusic,
-  IAlbumsType,
-  IMusic,
-} from "../../../../../../interfaces";
+import { IAlbum, IAlbumMusic, IMusic } from "../../../../../../interfaces";
 import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../../../constants/queryKey.json";
-import GraphQLClient from "../../../../../../gql/client";
-import albumsQuery from "../../../../../../gql/query/albums";
 import {
   deleteAlbumMusic,
   postAlbumMusic,
 } from "../../../../../../axios/axios";
+import { getAlbums } from "../../../../../../gql";
 
 const Album: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -100,13 +94,9 @@ const Album: React.FC = () => {
     (album: IAlbum) => deleteAlbumMusic(userId, id, album.id, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
-  const albums = useQuery<IAlbum[]>(
+  const albums = useQuery(
     [queryKey.ALBUMS, { query: debouncedInputValue }],
-    () =>
-      GraphQLClient.request<IAlbumsType>(albumsQuery, {
-        page: 1,
-        q: { title_cont: debouncedInputValue },
-      }).then((res) => res.albums?.data || []),
+    getAlbums(1, { title_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
@@ -170,7 +160,7 @@ const Album: React.FC = () => {
                 margin: "normal",
               }}
               autocompleteProps={{
-                options: albums.data || [],
+                options: albums.data?.data || [],
                 multiple: true,
                 loading:
                   createMutation.isLoading ||

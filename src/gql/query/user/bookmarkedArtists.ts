@@ -1,9 +1,9 @@
 import { gql } from "graphql-request";
 
-const userBookmarkBandsQuery = gql`
-  query getBookmarkBands($id: Int!, $bookmarkedBandPage: Int!) {
+const userBookmarkedArtistsQuery = gql`
+  query getBookmarkArtists($id: Int!, $bookmarkedArtistPage: Int!) {
     user(id: $id) {
-      bookmarkedBands(bookmarkedBandPage: $bookmarkedBandPage) {
+      bookmarkedArtists(bookmarkedArtistPage: $bookmarkedArtistPage) {
         data {
           id
           name
@@ -19,4 +19,4 @@ const userBookmarkBandsQuery = gql`
   }
 `;
 
-export default userBookmarkBandsQuery;
+export default userBookmarkedArtistsQuery;

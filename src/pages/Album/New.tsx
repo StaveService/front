@@ -16,21 +16,15 @@ import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
-import {
-  IAlbum,
-  IAlbumLink,
-  IAlbumsType,
-  IItunesAlbum,
-} from "../../interfaces";
+import { IAlbum, IAlbumLink, IItunesAlbum } from "../../interfaces";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../gql/client";
-import albumsQuery from "../../gql/query/albums";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import { postAlbum, PostParams } from "../../axios/axios";
 import usePaginate from "../../hooks/usePaginate";
+import { getAlbums } from "../../gql";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -68,11 +62,7 @@ const New: React.FC = () => {
   );
   const searchQuery = useQuery(
     [queryKey.ALBUMS, { page, query: debouncedTitle }],
-    () =>
-      GraphQLClient.request<IAlbumsType>(albumsQuery, {
-        page,
-        q: { title_eq: debouncedTitle },
-      }),
+    getAlbums(page, { title_eq: debouncedTitle }),
     { enabled: !!debouncedTitle, onError }
   );
   // handlers
@@ -128,11 +118,11 @@ const New: React.FC = () => {
             onClose={handleClose}
             onSelect={handleSelect}
           />
-          <ExistAlert<IAlbum> data={searchQuery.data?.albums?.data}>
+          <ExistAlert<IAlbum> data={searchQuery.data?.data}>
             <AlbumTable
-              albums={searchQuery.data?.albums?.data}
+              albums={searchQuery.data?.data}
               page={page}
-              pageCount={searchQuery.data?.albums?.pagination.totalPages}
+              pageCount={searchQuery.data?.pagination.totalPages}
               onPage={handlePage}
               loading={searchQuery.isLoading}
             />

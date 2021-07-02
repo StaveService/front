@@ -17,12 +17,7 @@ import MusicTable from "../../components/Table/Music";
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
 import ItunesMusicDialog from "../../components/Dialog/Itunes/Music";
-import {
-  IItunesMusic,
-  IMusic,
-  IMusicLink,
-  IMusicsType,
-} from "../../interfaces";
+import { IItunesMusic, IMusic, IMusicLink } from "../../interfaces";
 import { postMusic, PostParams } from "../../axios/axios";
 import {
   selectCurrentUser,
@@ -33,9 +28,8 @@ import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
-import GraphQLClient from "../../gql/client";
-import musicsQuery from "../../gql/query/musics";
 import usePaginate from "../../hooks/usePaginate";
+import { getMusics } from "../../gql";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -81,11 +75,7 @@ const New: React.FC = () => {
   );
   const searchQuery = useQuery(
     [queryKey.MUSICS, { page, query: debouncedTitle }],
-    () =>
-      GraphQLClient.request<IMusicsType>(musicsQuery, {
-        page,
-        q: { title_eq: debouncedTitle },
-      }),
+    getMusics(page, { title_eq: debouncedTitle }),
     { enabled: !isPending() && !!debouncedTitle, onError }
   );
   // handlers
@@ -155,11 +145,11 @@ const New: React.FC = () => {
             onClose={handleClose}
             onSelect={handleSelect}
           />
-          <ExistAlert<IMusic> data={searchQuery.data?.musics?.data}>
+          <ExistAlert<IMusic> data={searchQuery.data?.data}>
             <MusicTable
-              musics={searchQuery.data?.musics?.data}
+              musics={searchQuery.data?.data}
               page={page}
-              pageCount={searchQuery.data?.musics?.pagination.totalPages}
+              pageCount={searchQuery.data?.pagination.totalPages}
               onPage={handlePage}
               loading={searchQuery.isLoading}
             />

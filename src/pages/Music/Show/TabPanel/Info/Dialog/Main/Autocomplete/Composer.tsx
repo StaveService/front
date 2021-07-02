@@ -5,23 +5,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/AutocompleteTextField";
-import {
-  IArtist,
-  IArtistsType,
-  IMusic,
-} from "../../../../../../../../interfaces";
+import { IArtist, IMusic } from "../../../../../../../../interfaces";
 import queryKey from "../../../../../../../../constants/queryKey.json";
 import {
   selectHeaders,
   setHeaders,
 } from "../../../../../../../../slices/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../../../../../../../gql/client";
-import artistsQuery from "../../../../../../../../gql/query/artists";
 import {
   deleteComposerMusic,
   postComposerMusic,
 } from "../../../../../../../../axios/axios";
+import { getArtists } from "../../../../../../../../gql";
 
 interface MutateVariables {
   option: IArtist;
@@ -80,13 +75,9 @@ const Composer: React.FC = () => {
   );
   const handleRemoveOption = (option: IArtist, options: IArtist[]) =>
     destroyMutation.mutate({ option, options });
-  const composers = useQuery<IArtist[]>(
+  const composers = useQuery(
     [queryKey.ARTISTS, { query: debouncedInputValue }],
-    () =>
-      GraphQLClient.request<IArtistsType>(artistsQuery, {
-        q: { name_cont: debouncedInputValue },
-        page: 1,
-      }).then((res) => res.artists?.data || []),
+    getArtists(1, { name_eq: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
@@ -109,7 +100,7 @@ const Composer: React.FC = () => {
       autocompleteProps={{
         multiple: true,
         value: music?.composers || [],
-        options: composers.data || [],
+        options: composers.data?.data || [],
         loading:
           createMutation.isLoading || destroyMutation.isLoading || isPending(),
         getOptionSelected,

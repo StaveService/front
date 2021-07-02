@@ -26,12 +26,7 @@ import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
 import ControlSelect from "../../../../../../components/ControlSelect";
 import LoadingButton from "../../../../../../components/Loading/LoadingButton";
-import {
-  IArtist,
-  IMusic,
-  IArtistMusic,
-  IArtistsType,
-} from "../../../../../../interfaces";
+import { IArtist, IMusic, IArtistMusic } from "../../../../../../interfaces";
 import { addRoleSchema } from "../../../../../../schema";
 import {
   selectHeaders,
@@ -39,10 +34,9 @@ import {
 } from "../../../../../../slices/currentUser";
 import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../../../../../gql/client";
-import artistsQuery from "../../../../../../gql/query/artists";
 import routes from "../../../../../../constants/routes.json";
 import queryKey from "../../../../../../constants/queryKey.json";
+import { getArtists } from "../../../../../../gql";
 
 const Artist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -106,13 +100,9 @@ const Artist: React.FC = () => {
       axios.delete<IArtistMusic>(`${route}/${role.id}`, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
-  const artists = useQuery<IArtist[]>(
+  const artists = useQuery(
     [queryKey.ARTISTS, { query: debouncedInputValue }],
-    () =>
-      GraphQLClient.request<IArtistsType>(artistsQuery, {
-        q: { name_cont: debouncedInputValue },
-        page: 1,
-      }).then((res) => res.artists?.data || []),
+    getArtists(1, { name_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
@@ -204,7 +194,7 @@ const Artist: React.FC = () => {
                   }}
                   autocompleteProps={{
                     multiple: true,
-                    options: artists.data || [],
+                    options: artists.data?.data || [],
                     inputValue,
                     getOptionSelected,
                     getOptionLabel,

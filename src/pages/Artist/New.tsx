@@ -17,18 +17,12 @@ import ExistAlert from "../../components/Alert/Exist";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import {
-  IArtist,
-  IArtistLink,
-  IArtistsType,
-  IItunesArtist,
-} from "../../interfaces";
+import { IArtist, IArtistLink, IItunesArtist } from "../../interfaces";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../gql/client";
-import artistsQuery from "../../gql/query/artists";
 import queryKey from "../../constants/queryKey.json";
 import usePaginate from "../../hooks/usePaginate";
+import { getArtists } from "../../gql";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -41,7 +35,7 @@ const New: React.FC = () => {
     useForm<IArtist>();
   const { name } = watch();
   // use-debounce
-  const [debouncedName] = useDebounce(name, 1000);
+  const [debouncedInputValue] = useDebounce(name, 1000);
   // react-router-dom
   const history = useHistory();
   const match = useRouteMatch();
@@ -72,13 +66,9 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.ARTISTS, { page, query: debouncedName }],
-    () =>
-      GraphQLClient.request<IArtistsType>(artistsQuery, {
-        page,
-        q: { name_eq: debouncedName },
-      }),
-    { enabled: !!debouncedName, onError }
+    [queryKey.ARTISTS, { page, query: debouncedInputValue }],
+    getArtists(1, { name_cont: debouncedInputValue }),
+    { enabled: !!debouncedInputValue, onError }
   );
   // handlers
   const onSubmit = (data: PostParams<IArtist, IArtistLink>) =>
@@ -131,11 +121,11 @@ const New: React.FC = () => {
             onClose={handleClose}
             onSelect={handleSelect}
           />
-          <ExistAlert<IArtist> data={searchQuery.data?.artists?.data}>
+          <ExistAlert<IArtist> data={searchQuery.data?.data}>
             <ArtistTable
-              artists={searchQuery.data?.artists?.data}
+              artists={searchQuery.data?.data}
               page={page}
-              pageCount={searchQuery.data?.artists?.pagination.totalPages}
+              pageCount={searchQuery.data?.pagination.totalPages}
               onPage={handlePage}
               loading={searchQuery.isLoading}
             />

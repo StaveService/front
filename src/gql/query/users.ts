@@ -1,8 +1,8 @@
 import { gql } from "graphql-request";
 
 const usersQuery = gql`
-  query getUsers($page: Int!) {
-    users(page: $page) {
+  query getUsers($page: Int!, $q: JSON) {
+    users(page: $page, q: $q) {
       pagination {
         totalPages
       }
