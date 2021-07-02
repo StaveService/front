@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/AutocompleteTextField";
-import { IBand, IBandsType, IMusic } from "../../../../../../../../interfaces";
+import { IBand, IMusic } from "../../../../../../../../interfaces";
 import routes from "../../../../../../../../constants/routes.json";
 import queryKey from "../../../../../../../../constants/queryKey.json";
 import {
@@ -13,8 +13,7 @@ import {
   setHeaders,
 } from "../../../../../../../../slices/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../../../../../../../gql/client";
-import bandsQuery from "../../../../../../../../gql/query/bands";
+import { getBands } from "../../../../../../../../gql";
 
 interface MutateVariables {
   option: IBand;
@@ -69,13 +68,9 @@ const Band: React.FC = () => {
   );
   const handleRemoveOption = (option: IBand, options: IBand[]) =>
     destroyMutation.mutate({ option, options });
-  const bands = useQuery<IBand[]>(
+  const bands = useQuery(
     [queryKey.BANDS, { query: debouncedInputValue }],
-    () =>
-      GraphQLClient.request<IBandsType>(bandsQuery, {
-        q: { name_cont: debouncedInputValue },
-        page: 1,
-      }).then((res) => res.bands?.data || []),
+    getBands(1, { name_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
@@ -99,7 +94,7 @@ const Band: React.FC = () => {
       }}
       autocompleteProps={{
         multiple: true,
-        options: bands.data || [],
+        options: bands.data?.data || [],
         value: music?.band ? [music.band] : [],
         inputValue,
         loading:

@@ -21,7 +21,13 @@ const Following: React.FC = () => {
       <Typography variant="h5" color="initial">
         Following
       </Typography>
-      <UserTable data={following.data?.data} onPage={handlePage} />
+      <UserTable
+        data={following.data?.data}
+        loading={following.isLoading}
+        page={page}
+        pageCount={following.data?.pagination.totalPages}
+        onPage={handlePage}
+      />
     </DefaultLayout>
   );
 };

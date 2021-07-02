@@ -117,7 +117,7 @@ export const getUserFollowing =
         id,
         followingPage: page,
       })
-      .then((res) => res.user.followers);
+      .then((res) => res.user.following);
 export const getMusics =
   (page: number, q?: { [key: string]: string }) =>
   (): Promise<IIndexType<IMusic>> =>

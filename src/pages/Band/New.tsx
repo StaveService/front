@@ -16,15 +16,14 @@ import BandTable from "../../components/Table/Band";
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
 import { selectHeaders, setHeaders } from "../../slices/currentUser";
-import { IBand, IBandLink, IBandsType, IItunesArtist } from "../../interfaces";
+import { IBand, IBandLink, IItunesArtist } from "../../interfaces";
 import { postBand, PostParams } from "../../axios/axios";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import GraphQLClient from "../../gql/client";
-import bandsQuery from "../../gql/query/bands";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import usePaginate from "../../hooks/usePaginate";
+import { getBands } from "../../gql";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -65,13 +64,9 @@ const New: React.FC = () => {
     (newBand: PostParams<IBand, IBandLink>) => postBand(newBand, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
-  const searchQuery = useQuery<IBandsType>(
+  const searchQuery = useQuery(
     [queryKey.BANDS, { page, query: debouncedName }],
-    () =>
-      GraphQLClient.request(bandsQuery, {
-        page,
-        q: { name_eq: debouncedName },
-      }),
+    getBands(page, { name_eq: debouncedName }),
     { enabled: !!debouncedName, onError }
   );
   // handlers
@@ -125,11 +120,11 @@ const New: React.FC = () => {
             onClose={handleClose}
             onSelect={handleSelect}
           />
-          <ExistAlert<IBand> data={searchQuery.data?.bands?.data}>
+          <ExistAlert<IBand> data={searchQuery.data?.data}>
             <BandTable
-              bands={searchQuery.data?.bands?.data}
+              bands={searchQuery.data?.data}
               page={page}
-              pageCount={searchQuery.data?.bands?.pagination.totalPages}
+              pageCount={searchQuery.data?.pagination.totalPages}
               onPage={handlePage}
               loading={searchQuery.isLoading}
             />

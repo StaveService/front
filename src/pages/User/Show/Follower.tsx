@@ -21,7 +21,13 @@ const Follower: React.FC = () => {
       <Typography variant="h5" color="initial">
         Followers
       </Typography>
-      <UserTable data={followers.data?.data} onPage={handlePage} />
+      <UserTable
+        data={followers.data?.data}
+        loading={followers.isLoading}
+        page={page}
+        pageCount={followers.data?.pagination.totalPages}
+        onPage={handlePage}
+      />
     </DefaultLayout>
   );
 };
