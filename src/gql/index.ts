@@ -36,6 +36,7 @@ import musicQuery from "./query/music";
 import musicScoreQuery from "./query/music/score";
 import musicsQuery from "./query/musics";
 import userQuery from "./query/user";
+import userBookmarkedAlbumsQuery from "./query/user/bookmarkedAlbums";
 import userBookmarkedArtistsQuery from "./query/user/bookmarkedArtists";
 import userBookmarkedBandsQuery from "./query/user/bookmarkedBands";
 import userBookmarkedMusicsQuery from "./query/user/bookmarkedMusics";
@@ -102,6 +103,14 @@ export const getUserBookmarkedBands =
         bookmarkedBandPage: page,
       })
       .then((res) => res.user.bookmarkedBands);
+export const getUserBookmarkedAlbums =
+  (id: number, page: number) => (): Promise<IIndexType<IAlbum>> =>
+    graphQLCilent
+      .request<IUserType>(userBookmarkedAlbumsQuery, {
+        id,
+        bookmarkedAlbumPage: page,
+      })
+      .then((res) => res.user.bookmarkedAlbums);
 export const getUserFollower =
   (id: number, page: number) => (): Promise<IIndexType<IUser>> =>
     graphQLCilent

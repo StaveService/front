@@ -16,6 +16,7 @@ export interface IUser
     IFollowingType,
     IBookmarkedMusicsType,
     IBookmarkedBandsType,
+    IBookmarkedAlbumsType,
     IBookmarkedArtistsType {
   ["allow_password_change"]?: false;
   email: string;
@@ -214,6 +215,9 @@ export interface IAlbumType {
 }
 export interface IAlbumsType {
   albums: IIndexType<IAlbum>;
+}
+export interface IBookmarkedAlbumsType {
+  bookmarkedAlbums: IIndexType<IAlbum>;
 }
 export interface ISignInFormValues {
   email: string;
