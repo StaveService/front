@@ -4,19 +4,25 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import MusicsTable from "../components/Table/Music";
 import MenuCard from "../components/Card/Menu";
+import MusicCards from "../components/Cards/Musics";
 import DefaultLayout from "../layout/Default";
 import queryKey from "../constants/queryKey.json";
 import useQuerySnackbar from "../hooks/useQuerySnackbar";
-import { getMusics } from "../gql";
 import usePaginate from "../hooks/usePaginate";
+import { getMusics } from "../gql";
 
 const Root: React.FC = () => {
   const [page, handlePage] = usePaginate();
   const { onError } = useQuerySnackbar();
-  const { isLoading, data } = useQuery(
-    [queryKey.MUSICS, page],
-    getMusics(page),
-    { onError }
+  const musics = useQuery([queryKey.MUSICS, page], getMusics(page), {
+    onError,
+  });
+  const bookmarkedMusics = useQuery(
+    [queryKey.MUSICS, 1, queryKey.BOOKMARKS],
+    getMusics(1, { s: "bookmarks_count asc" }),
+    {
+      onError,
+    }
   );
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;
@@ -45,11 +51,12 @@ const Root: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
+      <MusicCards data={bookmarkedMusics.data?.data} />
       <MusicsTable
-        musics={data?.data}
-        loading={isLoading}
+        musics={musics.data?.data}
+        loading={musics.isLoading}
         page={page}
-        pageCount={data?.pagination?.totalPages}
+        pageCount={musics.data?.pagination?.totalPages}
         onPage={handlePage}
       />
     </DefaultLayout>

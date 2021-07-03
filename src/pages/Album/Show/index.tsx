@@ -7,8 +7,10 @@ import Image from "material-ui-image";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
+import Grid from "@material-ui/core/Grid";
 import {
   IAlbum,
+  IAlbumBookmark,
   IAlbumLink,
   IItunesAlbum,
   ISpotifyAlbum,
@@ -18,12 +20,21 @@ import ArtistTable from "../../../components/Table/Artist";
 import LinkTable from "../../../components/Table/Link";
 import ItunesAlbumDialog from "../../../components/Dialog/Itunes/Album";
 import SpotifyAlbumDialog from "../../../components/Dialog/Spotify/Album";
+import BookmarkButton from "../../../components/Button/Icon/Bookmark";
 import DefaultLayout from "../../../layout/Default";
 import ArtistDialog from "./Dialog/Artist";
-import { patchAlbumLink } from "../../../axios/axios";
+import {
+  deleteAlbumBookmark,
+  patchAlbumLink,
+  postAlbumBookmark,
+} from "../../../axios/axios";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
-import { selectHeaders, setHeaders } from "../../../slices/currentUser";
+import {
+  selectCurrentUser,
+  selectHeaders,
+  setHeaders,
+} from "../../../slices/currentUser";
 import { lookupItunesAlbum } from "../../../axios/itunes";
 import usePaginate from "../../../hooks/usePaginate";
 import { getAlbum, getAlbumMusics } from "../../../gql";
@@ -37,6 +48,7 @@ const Show: React.FC = () => {
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
+  const currentUser = useSelector(selectCurrentUser);
   // react-query
   const queryClient = useQueryClient();
   const handleUpdateSuccess = (res: AxiosResponse<IAlbumLink>) => {
@@ -46,7 +58,31 @@ const Show: React.FC = () => {
       (prev) => prev && { ...prev, link: res.data }
     );
   };
-  const album = useQuery([queryKey.ALBUM, id], getAlbum(id), {
+  const handleCreateSuccess = (res: AxiosResponse<IAlbumBookmark>) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IAlbum | undefined>(
+      [queryKey.ALBUM, id],
+      (prev) =>
+        prev && {
+          ...prev,
+          bookmark: res.data,
+          bookmarksCount: prev.bookmarksCount + 1,
+        }
+    );
+  };
+  const handleDestroySuccess = (res: AxiosResponse) => {
+    dispatch(setHeaders(res.headers));
+    queryClient.setQueryData<IAlbum | undefined>(
+      [queryKey.ALBUM, id],
+      (prev) =>
+        prev && {
+          ...prev,
+          bookmark: undefined,
+          bookmarksCount: prev.bookmarksCount - 1,
+        }
+    );
+  };
+  const album = useQuery([queryKey.ALBUM, id], getAlbum(id, currentUser?.id), {
     onError,
   });
   const albumMusics = useQuery(
@@ -70,17 +106,42 @@ const Show: React.FC = () => {
       onError,
     }
   );
+  const createMutation = useMutation(() => postAlbumBookmark(id, headers), {
+    onSuccess: handleCreateSuccess,
+    onError,
+  });
+  const destroyMutation = useMutation(
+    () => deleteAlbumBookmark(id, album.data?.bookmark?.id, headers),
+    {
+      onSuccess: handleDestroySuccess,
+      onError,
+    }
+  );
   // handlers
+  const handleCreateMutation = () => createMutation.mutate();
+  const handleDestroyMutation = () => destroyMutation.mutate();
   const handleSelect = (selectedAlbum: IItunesAlbum) =>
     patchMutation.mutate({ itunes: selectedAlbum.collectionId });
   const handleSpotifySelect = (selectedAlbum: ISpotifyAlbum) =>
     patchMutation.mutate({ spotify: selectedAlbum.id });
   return (
     <DefaultLayout>
-      <Typography variant="h5">
-        <AlbumIcon />
-        {album.data?.title}
-      </Typography>
+      <Grid container>
+        <Grid item xs={11}>
+          <Typography variant="h5">
+            <AlbumIcon />
+            {album.data?.title}
+          </Typography>
+        </Grid>
+        <Grid item xs={1}>
+          <BookmarkButton
+            count={album.data?.bookmarksCount}
+            bookmarked={!!album.data?.bookmark}
+            onCreate={handleCreateMutation}
+            onDestroy={handleDestroyMutation}
+          />
+        </Grid>
+      </Grid>
       <Box height="100px" width="100px" m="auto">
         <Image src={itunesAlbum.data?.artworkUrl100 || "undefiend"} />
       </Box>

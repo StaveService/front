@@ -119,7 +119,7 @@ export const getUserFollowing =
       })
       .then((res) => res.user.following);
 export const getMusics =
-  (page: number, q?: { [key: string]: string }) =>
+  (page: number, q?: { s?: string; [key: string]: string | undefined }) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IMusicsType>(musicsQuery, {
@@ -232,12 +232,14 @@ export const getAlbums =
         q,
       })
       .then((res) => res.albums);
-export const getAlbum = (id: number) => (): Promise<IAlbum> =>
-  graphQLCilent
-    .request<IAlbumType>(albumQuery, {
-      id,
-    })
-    .then((res) => res.album);
+export const getAlbum =
+  (id: number, currentUserId: number | undefined) => (): Promise<IAlbum> =>
+    graphQLCilent
+      .request<IAlbumType>(albumQuery, {
+        id,
+        currentUserId,
+      })
+      .then((res) => res.album);
 export const getAlbumMusics =
   (id: number, page: number) => (): Promise<IIndexType<IMusic>> =>
     graphQLCilent

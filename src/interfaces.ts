@@ -95,6 +95,8 @@ export interface IArtistLink {
 export interface IAlbum extends IMusicsType {
   id: number;
   title: string;
+  bookmark?: IAlbumBookmark;
+  bookmarksCount: number;
   artists?: IArtist[];
   link?: IAlbumLink;
 }
@@ -147,6 +149,9 @@ export interface IBandBookmark {
   id: number;
 }
 export interface IArtistBookmark {
+  id: number;
+}
+export interface IAlbumBookmark {
   id: number;
 }
 export interface IPaginationType {

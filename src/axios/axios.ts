@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import {
   IAlbum,
+  IAlbumBookmark,
   IAlbumLink,
   IAlbumMusic,
   IArtist,
@@ -265,6 +266,26 @@ export const deleteArtistBookmark = (
 ): Promise<AxiosResponse<IArtistBookmark>> =>
   axios.delete(
     `${routes.ARTISTS}/${artistId}${routes.BOOKMARKS}/${
+      bookmarkId || "undefined"
+    }`,
+    headers
+  );
+export const postAlbumBookmark = (
+  albumId: number,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IAlbumBookmark>> =>
+  axios.post<IBandBookmark>(
+    `${routes.ALBUMS}/${albumId}${routes.BOOKMARKS}`,
+    undefined,
+    headers
+  );
+export const deleteAlbumBookmark = (
+  albumId: number,
+  bookmarkId: number | undefined,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IAlbumBookmark>> =>
+  axios.delete(
+    `${routes.ALBUMS}/${albumId}${routes.BOOKMARKS}/${
       bookmarkId || "undefined"
     }`,
     headers

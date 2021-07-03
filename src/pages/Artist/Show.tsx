@@ -98,7 +98,7 @@ const Show: React.FC = () => {
     { onError }
   );
   const artistMusics = useQuery(
-    [queryKey.ARTIST, id, queryKey.ALBUMS, albumPage],
+    [queryKey.ARTIST, id, queryKey.ALBUMS, musicPage],
     getArtistMusics(id, musicPage),
     { onError }
   );

@@ -1,7 +1,7 @@
 import { gql } from "graphql-request";
 
 const albumQuery = gql`
-  query getAlbum($id: Int!) {
+  query getAlbum($id: Int!, $currentUserId: Int) {
     album(id: $id) {
       id
       title
@@ -13,6 +13,10 @@ const albumQuery = gql`
         id
         name
       }
+      bookmark(currentUserId: $currentUserId) {
+        id
+      }
+      bookmarksCount
     }
   }
 `;

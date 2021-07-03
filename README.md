@@ -31,6 +31,7 @@
 - [react-router-dom](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-dom)
 - [react-dropzone](https://github.com/react-dropzone/react-dropzone)
 - [react-markdown](https://github.com/remarkjs/react-markdown)
+- [react-slick](https://github.com/akiran/react-slick)
 - [redux-toolkit](https://redux-toolkit.js.org/)
 - [redux-persist](https://github.com/rt2zz/redux-persist)
 - [redux-logger](https://github.com/LogRocket/redux-logger)
