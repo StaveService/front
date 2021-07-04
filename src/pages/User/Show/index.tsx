@@ -104,13 +104,13 @@ const Show: React.FC = () => {
         component={RouterLink}
         to={`${routes.USERS}/${id}${routes.FOLLOWERS}`}
       >
-        Followers
+        {data?.followersCount}Followers
       </Link>
       <Link
         component={RouterLink}
         to={`${routes.USERS}/${id}${routes.FOLLOWING}`}
       >
-        Following
+        {data?.followingCount}Following
       </Link>
       <Tabs
         value={

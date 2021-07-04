@@ -31,6 +31,8 @@ export interface IUser
   ["created_at"]: string;
   link: IUserLink;
   followed?: IUserRelationship;
+  followingCount: number;
+  followersCount: number;
 }
 export interface IUserLink {
   id: number;
