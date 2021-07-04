@@ -5,8 +5,6 @@ import SpotifyIcon from "../Icon/Spotify";
 
 const Spotify: React.FC = () => {
   const handleClick = () => {
-    // eslint-disable-next-line no-console
-    console.log(window.location.origin);
     window.open(
       `https://accounts.spotify.com/authorize?response_type=code&client_id=${
         process.env.REACT_APP_SPOTIFY_KEY || ""
