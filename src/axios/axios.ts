@@ -18,6 +18,7 @@ import {
   ISignInFormValues,
   ISignSuccessResponse,
   ISignUpFormValues,
+  IUser,
   IUserLink,
   IUserRelationship,
 } from "../interfaces";
@@ -56,6 +57,13 @@ export const signUp = (
   axios.post<ISignSuccessResponse>("/auth", data, {
     "Key-inflection": "camel",
   });
+export const patchUser = (
+  id: number | undefined,
+  data: IUser,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<IUser>> =>
+  axios.patch<IUser>(`${routes.USERS}/${id || "undefined"}`, data, headers);
+
 export const deleteUser = (id: number): Promise<AxiosResponse> =>
   axios.delete(`/users/${id}`);
 export const postUserRelationship = (
