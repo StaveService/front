@@ -23,7 +23,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useDebounce from "use-debounce/lib/useDebounce";
-import AutocompleteTextField from "../../../../../../components/AutocompleteTextField";
+import AutocompleteTextField from "../../../../../../components/TextField/AutocompleteTextField";
 import ControlSelect from "../../../../../../components/ControlSelect";
 import LoadingButton from "../../../../../../components/Loading/LoadingButton";
 import { IArtist, IMusic, IArtistMusic } from "../../../../../../interfaces";

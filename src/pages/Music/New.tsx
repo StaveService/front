@@ -8,7 +8,7 @@ import Image from "material-ui-image";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import ControlTextField from "../../components/ControlTextField";
+import ControlTextField from "../../components/TextField/ControlTextField";
 import ControlDropzone from "../../components/ControlDropzone";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingButton from "../../components/Loading/LoadingButton";

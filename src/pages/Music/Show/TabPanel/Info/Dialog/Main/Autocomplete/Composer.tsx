@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
-import AutocompleteTextField from "../../../../../../../../components/AutocompleteTextField";
+import AutocompleteTextField from "../../../../../../../../components/TextField/AutocompleteTextField";
 import { IArtist, IMusic } from "../../../../../../../../interfaces";
 import queryKey from "../../../../../../../../constants/queryKey.json";
 import {

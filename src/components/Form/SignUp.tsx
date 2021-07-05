@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Grid from "@material-ui/core/Grid";
-import ControlTextField from "../ControlTextField";
+import ControlTextField from "../TextField/ControlTextField";
 import LoadingButton from "../Loading/LoadingButton";
 import DefaultLayout from "../../layout/Default";
 import {

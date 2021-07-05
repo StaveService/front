@@ -6,7 +6,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
-import Pagination from "@material-ui/lab/Pagination";
 import TwitterIcon from "../Icon/Twitter";
 import LinkIconButton from "../Button/Icon/Link";
 import { IUser } from "../../interfaces";
@@ -48,7 +47,6 @@ const User: React.FC<UserProps> = ({
         ))}
       </TableBody>
     </Table>
-    {page && <Pagination count={pageCount} page={page} onChange={onPage} />}
   </Layout>
 );
 export default User;

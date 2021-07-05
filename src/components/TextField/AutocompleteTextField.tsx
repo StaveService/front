@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Autocomplete, { AutocompleteProps } from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
-import useOpen from "../hooks/useOpen";
+import useOpen from "../../hooks/useOpen";
 
 type ControlAutocompleteTextFieldProps<T> = {
   maxLength?: number;

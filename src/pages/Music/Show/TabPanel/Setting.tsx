@@ -9,7 +9,7 @@ import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import { useMutation, useQueryClient } from "react-query";
-import ControlTextField from "../../../../components/ControlTextField";
+import ControlTextField from "../../../../components/TextField/ControlTextField";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import routes from "../../../../constants/routes.json";

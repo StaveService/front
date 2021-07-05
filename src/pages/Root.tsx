@@ -14,12 +14,16 @@ import { getMusics } from "../gql";
 const Root: React.FC = () => {
   const [page, handlePage] = usePaginate();
   const { onError } = useQuerySnackbar();
-  const musics = useQuery([queryKey.MUSICS, page], getMusics(page), {
-    onError,
-  });
+  const musics = useQuery(
+    [queryKey.MUSICS, page],
+    getMusics(page, { s: "updated_at desc" }),
+    {
+      onError,
+    }
+  );
   const bookmarkedMusics = useQuery(
     [queryKey.MUSICS, 1, queryKey.BOOKMARKS],
-    getMusics(1, { s: "bookmarks_count asc" }),
+    getMusics(1, { s: "bookmarks_count desc" }),
     {
       onError,
     }

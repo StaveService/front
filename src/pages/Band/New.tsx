@@ -8,7 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
-import ControlTextField from "../../components/ControlTextField";
+import ControlTextField from "../../components/TextField/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";

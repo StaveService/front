@@ -6,7 +6,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
-import Pagination from "@material-ui/lab/Pagination";
 import { IIssue } from "../../interfaces";
 import Layout, { LayoutProps } from "./Layout";
 
@@ -41,7 +40,6 @@ const Issue: React.FC<IssueProps> = ({
           ))}
         </TableBody>
       </Table>
-      {page && <Pagination count={pageCount} page={page} onChange={onPage} />}
     </Layout>
   );
 };

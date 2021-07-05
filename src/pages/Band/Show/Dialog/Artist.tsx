@@ -21,7 +21,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import useDebounce from "use-debounce/lib/useDebounce";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
-import AutocompleteTextField from "../../../../components/AutocompleteTextField";
+import AutocompleteTextField from "../../../../components/TextField/AutocompleteTextField";
 import routes from "../../../../constants/routes.json";
 import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
 import { IArtist, IArtistBand, IBand } from "../../../../interfaces";
