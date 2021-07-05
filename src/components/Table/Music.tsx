@@ -55,7 +55,7 @@ const Music: React.FC<MusicProps> = ({
   ];
   const { onError } = useQuerySnackbar();
   const onSuccess = (results: IItunesMusic[]) => {
-    if (!musics) return;
+    if (!results || !musics) return;
     let i = 0;
     setMergedMusics(
       musics?.map((music) => {

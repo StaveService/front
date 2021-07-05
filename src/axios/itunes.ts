@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios-jsonp-pro";
 import {
   IItunesAlbum,
   IItunesArtist,
@@ -16,65 +16,53 @@ type TermType = string | undefined;
 export const lookupItunesArtist = (
   id: IdType
 ): Promise<IItunesResponse<IItunesArtist>> =>
-  itunes
-    .get<IItunesResponse<IItunesArtist>>("/lookup", {
-      params: {
-        id,
-        entity: "musicArtist",
-      },
-    })
-    .then((res) => res.data);
+  itunes.jsonp<null, IItunesResponse<IItunesArtist>>("/lookup", {
+    params: {
+      id,
+      entity: "musicArtist",
+    },
+  });
 export const lookupItunesAlbum = (
   id: IdType
 ): Promise<IItunesResponse<IItunesAlbum>> =>
-  itunes
-    .get<IItunesResponse<IItunesAlbum>>("/lookup", {
-      params: { id, entity: "album" },
-    })
-    .then((res) => res.data);
+  itunes.jsonp<null, IItunesResponse<IItunesAlbum>>("/lookup", {
+    params: { id, entity: "album" },
+  });
 export const lookupItunesMusic = (
   id: IdType
 ): Promise<IItunesResponse<IItunesMusic>> =>
-  itunes
-    .get<IItunesResponse<IItunesMusic>>("/lookup", {
-      params: { id, entity: "song" },
-    })
-    .then((res) => res.data);
+  itunes.jsonp<null, IItunesResponse<IItunesMusic>>("/lookup", {
+    params: { id, entity: "song" },
+  });
 
 export const searchItunesMusics = (
   term: TermType
 ): Promise<IItunesResponse<IItunesMusic>> =>
-  itunes
-    .get<IItunesResponse<IItunesMusic>>("/search", {
-      params: {
-        entity: "song",
-        term,
-        limit,
-        offset: 2,
-      },
-    })
-    .then((res) => res.data);
+  itunes.jsonp<null, IItunesResponse<IItunesMusic>>("/search", {
+    params: {
+      entity: "song",
+      term,
+      limit,
+      offset: 2,
+    },
+  });
 export const searchItunesArtists = (
   term: TermType
 ): Promise<IItunesResponse<IItunesArtist>> =>
-  itunes
-    .get<IItunesResponse<IItunesArtist>>("/search", {
-      params: {
-        entity: "musicArtist",
-        term,
-        limit,
-      },
-    })
-    .then((res) => res.data);
+  itunes.jsonp<null, IItunesResponse<IItunesArtist>>("/search", {
+    params: {
+      entity: "musicArtist",
+      term,
+      limit,
+    },
+  });
 export const searchItunesAlbums = (
   term: TermType
 ): Promise<IItunesResponse<IItunesAlbum>> =>
-  itunes
-    .get<IItunesResponse<IItunesAlbum>>("/search", {
-      params: {
-        entity: "album",
-        term,
-        limit,
-      },
-    })
-    .then((res) => res.data);
+  itunes.jsonp<null, IItunesResponse<IItunesAlbum>>("/search", {
+    params: {
+      entity: "album",
+      term,
+      limit,
+    },
+  });

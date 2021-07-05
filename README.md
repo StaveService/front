@@ -24,6 +24,7 @@
 ## Packages
 
 - [axios](https://github.com/axios/axios)
+- [axios-jsonp](https://github.com/RekingZhang/axios-jsonp)
 - [@material-ui](https://material-ui.com/getting-started/installation/)
 - [material-ui-image](https://github.com/TeamWertarbyte/material-ui-image)
 - [notistack](https://github.com/iamhosseindhv/notistack)
@@ -41,7 +42,6 @@
 - [graphql-request](https://github.com/prisma-labs/graphql-request)
 - [spotify-web-api-js](https://github.com/JMPerez/spotify-web-api-js)
 - [why-did-you-render](https://github.com/welldone-software/why-did-you-render)
-
 - [react-use](https://github.com/streamich/react-use)
 - [react-script-hook](https://github.com/hupe1980/react-script-hook)
 - ~~[use-http](https://github.com/ava/use-http)~~ can't use multiple url
