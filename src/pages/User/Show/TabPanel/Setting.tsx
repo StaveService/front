@@ -98,7 +98,12 @@ const Setting: React.FC = () => {
         fullWidth
         multiline
       />
-      <LoadingButton type="submit" loading={isLoading}>
+      <LoadingButton
+        type="submit"
+        loading={isLoading}
+        color="primary"
+        fullWidth
+      >
         UPDATE
       </LoadingButton>
     </form>

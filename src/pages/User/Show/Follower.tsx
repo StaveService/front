@@ -22,7 +22,7 @@ const Follower: React.FC = () => {
         Followers
       </Typography>
       <UserTable
-        data={followers.data?.data}
+        users={followers.data?.data}
         loading={followers.isLoading}
         page={page}
         pageCount={followers.data?.pagination.totalPages}

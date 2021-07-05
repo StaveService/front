@@ -29,4 +29,3 @@ export const getTrackLyric = (
       },
     })
     .then((res) => res.data);
-export default undefined;

@@ -3,21 +3,15 @@ import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import Link from "@material-ui/core/Link";
 import Pagination from "@material-ui/lab/Pagination";
 import { IIssue } from "../../interfaces";
+import Layout, { LayoutProps } from "./Layout";
 
-interface IssueProps {
+interface IssueProps extends LayoutProps {
   issues: IIssue[] | undefined;
-  page?: number;
-  pageCount?: number;
-  onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
-  loading?: boolean;
 }
 const Issue: React.FC<IssueProps> = ({
   issues,
@@ -28,36 +22,27 @@ const Issue: React.FC<IssueProps> = ({
 }: IssueProps) => {
   const match = useRouteMatch();
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>title</TableCell>
+    <Layout page={page} pageCount={pageCount} onPage={onPage} loading={loading}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>title</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {issues?.map((issue) => (
+            <TableRow key={issue.id}>
+              <TableCell>
+                <Link component={RouterLink} to={`${match.url}/${issue.id}`}>
+                  {issue.title}
+                </Link>
+              </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {issues?.map((issue) => (
-              <TableRow key={issue.id}>
-                <TableCell>
-                  <Link component={RouterLink} to={`${match.url}/${issue.id}`}>
-                    {issue.title}
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {loading && <LinearProgress />}
-      </TableContainer>
+          ))}
+        </TableBody>
+      </Table>
       {page && <Pagination count={pageCount} page={page} onChange={onPage} />}
-    </>
+    </Layout>
   );
-};
-Issue.defaultProps = {
-  page: undefined,
-  pageCount: undefined,
-  onPage: undefined,
-  loading: false,
 };
 export default Issue;

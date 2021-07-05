@@ -1,32 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { useQuery } from "react-query";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
-import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import { useQuery } from "react-query";
-import Pagination from "@material-ui/lab/Pagination";
-import { IItunesMusic, IMusic } from "../../interfaces";
+import Layout, { LayoutProps } from "./Layout";
+import { IMusic } from "../../interfaces";
 import routes from "../../constants/routes.json";
 import queryKey from "../../constants/queryKey.json";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { lookupItunesMusic } from "../../axios/itunes";
 
-interface MusicProps {
+interface MusicProps extends LayoutProps {
   musics: IMusic[] | undefined;
-  page?: number;
-  pageCount?: number;
-  onPage?: (event: React.ChangeEvent<unknown>, value: number) => void;
-  loading?: boolean;
-}
-interface IMergedMusic extends IMusic {
-  itunesArtworkUrl: string;
 }
 const Music: React.FC<MusicProps> = ({
   musics,
@@ -35,8 +25,7 @@ const Music: React.FC<MusicProps> = ({
   onPage,
   loading,
 }: MusicProps) => {
-  const [mergedMusics, setMergedMusics] = useState<IMergedMusic[]>([]);
-  const ids = musics?.map((music) => music.link?.itunes).join(",");
+  const ids = musics?.map((music) => music.link?.itunes || 0).join(",");
   const columns = [
     {
       route: routes.MUSICS,
@@ -53,130 +42,102 @@ const Music: React.FC<MusicProps> = ({
     },
     { route: routes.USERS, name: "Users" },
   ];
+  let i = 0;
+  let imageUrl = "";
   const { onError } = useQuerySnackbar();
-  const onSuccess = (results: IItunesMusic[]) => {
-    if (!results || !musics) return;
-    let i = 0;
-    setMergedMusics(
-      musics?.map((music) => {
-        if (music.link?.itunes === results[i]?.trackId) {
-          const mergedMusic = {
-            ...music,
-            itunesArtworkUrl: results[i]?.artworkUrl60,
-          };
-          i += 1;
-          return mergedMusic;
-        }
-        return { ...music, itunesArtworkUrl: "undefiend" };
-      })
-    );
-  };
-  useQuery(
+  const itunesMusics = useQuery(
     [queryKey.ITUNES, queryKey.MUSICS, ids],
     () => lookupItunesMusic(ids).then((res) => res.results),
     {
-      onSuccess,
       onError,
     }
   );
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              {columns.map((column) => (
-                <TableCell key={column.name}>
-                  <Link component={RouterLink} to={column.route}>
-                    {column.name}
-                  </Link>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {mergedMusics.map(
-              ({
-                id,
-                title,
-                band,
-                user,
-                itunesArtworkUrl,
-                composers,
-                lyrists,
-              }) => {
-                return (
-                  <TableRow key={id}>
-                    <TableCell>
-                      <Image src={itunesArtworkUrl} />
-                    </TableCell>
-                    <TableCell>
-                      <Link
-                        component={RouterLink}
-                        to={`${routes.USERS}/${user?.id || "undefined"}${
-                          routes.MUSICS
-                        }/${id}`}
-                      >
-                        {title}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      {band && (
-                        <Link
-                          component={RouterLink}
-                          to={`${routes.BANDS}/${band?.id || "undefined"}`}
-                        >
-                          {band?.name}
-                        </Link>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {composers?.map((composer) => (
-                        <Link
-                          key={composer.id}
-                          component={RouterLink}
-                          to={`${routes.ARTISTS}/${composer.id}`}
-                        >
-                          {composer.name}
-                        </Link>
-                      ))}
-                    </TableCell>
-                    <TableCell>
-                      {lyrists?.map((lyrist) => (
-                        <Link
-                          key={lyrist.id}
-                          component={RouterLink}
-                          to={`${routes.ARTISTS}/${lyrist.id}`}
-                        >
-                          {lyrist.name}
-                        </Link>
-                      ))}
-                    </TableCell>
-                    <TableCell>
-                      <Link
-                        component={RouterLink}
-                        to={`${routes.USERS}/${user?.id || "undefined"}`}
-                      >
-                        {user?.nickname}
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                );
+    <Layout page={page} pageCount={pageCount} onPage={onPage} loading={loading}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            {columns.map((column) => (
+              <TableCell key={column.name}>
+                <Link component={RouterLink} to={column.route}>
+                  {column.name}
+                </Link>
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {musics?.map(
+            ({ id, title, band, user, composers, lyrists, link }) => {
+              if (link?.itunes && itunesMusics.data) {
+                imageUrl = itunesMusics.data[i].artworkUrl60;
+                i += 1;
               }
-            )}
-          </TableBody>
-        </Table>
-        {loading && <LinearProgress />}
-      </TableContainer>
-      {page && <Pagination count={pageCount} page={page} onChange={onPage} />}
-    </>
+              return (
+                <TableRow key={id}>
+                  <TableCell>
+                    {imageUrl && (
+                      <Image loading={itunesMusics.isLoading} src={imageUrl} />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      component={RouterLink}
+                      to={`${routes.USERS}/${user?.id || "undefined"}${
+                        routes.MUSICS
+                      }/${id}`}
+                    >
+                      {title}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    {band && (
+                      <Link
+                        component={RouterLink}
+                        to={`${routes.BANDS}/${band?.id || "undefined"}`}
+                      >
+                        {band?.name}
+                      </Link>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {composers?.map((composer) => (
+                      <Link
+                        key={composer.id}
+                        component={RouterLink}
+                        to={`${routes.ARTISTS}/${composer.id}`}
+                      >
+                        {composer.name}
+                      </Link>
+                    ))}
+                  </TableCell>
+                  <TableCell>
+                    {lyrists?.map((lyrist) => (
+                      <Link
+                        key={lyrist.id}
+                        component={RouterLink}
+                        to={`${routes.ARTISTS}/${lyrist.id}`}
+                      >
+                        {lyrist.name}
+                      </Link>
+                    ))}
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      component={RouterLink}
+                      to={`${routes.USERS}/${user?.id || "undefined"}`}
+                    >
+                      {user?.nickname}
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              );
+            }
+          )}
+        </TableBody>
+      </Table>
+    </Layout>
   );
-};
-Music.defaultProps = {
-  page: undefined,
-  pageCount: undefined,
-  onPage: undefined,
-  loading: false,
 };
 export default Music;

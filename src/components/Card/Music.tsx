@@ -30,7 +30,9 @@ const BandCard: React.FC<IMusicCard> = ({ music, onClick }: IMusicCard) => {
     <Card onClick={onClick}>
       <Box display="flex">
         <Box display="flex" justifyItems="center" alignItems="center" p={1}>
-          <CardMedia image={data?.artworkUrl100} className={classes.media} />
+          {data?.artworkUrl100 && (
+            <CardMedia image={data?.artworkUrl60} className={classes.media} />
+          )}
         </Box>
         <CardContent>
           <Typography variant="h6" noWrap>

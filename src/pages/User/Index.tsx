@@ -16,7 +16,7 @@ const Index: React.FC = () => {
   return (
     <DefaultLayout>
       <UsersTable
-        data={data?.data}
+        users={data?.data}
         loading={isLoading}
         page={page}
         pageCount={data?.pagination.totalPages}
