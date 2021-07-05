@@ -37,7 +37,7 @@ export function searchSpotify<T extends ISpotifyTypes>(
 }
 
 export const getSpotifyTrack = (
-  id: string | undefined,
+  id: string | null | undefined,
   accessToken: string | undefined
 ): Promise<ISpotifyTrack> =>
   spotify

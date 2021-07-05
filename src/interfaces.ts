@@ -46,10 +46,10 @@ export interface IUserRelationship {
 export interface IBand extends IMusicsType, IAlbumsType {
   id: number;
   name: string;
-  bookmark?: IBandBookmark;
+  bookmark: IBandBookmark | undefined;
   bookmarksCount: number;
-  artists?: IArtist[];
-  link?: IBandLink;
+  artists: IArtist[];
+  link: IBandLink;
 }
 export interface IBandLink {
   id: number;
@@ -66,19 +66,19 @@ export interface IMusic {
   ["updated_at"]?: string;
   bookmark?: IMusicBookmark;
   bookmarksCount: number;
-  user?: IUser;
-  band?: IBand;
-  artistMusics?: IArtistMusic[];
-  albums?: IAlbum[];
-  composers?: IArtist[];
-  lyrists?: IArtist[];
-  link?: IMusicLink;
+  user: IUser;
+  band: IBand | null;
+  artistMusics: IArtistMusic[] | null;
+  albums: IAlbum[] | null;
+  composers: IArtist[] | null;
+  lyrists: IArtist[] | null;
+  link: IMusicLink;
 }
 export interface IMusicLink {
   id: number;
-  itunes: number;
-  musixmatch: number;
-  spotify: string;
+  itunes: number | null;
+  musixmatch: number | null;
+  spotify: string | null;
 }
 export interface IArtist extends IMusicsType, IAlbumsType {
   id: number;
@@ -86,14 +86,14 @@ export interface IArtist extends IMusicsType, IAlbumsType {
   bookmark?: IArtistBookmark;
   bookmarksCount: number;
   bands?: IBand[];
-  link?: IArtistLink;
+  link: IArtistLink;
 }
 export interface IArtistLink {
   id: number;
-  itunes: number;
-  spotify: string;
-  twitter: string;
-  wikipedia: number;
+  itunes: number | null;
+  spotify: string | null;
+  twitter: string | null;
+  wikipedia: number | null;
 }
 export interface IAlbum extends IMusicsType {
   id: number;
@@ -101,7 +101,7 @@ export interface IAlbum extends IMusicsType {
   bookmark?: IAlbumBookmark;
   bookmarksCount: number;
   artists?: IArtist[];
-  link?: IAlbumLink;
+  link: IAlbumLink;
 }
 export interface IAlbumLink {
   id: number;

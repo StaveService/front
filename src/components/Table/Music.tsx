@@ -16,7 +16,7 @@ import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { lookupItunesMusic } from "../../axios/itunes";
 
 interface MusicProps extends LayoutProps {
-  musics: IMusic[] | undefined;
+  musics: IMusic[];
 }
 const Music: React.FC<MusicProps> = ({
   musics,
@@ -25,7 +25,7 @@ const Music: React.FC<MusicProps> = ({
   onPage,
   loading,
 }: MusicProps) => {
-  const ids = musics?.map((music) => music.link?.itunes || 0).join(",");
+  const ids = musics.map((music) => music.link.itunes || 0).join(",");
   const columns = [
     {
       route: routes.MUSICS,
@@ -47,7 +47,7 @@ const Music: React.FC<MusicProps> = ({
   const { onError } = useQuerySnackbar();
   const itunesMusics = useQuery(
     [queryKey.ITUNES, queryKey.MUSICS, ids],
-    () => lookupItunesMusic(ids).then((res) => res.results),
+    () => lookupItunesMusic<string>(ids).then((res) => res.results),
     {
       onError,
     }
@@ -70,7 +70,7 @@ const Music: React.FC<MusicProps> = ({
         <TableBody>
           {musics?.map(
             ({ id, title, band, user, composers, lyrists, link }) => {
-              if (link?.itunes && itunesMusics.data) {
+              if (link.itunes && itunesMusics.data) {
                 imageUrl = itunesMusics.data[i].artworkUrl60;
                 i += 1;
               }

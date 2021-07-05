@@ -16,7 +16,7 @@ const Posted: React.FC = () => {
   );
   return (
     <MusicTable
-      musics={musics.data?.data}
+      musics={musics.data?.data || []}
       loading={musics.isLoading}
       pageCount={musics.data?.pagination.totalPages}
       page={page}

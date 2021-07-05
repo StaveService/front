@@ -49,8 +49,9 @@ const Artist: React.FC<ArtistProps> = ({
               <TableCell>
                 <LinkIconButton
                   href={
-                    artist.link?.twitter &&
-                    `https://twitter.com/${artist.link?.twitter || "undefined"}`
+                    artist.link.twitter
+                      ? `https://twitter.com/${artist.link.twitter}`
+                      : undefined
                   }
                 >
                   <TwitterIcon />

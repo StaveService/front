@@ -20,7 +20,7 @@ export const searchTracks = (
     })
     .then((res) => res.data);
 export const getTrackLyric = (
-  trackId: number | undefined
+  trackId: number | null | undefined
 ): Promise<IMusixmatchResponse<IGetTrackLyric>> =>
   musixmatch
     .get<IMusixmatchResponse<IGetTrackLyric>>("track.lyrics.get", {

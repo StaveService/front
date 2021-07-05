@@ -49,7 +49,7 @@ const Info: React.FC = () => {
   const itunesMusic = queryClient.getQueryData<IItunesMusic>([
     queryKey.ITUNES,
     queryKey.MUSIC,
-    music?.link?.itunes,
+    music?.link.itunes,
   ]);
   const handleCreateSuccess = (res: AxiosResponse<IMusicLink>) => {
     dispatch(setHeaders(res.headers));
@@ -60,7 +60,7 @@ const Info: React.FC = () => {
   };
   const patchMutation = useMutation(
     (link: Partial<Omit<IMusicLink, "id">>) =>
-      patchMusicLink(userId, id, music?.link?.id, link, headers),
+      patchMusicLink(userId, id, music?.link.id, link, headers),
     {
       onSuccess: handleCreateSuccess,
       onError,
@@ -93,7 +93,7 @@ const Info: React.FC = () => {
           }}
           spotify={{
             type: "track",
-            link: music?.link?.spotify,
+            link: music?.link.spotify,
             renderDialog(open, handleClose) {
               return (
                 <SpotifyTrackDialog
@@ -222,7 +222,7 @@ const Info: React.FC = () => {
         </TableContainer>
       </Box>
       <AlbumDialog />
-      <AlbumsTable albums={music?.albums} />
+      <AlbumsTable albums={music?.albums || []} />
     </>
   );
 };

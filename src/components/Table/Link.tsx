@@ -22,9 +22,9 @@ interface RenderAndLink<T> {
 }
 interface LinkProps {
   itunes?: RenderAndLink<string>;
-  twitter?: RenderAndLink<string>;
-  spotify?: RenderAndLink<string> & { type: string };
-  wikipedia?: RenderAndLink<number>;
+  twitter?: RenderAndLink<string | null>;
+  spotify?: RenderAndLink<string | null> & { type: string };
+  wikipedia?: RenderAndLink<number | null>;
   musixmatch?: RenderAndLink<number>;
   loading?: boolean;
 }
@@ -56,7 +56,11 @@ const Link: React.FC<LinkProps> = ({
               <TableCell>
                 <LinkButton
                   startIcon={<TwitterIcon />}
-                  href={twitter.link && `https://twitter.com/${twitter.link}`}
+                  href={
+                    twitter.link
+                      ? `https://twitter.com/${twitter.link}`
+                      : undefined
+                  }
                 >
                   twitter
                 </LinkButton>
@@ -91,8 +95,9 @@ const Link: React.FC<LinkProps> = ({
                 <LinkButton
                   startIcon={<SpotifyIcon />}
                   href={
-                    spotify.link &&
-                    `https://open.spotify.com/${spotify.type}/${spotify.link}`
+                    spotify.link
+                      ? `https://open.spotify.com/${spotify.type}/${spotify.link}`
+                      : undefined
                   }
                 >
                   spotify

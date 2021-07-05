@@ -23,7 +23,9 @@ export const searchWikipedia = (
       },
     })
     .then((res) => res.data);
-export const getWikipedia = (pageid: number | undefined): Promise<IWikipedia> =>
+export const getWikipedia = (
+  pageid: number | undefined | null
+): Promise<IWikipedia> =>
   wikipedia
     .get<IWikipediaResponse<IWikipediaGet>>("", {
       params: {

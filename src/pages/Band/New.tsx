@@ -122,7 +122,7 @@ const New: React.FC = () => {
           />
           <ExistAlert<IBand> data={searchQuery.data?.data}>
             <BandTable
-              bands={searchQuery.data?.data}
+              bands={searchQuery.data?.data || []}
               page={page}
               pageCount={searchQuery.data?.pagination.totalPages}
               onPage={handlePage}

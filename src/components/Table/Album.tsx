@@ -16,7 +16,7 @@ import { lookupItunesAlbum } from "../../axios/itunes";
 import Layout, { LayoutProps } from "./Layout";
 
 interface AlbumProps extends LayoutProps {
-  albums: IAlbum[] | undefined;
+  albums: IAlbum[];
 }
 
 const Album: React.FC<AlbumProps> = ({
@@ -27,7 +27,7 @@ const Album: React.FC<AlbumProps> = ({
   onPage,
 }: AlbumProps) => {
   const { onError } = useQuerySnackbar();
-  const ids = albums?.map((album) => album.link?.itunes).join(",");
+  const ids = albums.map((album) => album.link.itunes).join(",");
   let i = 0;
   let imageUrl = "";
   // react-query
@@ -53,7 +53,7 @@ const Album: React.FC<AlbumProps> = ({
         </TableHead>
         <TableBody>
           {albums?.map(({ id, title, link }) => {
-            if (link?.itunes && itunesAlbums.data) {
+            if (link.itunes && itunesAlbums.data) {
               imageUrl = itunesAlbums.data[i].artworkUrl60;
               i += 1;
             }

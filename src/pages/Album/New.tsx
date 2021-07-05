@@ -120,7 +120,7 @@ const New: React.FC = () => {
           />
           <ExistAlert<IAlbum> data={searchQuery.data?.data}>
             <AlbumTable
-              albums={searchQuery.data?.data}
+              albums={searchQuery.data?.data || []}
               page={page}
               pageCount={searchQuery.data?.pagination.totalPages}
               onPage={handlePage}

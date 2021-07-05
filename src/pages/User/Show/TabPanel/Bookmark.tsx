@@ -59,14 +59,14 @@ const Bookmark: React.FC = () => {
   return (
     <>
       <MusicTable
-        musics={bookmarkedMusics.data?.data}
+        musics={bookmarkedMusics.data?.data || []}
         pageCount={bookmarkedMusics.data?.pagination.totalPages}
         loading={bookmarkedMusics.isLoading}
         page={bookmarkedMusicPage}
         onPage={handleBookmarkedMusicPage}
       />
       <BandTable
-        bands={bookmarkedBands.data?.data}
+        bands={bookmarkedBands.data?.data || []}
         pageCount={bookmarkedBands.data?.pagination.totalPages}
         loading={bookmarkedBands.isLoading}
         page={bookmarkedBandPage}
@@ -80,7 +80,7 @@ const Bookmark: React.FC = () => {
         onPage={handleBookmarkedArtistPage}
       />
       <AlbumTable
-        albums={bookmarkedAlbums.data?.data}
+        albums={bookmarkedAlbums.data?.data || []}
         pageCount={bookmarkedAlbums.data?.pagination.totalPages}
         loading={bookmarkedAlbums.isLoading}
         page={bookmarkedAlbumPage}

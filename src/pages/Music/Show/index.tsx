@@ -93,16 +93,17 @@ const Show: React.FC = () => {
     onError,
   });
   const itunesMusic = useQuery<IItunesMusic>(
-    [queryKey.ITUNES, queryKey.MUSIC, music.data?.link?.itunes],
+    [queryKey.ITUNES, queryKey.MUSIC, music.data?.link.itunes],
     () =>
-      lookupItunesMusic(music.data?.link?.itunes).then((res) => res.results[0]),
-    { enabled: !!music.data?.link?.itunes, onError, retry: 2 }
+      lookupItunesMusic<number>(music.data?.link.itunes).then(
+        (res) => res.results[0]
+      ),
+    { enabled: !!music.data?.link.itunes, onError, retry: 2 }
   );
   const spotifyTrack = useQuery<ISpotifyTrack>(
-    [queryKey.SPOTIFY, queryKey.MUSIC, music.data?.link?.spotify],
-    () =>
-      getSpotifyTrack(music.data?.link?.spotify, spotifyToken?.access_token),
-    { enabled: !!music.data?.link?.spotify, onError: handleError, retry: 2 }
+    [queryKey.SPOTIFY, queryKey.MUSIC, music.data?.link.spotify],
+    () => getSpotifyTrack(music.data?.link.spotify, spotifyToken?.access_token),
+    { enabled: !!music.data?.link.spotify, onError: handleError, retry: 2 }
   );
   const createMutation = useMutation(
     () => postMusicBookmark(userId, id, headers),

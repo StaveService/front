@@ -12,7 +12,7 @@ import routes from "../../constants/routes.json";
 import Layout, { LayoutProps } from "./Layout";
 
 interface BandProps extends LayoutProps {
-  bands: IBand[] | undefined;
+  bands: IBand[];
 }
 const Band: React.FC<BandProps> = ({
   bands,

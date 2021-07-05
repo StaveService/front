@@ -53,7 +53,7 @@ const Root: React.FC = () => {
       </Box>
       <MusicCards data={bookmarkedMusics.data?.data} />
       <MusicsTable
-        musics={musics.data?.data}
+        musics={musics.data?.data || []}
         loading={musics.isLoading}
         page={page}
         pageCount={musics.data?.pagination?.totalPages}

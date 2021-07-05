@@ -103,17 +103,17 @@ const Show: React.FC = () => {
     { onError }
   );
   const wikipedia = useQuery<IWikipedia>(
-    [queryKey.WIKIPEDIA, artist.data?.link?.wikipedia],
-    () => getWikipedia(artist.data?.link?.wikipedia),
-    { enabled: !!artist.data?.link?.wikipedia, onError }
+    [queryKey.WIKIPEDIA, artist.data?.link.wikipedia],
+    () => getWikipedia(artist.data?.link.wikipedia),
+    { enabled: !!artist.data?.link.wikipedia, onError }
   );
   const itunesArtist = useQuery<IItunesArtist>(
-    [queryKey.ITUNES, queryKey.ARTIST, artist.data?.link?.itunes],
+    [queryKey.ITUNES, queryKey.ARTIST, artist.data?.link.itunes],
     () =>
-      lookupItunesArtist(artist.data?.link?.itunes).then(
+      lookupItunesArtist<number>(artist.data?.link.itunes).then(
         (res) => res.results[0]
       ),
-    { enabled: !!artist.data?.link?.itunes, onError }
+    { enabled: !!artist.data?.link.itunes, onError }
   );
   const createMutation = useMutation(() => postArtistBookmark(id, headers), {
     onSuccess: handleCreateSuccess,
@@ -128,7 +128,7 @@ const Show: React.FC = () => {
   );
   const updateLinkMutation = useMutation(
     (link: Partial<Omit<IArtistLink, "id">>) =>
-      patchArtistLink(id, artist.data?.link?.id, link, headers),
+      patchArtistLink(id, artist.data?.link.id, link, headers),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers
@@ -169,11 +169,11 @@ const Show: React.FC = () => {
       <Box mb={3}>
         <LinkTable
           twitter={{
-            link: artist.data?.link?.twitter,
+            link: artist.data?.link.twitter,
             renderDialog(open, handleClose) {
               return (
                 <TwitterDialog
-                  defaultValue={artist.data?.link?.twitter}
+                  defaultValue={artist.data?.link.twitter || undefined}
                   open={open}
                   loading={updateLinkMutation.isLoading}
                   onClose={handleClose}
@@ -183,7 +183,7 @@ const Show: React.FC = () => {
             },
           }}
           itunes={{
-            link: itunesArtist.data?.artistLinkUrl,
+            link: itunesArtist.data?.artistLinkUrl || "",
             renderDialog(open, handleClose) {
               return (
                 <ItunesArtistDialog
@@ -197,7 +197,7 @@ const Show: React.FC = () => {
             },
           }}
           wikipedia={{
-            link: artist.data?.link?.wikipedia,
+            link: artist.data?.link.wikipedia,
             renderDialog(open, handleClose) {
               return (
                 <WikipediaDialog
@@ -212,7 +212,7 @@ const Show: React.FC = () => {
           }}
           spotify={{
             type: "artist",
-            link: artist.data?.link?.spotify,
+            link: artist.data?.link.spotify,
             renderDialog(open, handleClose) {
               return (
                 <SpotifyArtistDialog
@@ -228,11 +228,14 @@ const Show: React.FC = () => {
         />
       </Box>
       <Box mb={3}>
-        <BandsTable bands={artist.data?.bands} loading={artist.isLoading} />
+        <BandsTable
+          bands={artist.data?.bands || []}
+          loading={artist.isLoading}
+        />
       </Box>
       <Box mb={3}>
         <AlbumsTable
-          albums={artistAlbums.data?.data}
+          albums={artistAlbums.data?.data || []}
           loading={artistAlbums.isLoading}
           page={albumPage}
           pageCount={artistAlbums.data?.pagination.totalPages}
@@ -240,7 +243,7 @@ const Show: React.FC = () => {
         />
       </Box>
       <MusicsTable
-        musics={artistMusics.data?.data}
+        musics={artistMusics.data?.data || []}
         loading={artistMusics.isLoading}
         page={musicPage}
         pageCount={artistMusics.data?.pagination.totalPages}

@@ -15,6 +15,10 @@ const bandQuery = gql`
       artists {
         id
         name
+        link {
+          id
+          twitter
+        }
       }
       bookmark(currentUserId: $currentUserId) {
         id

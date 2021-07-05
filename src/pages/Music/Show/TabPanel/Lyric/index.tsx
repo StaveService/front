@@ -15,8 +15,8 @@ const Lyric: React.FC = () => {
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const { data, isLoading } = useQuery(
-    [queryKey.MUSIXMATCH, music?.link?.id],
-    () => getTrackLyric(music?.link?.musixmatch),
+    [queryKey.MUSIXMATCH, music?.link.id],
+    () => getTrackLyric(music?.link.musixmatch),
     { onError }
   );
   if (isLoading) return <CircularProgress />;

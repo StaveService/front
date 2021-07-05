@@ -135,7 +135,7 @@ describe(routes.MUSICS, () => {
       const res = await patchMusicLink(
         user.id,
         music.id,
-        music.link?.id,
+        music.link.id,
         { itunes: 0 },
         headers
       );
@@ -167,7 +167,7 @@ describe(routes.ALBUMS, () => {
     it("PATCH", async () => {
       const res = await patchAlbumLink(
         album.id,
-        album.link?.id,
+        album.link.id,
         { itunes: 0 },
         headers
       );
@@ -219,7 +219,7 @@ describe(routes.BANDS, () => {
     it("PATCH", async () => {
       const res = await patchBandLink(
         band.id,
-        band.link?.id,
+        band.link.id,
         { itunes: 0 },
         headers
       );
@@ -270,7 +270,7 @@ describe(routes.ARTISTS, () => {
     it("PATCH", async () => {
       const res = await patchArtistLink(
         artist.id,
-        artist.link?.id,
+        artist.link.id,
         { itunes: 0 },
         headers
       );

@@ -51,7 +51,7 @@ const Band: React.FC = () => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
       [queryKey.MUSIC, id],
-      (prev) => prev && { ...prev, band: undefined }
+      (prev) => prev && { ...prev, band: null }
     );
   };
   const createMutation = useMutation(

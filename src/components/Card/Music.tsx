@@ -23,8 +23,8 @@ interface IMusicCard {
 const BandCard: React.FC<IMusicCard> = ({ music, onClick }: IMusicCard) => {
   const classes = useStyles();
   const { data } = useQuery(
-    [queryKey.ITUNES, queryKey.MUSIC, music.link?.itunes],
-    () => lookupItunesMusic(music.link?.itunes).then((res) => res.results[0])
+    [queryKey.ITUNES, queryKey.MUSIC, music.link.itunes],
+    () => lookupItunesMusic(music.link.itunes).then((res) => res.results[0])
   );
   return (
     <Card onClick={onClick}>

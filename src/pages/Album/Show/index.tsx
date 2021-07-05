@@ -92,15 +92,17 @@ const Show: React.FC = () => {
       onError,
     }
   );
-  const itunesAlbum = useQuery<IItunesAlbum>(
-    [queryKey.ITUNES, queryKey.ALBUM, album.data?.link?.itunes],
+  const itunesAlbum = useQuery(
+    [queryKey.ITUNES, queryKey.ALBUM, album.data?.link.itunes],
     () =>
-      lookupItunesAlbum(album.data?.link?.itunes).then((res) => res.results[0]),
-    { enabled: !!album.data?.link?.itunes, onError }
+      lookupItunesAlbum<number>(album.data?.link.itunes).then(
+        (res) => res.results[0]
+      ),
+    { enabled: !!album.data?.link.itunes, onError }
   );
   const patchMutation = useMutation(
     (link: Partial<Omit<IAlbumLink, "id">>) =>
-      patchAlbumLink(id, album.data?.link?.id, link, headers),
+      patchAlbumLink(id, album.data?.link.id, link, headers),
     {
       onSuccess: handleUpdateSuccess,
       onError,
@@ -148,7 +150,7 @@ const Show: React.FC = () => {
       <Box mb={3}>
         <LinkTable
           itunes={{
-            link: itunesAlbum.data?.collectionViewUrl,
+            link: itunesAlbum.data?.collectionViewUrl || "",
             renderDialog(open, handleClose) {
               return (
                 <ItunesAlbumDialog
@@ -162,7 +164,7 @@ const Show: React.FC = () => {
           }}
           spotify={{
             type: "album",
-            link: album.data?.link?.spotify,
+            link: album.data?.link.spotify,
             renderDialog(open, handleClose) {
               return (
                 <SpotifyAlbumDialog
@@ -179,7 +181,7 @@ const Show: React.FC = () => {
       </Box>
       <Box mb={3}>
         <MusicsTable
-          musics={albumMusics.data?.data}
+          musics={albumMusics.data?.data || []}
           loading={albumMusics.isLoading}
           page={musicPage}
           pageCount={albumMusics.data?.pagination.totalPages}

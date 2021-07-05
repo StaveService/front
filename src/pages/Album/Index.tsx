@@ -18,7 +18,7 @@ const Index: React.FC = () => {
   return (
     <DefaultLayout>
       <AlbumTable
-        albums={data?.data}
+        albums={data?.data || []}
         loading={isLoading}
         page={page}
         pageCount={data?.pagination.totalPages}

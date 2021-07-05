@@ -147,7 +147,7 @@ const New: React.FC = () => {
           />
           <ExistAlert<IMusic> data={searchQuery.data?.data}>
             <MusicTable
-              musics={searchQuery.data?.data}
+              musics={searchQuery.data?.data || []}
               page={page}
               pageCount={searchQuery.data?.pagination.totalPages}
               onPage={handlePage}

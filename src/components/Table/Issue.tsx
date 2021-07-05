@@ -11,7 +11,7 @@ import { IIssue } from "../../interfaces";
 import Layout, { LayoutProps } from "./Layout";
 
 interface IssueProps extends LayoutProps {
-  issues: IIssue[] | undefined;
+  issues: IIssue[];
 }
 const Issue: React.FC<IssueProps> = ({
   issues,
