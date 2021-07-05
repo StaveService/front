@@ -11,7 +11,7 @@ import { getArtists } from "../../gql";
 
 const Index: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
-  const [debouncedInputValue] = useDebounce(inputValue, 1000);
+  const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   const [page, handlePage] = usePaginate();
   const { onError } = useQuerySnackbar();
   const { isLoading, data } = useQuery(
@@ -24,7 +24,10 @@ const Index: React.FC = () => {
     setInputValue(e.target.value);
   return (
     <DefaultLayout>
-      <SearchTextField onChange={handleChange} loading={isLoading} />
+      <SearchTextField
+        onChange={handleChange}
+        loading={isLoading || isPending()}
+      />
       <ArtistsTable
         artists={data?.data}
         loading={isLoading}
