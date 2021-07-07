@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios-jsonp-pro";
 import {
   IWikipedia,
   IWikipediaGet,
@@ -13,21 +13,19 @@ const wikipedia = axios.create({
 export const searchWikipedia = (
   srsearch: string
 ): Promise<IWikipediaResponse<IWikipediaSearch>> =>
-  wikipedia
-    .get<IWikipediaResponse<IWikipediaSearch>>("", {
-      params: {
-        format: "json",
-        action: "query",
-        list: "search",
-        srsearch,
-      },
-    })
-    .then((res) => res.data);
+  wikipedia.jsonp<null, IWikipediaResponse<IWikipediaSearch>>("", {
+    params: {
+      format: "json",
+      action: "query",
+      list: "search",
+      srsearch,
+    },
+  });
 export const getWikipedia = (
   pageid: number | undefined | null
 ): Promise<IWikipedia> =>
   wikipedia
-    .get<IWikipediaResponse<IWikipediaGet>>("", {
+    .jsonp<null, IWikipediaResponse<IWikipediaGet>>("", {
       params: {
         format: "json",
         action: "query",
@@ -37,4 +35,4 @@ export const getWikipedia = (
         pageids: pageid,
       },
     })
-    .then((res) => res.data.query.pages[pageid || 0]);
+    .then((res) => res.query.pages[pageid || 0]);
