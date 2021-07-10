@@ -30,7 +30,7 @@
 - [notistack](https://github.com/iamhosseindhv/notistack)
 - [react-query](https://react-query.tanstack.com/installation)
 - [react-router-dom](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-dom)
-- [react-dropzone](https://github.com/react-dropzone/react-dropzone)
+- ~~[react-dropzone](https://github.com/react-dropzone/react-dropzone)~~
 - [react-markdown](https://github.com/remarkjs/react-markdown)
 - [react-slick](https://github.com/akiran/react-slick)
 - [react-use](https://github.com/streamich/react-use)
