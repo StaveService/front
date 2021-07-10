@@ -9,7 +9,6 @@ const musicsQuery = gql`
       data {
         id
         title
-        tab
         link {
           itunes
         }

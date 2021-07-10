@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios-jsonp-pro";
 import {
   IGetTrackLyric,
   IMusixmatchResponse,
@@ -14,18 +14,17 @@ export const musixmatch = axios.create({
 export const searchTracks = (
   query: string
 ): Promise<IMusixmatchResponse<ISearchTrack>> =>
-  musixmatch
-    .get<IMusixmatchResponse<ISearchTrack>>("track.search", {
-      params: { q_track: query },
-    })
-    .then((res) => res.data);
+  musixmatch.jsonp<null, IMusixmatchResponse<ISearchTrack>>("track.search", {
+    params: { q_track: query },
+  });
 export const getTrackLyric = (
   trackId: number | null | undefined
 ): Promise<IMusixmatchResponse<IGetTrackLyric>> =>
-  musixmatch
-    .get<IMusixmatchResponse<IGetTrackLyric>>("track.lyrics.get", {
+  musixmatch.jsonp<null, IMusixmatchResponse<IGetTrackLyric>>(
+    "track.lyrics.get",
+    {
       params: {
         track_id: trackId,
       },
-    })
-    .then((res) => res.data);
+    }
+  );

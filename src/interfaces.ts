@@ -61,7 +61,6 @@ export interface IBandLink {
 export interface IMusic {
   id: number;
   title: string;
-  tab: string;
   ["created_at"]?: string;
   ["updated_at"]?: string;
   bookmark?: IMusicBookmark;
@@ -73,6 +72,15 @@ export interface IMusic {
   composers: IArtist[] | null;
   lyrists: IArtist[] | null;
   link: IMusicLink;
+  rootTree: ITree[] | null;
+  tree: ITree[] | null;
+  blob: string;
+}
+export interface ITree {
+  name: string;
+  oid: string;
+  filemode: string;
+  type: string;
 }
 export interface IMusicLink {
   id: number;

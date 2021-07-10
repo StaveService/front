@@ -49,6 +49,7 @@ const Music: React.FC<MusicProps> = ({
     [queryKey.ITUNES, queryKey.MUSICS, ids],
     () => lookupItunesMusic<string>(ids).then((res) => res.results),
     {
+      enabled: !!ids,
       onError,
     }
   );

@@ -9,7 +9,6 @@ import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import ControlTextField from "../../components/TextField/ControlTextField";
-import ControlDropzone from "../../components/ControlDropzone";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
@@ -81,11 +80,6 @@ const New: React.FC = () => {
   // handlers
   const onSubmit = (data: PostParams<IMusic, IMusicLink>) =>
     createMusicMutation.mutate(data);
-  const handleDrop = (acceptedFiles: File[]) => {
-    const reader = new FileReader();
-    reader.onload = (e) => setValue("tab", e.target?.result);
-    reader.readAsText(acceptedFiles[0]);
-  };
   const handleSelect = (selectedCard: IItunesMusic) =>
     setSelectedItunesMusic(selectedCard);
   useEffect(() => {
@@ -123,15 +117,6 @@ const New: React.FC = () => {
                 />
               ),
             }}
-          />
-          <ControlDropzone
-            name="tab"
-            defaultValue=""
-            control={control}
-            errors={errors}
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            onDrop={handleDrop}
           />
           <SearchItunesButton
             disabled={!debouncedTitle}

@@ -33,6 +33,7 @@ import bandMusicsQuery from "./query/band/musics";
 import issueQuery from "./query/issue";
 import bandsQuery from "./query/issues";
 import musicQuery from "./query/music";
+import rootTreeQuery from "./query/music/rootTree";
 import musicScoreQuery from "./query/music/score";
 import musicsQuery from "./query/musics";
 import userQuery from "./query/user";
@@ -45,17 +46,19 @@ import userFollowingQuery from "./query/user/following";
 import userMusicsQuery from "./query/user/musics";
 import userProfileQuery from "./query/user/profile";
 import usersQuery from "./query/users";
+import blobQuery from "./query/music/blob";
+import treeQuery from "./query/music/tree";
 
 let url;
 switch (process.env.NODE_ENV) {
   case "development":
-    url = "http://localhost:3000";
+    url = "http://localhost";
     break;
   case "production":
     url = "https://stave-back.herokuapp.com";
     break;
   default:
-    url = "http://localhost:3000";
+    url = "http://localhost";
 }
 const graphQLCilent = new GraphQLClient(`${url}/graphql`);
 
@@ -148,6 +151,26 @@ export const getMusicScore = (id: number) => (): Promise<IMusic> =>
   graphQLCilent
     .request<IMusicType>(musicScoreQuery, {
       id,
+    })
+    .then((res) => res.music);
+export const getMusicRootTree = (id: number) => (): Promise<IMusic> =>
+  graphQLCilent
+    .request<IMusicType>(rootTreeQuery, {
+      id,
+    })
+    .then((res) => res.music);
+export const getMusicTree = (id: number, oid: string) => (): Promise<IMusic> =>
+  graphQLCilent
+    .request<IMusicType>(treeQuery, {
+      id,
+      oid,
+    })
+    .then((res) => res.music);
+export const getMusicBlob = (id: number, oid: string) => (): Promise<IMusic> =>
+  graphQLCilent
+    .request<IMusicType>(blobQuery, {
+      id,
+      oid,
     })
     .then((res) => res.music);
 export const getIssues =

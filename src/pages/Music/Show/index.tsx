@@ -20,6 +20,9 @@ import Button from "@material-ui/core/Button";
 import InfoTabPanel from "./TabPanel/Info";
 import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issue/Index";
+import TreeTabPanel from "./TabPanel/Tree/Index";
+import TreeShow from "./TabPanel/Tree/Show";
+import BlobShow from "./TabPanel/Tree/Blob";
 import IssueNew from "./TabPanel/Issue/New";
 import Issue from "./TabPanel/Issue/Show";
 import LyricTabPanel from "./TabPanel/Lyric";
@@ -93,17 +96,17 @@ const Show: React.FC = () => {
     onError,
   });
   const itunesMusic = useQuery<IItunesMusic>(
-    [queryKey.ITUNES, queryKey.MUSIC, music.data?.link.itunes],
+    [queryKey.ITUNES, queryKey.MUSIC, music.data?.link?.itunes],
     () =>
       lookupItunesMusic<number>(music.data?.link.itunes).then(
         (res) => res.results[0]
       ),
-    { enabled: !!music.data?.link.itunes, onError, retry: 2 }
+    { enabled: !!music.data?.link?.itunes, onError, retry: 2 }
   );
   const spotifyTrack = useQuery<ISpotifyTrack>(
-    [queryKey.SPOTIFY, queryKey.MUSIC, music.data?.link.spotify],
+    [queryKey.SPOTIFY, queryKey.MUSIC, music.data?.link?.spotify],
     () => getSpotifyTrack(music.data?.link.spotify, spotifyToken?.access_token),
-    { enabled: !!music.data?.link.spotify, onError: handleError, retry: 2 }
+    { enabled: !!music.data?.link?.spotify, onError: handleError, retry: 2 }
   );
   const createMutation = useMutation(
     () => postMusicBookmark(userId, id, headers),
@@ -116,6 +119,11 @@ const Show: React.FC = () => {
   // handlers
   const handleCreateMutation = () => createMutation.mutate();
   const handleDestroyMutation = () => destroyMutation.mutate();
+  const tabsValue = () => {
+    if (location.pathname.includes("issues")) return match.url + routes.ISSUES;
+    if (location.pathname.includes("files")) return match.url + routes.FILES;
+    return location.pathname;
+  };
   return (
     <>
       <DefaultLayout>
@@ -144,25 +152,24 @@ const Show: React.FC = () => {
             color="primary"
             component={RouterLink}
             to={match.url + routes.TAB}
-            disabled={!music.data?.tab}
             fullWidth
             disableElevation
           >
             Watch Tab
           </Button>
         </Box>
-        <Tabs
-          value={
-            location.pathname.includes("issues")
-              ? match.url + routes.ISSUES
-              : location.pathname
-          }
-        >
+        <Tabs value={tabsValue()}>
           <Tab
             label="Info"
             value={match.url}
             component={RouterLink}
             to={match.url}
+          />
+          <Tab
+            label="Files"
+            value={match.url + routes.FILES}
+            component={RouterLink}
+            to={match.url + routes.FILES}
           />
           <Tab
             label="Lyric"
@@ -188,6 +195,11 @@ const Show: React.FC = () => {
           <Route exact path={match.path} component={InfoTabPanel} />
           <Route
             exact
+            path={match.path + routes.FILES}
+            component={TreeTabPanel}
+          />
+          <Route
+            exact
             path={match.path + routes.SETTING}
             component={SettingTabPanel}
           />
@@ -195,6 +207,21 @@ const Show: React.FC = () => {
             exact
             path={match.path + routes.LYRIC}
             component={LyricTabPanel}
+          />
+          <Route
+            exact
+            path={match.path + routes.FILES}
+            component={TreeTabPanel}
+          />
+          <Route
+            exact
+            path={`${match.path + routes.FILES + routes.TREE}/:filename`}
+            component={TreeShow}
+          />
+          <Route
+            strict
+            path={`${match.path + routes.FILES + routes.BLOB}/:filename`}
+            component={BlobShow}
           />
           <Route
             exact

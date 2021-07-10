@@ -38,13 +38,13 @@ declare module "axios" {
 
 switch (process.env.NODE_ENV) {
   case "development":
-    axios.defaults.baseURL = "http://localhost:3000";
+    axios.defaults.baseURL = "http://localhost";
     break;
   case "production":
     axios.defaults.baseURL = "https://stave-back.herokuapp.com/";
     break;
   default:
-    axios.defaults.baseURL = "http://localhost:3000";
+    axios.defaults.baseURL = "http://localhost:";
 }
 
 export const signIn = (

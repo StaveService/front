@@ -24,5 +24,9 @@
   "BAND_ALBUMS": "/band_albums",
   "TAB": "/tab",
   "NEW": "/new",
+  "FILES": "/files",
+  "FILE": "/file",
+  "TREE": "/tree",
+  "BLOB": "/blob",
   "LYRIC": "/lyric"
 }

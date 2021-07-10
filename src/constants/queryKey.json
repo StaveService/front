@@ -11,6 +11,8 @@
   "MUSICS": "musics",
   "MUSIC": "music",
   "SCORE": "score",
+  "REPOSITORY": "repository",
+  "BLOB": "blob",
 
   "USERS": "users",
   "USER": "user",
