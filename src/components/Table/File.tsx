@@ -35,7 +35,11 @@ const Files: React.FC<FilesProps> = ({
           {files.map((file) => (
             <TableRow key={file.oid}>
               <TableCell>
-                {file.type === "blob" ? <DescriptionIcon /> : <FolderIcon />}
+                {file.type === "blob" ? (
+                  <DescriptionIcon color="action" />
+                ) : (
+                  <FolderIcon color="action" />
+                )}
               </TableCell>
               <TableCell>
                 {file.type === "blob" ? (

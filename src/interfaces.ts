@@ -75,6 +75,7 @@ export interface IMusic {
   rootTree: ITree[] | null;
   tree: ITree[] | null;
   blob: string;
+  score: string;
 }
 export interface ITree {
   name: string;

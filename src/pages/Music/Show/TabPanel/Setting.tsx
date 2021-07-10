@@ -68,6 +68,7 @@ const Setting: React.FC = () => {
           />
           <LoadingButton
             type="button"
+            color="secondary"
             loading={destroyMusicMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
             fullWidth

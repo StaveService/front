@@ -11,7 +11,7 @@ const Show: React.FC = () => {
   const params = useParams<{ userId: string; id: string }>();
   const match = useRouteMatch<{ id: string }>();
   const {
-    state: { oid, ...location },
+    state: { oid },
   } = useLocation<{ oid: string; path: string }>();
   const id = Number(params.id);
   const musicTree = useQuery(

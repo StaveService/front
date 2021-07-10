@@ -34,7 +34,7 @@ const Tab: React.FC = () => {
   });
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);
-  const onSuccess = (res: IMusic) => console.log("TODO: alphaTabApi Text"); // alphaTabApi?.tex(res.tab);
+  const onSuccess = (res: IMusic) => alphaTabApi?.tex(res.score);
   // react-query
   useQuery([queryKey.MUSIC, id, queryKey.SCORE], getMusicScore(id), {
     onSuccess,

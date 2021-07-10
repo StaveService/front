@@ -1,6 +1,8 @@
 import React from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useQuery } from "react-query";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { github } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { getMusicBlob } from "../../../../../gql";
 import queryKey from "../../../../../constants/queryKey.json";
 import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
@@ -21,7 +23,9 @@ const Blob: React.FC = () => {
   );
   return (
     <div>
-      <pre>{musicBlob.data?.blob}</pre>
+      <SyntaxHighlighter style={github as unknown}>
+        {musicBlob.data?.blob || ""}
+      </SyntaxHighlighter>
     </div>
   );
 };

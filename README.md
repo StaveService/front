@@ -33,6 +33,9 @@
 - [react-dropzone](https://github.com/react-dropzone/react-dropzone)
 - [react-markdown](https://github.com/remarkjs/react-markdown)
 - [react-slick](https://github.com/akiran/react-slick)
+- [react-use](https://github.com/streamich/react-use)
+- [react-script-hook](https://github.com/hupe1980/react-script-hook)
+- [react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)
 - [redux-toolkit](https://redux-toolkit.js.org/)
 - [redux-persist](https://github.com/rt2zz/redux-persist)
 - [redux-logger](https://github.com/LogRocket/redux-logger)
@@ -42,8 +45,6 @@
 - [graphql-request](https://github.com/prisma-labs/graphql-request)
 - [spotify-web-api-js](https://github.com/JMPerez/spotify-web-api-js)
 - [why-did-you-render](https://github.com/welldone-software/why-did-you-render)
-- [react-use](https://github.com/streamich/react-use)
-- [react-script-hook](https://github.com/hupe1980/react-script-hook)
 - ~~[use-http](https://github.com/ava/use-http)~~ can't use multiple url
 
 ## ReactQuery Key Pattern

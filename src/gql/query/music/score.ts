@@ -5,7 +5,7 @@ const musicScoreQuery = gql`
     music(id: $id) {
       id
       title
-      tab
+      score
     }
   }
 `;
