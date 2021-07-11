@@ -23,7 +23,7 @@ const SpotifyTrackCard: React.FC<ISpotifyArtistCard> = ({
   return (
     <Card>
       <Box display="flex">
-        <Box display="flex" justifyItems="center" alignItems="center" mx={1}>
+        <Box display="flex" justifyItems="center" alignItems="center" m={1}>
           <CardMedia image={artist.images[0].url} className={classes.media} />
         </Box>
         <CardContent>

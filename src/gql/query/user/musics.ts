@@ -21,6 +21,10 @@ const userMusicsQuery = gql`
           link {
             itunes
           }
+          user {
+            id
+            nickname
+          }
         }
         pagination {
           totalPages

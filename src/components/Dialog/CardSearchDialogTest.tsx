@@ -4,6 +4,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import TextField from "@material-ui/core/TextField";
+import Pagination from "@material-ui/lab/Pagination";
 import { useQuery, UseQueryOptions } from "react-query";
 import { useDebounce } from "use-debounce/lib";
 import {
@@ -67,7 +68,7 @@ function Layout<TCard extends TCardTypes>({
   const { onError } = useQuerySnackbar();
   const searched = useQuery<TCard[]>(
     [...useQueryArgs.key, debouncedSearchValue],
-    () => useQueryArgs.fn(debouncedSearchValue || ""),
+    () => useQueryArgs.fn(debouncedSearchValue),
     {
       enabled: !!debouncedSearchValue && !isPending() && open,
       onError,
@@ -105,6 +106,9 @@ function Layout<TCard extends TCardTypes>({
         {searched.data?.map((card, i) => {
           return children(card, handleSelect(i));
         })}
+        <Box display="flex" justifyContent="center">
+          <Pagination count={10} />
+        </Box>
       </Box>
     </Dialog>
   );

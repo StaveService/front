@@ -170,23 +170,27 @@ const Info: React.FC = () => {
               <TableRow>
                 <TableCell>Band</TableCell>
                 <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.BANDS}/${music?.band?.id || "undefined"}`}
-                  >
-                    {music?.band?.name}
-                  </Link>
+                  {music?.band && (
+                    <Link
+                      component={RouterLink}
+                      to={`${routes.BANDS}/${music.band.id}`}
+                    >
+                      {music.band.name}
+                    </Link>
+                  )}
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Created by</TableCell>
                 <TableCell>
-                  <Link
-                    component={RouterLink}
-                    to={`${routes.USERS}/${music?.user?.id || "undefined"}`}
-                  >
-                    {music?.user?.nickname}
-                  </Link>
+                  {music?.user && (
+                    <Link
+                      component={RouterLink}
+                      to={`${routes.USERS}/${music.user.id}`}
+                    >
+                      {music.user.nickname}
+                    </Link>
+                  )}
                 </TableCell>
               </TableRow>
             </TableBody>

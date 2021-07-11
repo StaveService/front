@@ -106,7 +106,11 @@ const Show: React.FC = () => {
   const spotifyTrack = useQuery<ISpotifyTrack>(
     [queryKey.SPOTIFY, queryKey.MUSIC, music.data?.link?.spotify],
     () => getSpotifyTrack(music.data?.link.spotify, spotifyToken?.access_token),
-    { enabled: !!music.data?.link?.spotify, onError: handleError, retry: 2 }
+    {
+      enabled: !!music.data?.link?.spotify && !!spotifyToken,
+      onError: handleError,
+      retry: 2,
+    }
   );
   const createMutation = useMutation(
     () => postMusicBookmark(userId, id, headers),

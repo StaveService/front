@@ -85,9 +85,7 @@ const Music: React.FC<MusicProps> = ({
                   <TableCell>
                     <Link
                       component={RouterLink}
-                      to={`${routes.USERS}/${user?.id || "undefined"}${
-                        routes.MUSICS
-                      }/${id}`}
+                      to={`${routes.USERS}/${user.id}${routes.MUSICS}/${id}`}
                     >
                       {title}
                     </Link>
@@ -96,7 +94,7 @@ const Music: React.FC<MusicProps> = ({
                     {band && (
                       <Link
                         component={RouterLink}
-                        to={`${routes.BANDS}/${band?.id || "undefined"}`}
+                        to={`${routes.BANDS}/${band.id}`}
                       >
                         {band?.name}
                       </Link>
@@ -125,12 +123,14 @@ const Music: React.FC<MusicProps> = ({
                     ))}
                   </TableCell>
                   <TableCell>
-                    <Link
-                      component={RouterLink}
-                      to={`${routes.USERS}/${user?.id || "undefined"}`}
-                    >
-                      {user?.nickname}
-                    </Link>
+                    {user && (
+                      <Link
+                        component={RouterLink}
+                        to={`${routes.USERS}/${user.id}`}
+                      >
+                        {user.nickname}
+                      </Link>
+                    )}
                   </TableCell>
                 </TableRow>
               );

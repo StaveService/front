@@ -100,18 +100,24 @@ const Show: React.FC = () => {
           )}
         </Grid>
       </Grid>
-      <Link
-        component={RouterLink}
-        to={`${routes.USERS}/${id}${routes.FOLLOWERS}`}
-      >
-        {data?.followersCount}Followers
-      </Link>
-      <Link
-        component={RouterLink}
-        to={`${routes.USERS}/${id}${routes.FOLLOWING}`}
-      >
-        {data?.followingCount}Following
-      </Link>
+      <Grid container spacing={2}>
+        <Grid item>
+          <Link
+            component={RouterLink}
+            to={`${routes.USERS}/${id}${routes.FOLLOWERS}`}
+          >
+            {data?.followersCount}Followers
+          </Link>
+        </Grid>
+        <Grid item>
+          <Link
+            component={RouterLink}
+            to={`${routes.USERS}/${id}${routes.FOLLOWING}`}
+          >
+            {data?.followingCount}Following
+          </Link>
+        </Grid>
+      </Grid>
       <Tabs
         value={
           location.pathname.includes("issues")
