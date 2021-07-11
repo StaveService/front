@@ -5,7 +5,7 @@ import SpotifyTrackCard from "../../Card/Spotify/Track";
 import Layout from "./Layout";
 import { selectSpotifyToken } from "../../../slices/spotify";
 import queryKey from "../../../constants/queryKey.json";
-import CardSearchDialogTest, { DialogProps } from "../CardSearchDialogTest";
+import CardSearchDialogTest, { DialogProps } from "../CardSearchDialog";
 import { searchSpotify } from "../../../axios/spotify";
 import { ISpotifyTrack } from "../../../interfaces";
 
@@ -17,7 +17,6 @@ function Track({
   onSelect,
 }: DialogProps<ISpotifyTrack>): JSX.Element {
   const spotifyToken = useSelector(selectSpotifyToken);
-
   return (
     <Layout open={open} onClose={onClose}>
       {({ handleError }) => (
@@ -27,12 +26,17 @@ function Track({
           open={open}
           useQueryArgs={{
             key: [queryKey.SPOTIFY, queryKey.ALBUMS],
-            fn: (term: string) =>
+            fn: ({ term, page }) =>
               searchSpotify<ISpotifyTrack>(
                 "track",
                 term,
+                page,
                 spotifyToken?.access_token
-              ).then((res) => res.tracks.items),
+              ).then((res) => ({
+                data: res.tracks.items,
+                page: res.tracks.offset,
+                pageCount: Math.floor(res.tracks.total / res.tracks.limit),
+              })),
             options: { onError: handleError },
           }}
           showSearchBar={showSearchBar}

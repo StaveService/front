@@ -154,6 +154,7 @@ const Show: React.FC = () => {
           <Button
             variant="contained"
             color="primary"
+            disabled={music.data ? !music.data.scoreExist : false}
             component={RouterLink}
             to={match.url + routes.TAB}
             fullWidth

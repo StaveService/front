@@ -57,7 +57,8 @@ export const searchItunesArtists = (
     },
   });
 export const searchItunesAlbums = (
-  term: TermType
+  term: TermType,
+  offset: number
 ): Promise<IItunesResponse<IItunesAlbum>> =>
   itunes.jsonp<null, IItunesResponse<IItunesAlbum>>("/search", {
     params: {

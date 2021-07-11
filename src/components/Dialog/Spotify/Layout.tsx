@@ -8,7 +8,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import SpotifyButton from "../../Button/Spotify";
 import { remove, selectSpotifyToken, setToken } from "../../../slices/spotify";
-import { DialogProps } from "../CardSearchDialogTest";
+import { DialogProps } from "../CardSearchDialog";
 import { spotifyAccount } from "../../../axios/spotify";
 import { ISpotifyToken, ISpotifyTypes } from "../../../interfaces";
 

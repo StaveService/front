@@ -117,7 +117,9 @@ const Link: React.FC<LinkProps> = ({
               <TableCell>
                 <Box display="flex" alignItems="cneter">
                   <Box mr={1}>
-                    <TextFieldsIcon />
+                    <TextFieldsIcon
+                      color={musixmatch.link ? undefined : "action"}
+                    />
                   </Box>
                   MUSIXMATCH
                 </Box>

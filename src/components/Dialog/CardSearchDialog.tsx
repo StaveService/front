@@ -7,6 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Pagination from "@material-ui/lab/Pagination";
 import { useQuery, UseQueryOptions } from "react-query";
 import { useDebounce } from "use-debounce/lib";
+import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import {
   IItunesAlbum,
   IItunesArtist,
@@ -18,7 +19,7 @@ import {
   ISpotifyTypes,
   IWikipedia,
 } from "../../interfaces";
-import useQuerySnackbar from "../../hooks/useQuerySnackbar";
+import usePaginate from "../../hooks/usePaginate";
 
 type TCardTypes =
   | IItunesAlbum
@@ -29,7 +30,11 @@ type TCardTypes =
   | ISpotifyTrack
   | IMusixmatchTrack
   | IWikipedia;
-
+interface FnValue<TCard> {
+  data: TCard[] | undefined;
+  page?: number;
+  pageCount?: number;
+}
 export interface LayoutProps<TCard> {
   defaultValue?: string;
   open: boolean;
@@ -38,11 +43,14 @@ export interface LayoutProps<TCard> {
   useQueryArgs: {
     key: string[];
     fn: (
-      term: string,
+      variables: {
+        term: string;
+        page: number;
+      },
       spotifyType?: ISpotifyTypes,
       spotifyAccessToken?: string
-    ) => Promise<TCard[]>;
-    options?: UseQueryOptions<TCard[]>;
+    ) => Promise<FnValue<TCard>>;
+    options?: UseQueryOptions<FnValue<TCard>>;
   };
   children: (card: TCard, handleSelect: () => void) => React.ReactNode;
   onClose: () => void;
@@ -64,11 +72,12 @@ function Layout<TCard extends TCardTypes>({
   onSelect,
 }: LayoutProps<TCard>): JSX.Element {
   const [searchValue, setSearchValue] = useState("");
+  const [page, handlePage] = usePaginate();
   const [debouncedSearchValue, { isPending }] = useDebounce(searchValue, 1000);
   const { onError } = useQuerySnackbar();
-  const searched = useQuery<TCard[]>(
-    [...useQueryArgs.key, debouncedSearchValue],
-    () => useQueryArgs.fn(debouncedSearchValue),
+  const searched = useQuery(
+    [...useQueryArgs.key, debouncedSearchValue, page],
+    () => useQueryArgs.fn({ term: debouncedSearchValue, page }),
     {
       enabled: !!debouncedSearchValue && !isPending() && open,
       onError,
@@ -80,7 +89,7 @@ function Layout<TCard extends TCardTypes>({
   const handleSelect = (i: number): (() => void) => {
     const select = () => {
       onClose();
-      if (searched.data) onSelect(searched.data[i]);
+      if (searched.data?.data) onSelect(searched.data.data[i]);
     };
     return select;
   };
@@ -103,11 +112,15 @@ function Layout<TCard extends TCardTypes>({
           />
         )}
         {searched.isLoading && <LinearProgress />}
-        {searched.data?.map((card, i) => {
+        {searched.data?.data?.map((card, i) => {
           return children(card, handleSelect(i));
         })}
         <Box display="flex" justifyContent="center">
-          <Pagination count={10} />
+          <Pagination
+            page={page}
+            count={searched.data?.pageCount}
+            onChange={handlePage}
+          />
         </Box>
       </Box>
     </Dialog>

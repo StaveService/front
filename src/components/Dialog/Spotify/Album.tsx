@@ -12,7 +12,7 @@ import SpotifyButton from "../../Button/Spotify";
 import { remove, selectSpotifyToken, setToken } from "../../../slices/spotify";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
-import CardSearchDialogTest, { DialogProps } from "../CardSearchDialogTest";
+import CardSearchDialogTest, { DialogProps } from "../CardSearchDialog";
 import { searchSpotify, spotifyAccount } from "../../../axios/spotify";
 import { ISpotifyAlbum, ISpotifyToken } from "../../../interfaces";
 
@@ -68,12 +68,17 @@ function Album({
       open={open}
       useQueryArgs={{
         key: [queryKey.SPOTIFY, queryKey.ALBUMS],
-        fn: (term: string) =>
+        fn: ({ term, page }) =>
           searchSpotify<ISpotifyAlbum>(
             "album",
             term,
+            page,
             spotifyToken?.access_token
-          ).then((res) => res.albums.items),
+          ).then((res) => ({
+            data: res.albums.items,
+            page: res.albums.offset,
+            pageCount: Math.floor(res.albums.total / res.albums.limit),
+          })),
         options: { onError: handleError },
       }}
       showSearchBar={showSearchBar}

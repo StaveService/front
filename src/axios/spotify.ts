@@ -24,11 +24,12 @@ export const spotifyAccount = axios.create({
 export function searchSpotify<T extends ISpotifyTypes>(
   type: ISpotifySearchTypes,
   q: string,
+  offset: number,
   accessToken: string | undefined
 ): Promise<ISpotifySearchResponse<T>> {
   return spotify
     .get<ISpotifySearchResponse<T>>("/search", {
-      params: { q, type },
+      params: { q, type, offset: offset - 1 },
       headers: {
         ...{ Authorization: `Bearer ${accessToken || ""}` },
       },

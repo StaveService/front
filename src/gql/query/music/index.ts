@@ -5,6 +5,7 @@ const musicQuery = gql`
     music(id: $id) {
       id
       title
+      scoreExist
       link {
         id
         itunes

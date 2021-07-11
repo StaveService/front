@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@material-ui/core/Box";
 import ItunesMusicCard from "../../Card/Itunes/Music";
 import { IItunesMusic } from "../../../interfaces";
-import CardSearchDialogTest, { DialogProps } from "../CardSearchDialogTest";
+import CardSearchDialogTest, { DialogProps } from "../CardSearchDialog";
 import { searchItunesMusics } from "../../../axios/itunes";
 import queryKey from "../../../constants/queryKey.json";
 
@@ -21,7 +21,8 @@ function Music({
       showSearchBar={showSearchBar}
       useQueryArgs={{
         key: [queryKey.ITUNES, queryKey.ALBUMS],
-        fn: (term) => searchItunesMusics(term).then((res) => res.results),
+        fn: ({ term }) =>
+          searchItunesMusics(term).then((res) => ({ data: res.results })),
       }}
       onSelect={onSelect}
       onClose={onClose}

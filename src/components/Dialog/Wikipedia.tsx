@@ -1,6 +1,6 @@
 import React from "react";
 import Box from "@material-ui/core/Box";
-import CardSearchDialogTest, { DialogProps } from "./CardSearchDialogTest";
+import CardSearchDialogTest, { DialogProps } from "./CardSearchDialog";
 import WikipediaCard from "../Card/Wikipedia";
 import { IWikipedia } from "../../interfaces";
 import queryKey from "../../constants/queryKey.json";
@@ -21,7 +21,8 @@ function Wikipedia({
       showSearchBar={showSearchBar}
       useQueryArgs={{
         key: [queryKey.WIKIPEDIA],
-        fn: (term) => searchWikipedia(term).then((res) => res.query.search),
+        fn: ({ term }) =>
+          searchWikipedia(term).then((res) => ({ data: res.query.search })),
       }}
       onSelect={onSelect}
       onClose={onClose}
