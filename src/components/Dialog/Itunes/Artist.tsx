@@ -21,8 +21,8 @@ function Artist({
       showSearchBar={showSearchBar}
       useQueryArgs={{
         key: [queryKey.ITUNES, queryKey.ALBUMS],
-        fn: ({ term }) =>
-          searchItunesArtists(term).then((res) => ({
+        fn: ({ term, page }) =>
+          searchItunesArtists(term, page).then((res) => ({
             data: res.results,
           })),
       }}

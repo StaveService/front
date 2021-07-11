@@ -43,7 +43,7 @@ const Music: React.FC<MusicProps> = ({
     { route: routes.USERS, name: "Users" },
   ];
   let i = 0;
-  let imageUrl = "";
+  let imageUrl: string | undefined = "";
   const { onError } = useQuerySnackbar();
   const itunesMusics = useQuery(
     [queryKey.ITUNES, queryKey.MUSICS, ids],
@@ -74,6 +74,8 @@ const Music: React.FC<MusicProps> = ({
               if (link.itunes && itunesMusics.data) {
                 imageUrl = itunesMusics.data[i].artworkUrl60;
                 i += 1;
+              } else {
+                imageUrl = undefined;
               }
               return (
                 <TableRow key={id}>

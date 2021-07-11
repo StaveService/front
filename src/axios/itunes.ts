@@ -6,7 +6,7 @@ import {
   IItunesResponse,
 } from "../interfaces";
 
-const limit = 100;
+export const limit = 400;
 const itunes = axios.create({
   baseURL: "https://itunes.apple.com",
 });
@@ -36,24 +36,27 @@ export const lookupItunesMusic = <T extends IdType>(
   });
 
 export const searchItunesMusics = (
-  term: TermType
+  term: TermType,
+  offset: number
 ): Promise<IItunesResponse<IItunesMusic>> =>
   itunes.jsonp<null, IItunesResponse<IItunesMusic>>("/search", {
     params: {
       entity: "song",
       term,
       limit,
-      offset: 2,
+      offset,
     },
   });
 export const searchItunesArtists = (
-  term: TermType
+  term: TermType,
+  offset: number
 ): Promise<IItunesResponse<IItunesArtist>> =>
   itunes.jsonp<null, IItunesResponse<IItunesArtist>>("/search", {
     params: {
       entity: "musicArtist",
       term,
       limit,
+      offset,
     },
   });
 export const searchItunesAlbums = (
@@ -65,5 +68,6 @@ export const searchItunesAlbums = (
       entity: "album",
       term,
       limit,
+      offset,
     },
   });

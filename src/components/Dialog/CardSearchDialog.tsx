@@ -116,11 +116,13 @@ function Layout<TCard extends TCardTypes>({
           return children(card, handleSelect(i));
         })}
         <Box display="flex" justifyContent="center">
-          <Pagination
-            page={page}
-            count={searched.data?.pageCount}
-            onChange={handlePage}
-          />
+          {searched.data?.pageCount && (
+            <Pagination
+              page={page}
+              count={searched.data?.pageCount}
+              onChange={handlePage}
+            />
+          )}
         </Box>
       </Box>
     </Dialog>

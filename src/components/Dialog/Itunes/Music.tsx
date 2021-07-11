@@ -21,8 +21,12 @@ function Music({
       showSearchBar={showSearchBar}
       useQueryArgs={{
         key: [queryKey.ITUNES, queryKey.ALBUMS],
-        fn: ({ term }) =>
-          searchItunesMusics(term).then((res) => ({ data: res.results })),
+        fn: ({ term, page }) =>
+          searchItunesMusics(term, page).then((res) => {
+            return {
+              data: res.results,
+            };
+          }),
       }}
       onSelect={onSelect}
       onClose={onClose}

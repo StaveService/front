@@ -29,7 +29,7 @@ const Album: React.FC<AlbumProps> = ({
   const { onError } = useQuerySnackbar();
   const ids = albums.map((album) => album.link.itunes).join(",");
   let i = 0;
-  let imageUrl = "";
+  let imageUrl: string | undefined = "";
   // react-query
   const itunesAlbums = useQuery(
     [queryKey.ITUNES, queryKey.ALBUMS, ids],
@@ -56,12 +56,12 @@ const Album: React.FC<AlbumProps> = ({
             if (link.itunes && itunesAlbums.data) {
               imageUrl = itunesAlbums.data[i].artworkUrl60;
               i += 1;
+            } else {
+              imageUrl = undefined;
             }
             return (
               <TableRow key={id}>
-                <TableCell>
-                  <Image src={imageUrl} />
-                </TableCell>
+                <TableCell>{imageUrl && <Image src={imageUrl} />}</TableCell>
                 <TableCell>
                   <Link component={RouterLink} to={`${routes.ALBUMS}/${id}`}>
                     {title}
