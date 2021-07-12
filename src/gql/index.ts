@@ -252,7 +252,7 @@ export const getArtistMusics =
     graphQLCilent
       .request<IArtistType>(artistMusicsQuery, {
         id,
-        Page: page,
+        musicPage: page,
       })
       .then((res) => res.artist.musics);
 export const getAlbums =

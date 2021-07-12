@@ -59,7 +59,6 @@ const Show: React.FC = () => {
       (prev) => prev && { ...prev, followed: res.data }
     );
   };
-
   const handleDeleteSuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IUser | undefined>(
@@ -78,6 +77,9 @@ const Show: React.FC = () => {
       onError,
     }
   );
+  // helpers
+  const isCurrentUser = currentUser?.id === id;
+  const user = isCurrentUser ? currentUser : data;
   // handlers
   const handleFollow = () => createMutate.mutate();
   const handleUnfollow = () => deleteMutate.mutate();
@@ -85,12 +87,12 @@ const Show: React.FC = () => {
     <DefaultLayout>
       <Grid container>
         <Grid item xs={11}>
-          <Typography variant="h6">{data?.nickname}</Typography>
+          <Typography variant="h6">{user?.nickname}</Typography>
         </Grid>
         <Grid item xs={1}>
-          {currentUser?.id !== id && (
+          {isCurrentUser && (
             <FollowButton
-              followed={!!data?.followed}
+              followed={!!user?.followed}
               onFollow={handleFollow}
               onUnfollow={handleUnfollow}
               disabled={isLoading}
@@ -106,7 +108,7 @@ const Show: React.FC = () => {
             component={RouterLink}
             to={`${routes.USERS}/${id}${routes.FOLLOWERS}`}
           >
-            {data?.followersCount}Followers
+            {user?.followersCount}Followers
           </Link>
         </Grid>
         <Grid item>
@@ -114,10 +116,11 @@ const Show: React.FC = () => {
             component={RouterLink}
             to={`${routes.USERS}/${id}${routes.FOLLOWING}`}
           >
-            {data?.followingCount}Following
+            {user?.followingCount}Following
           </Link>
         </Grid>
       </Grid>
+      {user?.introduction}
       <Tabs
         value={
           location.pathname.includes("issues")
@@ -148,7 +151,7 @@ const Show: React.FC = () => {
           value={match.url + routes.SETTING}
           component={RouterLink}
           to={match.url + routes.SETTING}
-          disabled={currentUser?.id !== id}
+          disabled={!isCurrentUser}
         />
       </Tabs>
       <Switch>

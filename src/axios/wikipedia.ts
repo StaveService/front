@@ -11,7 +11,8 @@ const wikipedia = axios.create({
 });
 
 export const searchWikipedia = (
-  srsearch: string
+  srsearch: string,
+  sroffset: number
 ): Promise<IWikipediaResponse<IWikipediaSearch>> =>
   wikipedia.jsonp<null, IWikipediaResponse<IWikipediaSearch>>("", {
     params: {
@@ -19,6 +20,7 @@ export const searchWikipedia = (
       action: "query",
       list: "search",
       srsearch,
+      sroffset,
     },
   });
 export const getWikipedia = (

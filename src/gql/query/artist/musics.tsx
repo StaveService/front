@@ -1,7 +1,7 @@
 import { gql } from "graphql-request";
 
 const artistMusicsQuery = gql`
-  query getArtist($id: Int!, $musicPage: Int!) {
+  query getMusics($id: Int!, $musicPage: Int!) {
     artist(id: $id) {
       musics(musicPage: $musicPage) {
         data {
@@ -22,6 +22,7 @@ const artistMusicsQuery = gql`
             name
           }
           user {
+            id
             nickname
           }
         }

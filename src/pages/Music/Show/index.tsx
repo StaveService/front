@@ -148,7 +148,7 @@ const Show: React.FC = () => {
           </Grid>
         </Grid>
         <Box height="100px" width="100px" m="auto">
-          <Image src={itunesMusic?.data?.artworkUrl100 || "undefiend"} />
+          {itunesMusic.data && <Image src={itunesMusic.data.artworkUrl100} />}
         </Box>
         <Box my={3}>
           <Button

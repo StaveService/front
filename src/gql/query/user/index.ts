@@ -4,6 +4,7 @@ const userQuery = gql`
   query getUserMusics($id: Int!, $currentUserId: Int) {
     user(id: $id) {
       nickname
+      introduction
       followingCount
       followersCount
       followed(currentUserId: $currentUserId) {

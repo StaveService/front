@@ -21,8 +21,13 @@ function Wikipedia({
       showSearchBar={showSearchBar}
       useQueryArgs={{
         key: [queryKey.WIKIPEDIA],
-        fn: ({ term }) =>
-          searchWikipedia(term).then((res) => ({ data: res.query.search })),
+        fn: ({ term, page }) =>
+          searchWikipedia(term, page).then((res) => ({
+            data: res.query.search,
+            pageCount: Math.floor(
+              res.query.searchinfo.totalhits / res.continue.sroffset
+            ),
+          })),
       }}
       onSelect={onSelect}
       onClose={onClose}
