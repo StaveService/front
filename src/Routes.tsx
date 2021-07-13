@@ -27,6 +27,7 @@ import UserFollowing from "./pages/User/Show/Following";
 import Albums from "./pages/Album/Index";
 import Album from "./pages/Album/Show";
 import NewAlbum from "./pages/Album/New";
+import Contact from "./pages/Contact/New";
 
 const Routes: React.FC = () => (
   <Switch>
@@ -80,7 +81,8 @@ const Routes: React.FC = () => (
     {/* AUTH */}
     <Route exact path={routes.SIGNIN} component={SignIn} />
     <Route exact path={routes.SIGNUP} component={SignUp} />
-
+    {/* CONTACTS */}
+    <Route exact path={routes.CONTACTS} component={Contact} />
     {/* ROOT */}
     <Route exact path={routes.ROOT} component={Root} />
   </Switch>

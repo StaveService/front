@@ -9,6 +9,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import { store, persistor } from "./store";
 import Routes from "./Routes";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import theme from "./theme";
 import AuthDialog from "./components/Dialog/Auth";
 
@@ -23,6 +24,7 @@ const App: React.FC = () => (
             <Router>
               <Header />
               <Routes />
+              <Footer />
               <AuthDialog />
             </Router>
           </ThemeProvider>

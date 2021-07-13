@@ -10,6 +10,7 @@ import {
   IBand,
   IBandBookmark,
   IBandLink,
+  IContact,
   IHeaders,
   IIssue,
   IMusic,
@@ -368,3 +369,7 @@ export const patchUserLink = (
       ...headers,
     }
   );
+export const postContact = (
+  newContact: IContact
+): Promise<AxiosResponse<IContact>> =>
+  axios.post<IContact>(routes.CONTACTS, newContact);

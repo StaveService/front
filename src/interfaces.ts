@@ -125,6 +125,10 @@ export interface IIssue {
   music?: IMusic;
   user?: IUser;
 }
+export interface IContact {
+  email: string;
+  description: string;
+}
 export interface IArtistMusic {
   id: number;
   ["artist_id"]: number;

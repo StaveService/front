@@ -28,5 +28,6 @@
   "FILE": "/file",
   "TREE": "/tree",
   "BLOB": "/blob",
-  "LYRIC": "/lyric"
+  "LYRIC": "/lyric",
+  "CONTACTS": "/contacts"
 }
