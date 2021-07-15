@@ -27,12 +27,6 @@ module.exports = {
   plugins: ['react', '@typescript-eslint', 'import', "prettier"],
   rules: {
     'no-param-reassign': ['error', { props: false }],
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto",
-      },
-    ],
     "arrow-body-style": "off",
     "prefer-arrow-callback": "off",
     'linebreak-style': 'off',

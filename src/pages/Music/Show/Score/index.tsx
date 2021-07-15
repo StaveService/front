@@ -6,7 +6,7 @@ import Box from "@material-ui/core/Box";
 import { useQuery } from "react-query";
 import { useRouteMatch } from "react-router-dom";
 import Header from "./Header";
-import Tracks, { Track } from "../../../../ui/Tracks";
+import Tracks, { ITrack } from "../../../../ui/Tracks";
 import { IAlphaTab, IMusic } from "../../../../interfaces";
 import styles from "./index.module.css";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
@@ -23,7 +23,7 @@ const settings = {
 };
 const Score = new model.Score();
 const Tab: React.FC = () => {
-  const [tracks, setTracks] = useState<typeof Track[]>([]);
+  const [tracks, setTracks] = useState<typeof ITrack[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [alphaTabApi, setAlphaTabApi] = useState<AlphaTabApi>();
   const ref = useRef<HTMLDivElement>(null);
@@ -42,13 +42,13 @@ const Tab: React.FC = () => {
     enabled: loading,
   });
   // handlers
-  const handleListItemClick = (track: typeof Track, i: number) => {
+  const handleListItemClick = (track: typeof ITrack, i: number) => {
     setSelectedIndex(i);
     alphaTabApi?.renderTracks([track]);
   };
-  const handleMute = (mute: boolean, track: typeof Track) =>
+  const handleMute = (mute: boolean, track: typeof ITrack) =>
     alphaTabApi?.changeTrackMute([track], !mute);
-  const handleSolo = (solo: boolean, track: typeof Track) =>
+  const handleSolo = (solo: boolean, track: typeof ITrack) =>
     alphaTabApi?.changeTrackSolo([track], !solo);
   const scoreLoaded = (score: typeof Score) => setTracks(score.tracks);
   const renderStarted = useCallback(() => {
