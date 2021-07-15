@@ -5,7 +5,7 @@ import { useMutation } from "react-query";
 import Typography from "@material-ui/core/Typography";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "@material-ui/core/Link";
-import ControlTextField from "../../components/TextField/ControlTextField";
+import ControlTextField from "../../components/ControlTextField/ControlTextField";
 import DefaultLayout from "../../layout/Default";
 import { postContact } from "../../axios/axios";
 import { IContact } from "../../interfaces";

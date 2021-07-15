@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "react-query";
-import ControlTextField from "../../../../../components/TextField/ControlTextField";
+import ControlTextField from "../../../../../components/ControlTextField/ControlTextField";
 import LoadingButton from "../../../../../components/Loading/LoadingButton";
 import { issueSchema } from "../../../../../schema";
 import { selectHeaders, setHeaders } from "../../../../../slices/currentUser";

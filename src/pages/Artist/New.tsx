@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { postArtist, PostParams } from "../../axios/axios";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
-import ControlTextField from "../../components/TextField/ControlTextField";
+import ControlTextField from "../../components/ControlTextField/ControlTextField";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import ArtistTable from "../../components/Table/Artist";
