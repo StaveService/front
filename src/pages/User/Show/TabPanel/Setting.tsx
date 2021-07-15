@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "react-query";
 import { AxiosResponse } from "axios";
 import { userSchema } from "../../../../schema";
-import ControlTextField from "../../../../components/TextField/ControlTextField";
+import ControlTextField from "../../../../components/ControlTextField/ControlTextField";
 import { patchUser } from "../../../../axios/axios";
 import {
   selectCurrentUser,

@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useSnackbar } from "notistack";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import ControlTextField from "../TextField/ControlTextField";
+import ControlTextField from "../ControlTextField/ControlTextField";
 import LoadingButton from "../Loading/LoadingButton";
 import {
   ISignErrorResponse,

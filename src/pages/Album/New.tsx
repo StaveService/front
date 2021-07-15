@@ -8,7 +8,7 @@ import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import ControlTextField from "../../components/TextField/ControlTextField";
+import ControlTextField from "../../components/ControlTextField/ControlTextField";
 import AlbumTable from "../../components/Table/Album";
 import LoadingButton from "../../components/Loading/LoadingButton";
 import ItunesAlbumDialog from "../../components/Dialog/Itunes/Album";
