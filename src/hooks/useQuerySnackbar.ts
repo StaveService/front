@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
-import { open } from "../slices/authModal";
+import { open } from "../ui/Dialog/authModal";
 import { remove } from "../slices/currentUser/currentUser";
 
 const useQuerySnackbar = (): {
