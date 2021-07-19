@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import { useMutation, useQueryClient } from "react-query";
 import ControlTextField from "../../../../components/ControlTextField/ControlTextField";
-import LoadingButton from "../../../../components/Loading/LoadingButton";
+import LoadingButton from "../../../../ui/LoadingButton";
 import {
   selectHeaders,
   setHeaders,

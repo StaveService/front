@@ -10,7 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import ControlTextField from "../../components/ControlTextField/ControlTextField";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
-import LoadingButton from "../../components/Loading/LoadingButton";
+import LoadingButton from "../../ui/LoadingButton";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import MusicTable from "../../components/Table/Music";
 import ExistAlert from "../../components/Alert/Exist";

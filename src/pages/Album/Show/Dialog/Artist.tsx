@@ -20,7 +20,7 @@ import Box from "@material-ui/core/Box";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import useDebounce from "use-debounce/lib/useDebounce";
-import LoadingButton from "../../../../components/Loading/LoadingButton";
+import LoadingButton from "../../../../ui/LoadingButton";
 import AutocompleteTextField from "../../../../components/TextField/AutocompleteTextField";
 import routes from "../../../../constants/routes.json";
 import {

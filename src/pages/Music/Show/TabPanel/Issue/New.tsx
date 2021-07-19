@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "react-query";
 import ControlTextField from "../../../../../components/ControlTextField/ControlTextField";
-import LoadingButton from "../../../../../components/Loading/LoadingButton";
+import LoadingButton from "../../../../../ui/LoadingButton";
 import { issueSchema } from "../../../../../schema";
 import {
   selectHeaders,

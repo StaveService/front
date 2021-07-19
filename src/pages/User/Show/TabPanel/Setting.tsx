@@ -15,7 +15,7 @@ import {
   setHeaders,
 } from "../../../../slices/currentUser/currentUser";
 import { IUser } from "../../../../interfaces";
-import LoadingButton from "../../../../components/Loading/LoadingButton";
+import LoadingButton from "../../../../ui/LoadingButton";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 
 const Setting: React.FC = () => {

@@ -3,7 +3,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import React, { ChangeEvent, useState } from "react";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
-import LoadingButton from "../Loading/LoadingButton";
+import LoadingButton from "../../ui/LoadingButton";
 
 type TwitterProps = DialogProps & {
   defaultValue: string | undefined;

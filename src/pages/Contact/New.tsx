@@ -9,7 +9,7 @@ import ControlTextField from "../../components/ControlTextField/ControlTextField
 import DefaultLayout from "../../layout/Default";
 import { postContact } from "../../axios/axios";
 import { IContact } from "../../interfaces";
-import LoadingButton from "../../components/Loading/LoadingButton";
+import LoadingButton from "../../ui/LoadingButton";
 import { contactSchema } from "../../schema";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 

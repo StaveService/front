@@ -10,7 +10,7 @@ import Image from "material-ui-image";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import ControlTextField from "../../components/ControlTextField/ControlTextField";
 import AlbumTable from "../../components/Table/Album";
-import LoadingButton from "../../components/Loading/LoadingButton";
+import LoadingButton from "../../ui/LoadingButton";
 import ItunesAlbumDialog from "../../components/Dialog/Itunes/Album";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
