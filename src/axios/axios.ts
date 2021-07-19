@@ -28,12 +28,6 @@ export type PostParams<
 > = Omit<T, "id" | "bookmarksCount"> & {
   ["link_attributes"]: Omit<K, "id">;
 };
-declare module "axios" {
-  export interface AxiosRequestConfig {
-    "Key-inflection"?: string;
-  }
-}
-
 switch (process.env.NODE_ENV) {
   case "development":
     axios.defaults.baseURL = "http://localhost";
