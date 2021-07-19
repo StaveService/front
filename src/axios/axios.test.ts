@@ -28,13 +28,13 @@ import {
   IHeaders,
   IMusic,
   IMusicBookmark,
-  ITokenHeaders,
   IUser,
 } from "../interfaces";
 import testUser from "../constants/user.json";
 import routes from "../constants/routes.json";
 import { signUp } from "../ui/Form/SignUp";
 import { signIn } from "../ui/Form/SignIn";
+import { ITokenHeaders } from "../slices/currentUser/currentUser";
 
 let headers: IHeaders;
 let user: IUser;

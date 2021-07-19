@@ -1,14 +1,11 @@
 import { AlphaTabApi, model, synth } from "@coderline/alphatab";
+// eslint-disable-next-line import/no-cycle
+import { ITokenHeaders } from "./slices/currentUser/currentUser";
 
 export type MenuCardType = "Artist" | "Album" | "Music" | "Band";
+
 export interface IHeaders {
   headers: ITokenHeaders;
-}
-export interface ITokenHeaders {
-  ["content-type"]: string;
-  ["access-token"]: string;
-  client: string;
-  uid: string;
 }
 export interface IUser
   extends IMusicsType,
