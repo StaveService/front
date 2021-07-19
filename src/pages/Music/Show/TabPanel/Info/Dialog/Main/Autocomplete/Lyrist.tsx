@@ -10,7 +10,7 @@ import queryKey from "../../../../../../../../constants/queryKey.json";
 import {
   selectHeaders,
   setHeaders,
-} from "../../../../../../../../slices/currentUser";
+} from "../../../../../../../../slices/currentUser/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
 import {
   deleteLyristMusic,

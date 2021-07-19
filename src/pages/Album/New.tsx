@@ -17,7 +17,10 @@ import LoadingCircularProgress from "../../components/Loading/LoadingCircularPro
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
 import { IAlbum, IAlbumLink, IItunesAlbum } from "../../interfaces";
-import { selectHeaders, setHeaders } from "../../slices/currentUser";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../slices/currentUser/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";

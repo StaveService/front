@@ -16,9 +16,6 @@ import {
   IMusic,
   IMusicBookmark,
   IMusicLink,
-  ISignInFormValues,
-  ISignSuccessResponse,
-  ISignUpFormValues,
   IUser,
   IUserLink,
   IUserRelationship,
@@ -48,16 +45,6 @@ switch (process.env.NODE_ENV) {
     axios.defaults.baseURL = "http://localhost:";
 }
 
-export const signIn = (
-  data: ISignInFormValues
-): Promise<AxiosResponse<ISignSuccessResponse>> =>
-  axios.post<ISignSuccessResponse>("/auth/sign_in", data);
-export const signUp = (
-  data: ISignUpFormValues
-): Promise<AxiosResponse<ISignSuccessResponse>> =>
-  axios.post<ISignSuccessResponse>("/auth", data, {
-    "Key-inflection": "camel",
-  });
 export const patchUser = (
   id: number | undefined,
   data: IUser,

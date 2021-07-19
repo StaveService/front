@@ -22,7 +22,7 @@ import {
   selectCurrentUser,
   selectHeaders,
   setHeaders,
-} from "../../slices/currentUser";
+} from "../../slices/currentUser/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";

@@ -2,7 +2,7 @@ import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import SignUpForm from "../../components/Form/SignUp";
+import SignUpForm from "../../ui/Form/SignUp";
 import DefaultLayout from "../../layout/Default";
 
 const SignUp: React.FC = () => {

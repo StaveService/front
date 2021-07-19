@@ -34,7 +34,7 @@ import {
   selectCurrentUser,
   selectHeaders,
   setHeaders,
-} from "../../../slices/currentUser";
+} from "../../../slices/currentUser/currentUser";
 import { lookupItunesAlbum } from "../../../axios/itunes";
 import usePaginate from "../../../hooks/usePaginate";
 import { getAlbum, getAlbumMusics } from "../../../gql";

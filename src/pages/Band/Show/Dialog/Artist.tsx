@@ -23,7 +23,10 @@ import useDebounce from "use-debounce/lib/useDebounce";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
 import AutocompleteTextField from "../../../../components/TextField/AutocompleteTextField";
 import routes from "../../../../constants/routes.json";
-import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../../../slices/currentUser/currentUser";
 import { IArtist, IArtistBand, IBand } from "../../../../interfaces";
 import useOpen from "../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";

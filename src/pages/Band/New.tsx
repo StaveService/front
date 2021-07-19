@@ -15,7 +15,10 @@ import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import BandTable from "../../components/Table/Band";
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
-import { selectHeaders, setHeaders } from "../../slices/currentUser";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../slices/currentUser/currentUser";
 import { IBand, IBandLink, IItunesArtist } from "../../interfaces";
 import { postBand, PostParams } from "../../axios/axios";
 import useOpen from "../../hooks/useOpen";

@@ -11,7 +11,7 @@ import Routes from "./Routes";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import theme from "./theme";
-import AuthDialog from "./components/Dialog/Auth";
+import AuthDialog from "./ui/Dialog/Auth";
 
 const queryClient = new QueryClient();
 const App: React.FC = () => (

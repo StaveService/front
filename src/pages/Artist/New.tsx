@@ -16,7 +16,10 @@ import ArtistTable from "../../components/Table/Artist";
 import ExistAlert from "../../components/Alert/Exist";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import DefaultLayout from "../../layout/Default";
-import { selectHeaders, setHeaders } from "../../slices/currentUser";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../slices/currentUser/currentUser";
 import { IArtist, IArtistLink, IItunesArtist } from "../../interfaces";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";

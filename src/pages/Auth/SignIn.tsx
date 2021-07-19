@@ -3,7 +3,7 @@ import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router-dom";
 import DefaultLayout from "../../layout/Default";
-import SignInForm from "../../components/Form/SignIn";
+import SignInForm from "../../ui/Form/SignIn";
 
 const SignIn: React.FC = () => {
   const history = useHistory();

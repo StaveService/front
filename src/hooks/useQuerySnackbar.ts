@@ -2,7 +2,7 @@
 import { useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
 import { open } from "../slices/authModal";
-import { remove } from "../slices/currentUser";
+import { remove } from "../slices/currentUser/currentUser";
 
 const useQuerySnackbar = (): {
   onError: (err: unknown) => void;

@@ -30,7 +30,7 @@ import {
   selectCurrentUser,
   selectHeaders,
   setHeaders,
-} from "../../slices/currentUser";
+} from "../../slices/currentUser/currentUser";
 import queryKey from "../../constants/queryKey.json";
 import { lookupItunesArtist } from "../../axios/itunes";
 import {

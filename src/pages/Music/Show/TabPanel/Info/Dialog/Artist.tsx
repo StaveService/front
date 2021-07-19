@@ -31,7 +31,7 @@ import { addRoleSchema } from "../../../../../../schema";
 import {
   selectHeaders,
   setHeaders,
-} from "../../../../../../slices/currentUser";
+} from "../../../../../../slices/currentUser/currentUser";
 import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
 import routes from "../../../../../../constants/routes.json";

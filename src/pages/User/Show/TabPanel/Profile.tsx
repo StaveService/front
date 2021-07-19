@@ -8,7 +8,7 @@ import LinkTable from "../../../../components/Table/Link";
 import TwitterDialog from "../../../../components/Dialog/Twitter";
 import { IUser, IUserLink } from "../../../../interfaces";
 import { patchUserLink } from "../../../../axios/axios";
-import { selectHeaders } from "../../../../slices/currentUser";
+import { selectHeaders } from "../../../../slices/currentUser/currentUser";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import { getUserProfile } from "../../../../gql";

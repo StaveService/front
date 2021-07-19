@@ -13,7 +13,7 @@ import {
   selectHeaders,
   setCurrentUser,
   setHeaders,
-} from "../../../../slices/currentUser";
+} from "../../../../slices/currentUser/currentUser";
 import { IUser } from "../../../../interfaces";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";

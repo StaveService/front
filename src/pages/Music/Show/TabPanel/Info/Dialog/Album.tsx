@@ -25,7 +25,7 @@ import AutocompleteTextField from "../../../../../../components/TextField/Autoco
 import {
   selectHeaders,
   setHeaders,
-} from "../../../../../../slices/currentUser";
+} from "../../../../../../slices/currentUser/currentUser";
 import { IAlbum, IAlbumMusic, IMusic } from "../../../../../../interfaces";
 import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";

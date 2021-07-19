@@ -28,7 +28,7 @@ import {
   selectCurrentUser,
   selectHeaders,
   setHeaders,
-} from "../../../slices/currentUser";
+} from "../../../slices/currentUser/currentUser";
 import {
   deleteUserRelationship,
   postUserRelationship,

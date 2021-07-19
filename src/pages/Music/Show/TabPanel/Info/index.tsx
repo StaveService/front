@@ -22,7 +22,10 @@ import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../constants/routes.json";
-import { selectHeaders, setHeaders } from "../../../../../slices/currentUser";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../../../../slices/currentUser/currentUser";
 import {
   IItunesMusic,
   IMusic,

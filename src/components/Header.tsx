@@ -19,7 +19,7 @@ import {
   remove,
   selectCurrentUser,
   selectHeaders,
-} from "../slices/currentUser";
+} from "../slices/currentUser/currentUser";
 
 const Header: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

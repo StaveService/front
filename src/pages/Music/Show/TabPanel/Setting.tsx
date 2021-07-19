@@ -11,7 +11,10 @@ import Dialog from "@material-ui/core/Dialog";
 import { useMutation, useQueryClient } from "react-query";
 import ControlTextField from "../../../../components/ControlTextField/ControlTextField";
 import LoadingButton from "../../../../components/Loading/LoadingButton";
-import { selectHeaders, setHeaders } from "../../../../slices/currentUser";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../../../slices/currentUser/currentUser";
 import routes from "../../../../constants/routes.json";
 import { IMusic } from "../../../../interfaces";
 import useOpen from "../../../../hooks/useOpen";

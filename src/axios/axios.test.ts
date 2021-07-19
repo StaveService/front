@@ -1,10 +1,8 @@
 import {
   postMusic,
   deleteMusic,
-  signIn,
   postBand,
   postAlbum,
-  signUp,
   deleteUser,
   deleteBand,
   deleteAlbum,
@@ -35,6 +33,8 @@ import {
 } from "../interfaces";
 import testUser from "../constants/user.json";
 import routes from "../constants/routes.json";
+import { signUp } from "../ui/Form/SignUp";
+import { signIn } from "../ui/Form/SignIn";
 
 let headers: IHeaders;
 let user: IUser;
