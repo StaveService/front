@@ -27,7 +27,7 @@ const Files: React.FC = () => {
   return (
     <div>
       <p>
-        git remote add origin http://localhost/git/{userId}/{music?.title}
+        http://localhost/git/{userId}/{music?.title}
         .git
       </p>
       <p>Files</p>
