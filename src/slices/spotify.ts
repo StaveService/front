@@ -1,6 +1,6 @@
+/* eslint-disable import/no-cycle */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ISpotifyToken } from "../interfaces";
-/* eslint-disable import/no-cycle */
 import { RootState } from "../store";
 
 interface ISpotify {
