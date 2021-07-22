@@ -72,4 +72,3 @@
 | searchAlbums    | [albums, { page, query }]                                                                             |
 | wikipedia       | [wikipedia, :id]                                                                                      |
 | searchWikipedia | [wikipedia, :query]                                                                                   |
-
