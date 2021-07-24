@@ -33,8 +33,7 @@ switch (process.env.NODE_ENV) {
     axios.defaults.baseURL = "http://localhost";
     break;
   case "production":
-    /* http://34.127.71.40 */
-    axios.defaults.baseURL = "https://service.stave-back.com";
+    axios.defaults.baseURL = "http://localhost";
     break;
   default:
     axios.defaults.baseURL = "http://localhost";

@@ -55,8 +55,7 @@ switch (process.env.NODE_ENV) {
     url = "http://localhost";
     break;
   case "production":
-    /* http://34.127.71.40 */
-    url = "https://service.stave-back.com";
+    url = "http://localhost";
     break;
   default:
     url = "http://localhost";

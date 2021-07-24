@@ -21,7 +21,7 @@ const App: React.FC = () => (
         <PersistGate loading={null} persistor={persistor}>
           <ThemeProvider theme={theme}>
             <ReactQueryDevtools initialIsOpen />
-            <Router>
+            <Router basename="front">
               <Header />
               <Routes />
               <Footer />
