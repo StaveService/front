@@ -16,6 +16,7 @@ const Follower: React.FC = () => {
     [queryKey.USER, id, queryKey.MUSICS, page],
     getUserFollower(id, page)
   );
+  console.log(followers);
   return (
     <DefaultLayout>
       <Typography variant="h5" color="initial">

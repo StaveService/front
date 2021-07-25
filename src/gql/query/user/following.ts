@@ -10,6 +10,9 @@ const userFollowingQuery = gql`
         data {
           id
           nickname
+          link {
+            twitter
+          }
         }
       }
     }
