@@ -90,7 +90,7 @@ const Show: React.FC = () => {
           <Typography variant="h6">{user?.nickname}</Typography>
         </Grid>
         <Grid item xs={1}>
-          {isCurrentUser && (
+          {!isCurrentUser && (
             <FollowButton
               followed={!!user?.followed}
               onFollow={handleFollow}
