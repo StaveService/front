@@ -79,7 +79,6 @@ const Show: React.FC = () => {
   );
   // helpers
   const isCurrentUser = currentUser?.id === id;
-  const user = isCurrentUser ? currentUser : data;
   // handlers
   const handleFollow = () => createMutate.mutate();
   const handleUnfollow = () => deleteMutate.mutate();
@@ -87,12 +86,12 @@ const Show: React.FC = () => {
     <DefaultLayout>
       <Grid container>
         <Grid item xs={11}>
-          <Typography variant="h6">{user?.nickname}</Typography>
+          <Typography variant="h6">{data?.nickname}</Typography>
         </Grid>
         <Grid item xs={1}>
           {!isCurrentUser && (
             <FollowButton
-              followed={!!user?.followed}
+              followed={!!data?.followed}
               onFollow={handleFollow}
               onUnfollow={handleUnfollow}
               disabled={isLoading}
@@ -108,7 +107,7 @@ const Show: React.FC = () => {
             component={RouterLink}
             to={`${routes.USERS}/${id}${routes.FOLLOWERS}`}
           >
-            {user?.followersCount}Followers
+            {data?.followersCount}Followers
           </Link>
         </Grid>
         <Grid item>
@@ -116,11 +115,11 @@ const Show: React.FC = () => {
             component={RouterLink}
             to={`${routes.USERS}/${id}${routes.FOLLOWING}`}
           >
-            {user?.followingCount}Following
+            {data?.followingCount}Following
           </Link>
         </Grid>
       </Grid>
-      {user?.introduction}
+      {data?.introduction}
       <Tabs
         value={
           location.pathname.includes("issues")
