@@ -33,7 +33,7 @@ switch (process.env.NODE_ENV) {
     axios.defaults.baseURL = "http://localhost";
     break;
   case "production":
-    axios.defaults.baseURL = "http://localhost";
+    axios.defaults.baseURL = "http://34.127.71.40";
     break;
   default:
     axios.defaults.baseURL = "http://localhost";

@@ -55,7 +55,7 @@ switch (process.env.NODE_ENV) {
     url = "http://localhost";
     break;
   case "production":
-    url = "http://localhost";
+    url = "http://34.127.71.40";
     break;
   default:
     url = "http://localhost";
