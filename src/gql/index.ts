@@ -31,7 +31,8 @@ import bandQuery from "./query/band";
 import bandAlbumsQuery from "./query/band/albums";
 import bandMusicsQuery from "./query/band/musics";
 import issueQuery from "./query/issue";
-import bandsQuery from "./query/issues";
+import bandsQuery from "./query/bands";
+import issuesQuery from "./query/issues";
 import musicQuery from "./query/music";
 import rootTreeQuery from "./query/music/rootTree";
 import musicScoreQuery from "./query/music/score";
@@ -177,7 +178,7 @@ export const getIssues =
   (musicId: number, page: number, q?: { [key: string]: string }) =>
   (): Promise<IIndexType<IIssue>> =>
     graphQLCilent
-      .request<IIssuesType>(bandsQuery, {
+      .request<IIssuesType>(issuesQuery, {
         musicId,
         page,
         q,
