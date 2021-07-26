@@ -16,6 +16,7 @@ const bandMusicsQuery = gql`
             name
           }
           user {
+            id
             nickname
           }
           link {
