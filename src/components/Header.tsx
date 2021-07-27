@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import React from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useHistory } from "react-router-dom";
@@ -11,32 +12,30 @@ import Box from "@material-ui/core/Box";
 import Link from "@material-ui/core/Link";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import Menu from "@material-ui/core/Menu";
+import NotificationsIcon from "@material-ui/icons/Notifications";
+import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import MenuItem from "@material-ui/core/MenuItem";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
+import Popover from "@material-ui/core/Popover";
 import routes from "../constants/routes.json";
 import {
   remove,
   selectCurrentUser,
   selectHeaders,
 } from "../slices/currentUser/currentUser";
+import { getUserNotifications } from "../gql";
 
 const Header: React.FC = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
   const history = useHistory();
-  const handleClose = () => setAnchorEl(null);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) =>
-    setAnchorEl(event.currentTarget);
   const onMutate = () => {
     dispatch(remove());
     history.push({
       pathname: routes.SIGNIN,
     });
-    handleClose();
   };
   const onSuccess = () => {
     enqueueSnackbar("SignOut successful", {
@@ -56,11 +55,17 @@ const Header: React.FC = () => {
       },
     });
   };
-  const { isLoading, mutate } = useMutation(
-    () => axios.delete("/auth/sign_out", headers),
-    { onMutate, onSuccess, onError }
+  const notifications = useQuery(
+    [routes.NOTIFICATIONS, 1],
+    getUserNotifications(currentUser?.id, 1),
+    { onError, enabled: !!currentUser }
   );
-  const handleSignOut = () => mutate();
+  const signOut = useMutation(() => axios.delete("/auth/sign_out", headers), {
+    onMutate,
+    onSuccess,
+    onError,
+  });
+  const handleSignOut = () => signOut.mutate();
   return (
     <>
       <AppBar position="fixed" color="default">
@@ -96,26 +101,114 @@ const Header: React.FC = () => {
                 </Button>
               </>
             ) : (
-              <Box>
-                <IconButton onClick={handleClick}>
-                  <AccountCircleIcon />
-                </IconButton>
-                <Menu
-                  anchorEl={anchorEl}
-                  keepMounted
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                >
-                  <MenuItem
-                    component={RouterLink}
-                    to={`${routes.USERS}/${currentUser.id}`}
-                  >
-                    Account
-                  </MenuItem>
-                  <MenuItem disabled={isLoading} onClick={handleSignOut}>
-                    Logout
-                  </MenuItem>
-                </Menu>
+              <Box display="flex">
+                <PopupState variant="popover" popupId="demo-popup-popover">
+                  {(popupState) => (
+                    <div>
+                      <IconButton
+                        // eslint-disable-next-line react/jsx-props-no-spreading
+                        {...bindTrigger(popupState)}
+                      >
+                        <NotificationsIcon />
+                      </IconButton>
+                      <Popover
+                        // eslint-disable-next-line react/jsx-props-no-spreading
+                        {...bindPopover(popupState)}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "center",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "center",
+                        }}
+                      >
+                        <Box p={1}>
+                          {!notifications.data?.data.length && (
+                            <Typography variant="h6">Nothing</Typography>
+                          )}
+                          {notifications.data?.data.map((notification) => {
+                            if (
+                              notification.type ===
+                              "UserRelationshipNotification"
+                            )
+                              return (
+                                <MenuItem
+                                  key={notification.id}
+                                  component={RouterLink}
+                                  to={`${routes.USERS}/${notification.params.userRelationship.follower.id}`}
+                                >
+                                  {
+                                    notification.params.userRelationship
+                                      .follower.nickname
+                                  }{" "}
+                                  followed
+                                </MenuItem>
+                              );
+                            if (
+                              notification.type === "MusicBookmarkNotification"
+                            )
+                              return (
+                                <MenuItem
+                                  key={notification.id}
+                                  component={RouterLink}
+                                  to={`${routes.USERS}/${notification.params.musicBookmark.user.id}`}
+                                >
+                                  {
+                                    notification.params.musicBookmark.user
+                                      .nickname
+                                  }{" "}
+                                  bookmarked{" "}
+                                  {
+                                    notification.params.musicBookmark.music
+                                      .title
+                                  }
+                                </MenuItem>
+                              );
+                            return <></>;
+                          })}
+                        </Box>
+                      </Popover>
+                    </div>
+                  )}
+                </PopupState>
+                <PopupState variant="popover" popupId="demo-popup-popover">
+                  {(popupState) => (
+                    <div>
+                      <IconButton
+                        // eslint-disable-next-line react/jsx-props-no-spreading
+                        {...bindTrigger(popupState)}
+                      >
+                        <AccountCircleIcon />
+                      </IconButton>
+                      <Popover
+                        // eslint-disable-next-line react/jsx-props-no-spreading
+                        {...bindPopover(popupState)}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "right",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                      >
+                        <MenuItem
+                          component={RouterLink}
+                          to={`${routes.USERS}/${currentUser.id}`}
+                        >
+                          Account
+                        </MenuItem>
+                        <MenuItem
+                          disabled={signOut.isLoading}
+                          onClick={handleSignOut}
+                        >
+                          Logout
+                        </MenuItem>
+                      </Popover>
+                    </div>
+                  )}
+                </PopupState>
               </Box>
             )}
           </Box>

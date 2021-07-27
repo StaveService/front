@@ -16,6 +16,7 @@ import {
   IMusic,
   IMusicsType,
   IMusicType,
+  INotification,
   IUser,
   IUsersType,
   IUserType,
@@ -49,19 +50,10 @@ import userProfileQuery from "./query/user/profile";
 import usersQuery from "./query/users";
 import blobQuery from "./query/music/blob";
 import treeQuery from "./query/music/tree";
+import baseURL from "../constants/baseURL";
+import userNotificationsQuery from "./query/user/notifications";
 
-let url;
-switch (process.env.NODE_ENV) {
-  case "development":
-    url = "http://localhost";
-    break;
-  case "production":
-    url = "http://34.127.71.40";
-    break;
-  default:
-    url = "http://localhost";
-}
-const graphQLCilent = new GraphQLClient(`${url}/graphql`);
+const graphQLCilent = new GraphQLClient(`${baseURL}/graphql`);
 
 export const getUsers =
   (page: number, q?: { [key: string]: string }) =>
@@ -83,6 +75,15 @@ export const getUserMusics =
     graphQLCilent
       .request<IUserType>(userMusicsQuery, { id, musicPage: page })
       .then((res) => res.user.musics);
+export const getUserNotifications =
+  (id: number | undefined, page: number) =>
+  (): Promise<IIndexType<INotification>> =>
+    graphQLCilent
+      .request<IUserType>(userNotificationsQuery, {
+        id,
+        notificationPage: page,
+      })
+      .then((res) => res.user.notifications);
 export const getUserBookmarkedMusics =
   (id: number, page: number) => (): Promise<IIndexType<IMusic>> =>
     graphQLCilent

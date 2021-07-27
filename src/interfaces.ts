@@ -7,8 +7,22 @@ export type MenuCardType = "Artist" | "Album" | "Music" | "Band";
 export interface IHeaders {
   headers: ITokenHeaders;
 }
+export interface INotification {
+  id: number;
+  recipientType: string;
+  recipientId: number;
+  type: "UserRelationshipNotification" | "MusicBookmarkNotification";
+  params: {
+    userRelationship: IUserRelationship;
+    musicBookmark: IMusicBookmark;
+  };
+  readAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
 export interface IUser
   extends IMusicsType,
+    INotificationsType,
     IFollowersType,
     IFollowingType,
     IBookmarkedMusicsType,
@@ -39,6 +53,8 @@ export interface IUserRelationship {
   id: number;
   followedId: number;
   followerId: number;
+  followed: IUser;
+  follower: IUser;
 }
 export interface IBand extends IMusicsType, IAlbumsType {
   id: number;
@@ -158,6 +174,8 @@ export interface IArtistAlbum {
 }
 export interface IMusicBookmark {
   id: number;
+  user: IUser;
+  music: IMusic;
 }
 export interface IBandBookmark {
   id: number;
@@ -183,6 +201,9 @@ export interface IUserType {
 }
 export interface IUsersType {
   users: IIndexType<IUser>;
+}
+export interface INotificationsType {
+  notifications: IIndexType<INotification>;
 }
 export interface IFollowersType {
   followers: IIndexType<IUser>;

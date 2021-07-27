@@ -21,6 +21,9 @@ import {
   IUserRelationship,
 } from "../interfaces";
 import routes from "../constants/routes.json";
+import baseURL from "../constants/baseURL";
+
+axios.defaults.baseURL = baseURL;
 
 export type PostParams<
   T extends IMusic | IAlbum | IBand | IArtist,
@@ -28,16 +31,6 @@ export type PostParams<
 > = Omit<T, "id" | "bookmarksCount"> & {
   ["link_attributes"]: Omit<K, "id">;
 };
-switch (process.env.NODE_ENV) {
-  case "development":
-    axios.defaults.baseURL = "http://localhost";
-    break;
-  case "production":
-    axios.defaults.baseURL = "http://34.127.71.40";
-    break;
-  default:
-    axios.defaults.baseURL = "http://localhost";
-}
 
 export const patchUser = (
   id: number | undefined,
@@ -205,7 +198,7 @@ export const postMusicBookmark = (
   musicId: number,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IMusicBookmark>> =>
-  axios.post<IBandBookmark>(
+  axios.post<IMusicBookmark>(
     `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.BOOKMARKS}`,
     undefined,
     headers

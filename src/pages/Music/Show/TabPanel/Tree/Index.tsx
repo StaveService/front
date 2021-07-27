@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { useRouteMatch } from "react-router-dom";
 import FileTable from "../../../../../components/Table/File";
+import baseURL from "../../../../../constants/baseURL";
 import queryKey from "../../../../../constants/queryKey.json";
 import { getMusicRootTree } from "../../../../../gql";
 import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
@@ -27,7 +28,7 @@ const Files: React.FC = () => {
   return (
     <div>
       <p>
-        http://localhost/git/{userId}/{music?.title}
+        {baseURL}/git/{userId}/{music?.title}
         .git
       </p>
       <p>Files</p>

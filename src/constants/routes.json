@@ -2,6 +2,7 @@
   "ROOT": "/",
   "SIGNUP": "/signup",
   "SIGNIN": "/signin",
+  "NOTIFICATIONS": "/notifications",
   "ALBUMS": "/albums",
   "ARTISTS": "/artists",
   "COMPOSERS": "/composers",

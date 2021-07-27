@@ -20,6 +20,7 @@
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
     "material-ui-image": "^3.3.1",
+    "material-ui-popup-state": "^1.9.0",
     "notistack": "^1.0.5",
     "prettier": "^2.2.1",
     "react": "^17.0.1",
