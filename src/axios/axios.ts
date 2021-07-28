@@ -19,6 +19,7 @@ import {
   IUser,
   IUserLink,
   IUserRelationship,
+  INotification,
 } from "../interfaces";
 import routes from "../constants/routes.json";
 import baseURL from "../constants/baseURL";
@@ -31,6 +32,17 @@ export type PostParams<
 > = Omit<T, "id" | "bookmarksCount"> & {
   ["link_attributes"]: Omit<K, "id">;
 };
+
+export const patchUserNotification = (
+  id: number,
+  userId: number | undefined,
+  headers: IHeaders | undefined
+): Promise<AxiosResponse<INotification>> =>
+  axios.patch<INotification>(
+    `${routes.USERS}/${userId || "undefined"}/notifications/${id}`,
+    undefined,
+    headers
+  );
 
 export const patchUser = (
   id: number | undefined,

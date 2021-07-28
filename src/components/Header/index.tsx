@@ -17,13 +17,15 @@ import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useMutation, useQuery } from "react-query";
 import Popover from "@material-ui/core/Popover";
-import routes from "../constants/routes.json";
+import Notification from "./Notification";
+import routes from "../../constants/routes.json";
+import queryKey from "../../constants/queryKey.json";
 import {
   remove,
   selectCurrentUser,
   selectHeaders,
-} from "../slices/currentUser/currentUser";
-import { getUserNotifications } from "../gql";
+} from "../../slices/currentUser/currentUser";
+import { getUserNotifications } from "../../gql";
 
 const Header: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -56,7 +58,7 @@ const Header: React.FC = () => {
     });
   };
   const notifications = useQuery(
-    [routes.NOTIFICATIONS, 1],
+    [queryKey.NOTIFICATIONS, 1],
     getUserNotifications(currentUser?.id, 1),
     { onError, enabled: !!currentUser }
   );
@@ -123,51 +125,10 @@ const Header: React.FC = () => {
                           horizontal: "center",
                         }}
                       >
-                        <Box p={1}>
-                          {!notifications.data?.data.length && (
-                            <Typography variant="h6">Nothing</Typography>
-                          )}
-                          {notifications.data?.data.map((notification) => {
-                            if (
-                              notification.type ===
-                              "UserRelationshipNotification"
-                            )
-                              return (
-                                <MenuItem
-                                  key={notification.id}
-                                  component={RouterLink}
-                                  to={`${routes.USERS}/${notification.params.userRelationship.follower.id}`}
-                                >
-                                  {
-                                    notification.params.userRelationship
-                                      .follower.nickname
-                                  }{" "}
-                                  followed
-                                </MenuItem>
-                              );
-                            if (
-                              notification.type === "MusicBookmarkNotification"
-                            )
-                              return (
-                                <MenuItem
-                                  key={notification.id}
-                                  component={RouterLink}
-                                  to={`${routes.USERS}/${notification.params.musicBookmark.user.id}`}
-                                >
-                                  {
-                                    notification.params.musicBookmark.user
-                                      .nickname
-                                  }{" "}
-                                  bookmarked{" "}
-                                  {
-                                    notification.params.musicBookmark.music
-                                      .title
-                                  }
-                                </MenuItem>
-                              );
-                            return <></>;
-                          })}
-                        </Box>
+                        <Notification
+                          notifications={notifications.data?.data}
+                          loading={notifications.isLoading}
+                        />
                       </Popover>
                     </div>
                   )}

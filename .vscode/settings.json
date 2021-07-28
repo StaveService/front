@@ -21,7 +21,7 @@
   "[css]": {
     "editor.formatOnSave": true,
   },
-  "editor.snippetSuggestions": "bottom",
+  "editor.snippetSuggestions": "top",
   "javascript.validate.enable": false,
   "javascript.format.enable": false,
   "typescript.format.enable": false,
