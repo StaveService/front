@@ -17,6 +17,7 @@ import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useMutation, useQuery } from "react-query";
 import Popover from "@material-ui/core/Popover";
+import { Badge } from "@material-ui/core";
 import Notification from "./Notification";
 import routes from "../../constants/routes.json";
 import queryKey from "../../constants/queryKey.json";
@@ -111,7 +112,13 @@ const Header: React.FC = () => {
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...bindTrigger(popupState)}
                       >
-                        <NotificationsIcon />
+                        <Badge
+                          color="secondary"
+                          variant="dot"
+                          invisible={!notifications.data?.notificationExist}
+                        >
+                          <NotificationsIcon />
+                        </Badge>
                       </IconButton>
                       <Popover
                         // eslint-disable-next-line react/jsx-props-no-spreading

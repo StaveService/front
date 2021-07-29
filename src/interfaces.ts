@@ -203,7 +203,7 @@ export interface IUsersType {
   users: IIndexType<IUser>;
 }
 export interface INotificationsType {
-  notifications: IIndexType<INotification>;
+  notifications: IIndexType<INotification> & { notificationExist: boolean };
 }
 export interface IFollowersType {
   followers: IIndexType<IUser>;

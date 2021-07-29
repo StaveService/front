@@ -38,6 +38,7 @@ const userNotificationsQuery = gql`
         pagination {
           totalPages
         }
+        notificationExist
       }
     }
   }

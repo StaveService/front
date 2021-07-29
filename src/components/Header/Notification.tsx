@@ -39,16 +39,18 @@ const Notification: React.FC<NotificationProps> = ({
   const queryClient = useQueryClient();
   const onSuccess = (res: AxiosResponse<INotification>, id: number) => {
     dispatch(setHeaders(res.headers));
-    queryClient.setQueryData<IIndexType<INotification> | undefined>(
-      [queryKey.NOTIFICATIONS, 1],
-      (prev) => {
-        if (!prev) return prev;
-        prev.data[
-          prev.data.findIndex((notification) => notification.id === id)
-        ].readAt = new Date().toLocaleDateString();
-        return prev;
-      }
-    );
+    queryClient.setQueryData<
+      (IIndexType<INotification> & { notificationExist: boolean }) | undefined
+    >([queryKey.NOTIFICATIONS, 1], (prev) => {
+      if (!prev) return prev;
+      prev.data[
+        prev.data.findIndex((prevNotification) => prevNotification.id === id)
+      ].readAt = new Date().toLocaleDateString();
+      prev.notificationExist = prev.data.some(
+        (prevNotification) => !prevNotification.readAt
+      );
+      return prev;
+    });
   };
   const { mutate } = useMutation(
     (id: number) => patchUserNotification(id, currentUser?.id, headers),

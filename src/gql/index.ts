@@ -77,7 +77,7 @@ export const getUserMusics =
       .then((res) => res.user.musics);
 export const getUserNotifications =
   (id: number | undefined, page: number) =>
-  (): Promise<IIndexType<INotification>> =>
+  (): Promise<IIndexType<INotification> & { notificationExist: boolean }> =>
     graphQLCilent
       .request<IUserType>(userNotificationsQuery, {
         id,
