@@ -3,6 +3,8 @@ import { useQuery } from "react-query";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
+import Image from "material-ui-image";
 import MusicsTable from "../components/Table/Music";
 import AlbumsTable from "../components/Table/Album";
 import ArtistsTable from "../components/Table/Artist";
@@ -67,6 +69,18 @@ const Root: React.FC = () => {
   }, []);
   return (
     <DefaultLayout>
+      <Box mb={3}>
+        <Link
+          href="https://staveservice.github.io/docs/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aspectRatio={16 / 9}
+            src={`${process.env.PUBLIC_URL}/stave.png`}
+          />
+        </Link>
+      </Box>
       <Box mb={3}>
         <Grid container spacing={2}>
           <Grid item xs={3}>
