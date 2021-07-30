@@ -16,6 +16,7 @@ import queryKey from "../constants/queryKey.json";
 import useQuerySnackbar from "../hooks/useQuerySnackbar";
 import usePaginate from "../hooks/usePaginate";
 import { getAlbums, getArtists, getBands, getMusics } from "../gql";
+import img from "../images/stave.png";
 
 const Root: React.FC = () => {
   const [musicPage, handleMusicPage] = usePaginate();
@@ -75,10 +76,7 @@ const Root: React.FC = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Image
-            aspectRatio={16 / 9}
-            src={`${process.env.PUBLIC_URL}/front/stave.png`}
-          />
+          <Image aspectRatio={16 / 9} src={img} />
         </Link>
       </Box>
       <Box mb={3}>
