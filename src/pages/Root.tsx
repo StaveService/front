@@ -77,7 +77,7 @@ const Root: React.FC = () => {
         >
           <Image
             aspectRatio={16 / 9}
-            src={`${process.env.PUBLIC_URL}/stave.png`}
+            src={`${process.env.PUBLIC_URL}/front/stave.png`}
           />
         </Link>
       </Box>
