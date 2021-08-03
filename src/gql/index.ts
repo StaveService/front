@@ -239,6 +239,7 @@ export const getArtists =
       .request<IArtistsType>(artistsQuery, {
         page,
         q,
+        locale,
       })
       .then((res) => res.artists);
 export const getArtist =
@@ -247,6 +248,7 @@ export const getArtist =
       .request<IArtistType>(artistQuery, {
         id,
         currentUserId,
+        locale,
       })
       .then((res) => res.artist);
 export const getArtistAlbums =
@@ -255,6 +257,7 @@ export const getArtistAlbums =
       .request<IArtistType>(artistAlbumsQuery, {
         id,
         albumPage: page,
+        locale,
       })
       .then((res) => res.artist.albums);
 export const getArtistMusics =
@@ -263,6 +266,7 @@ export const getArtistMusics =
       .request<IArtistType>(artistMusicsQuery, {
         id,
         musicPage: page,
+        locale,
       })
       .then((res) => res.artist.musics);
 export const getAlbums =

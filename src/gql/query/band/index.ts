@@ -14,7 +14,7 @@ const bandQuery = gql`
       }
       artists {
         id
-        name
+        name(locale: $locale)
         link {
           id
           twitter

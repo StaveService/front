@@ -9,11 +9,11 @@ const bandMusicsQuery = gql`
           title(locale: $locale)
           composers {
             id
-            name
+            name(locale: $locale)
           }
           lyrists {
             id
-            name
+            name(locale: $locale)
           }
           user {
             id

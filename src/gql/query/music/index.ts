@@ -1,7 +1,7 @@
 import { gql } from "graphql-request";
 
 const musicQuery = gql`
-  query getMusic($id: Int!, $currentUserId: Int, $locale: String!) {
+  query getMusic($id: Int!, $locale: String!, $currentUserId: Int) {
     music(id: $id) {
       id
       title(locale: $locale)
@@ -25,16 +25,16 @@ const musicQuery = gql`
         role
         artist {
           id
-          name
+          name(locale: $locale)
         }
       }
       composers {
         id
-        name
+        name(locale: $locale)
       }
       lyrists {
         id
-        name
+        name(locale: $locale)
       }
       albums {
         id
