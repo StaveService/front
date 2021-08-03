@@ -31,7 +31,6 @@ import BookmarkButton from "../../../components/Button/Icon/Bookmark";
 import DefaultLayout from "../../../layout/Default";
 import {
   selectCurrentUser,
-  selectHeaders,
   setHeaders,
 } from "../../../slices/currentUser/currentUser";
 import {
@@ -59,7 +58,6 @@ const Show: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-redux
   const currentUser = useSelector(selectCurrentUser);
-  const headers = useSelector(selectHeaders);
   const spotifyToken = useSelector(selectSpotifyToken);
   const dispatch = useDispatch();
   // react-query
@@ -112,12 +110,12 @@ const Show: React.FC = () => {
       retry: 2,
     }
   );
-  const createMutation = useMutation(
-    () => postMusicBookmark(userId, id, headers),
-    { onSuccess: handleCreateSuccess, onError }
-  );
+  const createMutation = useMutation(() => postMusicBookmark(userId, id), {
+    onSuccess: handleCreateSuccess,
+    onError,
+  });
   const destroyMutation = useMutation(
-    () => deleteMusicBookmark(userId, id, music.data?.bookmark?.id, headers),
+    () => deleteMusicBookmark(userId, id, music.data?.bookmark?.id),
     { onSuccess: handleDestroySuccess, onError }
   );
   // handlers

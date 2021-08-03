@@ -29,7 +29,6 @@ import {
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import {
   selectCurrentUser,
-  selectHeaders,
   setHeaders,
 } from "../../../slices/currentUser/currentUser";
 import queryKey from "../../../constants/queryKey.json";
@@ -49,7 +48,6 @@ const Show: React.FC = () => {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const { onError } = useQuerySnackbar();
-  const headers = useSelector(selectHeaders);
   const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   // react-query
@@ -115,17 +113,17 @@ const Show: React.FC = () => {
     () => getWikipedia(band.data?.link.wikipedia),
     { enabled: !!band.data?.link.wikipedia, onError }
   );
-  const createBookmarkMutation = useMutation(
-    () => postBandBookmark(id, headers),
-    { onSuccess: handleCreateSuccess, onError }
-  );
+  const createBookmarkMutation = useMutation(() => postBandBookmark(id), {
+    onSuccess: handleCreateSuccess,
+    onError,
+  });
   const destroyBookmarkMutation = useMutation(
-    () => deleteBandBookmark(id, band.data?.bookmark?.id, headers),
+    () => deleteBandBookmark(id, band.data?.bookmark?.id),
     { onSuccess: handleDestroySuccess, onError }
   );
   const updateLinkMutation = useMutation(
     (link: Partial<Omit<IBandLink, "id">>) =>
-      patchBandLink(id, band.data?.link.id, link, headers),
+      patchBandLink(id, band.data?.link.id, link),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers

@@ -10,7 +10,6 @@ import ControlTextField from "../../../../components/ControlTextField/ControlTex
 import { patchUser } from "../../../../axios/axios";
 import {
   selectCurrentUser,
-  selectHeaders,
   setCurrentUser,
   setHeaders,
 } from "../../../../slices/currentUser/currentUser";
@@ -22,7 +21,6 @@ const Setting: React.FC = () => {
   const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
-  const headers = useSelector(selectHeaders);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(userSchema),
@@ -32,7 +30,7 @@ const Setting: React.FC = () => {
     dispatch(setHeaders(res.headers));
   };
   const { isLoading, mutate } = useMutation(
-    (user: IUser) => patchUser(currentUser?.id, user, headers),
+    (user: IUser) => patchUser(currentUser?.id, user),
     { onSuccess: handleSuccess, onError }
   );
   const onSubmit = (user: IUser) => mutate(user);

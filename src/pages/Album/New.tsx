@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -17,10 +17,7 @@ import LoadingCircularProgress from "../../components/Loading/LoadingCircularPro
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
 import { IAlbum, IAlbumLink, IItunesAlbum } from "../../interfaces";
-import {
-  selectHeaders,
-  setHeaders,
-} from "../../slices/currentUser/currentUser";
+import { setHeaders } from "../../slices/currentUser/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
@@ -42,7 +39,6 @@ const New: React.FC = () => {
   const [debouncedTitle] = useDebounce(title, 1000);
   // react-redux
   const dispatch = useDispatch();
-  const headers = useSelector(selectHeaders);
   // react-router-dom
   const history = useHistory();
   // notistack
@@ -60,7 +56,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newAlbum: PostParams<IAlbum, IAlbumLink>) => postAlbum(newAlbum, headers),
+    (newAlbum: PostParams<IAlbum, IAlbumLink>) => postAlbum(newAlbum),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(

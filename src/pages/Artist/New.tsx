@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -16,10 +16,7 @@ import ArtistTable from "../../components/Table/Artist";
 import ExistAlert from "../../components/Alert/Exist";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import DefaultLayout from "../../layout/Default";
-import {
-  selectHeaders,
-  setHeaders,
-} from "../../slices/currentUser/currentUser";
+import { setHeaders } from "../../slices/currentUser/currentUser";
 import { IArtist, IArtistLink, IItunesArtist } from "../../interfaces";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
@@ -45,7 +42,6 @@ const New: React.FC = () => {
   const route = match.url.replace("/new", "");
   // react-redux
   const dispatch = useDispatch();
-  const headers = useSelector(selectHeaders);
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
@@ -64,8 +60,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newArtist: PostParams<IArtist, IArtistLink>) =>
-      postArtist(newArtist, headers),
+    (newArtist: PostParams<IArtist, IArtistLink>) => postArtist(newArtist),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(

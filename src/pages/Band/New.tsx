@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -15,10 +15,7 @@ import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import BandTable from "../../components/Table/Band";
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
-import {
-  selectHeaders,
-  setHeaders,
-} from "../../slices/currentUser/currentUser";
+import { setHeaders } from "../../slices/currentUser/currentUser";
 import { IBand, IBandLink, IItunesArtist } from "../../interfaces";
 import { postBand, PostParams } from "../../axios/axios";
 import useOpen from "../../hooks/useOpen";
@@ -45,7 +42,6 @@ const New: React.FC = () => {
   const match = useRouteMatch<{ id: string }>();
   // react-redux
   const dispatch = useDispatch();
-  const headers = useSelector(selectHeaders);
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
@@ -64,7 +60,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newBand: PostParams<IBand, IBandLink>) => postBand(newBand, headers),
+    (newBand: PostParams<IBand, IBandLink>) => postBand(newBand),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(

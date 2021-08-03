@@ -28,7 +28,6 @@ import {
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import {
   selectCurrentUser,
-  selectHeaders,
   setHeaders,
 } from "../../slices/currentUser/currentUser";
 import queryKey from "../../constants/queryKey.json";
@@ -49,7 +48,6 @@ const Show: React.FC = () => {
   const id = Number(params.id);
   const { onError } = useQuerySnackbar();
   // react-redux
-  const headers = useSelector(selectHeaders);
   const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   // react-query
@@ -115,12 +113,12 @@ const Show: React.FC = () => {
       ),
     { enabled: !!artist.data?.link.itunes, onError }
   );
-  const createMutation = useMutation(() => postArtistBookmark(id, headers), {
+  const createMutation = useMutation(() => postArtistBookmark(id), {
     onSuccess: handleCreateSuccess,
     onError,
   });
   const destroyMutation = useMutation(
-    () => deleteArtistBookmark(id, artist.data?.bookmark?.id, headers),
+    () => deleteArtistBookmark(id, artist.data?.bookmark?.id),
     {
       onSuccess: handleDestroySuccess,
       onError,
@@ -128,7 +126,7 @@ const Show: React.FC = () => {
   );
   const updateLinkMutation = useMutation(
     (link: Partial<Omit<IArtistLink, "id">>) =>
-      patchArtistLink(id, artist.data?.link.id, link, headers),
+      patchArtistLink(id, artist.data?.link.id, link),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers

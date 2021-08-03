@@ -32,7 +32,6 @@ import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
 import {
   selectCurrentUser,
-  selectHeaders,
   setHeaders,
 } from "../../../slices/currentUser/currentUser";
 import { lookupItunesAlbum } from "../../../axios/itunes";
@@ -47,7 +46,6 @@ const Show: React.FC = () => {
   const id = Number(match.params.id);
   // react-redux
   const dispatch = useDispatch();
-  const headers = useSelector(selectHeaders);
   const currentUser = useSelector(selectCurrentUser);
   // react-query
   const queryClient = useQueryClient();
@@ -102,18 +100,18 @@ const Show: React.FC = () => {
   );
   const patchMutation = useMutation(
     (link: Partial<Omit<IAlbumLink, "id">>) =>
-      patchAlbumLink(id, album.data?.link.id, link, headers),
+      patchAlbumLink(id, album.data?.link.id, link),
     {
       onSuccess: handleUpdateSuccess,
       onError,
     }
   );
-  const createMutation = useMutation(() => postAlbumBookmark(id, headers), {
+  const createMutation = useMutation(() => postAlbumBookmark(id), {
     onSuccess: handleCreateSuccess,
     onError,
   });
   const destroyMutation = useMutation(
-    () => deleteAlbumBookmark(id, album.data?.bookmark?.id, headers),
+    () => deleteAlbumBookmark(id, album.data?.bookmark?.id),
     {
       onSuccess: handleDestroySuccess,
       onError,
