@@ -38,7 +38,7 @@ const musicQuery = gql`
       }
       albums {
         id
-        title
+        title(locale: $locale)
         link {
           itunes
         }
