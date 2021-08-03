@@ -16,8 +16,8 @@ import MusicTable from "../../components/Table/Music";
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
 import ItunesMusicDialog from "../../components/Dialog/Itunes/Music";
-import { IItunesMusic, IMusic, IMusicLink } from "../../interfaces";
-import { postMusic, PostParams } from "../../axios/axios";
+import { IItunesMusic, IMusic } from "../../interfaces";
+import { IMusicPostParams, postMusic } from "../../axios/axios";
 import {
   selectCurrentUser,
   setHeaders,
@@ -66,8 +66,7 @@ const New: React.FC = () => {
       );
   };
   const createMusicMutation = useMutation(
-    (newMusic: PostParams<IMusic, IMusicLink>) =>
-      postMusic(currentUser?.id, newMusic),
+    (newMusic: IMusicPostParams) => postMusic(currentUser?.id, newMusic),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -76,8 +75,7 @@ const New: React.FC = () => {
     { enabled: !isPending() && !!debouncedTitle, onError }
   );
   // handlers
-  const onSubmit = (data: PostParams<IMusic, IMusicLink>) =>
-    createMusicMutation.mutate(data);
+  const onSubmit = (data: IMusicPostParams) => createMusicMutation.mutate(data);
   const handleSelect = (selectedCard: IItunesMusic) =>
     setSelectedItunesMusic(selectedCard);
   useEffect(() => {

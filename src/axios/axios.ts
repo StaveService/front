@@ -28,13 +28,22 @@ axios.defaults.baseURL = baseURL;
 const getLocale = () => store.getState().language.locale;
 const getHeaders = () => store.getState().currentUser.headers;
 
-export type PostParams<
-  T extends IMusic | IAlbum | IBand | IArtist,
-  K extends IMusicLink | IAlbumLink | IBandLink | IArtistLink
-> = Omit<T, "id" | "bookmarksCount"> & {
-  ["link_attributes"]: Omit<K, "id">;
-};
-
+export interface IMusicPostParams {
+  title: string;
+  ["link_attributes"]: Omit<IMusicLink, "id">;
+}
+export interface IAlbumPostParams {
+  title: string;
+  ["link_attributes"]: Omit<IAlbumLink, "id">;
+}
+export interface IBandPostParams {
+  name: string;
+  ["link_attributes"]: Omit<IBandLink, "id">;
+}
+export interface IArtistPostParams {
+  name: string;
+  ["link_attributes"]: Omit<IArtistLink, "id">;
+}
 export const patchUserNotification = (
   id: number,
   userId: number | undefined
@@ -78,7 +87,7 @@ export const deleteUserRelationship = (
 
 export const postMusic = (
   userId: number | undefined,
-  music: PostParams<IMusic, IMusicLink>
+  music: IMusicPostParams
 ): Promise<AxiosResponse<IMusic>> =>
   axios.post<IMusic>(
     `${routes.USERS}/${userId || "undefined"}${routes.MUSICS}`,
@@ -95,7 +104,7 @@ export const deleteMusic = (
   );
 
 export const postAlbum = (
-  album: PostParams<IAlbum, IAlbumLink>
+  album: IAlbumPostParams
 ): Promise<AxiosResponse<IAlbum>> =>
   axios.post<IAlbum>(
     routes.ALBUMS,
@@ -106,14 +115,14 @@ export const deleteAlbum = (albumId: number): Promise<AxiosResponse<IAlbum>> =>
   axios.delete(`${routes.ALBUMS}/${albumId}`, getHeaders());
 
 export const postBand = (
-  band: PostParams<IBand, IBandLink>
+  band: IBandPostParams
 ): Promise<AxiosResponse<IBand>> =>
   axios.post<IBand>(routes.BANDS, { band, locale: getLocale() }, getHeaders());
 export const deleteBand = (bandId: number): Promise<AxiosResponse<IBand>> =>
   axios.delete(`${routes.BANDS}/${bandId}`, getHeaders());
 
 export const postArtist = (
-  artist: PostParams<IArtist, IArtistLink>
+  artist: IArtistPostParams
 ): Promise<AxiosResponse<IArtist>> =>
   axios.post<IArtist>(
     routes.ARTISTS,
@@ -128,7 +137,7 @@ export const deleteArtist = (
 export const postIssue = (
   userId: number,
   musicId: number,
-  newIssue: IIssue
+  newIssue: Omit<IIssue, "id">
 ): Promise<AxiosResponse<IIssue>> =>
   axios.post(
     `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.ISSUES}`,

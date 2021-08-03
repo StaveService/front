@@ -16,13 +16,13 @@ import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
-import { IAlbum, IAlbumLink, IItunesAlbum } from "../../interfaces";
+import { IAlbum, IItunesAlbum } from "../../interfaces";
 import { setHeaders } from "../../slices/currentUser/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
-import { postAlbum, PostParams } from "../../axios/axios";
+import { postAlbum, IAlbumPostParams } from "../../axios/axios";
 import usePaginate from "../../hooks/usePaginate";
 import { getAlbums } from "../../gql";
 
@@ -56,7 +56,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newAlbum: PostParams<IAlbum, IAlbumLink>) => postAlbum(newAlbum),
+    (newAlbum: IAlbumPostParams) => postAlbum(newAlbum),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -65,8 +65,7 @@ const New: React.FC = () => {
     { enabled: !!debouncedTitle, onError }
   );
   // handlers
-  const onSubmit = (data: PostParams<IAlbum, IAlbumLink>) =>
-    createMutation.mutate(data);
+  const onSubmit = (data: IAlbumPostParams) => createMutation.mutate(data);
   const handleSelect = (selectedItem: IItunesAlbum) =>
     setSelectedItunesAlbum(selectedItem);
   useEffect(() => {
