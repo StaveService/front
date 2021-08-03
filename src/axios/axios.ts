@@ -95,9 +95,13 @@ export const deleteMusic = (
   );
 
 export const postAlbum = (
-  newAlbum: PostParams<IAlbum, IAlbumLink>
+  album: PostParams<IAlbum, IAlbumLink>
 ): Promise<AxiosResponse<IAlbum>> =>
-  axios.post<IAlbum>(routes.ALBUMS, newAlbum, getHeaders());
+  axios.post<IAlbum>(
+    routes.ALBUMS,
+    { album, locale: getLocale() },
+    getHeaders()
+  );
 export const deleteAlbum = (albumId: number): Promise<AxiosResponse<IAlbum>> =>
   axios.delete(`${routes.ALBUMS}/${albumId}`, getHeaders());
 
@@ -109,9 +113,13 @@ export const deleteBand = (bandId: number): Promise<AxiosResponse<IBand>> =>
   axios.delete(`${routes.BANDS}/${bandId}`, getHeaders());
 
 export const postArtist = (
-  newArtist: PostParams<IArtist, IArtistLink>
+  artist: PostParams<IArtist, IArtistLink>
 ): Promise<AxiosResponse<IArtist>> =>
-  axios.post<IArtist>(routes.ARTISTS, newArtist, getHeaders());
+  axios.post<IArtist>(
+    routes.ARTISTS,
+    { artist, locale: getLocale() },
+    getHeaders()
+  );
 export const deleteArtist = (
   artistId: number
 ): Promise<AxiosResponse<IArtist>> =>

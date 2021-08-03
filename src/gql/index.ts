@@ -74,7 +74,11 @@ export const getUserProfile = (id: number) => (): Promise<IUser> =>
 export const getUserMusics =
   (id: number, page: number) => (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
-      .request<IUserType>(userMusicsQuery, { id, musicPage: page })
+      .request<IUserType>(userMusicsQuery, {
+        id,
+        musicPage: page,
+        locale: getLocale(),
+      })
       .then((res) => res.user.musics);
 export const getUserNotifications =
   (id: number | undefined, page: number) =>
@@ -92,6 +96,7 @@ export const getUserBookmarkedMusics =
       .request<IUserType>(userBookmarkedMusicsQuery, {
         id,
         bookmarkedMusicPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.user.bookmarkedMusics);
 export const getUserBookmarkedArtists =
@@ -100,6 +105,7 @@ export const getUserBookmarkedArtists =
       .request<IUserType>(userBookmarkedArtistsQuery, {
         id,
         bookmarkedArtistPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.user.bookmarkedArtists);
 export const getUserBookmarkedBands =
@@ -108,6 +114,7 @@ export const getUserBookmarkedBands =
       .request<IUserType>(userBookmarkedBandsQuery, {
         id,
         bookmarkedBandPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.user.bookmarkedBands);
 export const getUserBookmarkedAlbums =
@@ -116,6 +123,7 @@ export const getUserBookmarkedAlbums =
       .request<IUserType>(userBookmarkedAlbumsQuery, {
         id,
         bookmarkedAlbumPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.user.bookmarkedAlbums);
 export const getUserFollower =
