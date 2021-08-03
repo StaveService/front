@@ -52,9 +52,11 @@ import blobQuery from "./query/music/blob";
 import treeQuery from "./query/music/tree";
 import baseURL from "../constants/baseURL";
 import userNotificationsQuery from "./query/user/notifications";
+import { store } from "../store";
 
 const graphQLCilent = new GraphQLClient(`${baseURL}/graphql`);
-
+const state = store.getState();
+const { locale } = state.language;
 export const getUsers =
   (page: number, q?: { [key: string]: string }) =>
   (): Promise<IIndexType<IUser>> =>
@@ -82,6 +84,7 @@ export const getUserNotifications =
       .request<IUserType>(userNotificationsQuery, {
         id,
         notificationPage: page,
+        locale,
       })
       .then((res) => res.user.notifications);
 export const getUserBookmarkedMusics =
@@ -138,6 +141,7 @@ export const getMusics =
     graphQLCilent
       .request<IMusicsType>(musicsQuery, {
         page,
+        locale,
         q,
       })
       .then((res) => res.musics);
@@ -147,6 +151,7 @@ export const getMusic =
       .request<IMusicType>(musicQuery, {
         id,
         currentUserId,
+        locale,
       })
       .then((res) => res.music);
 export const getMusicScore = (id: number) => (): Promise<IMusic> =>

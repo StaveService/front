@@ -29,6 +29,7 @@ import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import usePaginate from "../../hooks/usePaginate";
 import { getMusics } from "../../gql";
+import { selectLocale } from "../../slices/language";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -46,6 +47,7 @@ const New: React.FC = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
+  const locale = useSelector(selectLocale);
   // react-router-dom
   const history = useHistory();
   const match = useRouteMatch<{ id: string }>();
@@ -69,7 +71,7 @@ const New: React.FC = () => {
   };
   const createMusicMutation = useMutation(
     (newMusic: PostParams<IMusic, IMusicLink>) =>
-      postMusic(currentUser?.id, newMusic, headers),
+      postMusic(currentUser?.id, newMusic, locale, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(

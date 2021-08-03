@@ -76,12 +76,13 @@ export const deleteUserRelationship = (
 
 export const postMusic = (
   userId: number | undefined,
-  newMusic: PostParams<IMusic, IMusicLink>,
+  music: PostParams<IMusic, IMusicLink>,
+  locale: string | undefined,
   headers: IHeaders | undefined
 ): Promise<AxiosResponse<IMusic>> =>
   axios.post<IMusic>(
     `${routes.USERS}/${userId || "undefined"}${routes.MUSICS}`,
-    newMusic,
+    { music, locale },
     headers
   );
 export const deleteMusic = (

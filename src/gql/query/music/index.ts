@@ -1,10 +1,10 @@
 import { gql } from "graphql-request";
 
 const musicQuery = gql`
-  query getMusic($id: Int!, $currentUserId: Int) {
+  query getMusic($id: Int!, $currentUserId: Int, $locale: String!) {
     music(id: $id) {
       id
-      title
+      title(locale: $locale)
       scoreExist
       link {
         id
