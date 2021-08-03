@@ -18,7 +18,7 @@ const musicsQuery = gql`
         }
         band {
           id
-          name
+          name(locale: $locale)
         }
         composers {
           id

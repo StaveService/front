@@ -1,14 +1,14 @@
 import { gql } from "graphql-request";
 
 const bandsQuery = gql`
-  query getBands($page: Int!, $q: JSON) {
+  query getBands($page: Int!, $locale: String!, $q: JSON) {
     bands(page: $page, q: $q) {
       pagination {
         totalPages
       }
       data {
         id
-        name
+        name(locale: $locale)
       }
     }
   }

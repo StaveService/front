@@ -202,6 +202,7 @@ export const getBands =
     graphQLCilent
       .request<IBandsType>(bandsQuery, {
         page,
+        locale,
         q,
       })
       .then((res) => res.bands);
@@ -211,6 +212,7 @@ export const getBand =
       .request<IBandType>(bandQuery, {
         id,
         currentUserId,
+        locale,
       })
       .then((res) => res.band);
 export const getBandAlbums =
@@ -227,6 +229,7 @@ export const getBandMusics =
       .request<IBandType>(bandMusicsQuery, {
         id,
         musicPage: page,
+        locale,
       })
       .then((res) => res.band.musics);
 export const getArtists =
