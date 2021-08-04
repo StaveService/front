@@ -1,13 +1,13 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { IArtistParams, postArtist } from "../../axios/axios";
+import { postArtist, PostParams } from "../../axios/axios";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField/ControlTextField";
 import LoadingButton from "../../ui/LoadingButton";
@@ -16,8 +16,11 @@ import ArtistTable from "../../components/Table/Artist";
 import ExistAlert from "../../components/Alert/Exist";
 import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import DefaultLayout from "../../layout/Default";
-import { setHeaders } from "../../slices/currentUser/currentUser";
-import { IArtist, IItunesArtist } from "../../interfaces";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../slices/currentUser/currentUser";
+import { IArtist, IArtistLink, IItunesArtist } from "../../interfaces";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
@@ -42,6 +45,7 @@ const New: React.FC = () => {
   const route = match.url.replace("/new", "");
   // react-redux
   const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
@@ -60,7 +64,8 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newArtist: IArtistParams) => postArtist(newArtist),
+    (newArtist: PostParams<IArtist, IArtistLink>) =>
+      postArtist(newArtist, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -69,7 +74,8 @@ const New: React.FC = () => {
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
-  const onSubmit = (data: IArtistParams) => createMutation.mutate(data);
+  const onSubmit = (data: PostParams<IArtist, IArtistLink>) =>
+    createMutation.mutate(data);
   const handleSelect = (selectedItem: IItunesArtist) =>
     setSelectedItunesArtist(selectedItem);
 

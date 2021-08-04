@@ -11,7 +11,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
 import AlbumsTable from "../../../../../components/Table/Album";
 import LinkTable from "../../../../../components/Table/Link";
@@ -22,7 +22,10 @@ import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
 import routes from "../../../../../constants/routes.json";
-import { setHeaders } from "../../../../../slices/currentUser/currentUser";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../../../../slices/currentUser/currentUser";
 import {
   IItunesMusic,
   IMusic,
@@ -42,6 +45,7 @@ const Info: React.FC = () => {
   const userId = Number(params.userId);
   // react-redux
   const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
   // react-query
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
@@ -59,7 +63,7 @@ const Info: React.FC = () => {
   };
   const patchMutation = useMutation(
     (link: Partial<Omit<IMusicLink, "id">>) =>
-      patchMusicLink(userId, id, music?.link.id, link),
+      patchMusicLink(userId, id, music?.link.id, link, headers),
     {
       onSuccess: handleCreateSuccess,
       onError,

@@ -1,12 +1,11 @@
 import { gql } from "graphql-request";
 
 const musicQuery = gql`
-  query getMusic($id: Int!, $locale: String!, $currentUserId: Int) {
+  query getMusic($id: Int!, $currentUserId: Int) {
     music(id: $id) {
       id
-      title(locale: $locale)
+      title
       scoreExist
-      localed(locale: $locale)
       link {
         id
         itunes
@@ -19,27 +18,27 @@ const musicQuery = gql`
       }
       band {
         id
-        name(locale: $locale)
+        name
       }
       artistMusics {
         id
         role
         artist {
           id
-          name(locale: $locale)
+          name
         }
       }
       composers {
         id
-        name(locale: $locale)
+        name
       }
       lyrists {
         id
-        name(locale: $locale)
+        name
       }
       albums {
         id
-        title(locale: $locale)
+        title
         link {
           itunes
         }

@@ -1,11 +1,7 @@
 import { gql } from "graphql-request";
 
 const userNotificationsQuery = gql`
-  query getNotificationsMusics(
-    $id: Int!
-    $notificationPage: Int!
-    $locale: String!
-  ) {
+  query getNotificationsMusics($id: Int!, $notificationPage: Int!) {
     user(id: $id) {
       notifications(notificationPage: $notificationPage) {
         data {
@@ -31,7 +27,7 @@ const userNotificationsQuery = gql`
               }
               music {
                 id
-                title(locale: $locale)
+                title
               }
             }
           }

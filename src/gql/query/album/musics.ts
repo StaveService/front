@@ -1,26 +1,26 @@
 import { gql } from "graphql-request";
 
 const albumMusicsQuery = gql`
-  query getAlbumMusics($id: Int!, $musicPage: Int!, $locale: String!) {
+  query getAlbumMusics($id: Int!, $musicPage: Int!) {
     album(id: $id) {
       musics(musicPage: $musicPage) {
         data {
           id
-          title(locale: $locale)
+          title
           link {
             itunes
             spotify
           }
           band {
-            name(locale: $locale)
+            name
           }
           composers {
             id
-            name(locale: $locale)
+            name
           }
           lyrists {
             id
-            name(locale: $locale)
+            name
           }
         }
         pagination {
