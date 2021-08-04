@@ -16,11 +16,10 @@ import MusicTable from "../../components/Table/Music";
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
 import ItunesMusicDialog from "../../components/Dialog/Itunes/Music";
-import { IItunesMusic, IMusic, IMusicLink } from "../../interfaces";
-import { postMusic, PostParams } from "../../axios/axios";
+import { IItunesMusic, IMusic } from "../../interfaces";
+import { IMusicParams, postMusic } from "../../axios/axios";
 import {
   selectCurrentUser,
-  selectHeaders,
   setHeaders,
 } from "../../slices/currentUser/currentUser";
 import useOpen from "../../hooks/useOpen";
@@ -45,7 +44,6 @@ const New: React.FC = () => {
   // react-redux
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
-  const headers = useSelector(selectHeaders);
   // react-router-dom
   const history = useHistory();
   const match = useRouteMatch<{ id: string }>();
@@ -68,8 +66,7 @@ const New: React.FC = () => {
       );
   };
   const createMusicMutation = useMutation(
-    (newMusic: PostParams<IMusic, IMusicLink>) =>
-      postMusic(currentUser?.id, newMusic, headers),
+    (newMusic: IMusicParams) => postMusic(currentUser?.id, newMusic),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -78,8 +75,7 @@ const New: React.FC = () => {
     { enabled: !isPending() && !!debouncedTitle, onError }
   );
   // handlers
-  const onSubmit = (data: PostParams<IMusic, IMusicLink>) =>
-    createMusicMutation.mutate(data);
+  const onSubmit = (data: IMusicParams) => createMusicMutation.mutate(data);
   const handleSelect = (selectedCard: IItunesMusic) =>
     setSelectedItunesMusic(selectedCard);
   useEffect(() => {

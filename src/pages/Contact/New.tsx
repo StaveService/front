@@ -16,7 +16,6 @@ import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 const Contact: React.FC = () => {
   const [successed, setSuccessed] = useState(false);
   const { onError } = useQuerySnackbar();
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(contactSchema),
   });

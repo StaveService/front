@@ -1,16 +1,13 @@
 import { AxiosResponse } from "axios";
 import React, { ChangeEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/TextField/AutocompleteTextField";
 import { IArtist, IMusic } from "../../../../../../../../interfaces";
 import queryKey from "../../../../../../../../constants/queryKey.json";
-import {
-  selectHeaders,
-  setHeaders,
-} from "../../../../../../../../slices/currentUser/currentUser";
+import { setHeaders } from "../../../../../../../../slices/currentUser/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
 import {
   deleteLyristMusic,
@@ -28,7 +25,6 @@ const Lyrist: React.FC = () => {
   // use-debounce
   const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-redux
-  const headers = useSelector(selectHeaders);
   const dispatch = useDispatch();
   // react-router-dom
   const params = useParams<{ userId: string; id: string }>();
@@ -65,15 +61,13 @@ const Lyrist: React.FC = () => {
     );
   };
   const createMutation = useMutation(
-    ({ option }: MutateVariables) =>
-      postLyristMusic(userId, id, option, headers),
+    ({ option }: MutateVariables) => postLyristMusic(userId, id, option),
     { onSuccess: handleCreateSuccess, onError }
   );
   const handleSelectOption = (option: IArtist, options: IArtist[]) =>
     createMutation.mutate({ option, options });
   const destroyMutation = useMutation(
-    ({ option }: MutateVariables) =>
-      deleteLyristMusic(userId, id, option.id, headers),
+    ({ option }: MutateVariables) => deleteLyristMusic(userId, id, option.id),
     { onSuccess: handleDestroySuccess, onError }
   );
   const handleRemoveOption = (option: IArtist, options: IArtist[]) =>

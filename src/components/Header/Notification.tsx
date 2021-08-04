@@ -16,7 +16,6 @@ import StarIcon from "@material-ui/icons/Star";
 import { patchUserNotification } from "../../axios/axios";
 import {
   selectCurrentUser,
-  selectHeaders,
   setHeaders,
 } from "../../slices/currentUser/currentUser";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
@@ -35,7 +34,6 @@ const Notification: React.FC<NotificationProps> = ({
   const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
-  const headers = useSelector(selectHeaders);
   const queryClient = useQueryClient();
   const onSuccess = (res: AxiosResponse<INotification>, id: number) => {
     dispatch(setHeaders(res.headers));
@@ -53,7 +51,7 @@ const Notification: React.FC<NotificationProps> = ({
     });
   };
   const { mutate } = useMutation(
-    (id: number) => patchUserNotification(id, currentUser?.id, headers),
+    (id: number) => patchUserNotification(id, currentUser?.id),
     { onError, onSuccess }
   );
   return (

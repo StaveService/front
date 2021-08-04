@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -15,12 +15,9 @@ import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import BandTable from "../../components/Table/Band";
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
-import {
-  selectHeaders,
-  setHeaders,
-} from "../../slices/currentUser/currentUser";
-import { IBand, IBandLink, IItunesArtist } from "../../interfaces";
-import { postBand, PostParams } from "../../axios/axios";
+import { setHeaders } from "../../slices/currentUser/currentUser";
+import { IBand, IItunesArtist } from "../../interfaces";
+import { IBandParams, postBand } from "../../axios/axios";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
@@ -45,7 +42,6 @@ const New: React.FC = () => {
   const match = useRouteMatch<{ id: string }>();
   // react-redux
   const dispatch = useDispatch();
-  const headers = useSelector(selectHeaders);
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
@@ -64,7 +60,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newBand: PostParams<IBand, IBandLink>) => postBand(newBand, headers),
+    (newBand: IBandParams) => postBand(newBand),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -73,8 +69,7 @@ const New: React.FC = () => {
     { enabled: !!debouncedName, onError }
   );
   // handlers
-  const onSubmit = (data: PostParams<IBand, IBandLink>) =>
-    createMutation.mutate(data);
+  const onSubmit = (data: IBandParams) => createMutation.mutate(data);
   const handleSelect = (selectedItem: IItunesArtist) =>
     setSelectedItunesArtist(selectedItem);
 

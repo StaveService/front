@@ -3,7 +3,9 @@ import React from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useHistory } from "react-router-dom";
+import { useMutation, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
+import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -11,13 +13,13 @@ import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import Link from "@material-ui/core/Link";
 import IconButton from "@material-ui/core/IconButton";
+import MenuItem from "@material-ui/core/MenuItem";
+import Popover from "@material-ui/core/Popover";
+import Badge from "@material-ui/core/Badge";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
-import MenuItem from "@material-ui/core/MenuItem";
-import { useMutation, useQuery } from "react-query";
-import Popover from "@material-ui/core/Popover";
-import { Badge } from "@material-ui/core";
+import SettingsIcon from "@material-ui/icons/Settings";
+import SettingDialog from "./Dialog/Setting";
 import Notification from "./Notification";
 import routes from "../../constants/routes.json";
 import queryKey from "../../constants/queryKey.json";
@@ -27,8 +29,10 @@ import {
   selectHeaders,
 } from "../../slices/currentUser/currentUser";
 import { getUserNotifications } from "../../gql";
+import useOpen from "../../hooks/useOpen";
 
 const Header: React.FC = () => {
+  const [open, handleOpen, handleClose] = useOpen();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
@@ -104,10 +108,10 @@ const Header: React.FC = () => {
                 </Button>
               </>
             ) : (
-              <Box display="flex">
+              <>
                 <PopupState variant="popover" popupId="demo-popup-popover">
                   {(popupState) => (
-                    <div>
+                    <>
                       <IconButton
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...bindTrigger(popupState)}
@@ -137,12 +141,12 @@ const Header: React.FC = () => {
                           loading={notifications.isLoading}
                         />
                       </Popover>
-                    </div>
+                    </>
                   )}
                 </PopupState>
                 <PopupState variant="popover" popupId="demo-popup-popover">
                   {(popupState) => (
-                    <div>
+                    <>
                       <IconButton
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...bindTrigger(popupState)}
@@ -174,15 +178,19 @@ const Header: React.FC = () => {
                           Logout
                         </MenuItem>
                       </Popover>
-                    </div>
+                    </>
                   )}
                 </PopupState>
-              </Box>
+              </>
             )}
+            <IconButton onClick={handleOpen}>
+              <SettingsIcon />
+            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
       <Toolbar />
+      <SettingDialog open={open} handleClose={handleClose} />
     </>
   );
 };

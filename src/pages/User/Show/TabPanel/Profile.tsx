@@ -2,13 +2,11 @@ import React from "react";
 import Box from "@material-ui/core/Box";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
 import LinkTable from "../../../../components/Table/Link";
 import TwitterDialog from "../../../../components/Dialog/Twitter";
 import { IUser, IUserLink } from "../../../../interfaces";
 import { patchUserLink } from "../../../../axios/axios";
-import { selectHeaders } from "../../../../slices/currentUser/currentUser";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import { getUserProfile } from "../../../../gql";
@@ -19,7 +17,6 @@ const Post: React.FC = () => {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   // react-reduxs
-  const headers = useSelector(selectHeaders);
   // react-query
   const queryClient = useQueryClient();
   const { isLoading, data } = useQuery(
@@ -38,7 +35,7 @@ const Post: React.FC = () => {
     );
   };
   const userLinkMutation = useMutation(
-    (twitterId: string) => patchUserLink(id, data?.link.id, twitterId, headers),
+    (twitterId: string) => patchUserLink(id, data?.link.id, twitterId),
     { onSuccess, onError }
   );
   const handleSubmit = (value: string) => userLinkMutation.mutate(value);

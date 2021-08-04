@@ -17,6 +17,8 @@ import Image from "material-ui-image";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 import InfoTabPanel from "./TabPanel/Info";
 import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issue/Index";
@@ -28,10 +30,10 @@ import Issue from "./TabPanel/Issue/Show";
 import LyricTabPanel from "./TabPanel/Lyric";
 import Player from "./Player";
 import BookmarkButton from "../../../components/Button/Icon/Bookmark";
+import TranslateDialog from "../../../components/Dialog/Translate";
 import DefaultLayout from "../../../layout/Default";
 import {
   selectCurrentUser,
-  selectHeaders,
   setHeaders,
 } from "../../../slices/currentUser/currentUser";
 import {
@@ -44,10 +46,16 @@ import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
 import { lookupItunesMusic } from "../../../axios/itunes";
-import { deleteMusicBookmark, postMusicBookmark } from "../../../axios/axios";
+import {
+  deleteMusicBookmark,
+  IMusicParams,
+  patchMusic,
+  postMusicBookmark,
+} from "../../../axios/axios";
 import { getSpotifyTrack } from "../../../axios/spotify";
 import { remove, selectSpotifyToken } from "../../../slices/spotify";
 import { getMusic } from "../../../gql";
+import { selectLocale } from "../../../slices/language";
 
 const Show: React.FC = () => {
   // react-hook-form
@@ -58,10 +66,10 @@ const Show: React.FC = () => {
   // notistack
   const { onError } = useQuerySnackbar();
   // react-redux
-  const currentUser = useSelector(selectCurrentUser);
-  const headers = useSelector(selectHeaders);
-  const spotifyToken = useSelector(selectSpotifyToken);
   const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
+  const spotifyToken = useSelector(selectSpotifyToken);
+  const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IMusicBookmark>) => {
@@ -92,9 +100,13 @@ const Show: React.FC = () => {
     dispatch(remove());
     onError(err);
   };
-  const music = useQuery([queryKey.MUSIC, id], getMusic(id, currentUser?.id), {
-    onError,
-  });
+  const music = useQuery(
+    [queryKey.MUSIC, id, locale],
+    getMusic(id, currentUser?.id),
+    {
+      onError,
+    }
+  );
   const itunesMusic = useQuery<IItunesMusic>(
     [queryKey.ITUNES, queryKey.MUSIC, music.data?.link?.itunes],
     () =>
@@ -112,12 +124,12 @@ const Show: React.FC = () => {
       retry: 2,
     }
   );
-  const createMutation = useMutation(
-    () => postMusicBookmark(userId, id, headers),
-    { onSuccess: handleCreateSuccess, onError }
-  );
+  const createMutation = useMutation(() => postMusicBookmark(userId, id), {
+    onSuccess: handleCreateSuccess,
+    onError,
+  });
   const destroyMutation = useMutation(
-    () => deleteMusicBookmark(userId, id, music.data?.bookmark?.id, headers),
+    () => deleteMusicBookmark(userId, id, music.data?.bookmark?.id),
     { onSuccess: handleDestroySuccess, onError }
   );
   // handlers
@@ -131,6 +143,14 @@ const Show: React.FC = () => {
   return (
     <>
       <DefaultLayout>
+        {music.data?.localed && (
+          <Box mb={3}>
+            <Alert severity="warning">
+              <AlertTitle>Not translated</AlertTitle>
+              Please Contribute! — <strong>check it out!</strong>
+            </Alert>
+          </Box>
+        )}
         <Grid container>
           <Grid item xs={11}>
             <Typography variant="h5">
@@ -144,6 +164,14 @@ const Show: React.FC = () => {
               bookmarked={!!music.data?.bookmark || false}
               onCreate={handleCreateMutation}
               onDestroy={handleDestroyMutation}
+            />
+          </Grid>
+          <Grid item xs={1}>
+            <TranslateDialog<IMusic, IMusicParams>
+              queryKey={queryKey.MUSIC}
+              name="title"
+              label="Title"
+              patchFn={patchMusic(userId)}
             />
           </Grid>
         </Grid>

@@ -1,12 +1,16 @@
 import { gql } from "graphql-request";
 
 const userBookmarkedAlbumsQuery = gql`
-  query getBookmarkAlbums($id: Int!, $bookmarkedAlbumPage: Int!) {
+  query getBookmarkAlbums(
+    $id: Int!
+    $bookmarkedAlbumPage: Int!
+    $locale: String!
+  ) {
     user(id: $id) {
       bookmarkedAlbums(bookmarkedAlbumPage: $bookmarkedAlbumPage) {
         data {
           id
-          title
+          title(locale: $locale)
           link {
             itunes
           }

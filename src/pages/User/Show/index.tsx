@@ -26,7 +26,6 @@ import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
 import {
   selectCurrentUser,
-  selectHeaders,
   setHeaders,
 } from "../../../slices/currentUser/currentUser";
 import {
@@ -40,7 +39,6 @@ const Show: React.FC = () => {
   // react-redux
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
-  const headers = useSelector(selectHeaders);
   // react-hook-form
   const match = useRouteMatch<{ id: string }>();
   const location = useLocation();
@@ -66,12 +64,12 @@ const Show: React.FC = () => {
       (prev) => prev && { ...prev, followed: undefined }
     );
   };
-  const createMutate = useMutation(() => postUserRelationship(id, headers), {
+  const createMutate = useMutation(() => postUserRelationship(id), {
     onSuccess: handleCreateSuccess,
     onError,
   });
   const deleteMutate = useMutation(
-    () => deleteUserRelationship(id, data?.followed?.id, headers),
+    () => deleteUserRelationship(id, data?.followed?.id),
     {
       onSuccess: handleDeleteSuccess,
       onError,

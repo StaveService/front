@@ -7,6 +7,8 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
 import { useDispatch, useSelector } from "react-redux";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 import MusicsTable from "../../components/Table/Music";
 import BandsTable from "../../components/Table/Band";
 import AlbumsTable from "../../components/Table/Album";
@@ -16,6 +18,7 @@ import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import SpotifyArtistDialog from "../../components/Dialog/Spotify/Artist";
 import TwitterDialog from "../../components/Dialog/Twitter";
 import WikipediaDialog from "../../components/Dialog/Wikipedia";
+import TranslateDialog from "../../components/Dialog/Translate";
 import DefaultLayout from "../../layout/Default";
 import {
   IArtist,
@@ -28,19 +31,21 @@ import {
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import {
   selectCurrentUser,
-  selectHeaders,
   setHeaders,
 } from "../../slices/currentUser/currentUser";
 import queryKey from "../../constants/queryKey.json";
 import { lookupItunesArtist } from "../../axios/itunes";
 import {
   deleteArtistBookmark,
+  IArtistParams,
+  patchArtist,
   patchArtistLink,
   postArtistBookmark,
 } from "../../axios/axios";
 import { getWikipedia } from "../../axios/wikipedia";
 import usePaginate from "../../hooks/usePaginate";
 import { getArtist, getArtistAlbums, getArtistMusics } from "../../gql";
+import { selectLocale } from "../../slices/language";
 
 const Show: React.FC = () => {
   const [albumPage, handleAlbumPage] = usePaginate();
@@ -49,9 +54,9 @@ const Show: React.FC = () => {
   const id = Number(params.id);
   const { onError } = useQuerySnackbar();
   // react-redux
-  const headers = useSelector(selectHeaders);
-  const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
+  const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IArtistBookmark>) => {
@@ -86,19 +91,19 @@ const Show: React.FC = () => {
     );
   };
   const artist = useQuery(
-    [queryKey.ARTIST, id],
+    [queryKey.ARTIST, id, locale],
     getArtist(id, currentUser?.id),
     {
       onError,
     }
   );
   const artistAlbums = useQuery(
-    [queryKey.ARTIST, id, queryKey.ALBUMS, albumPage],
+    [queryKey.ARTIST, id, queryKey.ALBUMS, albumPage, locale],
     getArtistAlbums(id, albumPage),
     { onError }
   );
   const artistMusics = useQuery(
-    [queryKey.ARTIST, id, queryKey.MUSICS, musicPage],
+    [queryKey.ARTIST, id, queryKey.MUSICS, musicPage, locale],
     getArtistMusics(id, musicPage),
     { onError }
   );
@@ -115,12 +120,12 @@ const Show: React.FC = () => {
       ),
     { enabled: !!artist.data?.link.itunes, onError }
   );
-  const createMutation = useMutation(() => postArtistBookmark(id, headers), {
+  const createMutation = useMutation(() => postArtistBookmark(id), {
     onSuccess: handleCreateSuccess,
     onError,
   });
   const destroyMutation = useMutation(
-    () => deleteArtistBookmark(id, artist.data?.bookmark?.id, headers),
+    () => deleteArtistBookmark(id, artist.data?.bookmark?.id),
     {
       onSuccess: handleDestroySuccess,
       onError,
@@ -128,7 +133,7 @@ const Show: React.FC = () => {
   );
   const updateLinkMutation = useMutation(
     (link: Partial<Omit<IArtistLink, "id">>) =>
-      patchArtistLink(id, artist.data?.link.id, link, headers),
+      patchArtistLink(id, artist.data?.link.id, link),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers
@@ -145,8 +150,16 @@ const Show: React.FC = () => {
 
   return (
     <DefaultLayout>
+      {artist.data?.localed && (
+        <Box mb={3}>
+          <Alert severity="warning">
+            <AlertTitle>Not translated</AlertTitle>
+            Please Contribute! — <strong>check it out!</strong>
+          </Alert>
+        </Box>
+      )}
       <Grid container>
-        <Grid item xs={11}>
+        <Grid item xs={10}>
           <Typography variant="h5">
             <AccessibilityNewIcon />
             {artist.data?.name}
@@ -158,6 +171,14 @@ const Show: React.FC = () => {
             bookmarked={!!artist.data?.bookmark || false}
             onCreate={handleCreateMutation}
             onDestroy={handleDestroyMutation}
+          />
+        </Grid>
+        <Grid item xs={1}>
+          <TranslateDialog<IArtist, IArtistParams>
+            queryKey={queryKey.ARTIST}
+            name="name"
+            label="Name"
+            patchFn={patchArtist}
           />
         </Grid>
       </Grid>

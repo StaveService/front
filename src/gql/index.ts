@@ -52,9 +52,10 @@ import blobQuery from "./query/music/blob";
 import treeQuery from "./query/music/tree";
 import baseURL from "../constants/baseURL";
 import userNotificationsQuery from "./query/user/notifications";
+import { store } from "../store";
 
 const graphQLCilent = new GraphQLClient(`${baseURL}/graphql`);
-
+const getLocale = () => store.getState().language.locale;
 export const getUsers =
   (page: number, q?: { [key: string]: string }) =>
   (): Promise<IIndexType<IUser>> =>
@@ -73,7 +74,11 @@ export const getUserProfile = (id: number) => (): Promise<IUser> =>
 export const getUserMusics =
   (id: number, page: number) => (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
-      .request<IUserType>(userMusicsQuery, { id, musicPage: page })
+      .request<IUserType>(userMusicsQuery, {
+        id,
+        musicPage: page,
+        locale: getLocale(),
+      })
       .then((res) => res.user.musics);
 export const getUserNotifications =
   (id: number | undefined, page: number) =>
@@ -82,6 +87,7 @@ export const getUserNotifications =
       .request<IUserType>(userNotificationsQuery, {
         id,
         notificationPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.user.notifications);
 export const getUserBookmarkedMusics =
@@ -90,6 +96,7 @@ export const getUserBookmarkedMusics =
       .request<IUserType>(userBookmarkedMusicsQuery, {
         id,
         bookmarkedMusicPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.user.bookmarkedMusics);
 export const getUserBookmarkedArtists =
@@ -98,6 +105,7 @@ export const getUserBookmarkedArtists =
       .request<IUserType>(userBookmarkedArtistsQuery, {
         id,
         bookmarkedArtistPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.user.bookmarkedArtists);
 export const getUserBookmarkedBands =
@@ -106,6 +114,7 @@ export const getUserBookmarkedBands =
       .request<IUserType>(userBookmarkedBandsQuery, {
         id,
         bookmarkedBandPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.user.bookmarkedBands);
 export const getUserBookmarkedAlbums =
@@ -114,6 +123,7 @@ export const getUserBookmarkedAlbums =
       .request<IUserType>(userBookmarkedAlbumsQuery, {
         id,
         bookmarkedAlbumPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.user.bookmarkedAlbums);
 export const getUserFollower =
@@ -138,6 +148,7 @@ export const getMusics =
     graphQLCilent
       .request<IMusicsType>(musicsQuery, {
         page,
+        locale: getLocale(),
         q,
       })
       .then((res) => res.musics);
@@ -147,6 +158,7 @@ export const getMusic =
       .request<IMusicType>(musicQuery, {
         id,
         currentUserId,
+        locale: getLocale(),
       })
       .then((res) => res.music);
 export const getMusicScore = (id: number) => (): Promise<IMusic> =>
@@ -197,6 +209,7 @@ export const getBands =
     graphQLCilent
       .request<IBandsType>(bandsQuery, {
         page,
+        locale: getLocale(),
         q,
       })
       .then((res) => res.bands);
@@ -206,6 +219,7 @@ export const getBand =
       .request<IBandType>(bandQuery, {
         id,
         currentUserId,
+        locale: getLocale(),
       })
       .then((res) => res.band);
 export const getBandAlbums =
@@ -214,6 +228,7 @@ export const getBandAlbums =
       .request<IBandType>(bandAlbumsQuery, {
         id,
         albumPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.band.albums);
 export const getBandMusics =
@@ -222,6 +237,7 @@ export const getBandMusics =
       .request<IBandType>(bandMusicsQuery, {
         id,
         musicPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.band.musics);
 export const getArtists =
@@ -231,6 +247,7 @@ export const getArtists =
       .request<IArtistsType>(artistsQuery, {
         page,
         q,
+        locale: getLocale(),
       })
       .then((res) => res.artists);
 export const getArtist =
@@ -239,6 +256,7 @@ export const getArtist =
       .request<IArtistType>(artistQuery, {
         id,
         currentUserId,
+        locale: getLocale(),
       })
       .then((res) => res.artist);
 export const getArtistAlbums =
@@ -247,6 +265,7 @@ export const getArtistAlbums =
       .request<IArtistType>(artistAlbumsQuery, {
         id,
         albumPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.artist.albums);
 export const getArtistMusics =
@@ -255,6 +274,7 @@ export const getArtistMusics =
       .request<IArtistType>(artistMusicsQuery, {
         id,
         musicPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.artist.musics);
 export const getAlbums =
@@ -264,6 +284,7 @@ export const getAlbums =
       .request<IAlbumsType>(albumsQuery, {
         page,
         q,
+        locale: getLocale(),
       })
       .then((res) => res.albums);
 export const getAlbum =
@@ -272,6 +293,7 @@ export const getAlbum =
       .request<IAlbumType>(albumQuery, {
         id,
         currentUserId,
+        locale: getLocale(),
       })
       .then((res) => res.album);
 export const getAlbumMusics =
@@ -280,5 +302,6 @@ export const getAlbumMusics =
       .request<IAlbumType>(albumMusicsQuery, {
         id,
         musicPage: page,
+        locale: getLocale(),
       })
       .then((res) => res.album.musics);
