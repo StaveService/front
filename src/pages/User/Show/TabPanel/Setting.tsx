@@ -21,7 +21,6 @@ const Setting: React.FC = () => {
   const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(userSchema),
   });

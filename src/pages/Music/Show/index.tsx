@@ -30,6 +30,7 @@ import Issue from "./TabPanel/Issue/Show";
 import LyricTabPanel from "./TabPanel/Lyric";
 import Player from "./Player";
 import BookmarkButton from "../../../components/Button/Icon/Bookmark";
+import TranslateDialog from "../../../components/Dialog/Translate";
 import DefaultLayout from "../../../layout/Default";
 import {
   selectCurrentUser,
@@ -45,7 +46,12 @@ import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
 import { lookupItunesMusic } from "../../../axios/itunes";
-import { deleteMusicBookmark, postMusicBookmark } from "../../../axios/axios";
+import {
+  deleteMusicBookmark,
+  IMusicParams,
+  patchMusic,
+  postMusicBookmark,
+} from "../../../axios/axios";
 import { getSpotifyTrack } from "../../../axios/spotify";
 import { remove, selectSpotifyToken } from "../../../slices/spotify";
 import { getMusic } from "../../../gql";
@@ -158,6 +164,14 @@ const Show: React.FC = () => {
               bookmarked={!!music.data?.bookmark || false}
               onCreate={handleCreateMutation}
               onDestroy={handleDestroyMutation}
+            />
+          </Grid>
+          <Grid item xs={1}>
+            <TranslateDialog<IMusic, IMusicParams>
+              queryKey={queryKey.MUSIC}
+              name="title"
+              label="Title"
+              patchFn={patchMusic(userId)}
             />
           </Grid>
         </Grid>

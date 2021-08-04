@@ -14,7 +14,6 @@ import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
 import { postIssue } from "../../../../../axios/axios";
 
 const New: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(issueSchema),
   });

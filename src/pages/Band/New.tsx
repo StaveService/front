@@ -17,7 +17,7 @@ import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
 import { setHeaders } from "../../slices/currentUser/currentUser";
 import { IBand, IItunesArtist } from "../../interfaces";
-import { IBandPostParams, postBand } from "../../axios/axios";
+import { IBandParams, postBand } from "../../axios/axios";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
@@ -60,7 +60,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newBand: IBandPostParams) => postBand(newBand),
+    (newBand: IBandParams) => postBand(newBand),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -69,7 +69,7 @@ const New: React.FC = () => {
     { enabled: !!debouncedName, onError }
   );
   // handlers
-  const onSubmit = (data: IBandPostParams) => createMutation.mutate(data);
+  const onSubmit = (data: IBandParams) => createMutation.mutate(data);
   const handleSelect = (selectedItem: IItunesArtist) =>
     setSelectedItunesArtist(selectedItem);
 

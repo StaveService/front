@@ -28,19 +28,19 @@ axios.defaults.baseURL = baseURL;
 const getLocale = () => store.getState().language.locale;
 const getHeaders = () => store.getState().currentUser.headers;
 
-export interface IMusicPostParams {
+export interface IMusicParams {
   title: string;
   ["link_attributes"]: Omit<IMusicLink, "id">;
 }
-export interface IAlbumPostParams {
+export interface IAlbumParams {
   title: string;
   ["link_attributes"]: Omit<IAlbumLink, "id">;
 }
-export interface IBandPostParams {
+export interface IBandParams {
   name: string;
   ["link_attributes"]: Omit<IBandLink, "id">;
 }
-export interface IArtistPostParams {
+export interface IArtistParams {
   name: string;
   ["link_attributes"]: Omit<IArtistLink, "id">;
 }
@@ -87,13 +87,21 @@ export const deleteUserRelationship = (
 
 export const postMusic = (
   userId: number | undefined,
-  music: IMusicPostParams
+  music: IMusicParams
 ): Promise<AxiosResponse<IMusic>> =>
   axios.post<IMusic>(
     `${routes.USERS}/${userId || "undefined"}${routes.MUSICS}`,
     { music, locale: getLocale() },
     getHeaders()
   );
+export const patchMusic =
+  (userId: number | undefined) =>
+  (musicId: number, music: IMusicParams): Promise<AxiosResponse<IMusic>> =>
+    axios.patch<IMusic>(
+      `${routes.USERS}/${userId || "undefined"}${routes.MUSICS}/${musicId}`,
+      { music, locale: getLocale() },
+      getHeaders()
+    );
 export const deleteMusic = (
   userId: number,
   musicId: number
@@ -104,29 +112,59 @@ export const deleteMusic = (
   );
 
 export const postAlbum = (
-  album: IAlbumPostParams
+  album: IAlbumParams
 ): Promise<AxiosResponse<IAlbum>> =>
   axios.post<IAlbum>(
     routes.ALBUMS,
     { album, locale: getLocale() },
     getHeaders()
   );
+export const patchAlbum = (
+  albumId: number,
+  album: IAlbumParams
+): Promise<AxiosResponse<IAlbum>> =>
+  axios.patch<IAlbum>(`${routes.ALBUMS}/${albumId}`, {
+    album,
+    locale: getLocale(),
+  });
 export const deleteAlbum = (albumId: number): Promise<AxiosResponse<IAlbum>> =>
   axios.delete(`${routes.ALBUMS}/${albumId}`, getHeaders());
 
-export const postBand = (
-  band: IBandPostParams
-): Promise<AxiosResponse<IBand>> =>
+export const postBand = (band: IBandParams): Promise<AxiosResponse<IBand>> =>
   axios.post<IBand>(routes.BANDS, { band, locale: getLocale() }, getHeaders());
+export const patchBand = (
+  bandId: number,
+  band: IBandParams
+): Promise<AxiosResponse<IBand>> =>
+  axios.patch<IBand>(
+    `${routes.BANDS}/${bandId}`,
+    {
+      band,
+      locale: getLocale(),
+    },
+    getHeaders()
+  );
 export const deleteBand = (bandId: number): Promise<AxiosResponse<IBand>> =>
   axios.delete(`${routes.BANDS}/${bandId}`, getHeaders());
 
 export const postArtist = (
-  artist: IArtistPostParams
+  artist: IArtistParams
 ): Promise<AxiosResponse<IArtist>> =>
   axios.post<IArtist>(
     routes.ARTISTS,
     { artist, locale: getLocale() },
+    getHeaders()
+  );
+export const patchArtist = (
+  artistId: number,
+  artist: IArtistParams
+): Promise<AxiosResponse<IArtist>> =>
+  axios.patch<IArtist>(
+    `${routes.ARTISTS}/${artistId}`,
+    {
+      artist,
+      locale: getLocale(),
+    },
     getHeaders()
   );
 export const deleteArtist = (

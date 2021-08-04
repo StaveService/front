@@ -19,6 +19,7 @@ import ItunesArtistDialog from "../../../components/Dialog/Itunes/Artist";
 import TwitterDialog from "../../../components/Dialog/Twitter";
 import WikipediaDialog from "../../../components/Dialog/Wikipedia";
 import SpotifyArtistDialog from "../../../components/Dialog/Spotify/Artist";
+import TranslateDialog from "../../../components/Dialog/Translate";
 import DefaultLayout from "../../../layout/Default";
 import {
   IBand,
@@ -39,6 +40,8 @@ import {
   postBandBookmark,
   deleteBandBookmark,
   patchBandLink,
+  IBandParams,
+  patchBand,
 } from "../../../axios/axios";
 import { getWikipedia } from "../../../axios/wikipedia";
 import usePaginate from "../../../hooks/usePaginate";
@@ -157,7 +160,7 @@ const Show: React.FC = () => {
         </Box>
       )}
       <Grid container>
-        <Grid item xs={11}>
+        <Grid item xs={10}>
           <Typography variant="h5">
             <GroupIcon />
             {band.data?.name}
@@ -169,6 +172,14 @@ const Show: React.FC = () => {
             bookmarked={!!band.data?.bookmark || false}
             onCreate={handleCreateBookmarkMutation}
             onDestroy={handleDestroyBookmarkMutation}
+          />
+        </Grid>
+        <Grid item xs={1}>
+          <TranslateDialog<IBand, IBandParams>
+            queryKey={queryKey.BAND}
+            name="name"
+            label="Name"
+            patchFn={patchBand}
           />
         </Grid>
       </Grid>

@@ -22,11 +22,14 @@ import ArtistTable from "../../../components/Table/Artist";
 import LinkTable from "../../../components/Table/Link";
 import ItunesAlbumDialog from "../../../components/Dialog/Itunes/Album";
 import SpotifyAlbumDialog from "../../../components/Dialog/Spotify/Album";
+import TranslateDialog from "../../../components/Dialog/Translate";
 import BookmarkButton from "../../../components/Button/Icon/Bookmark";
 import DefaultLayout from "../../../layout/Default";
 import ArtistDialog from "./Dialog/Artist";
 import {
   deleteAlbumBookmark,
+  IAlbumParams,
+  patchAlbum,
   patchAlbumLink,
   postAlbumBookmark,
 } from "../../../axios/axios";
@@ -56,14 +59,14 @@ const Show: React.FC = () => {
   const handleUpdateSuccess = (res: AxiosResponse<IAlbumLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IAlbum | undefined>(
-      [queryKey.ALBUM, id],
+      [queryKey.ALBUM, id, locale],
       (prev) => prev && { ...prev, link: res.data }
     );
   };
   const handleCreateSuccess = (res: AxiosResponse<IAlbumBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IAlbum | undefined>(
-      [queryKey.ALBUM, id],
+      [queryKey.ALBUM, id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -75,7 +78,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IAlbum | undefined>(
-      [queryKey.ALBUM, id],
+      [queryKey.ALBUM, id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -106,7 +109,7 @@ const Show: React.FC = () => {
       ),
     { enabled: !!album.data?.link.itunes, onError }
   );
-  const patchMutation = useMutation(
+  const patchLinkMutation = useMutation(
     (link: Partial<Omit<IAlbumLink, "id">>) =>
       patchAlbumLink(id, album.data?.link.id, link),
     {
@@ -129,9 +132,9 @@ const Show: React.FC = () => {
   const handleCreateMutation = () => createMutation.mutate();
   const handleDestroyMutation = () => destroyMutation.mutate();
   const handleSelect = (selectedAlbum: IItunesAlbum) =>
-    patchMutation.mutate({ itunes: selectedAlbum.collectionId });
+    patchLinkMutation.mutate({ itunes: selectedAlbum.collectionId });
   const handleSpotifySelect = (selectedAlbum: ISpotifyAlbum) =>
-    patchMutation.mutate({ spotify: selectedAlbum.id });
+    patchLinkMutation.mutate({ spotify: selectedAlbum.id });
   return (
     <DefaultLayout>
       {album.data?.localed && (
@@ -155,6 +158,14 @@ const Show: React.FC = () => {
             bookmarked={!!album.data?.bookmark}
             onCreate={handleCreateMutation}
             onDestroy={handleDestroyMutation}
+          />
+        </Grid>
+        <Grid item xs={1}>
+          <TranslateDialog<IAlbum, IAlbumParams>
+            queryKey={queryKey.ARTIST}
+            name="title"
+            label="Title"
+            patchFn={patchAlbum}
           />
         </Grid>
       </Grid>

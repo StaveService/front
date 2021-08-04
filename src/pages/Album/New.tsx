@@ -22,7 +22,7 @@ import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
-import { postAlbum, IAlbumPostParams } from "../../axios/axios";
+import { postAlbum, IAlbumParams } from "../../axios/axios";
 import usePaginate from "../../hooks/usePaginate";
 import { getAlbums } from "../../gql";
 
@@ -56,7 +56,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newAlbum: IAlbumPostParams) => postAlbum(newAlbum),
+    (newAlbum: IAlbumParams) => postAlbum(newAlbum),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -65,7 +65,7 @@ const New: React.FC = () => {
     { enabled: !!debouncedTitle, onError }
   );
   // handlers
-  const onSubmit = (data: IAlbumPostParams) => createMutation.mutate(data);
+  const onSubmit = (data: IAlbumParams) => createMutation.mutate(data);
   const handleSelect = (selectedItem: IItunesAlbum) =>
     setSelectedItunesAlbum(selectedItem);
   useEffect(() => {

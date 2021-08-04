@@ -40,7 +40,7 @@ const Album: React.FC = () => {
   const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { register, handleSubmit, setValue } = useForm<IAlbum>();
+  const { register, handleSubmit, setValue } = useForm();
   // react-router-dom
   const params = useParams<{
     userId: string;

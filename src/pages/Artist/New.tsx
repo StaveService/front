@@ -7,7 +7,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { IArtistPostParams, postArtist } from "../../axios/axios";
+import { IArtistParams, postArtist } from "../../axios/axios";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField/ControlTextField";
 import LoadingButton from "../../ui/LoadingButton";
@@ -60,7 +60,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newArtist: IArtistPostParams) => postArtist(newArtist),
+    (newArtist: IArtistParams) => postArtist(newArtist),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -69,7 +69,7 @@ const New: React.FC = () => {
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
-  const onSubmit = (data: IArtistPostParams) => createMutation.mutate(data);
+  const onSubmit = (data: IArtistParams) => createMutation.mutate(data);
   const handleSelect = (selectedItem: IItunesArtist) =>
     setSelectedItunesArtist(selectedItem);
 

@@ -18,6 +18,7 @@ import ItunesArtistDialog from "../../components/Dialog/Itunes/Artist";
 import SpotifyArtistDialog from "../../components/Dialog/Spotify/Artist";
 import TwitterDialog from "../../components/Dialog/Twitter";
 import WikipediaDialog from "../../components/Dialog/Wikipedia";
+import TranslateDialog from "../../components/Dialog/Translate";
 import DefaultLayout from "../../layout/Default";
 import {
   IArtist,
@@ -36,6 +37,8 @@ import queryKey from "../../constants/queryKey.json";
 import { lookupItunesArtist } from "../../axios/itunes";
 import {
   deleteArtistBookmark,
+  IArtistParams,
+  patchArtist,
   patchArtistLink,
   postArtistBookmark,
 } from "../../axios/axios";
@@ -156,7 +159,7 @@ const Show: React.FC = () => {
         </Box>
       )}
       <Grid container>
-        <Grid item xs={11}>
+        <Grid item xs={10}>
           <Typography variant="h5">
             <AccessibilityNewIcon />
             {artist.data?.name}
@@ -168,6 +171,14 @@ const Show: React.FC = () => {
             bookmarked={!!artist.data?.bookmark || false}
             onCreate={handleCreateMutation}
             onDestroy={handleDestroyMutation}
+          />
+        </Grid>
+        <Grid item xs={1}>
+          <TranslateDialog<IArtist, IArtistParams>
+            queryKey={queryKey.ARTIST}
+            name="name"
+            label="Name"
+            patchFn={patchArtist}
           />
         </Grid>
       </Grid>
