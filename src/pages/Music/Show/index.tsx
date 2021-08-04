@@ -17,6 +17,8 @@ import Image from "material-ui-image";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 import InfoTabPanel from "./TabPanel/Info";
 import SettingTabPanel from "./TabPanel/Setting";
 import IssuesTabPanel from "./TabPanel/Issue/Index";
@@ -47,6 +49,7 @@ import { deleteMusicBookmark, postMusicBookmark } from "../../../axios/axios";
 import { getSpotifyTrack } from "../../../axios/spotify";
 import { remove, selectSpotifyToken } from "../../../slices/spotify";
 import { getMusic } from "../../../gql";
+import { selectLocale } from "../../../slices/language";
 
 const Show: React.FC = () => {
   // react-hook-form
@@ -57,9 +60,10 @@ const Show: React.FC = () => {
   // notistack
   const { onError } = useQuerySnackbar();
   // react-redux
+  const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const spotifyToken = useSelector(selectSpotifyToken);
-  const dispatch = useDispatch();
+  const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IMusicBookmark>) => {
@@ -90,9 +94,13 @@ const Show: React.FC = () => {
     dispatch(remove());
     onError(err);
   };
-  const music = useQuery([queryKey.MUSIC, id], getMusic(id, currentUser?.id), {
-    onError,
-  });
+  const music = useQuery(
+    [queryKey.MUSIC, id, locale],
+    getMusic(id, currentUser?.id),
+    {
+      onError,
+    }
+  );
   const itunesMusic = useQuery<IItunesMusic>(
     [queryKey.ITUNES, queryKey.MUSIC, music.data?.link?.itunes],
     () =>
@@ -129,6 +137,14 @@ const Show: React.FC = () => {
   return (
     <>
       <DefaultLayout>
+        {music.data?.localed && (
+          <Box mb={3}>
+            <Alert severity="warning">
+              <AlertTitle>Not translated</AlertTitle>
+              Please Contribute! — <strong>check it out!</strong>
+            </Alert>
+          </Box>
+        )}
         <Grid container>
           <Grid item xs={11}>
             <Typography variant="h5">

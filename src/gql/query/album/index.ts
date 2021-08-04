@@ -5,6 +5,7 @@ const albumQuery = gql`
     album(id: $id) {
       id
       title(locale: $locale)
+      localed(locale: $locale)
       link {
         id
         itunes

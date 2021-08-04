@@ -5,6 +5,7 @@ const artistQuery = gql`
     artist(id: $id) {
       id
       name(locale: $locale)
+      localed(locale: $locale)
       link {
         id
         itunes

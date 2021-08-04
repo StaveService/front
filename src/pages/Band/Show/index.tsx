@@ -7,6 +7,8 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import GroupIcon from "@material-ui/icons/Group";
 import Grid from "@material-ui/core/Grid";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 import ArtistDialog from "./Dialog/Artist";
 import ArtistsTable from "../../../components/Table/Artist";
 import MusicsTable from "../../../components/Table/Music";
@@ -41,6 +43,7 @@ import {
 import { getWikipedia } from "../../../axios/wikipedia";
 import usePaginate from "../../../hooks/usePaginate";
 import { getBand, getBandAlbums, getBandMusics } from "../../../gql";
+import { selectLocale } from "../../../slices/language";
 
 const Show: React.FC = () => {
   const [albumPage, handleAlbumPage] = usePaginate();
@@ -48,8 +51,10 @@ const Show: React.FC = () => {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const { onError } = useQuerySnackbar();
-  const currentUser = useSelector(selectCurrentUser);
+  // react-redux
   const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
+  const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IBandBookmark>) => {
@@ -83,18 +88,22 @@ const Show: React.FC = () => {
       (prev) => prev && { ...prev, link: res.data }
     );
   };
-  const band = useQuery([queryKey.BAND, id], getBand(id, currentUser?.id), {
-    onError,
-  });
+  const band = useQuery(
+    [queryKey.BAND, id, locale],
+    getBand(id, currentUser?.id),
+    {
+      onError,
+    }
+  );
   const bandAlbums = useQuery(
-    [queryKey.BAND, id, queryKey.ALBUMS, albumPage],
+    [queryKey.BAND, id, queryKey.ALBUMS, albumPage, locale],
     getBandAlbums(id, albumPage),
     {
       onError,
     }
   );
   const bandMusics = useQuery(
-    [queryKey.BAND, id, queryKey.MUSICS, musicPage],
+    [queryKey.BAND, id, queryKey.MUSICS, musicPage, locale],
     getBandMusics(id, musicPage),
     {
       onError,
@@ -139,6 +148,14 @@ const Show: React.FC = () => {
   const handleDestroyBookmarkMutation = () => destroyBookmarkMutation.mutate();
   return (
     <DefaultLayout>
+      {band.data?.localed && (
+        <Box mb={3}>
+          <Alert severity="warning">
+            <AlertTitle>Not translated</AlertTitle>
+            Please Contribute! — <strong>check it out!</strong>
+          </Alert>
+        </Box>
+      )}
       <Grid container>
         <Grid item xs={11}>
           <Typography variant="h5">

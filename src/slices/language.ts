@@ -25,6 +25,9 @@ const spotifySlice = createSlice({
       state.locale = newLocale;
       state.countryCode = newCountryCode;
     },
+    setLocale: (state, action: PayloadAction<string>) => {
+      state.locale = action.payload;
+    },
     remove: (state) => {
       state.language = "";
       state.locale = "";
@@ -39,5 +42,5 @@ export const selectLocale = (state: RootState): undefined | string =>
   state.language.locale;
 export const selectCountryCode = (state: RootState): undefined | string =>
   state.language.countryCode;
-export const { set, remove } = spotifySlice.actions;
+export const { set, setLocale, remove } = spotifySlice.actions;
 export default spotifySlice.reducer;

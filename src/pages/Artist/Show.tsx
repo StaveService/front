@@ -7,6 +7,8 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
 import { useDispatch, useSelector } from "react-redux";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 import MusicsTable from "../../components/Table/Music";
 import BandsTable from "../../components/Table/Band";
 import AlbumsTable from "../../components/Table/Album";
@@ -40,6 +42,7 @@ import {
 import { getWikipedia } from "../../axios/wikipedia";
 import usePaginate from "../../hooks/usePaginate";
 import { getArtist, getArtistAlbums, getArtistMusics } from "../../gql";
+import { selectLocale } from "../../slices/language";
 
 const Show: React.FC = () => {
   const [albumPage, handleAlbumPage] = usePaginate();
@@ -48,8 +51,9 @@ const Show: React.FC = () => {
   const id = Number(params.id);
   const { onError } = useQuerySnackbar();
   // react-redux
-  const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
+  const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
   const handleCreateSuccess = (res: AxiosResponse<IArtistBookmark>) => {
@@ -84,19 +88,19 @@ const Show: React.FC = () => {
     );
   };
   const artist = useQuery(
-    [queryKey.ARTIST, id],
+    [queryKey.ARTIST, id, locale],
     getArtist(id, currentUser?.id),
     {
       onError,
     }
   );
   const artistAlbums = useQuery(
-    [queryKey.ARTIST, id, queryKey.ALBUMS, albumPage],
+    [queryKey.ARTIST, id, queryKey.ALBUMS, albumPage, locale],
     getArtistAlbums(id, albumPage),
     { onError }
   );
   const artistMusics = useQuery(
-    [queryKey.ARTIST, id, queryKey.MUSICS, musicPage],
+    [queryKey.ARTIST, id, queryKey.MUSICS, musicPage, locale],
     getArtistMusics(id, musicPage),
     { onError }
   );
@@ -143,6 +147,14 @@ const Show: React.FC = () => {
 
   return (
     <DefaultLayout>
+      {artist.data?.localed && (
+        <Box mb={3}>
+          <Alert severity="warning">
+            <AlertTitle>Not translated</AlertTitle>
+            Please Contribute! — <strong>check it out!</strong>
+          </Alert>
+        </Box>
+      )}
       <Grid container>
         <Grid item xs={11}>
           <Typography variant="h5">

@@ -63,6 +63,7 @@ export interface IBand extends IMusicsType, IAlbumsType {
   bookmarksCount: number;
   artists: IArtist[];
   link: IBandLink;
+  localed: boolean;
 }
 export interface IBandLink {
   id: number;
@@ -90,6 +91,7 @@ export interface IMusic {
   blob: string;
   score: string;
   scoreExist: boolean;
+  localed: boolean;
 }
 export interface ITree {
   name: string;
@@ -110,6 +112,7 @@ export interface IArtist extends IMusicsType, IAlbumsType {
   bookmarksCount: number;
   bands?: IBand[];
   link: IArtistLink;
+  localed: boolean;
 }
 export interface IArtistLink {
   id: number;
@@ -125,6 +128,7 @@ export interface IAlbum extends IMusicsType {
   bookmarksCount: number;
   artists?: IArtist[];
   link: IAlbumLink;
+  localed: boolean;
 }
 export interface IAlbumLink {
   id: number;

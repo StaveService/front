@@ -8,6 +8,8 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
 import Grid from "@material-ui/core/Grid";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 import {
   IAlbum,
   IAlbumBookmark,
@@ -37,6 +39,7 @@ import {
 import { lookupItunesAlbum } from "../../../axios/itunes";
 import usePaginate from "../../../hooks/usePaginate";
 import { getAlbum, getAlbumMusics } from "../../../gql";
+import { selectLocale } from "../../../slices/language";
 
 const Show: React.FC = () => {
   const [musicPage, handleMusicPage] = usePaginate();
@@ -47,6 +50,7 @@ const Show: React.FC = () => {
   // react-redux
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
+  const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
   const handleUpdateSuccess = (res: AxiosResponse<IAlbumLink>) => {
@@ -80,11 +84,15 @@ const Show: React.FC = () => {
         }
     );
   };
-  const album = useQuery([queryKey.ALBUM, id], getAlbum(id, currentUser?.id), {
-    onError,
-  });
+  const album = useQuery(
+    [queryKey.ALBUM, id, locale],
+    getAlbum(id, currentUser?.id),
+    {
+      onError,
+    }
+  );
   const albumMusics = useQuery(
-    [queryKey.ALBUM, id, queryKey.MUSICS, musicPage],
+    [queryKey.ALBUM, id, queryKey.MUSICS, musicPage, locale],
     getAlbumMusics(id, musicPage),
     {
       onError,
@@ -126,6 +134,14 @@ const Show: React.FC = () => {
     patchMutation.mutate({ spotify: selectedAlbum.id });
   return (
     <DefaultLayout>
+      {album.data?.localed && (
+        <Box mb={3}>
+          <Alert severity="warning">
+            <AlertTitle>Not translated</AlertTitle>
+            Please Contribute! — <strong>check it out!</strong>
+          </Alert>
+        </Box>
+      )}
       <Grid container>
         <Grid item xs={11}>
           <Typography variant="h5">

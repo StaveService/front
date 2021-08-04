@@ -5,6 +5,7 @@ const bandQuery = gql`
     band(id: $id) {
       id
       name(locale: $locale)
+      localed(locale: $locale)
       link {
         id
         itunes

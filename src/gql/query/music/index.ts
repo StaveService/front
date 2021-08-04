@@ -6,6 +6,7 @@ const musicQuery = gql`
       id
       title(locale: $locale)
       scoreExist
+      localed(locale: $locale)
       link {
         id
         itunes
