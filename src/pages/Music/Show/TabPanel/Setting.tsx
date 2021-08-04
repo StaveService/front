@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Typography from "@material-ui/core/Typography";
@@ -11,7 +11,10 @@ import Dialog from "@material-ui/core/Dialog";
 import { useMutation, useQueryClient } from "react-query";
 import ControlTextField from "../../../../components/ControlTextField/ControlTextField";
 import LoadingButton from "../../../../ui/LoadingButton";
-import { setHeaders } from "../../../../slices/currentUser/currentUser";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../../../slices/currentUser/currentUser";
 import routes from "../../../../constants/routes.json";
 import { IMusic } from "../../../../interfaces";
 import useOpen from "../../../../hooks/useOpen";
@@ -27,6 +30,7 @@ const Setting: React.FC = () => {
   const match = useRouteMatch<{ userId: string; id: string }>();
   const id = Number(match.params.id);
   const userId = Number(match.params.userId);
+  const headers = useSelector(selectHeaders);
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const { onError } = useQuerySnackbar();
@@ -36,10 +40,10 @@ const Setting: React.FC = () => {
     queryClient.removeQueries([queryKey.MUSIC, id]);
     history.push(routes.ROOT);
   };
-  const destroyMusicMutation = useMutation(() => deleteMusic(userId, id), {
-    onSuccess,
-    onError,
-  });
+  const destroyMusicMutation = useMutation(
+    () => deleteMusic(userId, id, headers),
+    { onSuccess, onError }
+  );
   const onSubmit = () => destroyMusicMutation.mutate();
   return (
     <>

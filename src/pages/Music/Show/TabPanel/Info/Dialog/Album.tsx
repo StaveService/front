@@ -3,7 +3,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Table from "@material-ui/core/Table";
@@ -22,7 +22,10 @@ import IconButton from "@material-ui/core/IconButton";
 import useDebounce from "use-debounce/lib/useDebounce";
 import LoadingButton from "../../../../../../ui/LoadingButton";
 import AutocompleteTextField from "../../../../../../components/TextField/AutocompleteTextField";
-import { setHeaders } from "../../../../../../slices/currentUser/currentUser";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../../../../../slices/currentUser/currentUser";
 import { IAlbum, IAlbumMusic, IMusic } from "../../../../../../interfaces";
 import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
@@ -40,7 +43,7 @@ const Album: React.FC = () => {
   const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-hook-form
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue } = useForm<IAlbum>();
   // react-router-dom
   const params = useParams<{
     userId: string;
@@ -50,6 +53,7 @@ const Album: React.FC = () => {
   const id = Number(params.id);
   // react-redux
   const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
@@ -83,11 +87,11 @@ const Album: React.FC = () => {
     );
   };
   const createMutation = useMutation(
-    (newAlbum: IAlbum) => postAlbumMusic(userId, id, newAlbum),
+    (newAlbum: IAlbum) => postAlbumMusic(userId, id, newAlbum, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const destroyMutation = useMutation(
-    (album: IAlbum) => deleteAlbumMusic(userId, id, album.id),
+    (album: IAlbum) => deleteAlbumMusic(userId, id, album.id, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
   const albums = useQuery(

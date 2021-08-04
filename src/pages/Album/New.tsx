@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -16,13 +16,16 @@ import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingCircularProgress from "../../components/Loading/LoadingCircularProgress";
 import ExistAlert from "../../components/Alert/Exist";
 import DefaultLayout from "../../layout/Default";
-import { IAlbum, IItunesAlbum } from "../../interfaces";
-import { setHeaders } from "../../slices/currentUser/currentUser";
+import { IAlbum, IAlbumLink, IItunesAlbum } from "../../interfaces";
+import {
+  selectHeaders,
+  setHeaders,
+} from "../../slices/currentUser/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
-import { postAlbum, IAlbumParams } from "../../axios/axios";
+import { postAlbum, PostParams } from "../../axios/axios";
 import usePaginate from "../../hooks/usePaginate";
 import { getAlbums } from "../../gql";
 
@@ -39,6 +42,7 @@ const New: React.FC = () => {
   const [debouncedTitle] = useDebounce(title, 1000);
   // react-redux
   const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
   // react-router-dom
   const history = useHistory();
   // notistack
@@ -56,7 +60,7 @@ const New: React.FC = () => {
       );
   };
   const createMutation = useMutation(
-    (newAlbum: IAlbumParams) => postAlbum(newAlbum),
+    (newAlbum: PostParams<IAlbum, IAlbumLink>) => postAlbum(newAlbum, headers),
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
@@ -65,7 +69,8 @@ const New: React.FC = () => {
     { enabled: !!debouncedTitle, onError }
   );
   // handlers
-  const onSubmit = (data: IAlbumParams) => createMutation.mutate(data);
+  const onSubmit = (data: PostParams<IAlbum, IAlbumLink>) =>
+    createMutation.mutate(data);
   const handleSelect = (selectedItem: IItunesAlbum) =>
     setSelectedItunesAlbum(selectedItem);
   useEffect(() => {
