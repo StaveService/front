@@ -30,19 +30,26 @@ const getHeaders = () => store.getState().currentUser.headers;
 
 export interface IMusicParams {
   title: string;
-  ["link_attributes"]: Omit<IMusicLink, "id">;
+  ["link_attributes"]?: Omit<IMusicLink, "id">;
 }
 export interface IAlbumParams {
   title: string;
-  ["link_attributes"]: Omit<IAlbumLink, "id">;
+  ["link_attributes"]?: Omit<IAlbumLink, "id">;
 }
 export interface IBandParams {
   name: string;
-  ["link_attributes"]: Omit<IBandLink, "id">;
+  ["link_attributes"]?: Omit<IBandLink, "id">;
 }
 export interface IArtistParams {
   name: string;
-  ["link_attributes"]: Omit<IArtistLink, "id">;
+  ["link_attributes"]?: Omit<IArtistLink, "id">;
+}
+export interface IUserParams {
+  email: string;
+  nickname: string;
+  familyname: string;
+  givenname: string;
+  introduction: string | null;
 }
 export const patchUserNotification = (
   id: number,
@@ -56,7 +63,7 @@ export const patchUserNotification = (
 
 export const patchUser = (
   id: number | undefined,
-  data: IUser
+  data: IUserParams
 ): Promise<AxiosResponse<IUser>> =>
   axios.patch<IUser>(
     `${routes.USERS}/${id || "undefined"}`,
@@ -65,7 +72,7 @@ export const patchUser = (
   );
 
 export const deleteUser = (id: number): Promise<AxiosResponse> =>
-  axios.delete(`/users/${id}`);
+  axios.delete(`/users/${id}`, getHeaders());
 export const postUserRelationship = (
   userId: number
 ): Promise<AxiosResponse<IUserRelationship>> =>
@@ -123,10 +130,14 @@ export const patchAlbum = (
   albumId: number,
   album: IAlbumParams
 ): Promise<AxiosResponse<IAlbum>> =>
-  axios.patch<IAlbum>(`${routes.ALBUMS}/${albumId}`, {
-    album,
-    locale: getLocale(),
-  });
+  axios.patch<IAlbum>(
+    `${routes.ALBUMS}/${albumId}`,
+    {
+      album,
+      locale: getLocale(),
+    },
+    getHeaders()
+  );
 export const deleteAlbum = (albumId: number): Promise<AxiosResponse<IAlbum>> =>
   axios.delete(`${routes.ALBUMS}/${albumId}`, getHeaders());
 

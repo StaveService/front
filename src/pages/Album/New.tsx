@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -25,6 +25,7 @@ import routes from "../../constants/routes.json";
 import { postAlbum, IAlbumParams } from "../../axios/axios";
 import usePaginate from "../../hooks/usePaginate";
 import { getAlbums } from "../../gql";
+import { selectLocale } from "../../slices/language";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -39,6 +40,7 @@ const New: React.FC = () => {
   const [debouncedTitle] = useDebounce(title, 1000);
   // react-redux
   const dispatch = useDispatch();
+  const locale = useSelector(selectLocale);
   // react-router-dom
   const history = useHistory();
   // notistack
@@ -60,8 +62,8 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.ALBUMS, { page, query: debouncedTitle }],
-    getAlbums(page, { title_cont: debouncedTitle }),
+    [queryKey.ALBUMS, locale, { page, query: debouncedTitle }],
+    getAlbums(page, locale, { title_cont: debouncedTitle }),
     { enabled: !!debouncedTitle, onError }
   );
   // handlers

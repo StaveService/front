@@ -3,7 +3,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Table from "@material-ui/core/Table";
@@ -32,6 +32,7 @@ import {
   postAlbumMusic,
 } from "../../../../../../axios/axios";
 import { getAlbums } from "../../../../../../gql";
+import { selectLocale } from "../../../../../../slices/language";
 
 const Album: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -50,6 +51,7 @@ const Album: React.FC = () => {
   const id = Number(params.id);
   // react-redux
   const dispatch = useDispatch();
+  const locale = useSelector(selectLocale);
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
@@ -91,8 +93,8 @@ const Album: React.FC = () => {
     { onSuccess: handleDestroySuccess, onError }
   );
   const albums = useQuery(
-    [queryKey.ALBUMS, { query: debouncedInputValue }],
-    getAlbums(1, { title_cont: debouncedInputValue }),
+    [queryKey.ALBUMS, locale, { query: debouncedInputValue }],
+    getAlbums(1, locale, { title_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers

@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import MusicTable from "../../../../components/Table/Music";
 import BandTable from "../../../../components/Table/Band";
 import ArtistTable from "../../../../components/Table/Artist";
@@ -13,6 +14,7 @@ import {
   getUserBookmarkedBands,
   getUserBookmarkedMusics,
 } from "../../../../gql";
+import { selectLocale } from "../../../../slices/language";
 
 const Bookmark: React.FC = () => {
   const [bookmarkedMusicPage, handleBookmarkedMusicPage] = usePaginate();
@@ -21,6 +23,7 @@ const Bookmark: React.FC = () => {
   const [bookmarkedAlbumPage, handleBookmarkedAlbumPage] = usePaginate();
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
+  const locale = useSelector(selectLocale);
   const bookmarkedMusics = useQuery(
     [
       queryKey.USER,
@@ -28,12 +31,20 @@ const Bookmark: React.FC = () => {
       queryKey.BOOKMARKS,
       queryKey.MUSICS,
       bookmarkedMusicPage,
+      locale,
     ],
-    getUserBookmarkedMusics(id, bookmarkedMusicPage)
+    getUserBookmarkedMusics(id, bookmarkedMusicPage, locale)
   );
   const bookmarkedBands = useQuery(
-    [queryKey.USER, id, queryKey.BOOKMARKS, queryKey.BANDS, bookmarkedBandPage],
-    getUserBookmarkedBands(id, bookmarkedBandPage)
+    [
+      queryKey.USER,
+      id,
+      queryKey.BOOKMARKS,
+      queryKey.BANDS,
+      bookmarkedBandPage,
+      locale,
+    ],
+    getUserBookmarkedBands(id, bookmarkedBandPage, locale)
   );
   const bookmarkedArtists = useQuery(
     [
@@ -42,8 +53,9 @@ const Bookmark: React.FC = () => {
       queryKey.BOOKMARKS,
       queryKey.ARTISTS,
       bookmarkedArtistPage,
+      locale,
     ],
-    getUserBookmarkedArtists(id, bookmarkedArtistPage)
+    getUserBookmarkedArtists(id, bookmarkedArtistPage, locale)
   );
   const bookmarkedAlbums = useQuery(
     [
@@ -52,8 +64,9 @@ const Bookmark: React.FC = () => {
       queryKey.BOOKMARKS,
       queryKey.ALBUMS,
       bookmarkedAlbumPage,
+      locale,
     ],
-    getUserBookmarkedAlbums(id, bookmarkedAlbumPage)
+    getUserBookmarkedAlbums(id, bookmarkedAlbumPage, locale)
   );
 
   return (

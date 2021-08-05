@@ -14,6 +14,7 @@ import {
 } from "../../../../../../../../slices/currentUser/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
 import { getBands } from "../../../../../../../../gql";
+import { selectLocale } from "../../../../../../../../slices/language";
 
 interface MutateVariables {
   option: IBand;
@@ -25,8 +26,9 @@ const Band: React.FC = () => {
   // use-debounce
   const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-redux
-  const headers = useSelector(selectHeaders);
   const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
+  const locale = useSelector(selectLocale);
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);
@@ -69,8 +71,8 @@ const Band: React.FC = () => {
   const handleRemoveOption = (option: IBand, options: IBand[]) =>
     destroyMutation.mutate({ option, options });
   const bands = useQuery(
-    [queryKey.BANDS, { query: debouncedInputValue }],
-    getBands(1, { name_cont: debouncedInputValue }),
+    [queryKey.BANDS, locale, { query: debouncedInputValue }],
+    getBands(1, locale, { name_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers

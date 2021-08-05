@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -23,6 +23,7 @@ import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import usePaginate from "../../hooks/usePaginate";
 import { getArtists } from "../../gql";
+import { selectLocale } from "../../slices/language";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -40,6 +41,7 @@ const New: React.FC = () => {
   const history = useHistory();
   const match = useRouteMatch();
   const route = match.url.replace("/new", "");
+  const locale = useSelector(selectLocale);
   // react-redux
   const dispatch = useDispatch();
   // notistack
@@ -64,8 +66,8 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.ARTISTS, { page, query: debouncedInputValue }],
-    getArtists(1, { name_cont: debouncedInputValue }),
+    [queryKey.ARTISTS, locale, { page, query: debouncedInputValue }],
+    getArtists(1, locale, { name_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers

@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -24,6 +24,7 @@ import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import usePaginate from "../../hooks/usePaginate";
 import { getBands } from "../../gql";
+import { selectLocale } from "../../slices/language";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -42,6 +43,7 @@ const New: React.FC = () => {
   const match = useRouteMatch<{ id: string }>();
   // react-redux
   const dispatch = useDispatch();
+  const locale = useSelector(selectLocale);
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
@@ -64,8 +66,8 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.BANDS, { page, query: debouncedName }],
-    getBands(page, { name_eq: debouncedName }),
+    [queryKey.BANDS, locale, { page, query: debouncedName }],
+    getBands(page, locale, { name_eq: debouncedName }),
     { enabled: !!debouncedName, onError }
   );
   // handlers

@@ -92,19 +92,19 @@ const Show: React.FC = () => {
   };
   const artist = useQuery(
     [queryKey.ARTIST, id, locale],
-    getArtist(id, currentUser?.id),
+    getArtist(id, currentUser?.id, locale),
     {
       onError,
     }
   );
   const artistAlbums = useQuery(
     [queryKey.ARTIST, id, queryKey.ALBUMS, albumPage, locale],
-    getArtistAlbums(id, albumPage),
+    getArtistAlbums(id, albumPage, locale),
     { onError }
   );
   const artistMusics = useQuery(
     [queryKey.ARTIST, id, queryKey.MUSICS, musicPage, locale],
-    getArtistMusics(id, musicPage),
+    getArtistMusics(id, musicPage, locale),
     { onError }
   );
   const wikipedia = useQuery<IWikipedia>(

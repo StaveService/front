@@ -36,11 +36,10 @@ const spotifySlice = createSlice({
   },
 });
 
-export const selectLanguage = (state: RootState): undefined | string =>
+export const selectLanguage = (state: RootState): string =>
   state.language.language;
-export const selectLocale = (state: RootState): undefined | string =>
-  state.language.locale;
-export const selectCountryCode = (state: RootState): undefined | string =>
+export const selectLocale = (state: RootState): string => state.language.locale;
+export const selectCountryCode = (state: RootState): string =>
   state.language.countryCode;
 export const { set, setLocale, remove } = spotifySlice.actions;
 export default spotifySlice.reducer;

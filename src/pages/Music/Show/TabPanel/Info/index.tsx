@@ -11,7 +11,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
 import AlbumsTable from "../../../../../components/Table/Album";
 import LinkTable from "../../../../../components/Table/Link";
@@ -33,6 +33,7 @@ import {
 import queryKey from "../../../../../constants/queryKey.json";
 import { patchMusicLink } from "../../../../../axios/axios";
 import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
+import { selectLocale } from "../../../../../slices/language";
 
 const Info: React.FC = () => {
   const { onError } = useQuerySnackbar();
@@ -42,9 +43,10 @@ const Info: React.FC = () => {
   const userId = Number(params.userId);
   // react-redux
   const dispatch = useDispatch();
+  const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
+  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id, locale]);
   const itunesMusic = queryClient.getQueryData<IItunesMusic>([
     queryKey.ITUNES,
     queryKey.MUSIC,
