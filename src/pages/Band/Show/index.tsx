@@ -93,21 +93,21 @@ const Show: React.FC = () => {
   };
   const band = useQuery(
     [queryKey.BAND, id, locale],
-    getBand(id, currentUser?.id),
+    getBand(id, currentUser?.id, locale),
     {
       onError,
     }
   );
   const bandAlbums = useQuery(
     [queryKey.BAND, id, queryKey.ALBUMS, albumPage, locale],
-    getBandAlbums(id, albumPage),
+    getBandAlbums(id, albumPage, locale),
     {
       onError,
     }
   );
   const bandMusics = useQuery(
     [queryKey.BAND, id, queryKey.MUSICS, musicPage, locale],
-    getBandMusics(id, musicPage),
+    getBandMusics(id, musicPage, locale),
     {
       onError,
     }

@@ -37,6 +37,7 @@ import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
 import routes from "../../../../../../constants/routes.json";
 import queryKey from "../../../../../../constants/queryKey.json";
 import { getArtists } from "../../../../../../gql";
+import { selectLocale } from "../../../../../../slices/language";
 
 const Artist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -57,6 +58,7 @@ const Artist: React.FC = () => {
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
+  const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
@@ -101,8 +103,8 @@ const Artist: React.FC = () => {
     { onSuccess: handleDestroySuccess, onError }
   );
   const artists = useQuery(
-    [queryKey.ARTISTS, { query: debouncedInputValue }],
-    getArtists(1, { name_cont: debouncedInputValue }),
+    [queryKey.ARTISTS, locale, { query: debouncedInputValue }],
+    getArtists(1, locale, { name_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers

@@ -2,16 +2,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
+export type ILocale = "ja" | "en";
+
 interface ILanguage {
   language: string;
-  locale: string;
+  locale: ILocale;
   countryCode: string;
 }
-const { language } = navigator;
+const getLanguage = () => navigator.language;
 const initialState: ILanguage = {
-  language,
-  locale: language.split("-")[0],
-  countryCode: language.split("-")[1],
+  language: getLanguage(),
+  locale: getLanguage().split("-")[0] as ILocale,
+  countryCode: getLanguage().split("-")[1],
 };
 
 const spotifySlice = createSlice({
@@ -22,25 +24,25 @@ const spotifySlice = createSlice({
       const newLanguage = action.payload;
       const [newLocale, newCountryCode] = newLanguage.split("-");
       state.language = newLanguage;
-      state.locale = newLocale;
+      state.locale = newLocale as ILocale;
       state.countryCode = newCountryCode;
     },
-    setLocale: (state, action: PayloadAction<string>) => {
+    setLocale: (state, action: PayloadAction<ILocale>) => {
       state.locale = action.payload;
     },
     remove: (state) => {
-      state.language = "";
-      state.locale = "";
+      const [newLocale, newCountryCode] = getLanguage().split("-");
+      state.language = newCountryCode;
+      state.locale = newLocale as ILocale;
       state.countryCode = "";
     },
   },
 });
 
-export const selectLanguage = (state: RootState): undefined | string =>
+export const selectLanguage = (state: RootState): string =>
   state.language.language;
-export const selectLocale = (state: RootState): undefined | string =>
-  state.language.locale;
-export const selectCountryCode = (state: RootState): undefined | string =>
+export const selectLocale = (state: RootState): string => state.language.locale;
+export const selectCountryCode = (state: RootState): string =>
   state.language.countryCode;
 export const { set, setLocale, remove } = spotifySlice.actions;
 export default spotifySlice.reducer;

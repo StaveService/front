@@ -4,7 +4,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import { useDispatch, useSelector } from "react-redux";
-import { selectLocale, setLocale } from "../../../slices/language";
+import { ILocale, selectLocale, setLocale } from "../../../slices/language";
 
 interface SettingProps {
   open: boolean;
@@ -17,7 +17,7 @@ const Setting: React.FC<SettingProps> = ({
   const dispatch = useDispatch();
   const locale = useSelector(selectLocale);
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch(setLocale(event.target.value as string));
+    dispatch(setLocale(event.target.value as ILocale));
   };
   return (
     <Dialog onClose={handleClose} open={open} fullWidth>

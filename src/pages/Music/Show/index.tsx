@@ -102,7 +102,7 @@ const Show: React.FC = () => {
   };
   const music = useQuery(
     [queryKey.MUSIC, id, locale],
-    getMusic(id, currentUser?.id),
+    getMusic(id, currentUser?.id, locale),
     {
       onError,
     }

@@ -30,6 +30,7 @@ import {
 } from "../../slices/currentUser/currentUser";
 import { getUserNotifications } from "../../gql";
 import useOpen from "../../hooks/useOpen";
+import { selectLocale } from "../../slices/language";
 
 const Header: React.FC = () => {
   const [open, handleOpen, handleClose] = useOpen();
@@ -37,6 +38,7 @@ const Header: React.FC = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const headers = useSelector(selectHeaders);
+  const locale = useSelector(selectLocale);
   const history = useHistory();
   const onMutate = () => {
     dispatch(remove());
@@ -63,8 +65,8 @@ const Header: React.FC = () => {
     });
   };
   const notifications = useQuery(
-    [queryKey.NOTIFICATIONS, 1],
-    getUserNotifications(currentUser?.id, 1),
+    [queryKey.NOTIFICATIONS, 1, locale],
+    getUserNotifications(currentUser?.id, 1, locale),
     { onError, enabled: !!currentUser }
   );
   const signOut = useMutation(() => axios.delete("/auth/sign_out", headers), {

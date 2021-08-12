@@ -32,6 +32,7 @@ import useOpen from "../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import { getArtists } from "../../../../gql";
+import { selectLocale } from "../../../../slices/language";
 
 const Artist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -43,6 +44,7 @@ const Artist: React.FC = () => {
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
+  const locale = useSelector(selectLocale);
   // notistack
   const { onError } = useQuerySnackbar();
   // react-router-dom
@@ -86,8 +88,8 @@ const Artist: React.FC = () => {
     { onSuccess: handleDestorySuccess, onError }
   );
   const artists = useQuery(
-    [queryKey.ARTISTS, { query: debouncedInputValue }],
-    getArtists(1, { name_cont: debouncedInputValue }),
+    [queryKey.ARTISTS, locale, { query: debouncedInputValue }],
+    getArtists(1, locale, { name_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
