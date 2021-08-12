@@ -24,6 +24,10 @@ import {
   patchBand,
   patchArtist,
   patchUser,
+  postUserRelationship,
+  deleteUserRelationship,
+  postContact,
+  patchUserLink,
 } from "./axios";
 import {
   IAlbum,
@@ -296,6 +300,31 @@ describe("axios", () => {
     });
   });
 
+  describe("/relation", () => {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+    it("POST", async () => {
+      const res = await postUserRelationship(1);
+      setHeaders(res.headers);
+      expect(res.status).toBe(201);
+    });
+    it("DELETE", async () => {
+      const res = await deleteUserRelationship(1, currentUser.id);
+      setHeaders(res.headers);
+      expect(res.status).toBe(201);
+    });
+  });
+
+  describe("/contact", () => {
+    it("POST", async () => {
+      const res = await postContact({
+        email: "i@i.com",
+        description: "front testing",
+      });
+      expect(res.status).toBe(200);
+    });
+  });
+
   describe("/user", () => {
     const currentUser = getCurrentUser();
     if (!currentUser) return;
@@ -307,7 +336,17 @@ describe("axios", () => {
         familyname: "test",
         givenname: "test",
       });
-      expect(res.status).toBe(204);
+      expect(res.status).toBe(200);
+    });
+    describe("/link", () => {
+      it("PATCH", async () => {
+        const res = await patchUserLink(
+          currentUser.id,
+          currentUser.link.id,
+          "aaaaaa"
+        );
+        expect(res.status).toBe(200);
+      });
     });
     it("DELETE", async () => {
       const res = await deleteUser(currentUser.id);
