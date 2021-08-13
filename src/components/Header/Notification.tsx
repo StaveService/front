@@ -1,5 +1,6 @@
 import React from "react";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, Locale } from "date-fns";
+import { ja } from "date-fns/locale";
 import { AxiosResponse } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQueryClient } from "react-query";
@@ -18,11 +19,13 @@ import {
   selectCurrentUser,
   setHeaders,
 } from "../../slices/currentUser/currentUser";
+import { selectLocale } from "../../slices/language";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { IIndexType, INotification } from "../../interfaces";
 import routes from "../../constants/routes.json";
 import queryKey from "../../constants/queryKey.json";
 
+const locales: { [key: string]: Locale } = { ja };
 interface NotificationProps {
   notifications: INotification[] | undefined;
   loading: boolean;
@@ -34,6 +37,7 @@ const Notification: React.FC<NotificationProps> = ({
   const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
+  const locale = useSelector(selectLocale);
   const queryClient = useQueryClient();
   const onSuccess = (res: AxiosResponse<INotification>, id: number) => {
     dispatch(setHeaders(res.headers));
@@ -78,7 +82,8 @@ const Notification: React.FC<NotificationProps> = ({
               <ListItemText
                 primary={`followed by ${notification.params.userRelationship.follower.nickname}`}
                 secondary={formatDistanceToNow(
-                  new Date(notification.createdAt)
+                  new Date(notification.createdAt),
+                  { locale: locales[locale] }
                 )}
               />
             </ListItem>
@@ -101,7 +106,8 @@ const Notification: React.FC<NotificationProps> = ({
               <ListItemText
                 primary={`${notification.params.musicBookmark.user.nickname} bookmarked ${notification.params.musicBookmark.music.title}`}
                 secondary={formatDistanceToNow(
-                  new Date(notification.createdAt)
+                  new Date(notification.createdAt),
+                  { locale: locales[locale] }
                 )}
               />
             </ListItem>

@@ -19,6 +19,8 @@ import SpotifyArtistDialog from "../../components/Dialog/Spotify/Artist";
 import TwitterDialog from "../../components/Dialog/Twitter";
 import WikipediaDialog from "../../components/Dialog/Wikipedia";
 import TranslateDialog from "../../components/Dialog/Translate";
+import YoutubeDialog from "../../components/Dialog/Youtube";
+
 import DefaultLayout from "../../layout/Default";
 import {
   IArtist,
@@ -145,6 +147,8 @@ const Show: React.FC = () => {
     updateLinkMutation.mutate({ wikipedia: selectedWikipedia.pageid });
   const handleSpotifySelect = (selectedArtist: ISpotifyArtist) =>
     updateLinkMutation.mutate({ spotify: selectedArtist.id });
+  const handleYoutubeSelect = (value: string) =>
+    updateLinkMutation.mutate({ youtube: value });
   const handleSubmit = (value: string) =>
     updateLinkMutation.mutate({ twitter: value });
 
@@ -159,6 +163,7 @@ const Show: React.FC = () => {
         </Box>
       )}
       <Grid container>
+        j
         <Grid item xs={10}>
           <Typography variant="h5">
             <AccessibilityNewIcon />
@@ -242,6 +247,23 @@ const Show: React.FC = () => {
                   onClose={handleClose}
                   onSelect={handleSpotifySelect}
                   showSearchBar
+                />
+              );
+            },
+          }}
+          youtube={{
+            type: "v",
+            link: artist.data?.link.youtube,
+            renderDialog(type, open, baseURL, handleClose) {
+              return (
+                <YoutubeDialog
+                  type={type}
+                  id={artist.data?.link.youtube || ""}
+                  baseURL={baseURL}
+                  open={open}
+                  onClose={handleClose}
+                  onPatch={handleYoutubeSelect}
+                  loading={updateLinkMutation.isLoading}
                 />
               );
             },

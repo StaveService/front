@@ -71,6 +71,7 @@ export interface IBandLink {
   twitter: string;
   wikipedia: number;
   spotify: string;
+  youtube: string;
 }
 export interface IMusic {
   id: number;
@@ -104,6 +105,7 @@ export interface IMusicLink {
   itunes: number | null;
   musixmatch: number | null;
   spotify: string | null;
+  youtube: string | null;
 }
 export interface IArtist extends IMusicsType, IAlbumsType {
   id: number;
@@ -120,6 +122,7 @@ export interface IArtistLink {
   spotify: string | null;
   twitter: string | null;
   wikipedia: number | null;
+  youtube: string | null;
 }
 export interface IAlbum extends IMusicsType {
   id: number;

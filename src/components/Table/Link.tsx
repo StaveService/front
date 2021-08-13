@@ -12,6 +12,7 @@ import { Box, LinearProgress } from "@material-ui/core";
 import LinkButton from "../Button/Link";
 import TwitterIcon from "../Icon/Twitter";
 import ItunesIcon from "../Icon/Itunes";
+import YoutubeIcon from "../Icon/Youtube";
 import WikipediaIcon from "../Icon/Wikipedia";
 import SpotifyIcon from "../Icon/Spotify";
 import useOpen from "../../hooks/useOpen";
@@ -26,6 +27,16 @@ interface LinkProps {
   spotify?: RenderAndLink<string | null> & { type: string };
   wikipedia?: RenderAndLink<number | null>;
   musixmatch?: RenderAndLink<number>;
+  youtube?: {
+    type: "v" | "channel";
+    link?: string | null;
+    renderDialog: (
+      type: "v" | "channel",
+      open: boolean,
+      baseURL: string,
+      handleClose: () => void
+    ) => React.ReactNode;
+  };
   loading?: boolean;
 }
 const Link: React.FC<LinkProps> = ({
@@ -34,13 +45,28 @@ const Link: React.FC<LinkProps> = ({
   spotify,
   wikipedia,
   musixmatch,
+  youtube,
   loading,
 }: LinkProps) => {
+  let youtubeBaseURL = "https://www.youtube.com/";
+  if (youtube) {
+    switch (youtube.type) {
+      case "v":
+        youtubeBaseURL += "watch?v=";
+        break;
+      case "channel":
+        youtubeBaseURL += "/channel/";
+        break;
+      default:
+        youtubeBaseURL = "";
+    }
+  }
   const [itunesOpen, onItunesOpen, onItunesClose] = useOpen();
   const [twitterOpen, onTwitterOpen, onTwitterClose] = useOpen();
   const [spotifyOpen, onSpotifyOpen, onSpotifyClose] = useOpen();
   const [wikipediaOpen, onWikipediaOpen, onWikipediaClose] = useOpen();
   const [musixmatchOpen, onMusixmatchOpen, onMusixmatchClose] = useOpen();
+  const [youtubeOpen, onYoutubeOpen, onYoutubeClose] = useOpen();
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -156,6 +182,32 @@ const Link: React.FC<LinkProps> = ({
               </TableCell>
             </TableRow>
           )}
+          {youtube && (
+            <TableRow>
+              <TableCell>
+                <LinkButton
+                  startIcon={<YoutubeIcon />}
+                  href={
+                    youtube.link ? youtubeBaseURL + youtube.link : undefined
+                  }
+                >
+                  youtube
+                </LinkButton>
+              </TableCell>
+              <TableCell>
+                <Button variant="text" onClick={onYoutubeOpen}>
+                  Edit
+                </Button>
+
+                {youtube.renderDialog(
+                  youtube.type,
+                  youtubeOpen,
+                  youtubeBaseURL,
+                  onYoutubeClose
+                )}
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
       {loading && <LinearProgress />}
@@ -168,6 +220,7 @@ Link.defaultProps = {
   spotify: undefined,
   wikipedia: undefined,
   musixmatch: undefined,
+  youtube: undefined,
   loading: false,
 };
 

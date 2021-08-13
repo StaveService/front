@@ -20,6 +20,7 @@ import TwitterDialog from "../../../components/Dialog/Twitter";
 import WikipediaDialog from "../../../components/Dialog/Wikipedia";
 import SpotifyArtistDialog from "../../../components/Dialog/Spotify/Artist";
 import TranslateDialog from "../../../components/Dialog/Translate";
+import YoutubeDialog from "../../../components/Dialog/Youtube";
 import DefaultLayout from "../../../layout/Default";
 import {
   IBand,
@@ -63,7 +64,7 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IBandBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id],
+      [queryKey.BAND, id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -75,7 +76,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id],
+      [queryKey.BAND, id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -87,7 +88,7 @@ const Show: React.FC = () => {
   const handleUpdateSuccess = (res: AxiosResponse<IBandLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id],
+      [queryKey.BAND, id, locale],
       (prev) => prev && { ...prev, link: res.data }
     );
   };
@@ -135,7 +136,7 @@ const Show: React.FC = () => {
   );
   const updateLinkMutation = useMutation(
     (link: Partial<Omit<IBandLink, "id">>) =>
-      patchBandLink(id, band.data?.link.id, link),
+      patchBandLink(id, band.data?.link.id, link, locale),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers
@@ -145,6 +146,8 @@ const Show: React.FC = () => {
     updateLinkMutation.mutate({ wikipedia: selectedWikipedia.pageid });
   const handleSpotifySelect = (selectedSpotify: ISpotifyArtist) =>
     updateLinkMutation.mutate({ spotify: selectedSpotify.id });
+  const handleYoutubeSelect = (value: string) =>
+    updateLinkMutation.mutate({ youtube: value });
   const handleSubmit = (value: string) =>
     updateLinkMutation.mutate({ twitter: value });
   const handleCreateBookmarkMutation = () => createBookmarkMutation.mutate();
@@ -239,6 +242,23 @@ const Show: React.FC = () => {
                   onClose={handleClose}
                   onSelect={handleSpotifySelect}
                   showSearchBar
+                />
+              );
+            },
+          }}
+          youtube={{
+            type: "channel",
+            link: band.data?.link.youtube,
+            renderDialog(type, open, baseURL, handleClose) {
+              return (
+                <YoutubeDialog
+                  type={type}
+                  id={band.data?.link.youtube || ""}
+                  baseURL={baseURL}
+                  open={open}
+                  onClose={handleClose}
+                  onPatch={handleYoutubeSelect}
+                  loading={updateLinkMutation.isLoading}
                 />
               );
             },

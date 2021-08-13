@@ -9,9 +9,10 @@ const musicQuery = gql`
       localed(locale: $locale)
       link {
         id
-        itunes
         musixmatch
+        itunes
         spotify
+        youtube
       }
       user {
         id

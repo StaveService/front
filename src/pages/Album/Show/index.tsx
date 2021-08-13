@@ -23,9 +23,9 @@ import LinkTable from "../../../components/Table/Link";
 import ItunesAlbumDialog from "../../../components/Dialog/Itunes/Album";
 import SpotifyAlbumDialog from "../../../components/Dialog/Spotify/Album";
 import TranslateDialog from "../../../components/Dialog/Translate";
+import ArtistDialog from "./Dialog/Artist";
 import BookmarkButton from "../../../components/Button/Icon/Bookmark";
 import DefaultLayout from "../../../layout/Default";
-import ArtistDialog from "./Dialog/Artist";
 import {
   deleteAlbumBookmark,
   IAlbumParams,
