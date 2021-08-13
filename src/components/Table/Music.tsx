@@ -71,7 +71,11 @@ const Music: React.FC<MusicProps> = ({
         <TableBody>
           {musics?.map(
             ({ id, title, band, user, composers, lyrists, link }) => {
-              if (link.itunes && itunesMusics.data) {
+              if (
+                itunesMusics.data &&
+                itunesMusics.data[i] &&
+                link.itunes === itunesMusics.data[i].trackId
+              ) {
                 imageUrl = itunesMusics.data[i].artworkUrl60;
                 i += 1;
               } else {

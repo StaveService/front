@@ -104,6 +104,7 @@ describe("axios", () => {
           itunes: 0,
           musixmatch: 0,
           spotify: "spotify",
+          youtube: "",
         },
       });
       music = res.data;

@@ -53,13 +53,13 @@
 | type            | key                                                                                                   |
 | --------------- | ----------------------------------------------------------------------------------------------------- |
 | artist          | [artist, :id, { musicPage, albumPage }]                                                               |
-| artists         | [artists, :page]                                                                                      |
+| artists         | [artists, :page, :locale]                                                                             |
 | album           | [album, :id]                                                                                          |
-| albums          | [albums, :page]                                                                                       |
+| albums          | [albums, :page, :locale]                                                                              |
 | band            | [band, :id]                                                                                           |
-| bands           | [bands, :page, { musicPage, albumPage }]                                                              |
+| bands           | [bands, :page, :locale]                                                                               |
 | music           | [music, :id]                                                                                          |
-| musics          | [musics, :page]                                                                                       |
+| musics          | [musics, :page, :locale]                                                                              |
 | user            | [<br>user, :id,<br> { musicPage, bookmarkedMusicPage, bookmarkedArtistPage, bookmarkedBandPage }<br>] |
 | users           | [users, :page]                                                                                        |
 | itunesArtist    | [itunes, artist, :id]                                                                                 |

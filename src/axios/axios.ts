@@ -23,6 +23,7 @@ import {
 import routes from "../constants/routes.json";
 import baseURL from "../constants/baseURL";
 import { store } from "../store";
+import { ILocale } from "../slices/language";
 
 axios.defaults.baseURL = baseURL;
 const getLocale = () => store.getState().language.locale;
@@ -337,7 +338,7 @@ export const patchMusicLink = (
   link: Partial<Omit<IMusicLink, "id">>
 ): Promise<AxiosResponse<IMusicLink>> =>
   axios.patch(
-    `${routes.USERS}/${userId}/${routes.MUSICS}/${musicId}/${routes.LINKS}/${
+    `${routes.USERS}/${userId}${routes.MUSICS}/${musicId}${routes.LINKS}/${
       linkId || "undefined"
     }`,
     link,
@@ -348,11 +349,12 @@ export const patchMusicLink = (
 export const patchBandLink = (
   bandId: number,
   linkId: number | undefined,
-  link: Partial<Omit<IBandLink, "id">>
+  link: Partial<Omit<IBandLink, "id">>,
+  locale: ILocale
 ): Promise<AxiosResponse<IBandLink>> =>
   axios.patch(
     `${routes.BANDS}/${bandId}${routes.LINKS}/${linkId || "undefined"}`,
-    link,
+    { band_link: link, locale },
     {
       ...getHeaders(),
     }

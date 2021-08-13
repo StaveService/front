@@ -24,9 +24,11 @@ function Wikipedia({
         fn: ({ term, page }) =>
           searchWikipedia(term, page).then((res) => ({
             data: res.query.search,
-            pageCount: Math.floor(
-              res.query.searchinfo.totalhits / res.continue.sroffset
-            ),
+            pageCount: res.query.search.length
+              ? Math.floor(
+                  res.query.searchinfo.totalhits / res.continue.sroffset
+                )
+              : 1,
           })),
       }}
       onSelect={onSelect}
