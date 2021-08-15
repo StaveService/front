@@ -6,6 +6,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
+import TwitterIcon from "../Icon/Twitter";
+import LinkIconButton from "../Button/Icon/Link";
 import { IBand } from "../../interfaces";
 import routes from "../../constants/routes.json";
 import Layout, { LayoutProps } from "./Layout";
@@ -39,6 +41,17 @@ const Band: React.FC<BandProps> = ({
                 <Link component={RouterLink} to={`${routes.BANDS}/${band.id}`}>
                   {band.name}
                 </Link>
+              </TableCell>
+              <TableCell>
+                <LinkIconButton
+                  href={
+                    band.link.twitter
+                      ? `https://twitter.com/${band.link.twitter}`
+                      : undefined
+                  }
+                >
+                  <TwitterIcon />
+                </LinkIconButton>
               </TableCell>
             </TableRow>
           ))}
