@@ -64,7 +64,7 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IArtistBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      [queryKey.ARTIST, id],
+      [queryKey.ARTIST, id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -76,7 +76,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      [queryKey.ARTIST, id],
+      [queryKey.ARTIST, id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -88,7 +88,7 @@ const Show: React.FC = () => {
   const handleUpdateSuccess = (res: AxiosResponse<IArtistLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      [queryKey.ARTIST, id],
+      [queryKey.ARTIST, id, locale],
       (prev) => prev && { ...prev, link: res.data }
     );
   };
@@ -163,7 +163,6 @@ const Show: React.FC = () => {
         </Box>
       )}
       <Grid container>
-        j
         <Grid item xs={10}>
           <Typography variant="h5">
             <AccessibilityNewIcon />
@@ -252,12 +251,11 @@ const Show: React.FC = () => {
             },
           }}
           youtube={{
-            type: "v",
+            type: "channel",
             link: artist.data?.link.youtube,
-            renderDialog(type, open, baseURL, handleClose) {
+            renderDialog(open, baseURL, handleClose) {
               return (
                 <YoutubeDialog
-                  type={type}
                   id={artist.data?.link.youtube || ""}
                   baseURL={baseURL}
                   open={open}

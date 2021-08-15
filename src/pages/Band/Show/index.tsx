@@ -249,10 +249,9 @@ const Show: React.FC = () => {
           youtube={{
             type: "channel",
             link: band.data?.link.youtube,
-            renderDialog(type, open, baseURL, handleClose) {
+            renderDialog(open, baseURL, handleClose) {
               return (
                 <YoutubeDialog
-                  type={type}
                   id={band.data?.link.youtube || ""}
                   baseURL={baseURL}
                   open={open}

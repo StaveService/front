@@ -127,10 +127,9 @@ const Info: React.FC = () => {
           youtube={{
             type: "v",
             link: music?.link.youtube,
-            renderDialog(type, open, baseURL, handleClose) {
+            renderDialog(open, baseURL, handleClose) {
               return (
                 <YoutubeDialog
-                  type={type}
                   id={music?.link.youtube || ""}
                   baseURL={baseURL}
                   open={open}

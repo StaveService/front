@@ -68,16 +68,15 @@ const New: React.FC = () => {
   );
   // handlers
   const onSubmit = (data: IAlbumParams) => createMutation.mutate(data);
-  const handleSelect = (selectedItem: IItunesAlbum) =>
+  const handleSelect = (selectedItem: IItunesAlbum) => {
     setSelectedItunesAlbum(selectedItem);
+    const { collectionName, collectionId } = selectedItem;
+    setValue("title", collectionName);
+    setValue("link_attributes.itunes", collectionId);
+  };
   useEffect(() => {
     register("link_attributes.itunes");
-    if (selectedItunesAlbum) {
-      const { collectionName, collectionId } = selectedItunesAlbum;
-      setValue("title", collectionName);
-      setValue("link_attributes.itunes", collectionId);
-    }
-  }, [register, setValue, selectedItunesAlbum]);
+  }, [register]);
 
   return (
     <DefaultLayout>
