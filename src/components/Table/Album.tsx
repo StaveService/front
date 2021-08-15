@@ -53,7 +53,12 @@ const Album: React.FC<AlbumProps> = ({
         </TableHead>
         <TableBody>
           {albums?.map(({ id, title, link }) => {
-            if (link.itunes && itunesAlbums.data) {
+            if (
+              link.itunes &&
+              itunesAlbums.data &&
+              itunesAlbums.data[i] &&
+              link.itunes === itunesAlbums.data[i].collectionId
+            ) {
               imageUrl = itunesAlbums.data[i].artworkUrl60;
               i += 1;
             } else {

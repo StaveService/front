@@ -31,7 +31,6 @@ interface LinkProps {
     type: "v" | "channel";
     link?: string | null;
     renderDialog: (
-      type: "v" | "channel",
       open: boolean,
       baseURL: string,
       handleClose: () => void
@@ -200,7 +199,6 @@ const Link: React.FC<LinkProps> = ({
                 </Button>
 
                 {youtube.renderDialog(
-                  youtube.type,
                   youtubeOpen,
                   youtubeBaseURL,
                   onYoutubeClose

@@ -4,9 +4,9 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
 import LoadingButton from "../../ui/LoadingButton";
+import getIDfromYoutubeURL from "../../helpers/getIDfromYoutubeURL";
 
 type YoutubeProps = DialogProps & {
-  type: "v" | "channel";
   baseURL: string;
   id: string;
   loading: boolean;
@@ -14,7 +14,6 @@ type YoutubeProps = DialogProps & {
   onClose: () => void;
 };
 const Youtube: React.FC<YoutubeProps> = ({
-  type,
   id,
   baseURL,
   loading,
@@ -26,14 +25,12 @@ const Youtube: React.FC<YoutubeProps> = ({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setValue(e.target.value);
   const handleClick = () => {
-    let youtubeId = value;
-    if (value.includes("http")) {
-      const url = new URL(value);
-      if (type === "v") youtubeId = url.searchParams.get("v") || "";
-      if (type === "channel") [, , youtubeId] = url.pathname.split("/");
-    }
     onClose();
-    onPatch(youtubeId);
+    onPatch(getIDfromYoutubeURL(value) || "");
+  };
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setValue(e.clipboardData.getData("text"));
   };
   useEffect(() => {
     if (id) setValue(baseURL + id);
@@ -49,12 +46,14 @@ const Youtube: React.FC<YoutubeProps> = ({
           variant="outlined"
           value={value}
           onChange={handleChange}
+          onPaste={handlePaste}
           fullWidth
         />
         <LoadingButton
           fullWidth
           color="primary"
           loading={loading}
+          disabled={!!value}
           onClick={handleClick}
         >
           UPDATE
