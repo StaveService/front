@@ -2,11 +2,12 @@ import { AxiosResponse } from "axios";
 import React from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { FormattedMessage, useIntl } from "react-intl";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
-import { useDispatch, useSelector } from "react-redux";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import MusicsTable from "../../components/Table/Music";
@@ -60,6 +61,8 @@ const Show: React.FC = () => {
   const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IArtistBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
@@ -156,8 +159,12 @@ const Show: React.FC = () => {
       {artist.data?.localed && (
         <Box mb={3}>
           <Alert severity="warning">
-            <AlertTitle>Not translated</AlertTitle>
-            Please Contribute! — <strong>check it out!</strong>
+            <AlertTitle>
+              <FormattedMessage id="untranslation" />
+            </AlertTitle>
+            <strong>
+              <FormattedMessage id="pleaseTranslate" />
+            </strong>
           </Alert>
         </Box>
       )}
@@ -180,7 +187,8 @@ const Show: React.FC = () => {
           <TranslateDialog<IArtist, IArtistParams>
             queryKey={queryKey.ARTIST}
             name="name"
-            label="Name"
+            inputLabel={intl.formatMessage({ id: "name" })}
+            buttonLabel={intl.formatMessage({ id: "translateName" })}
             patchFn={patchArtist}
           />
         </Grid>

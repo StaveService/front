@@ -4,10 +4,20 @@ type IMessages = Record<
   | "createAlbum"
   | "createMusic"
   | "createBand"
-  | "searchByItunes"
+  | "edit"
+  | "file"
+  | "issues"
+  | "lyric"
+  | "info"
   | "music"
   | "name"
-  | "title",
+  | "pleaseTranslate"
+  | "searchByItunes"
+  | "setting"
+  | "title"
+  | "translateTitle"
+  | "untranslation"
+  | "watchScore",
   string
 >;
 export default IMessages;

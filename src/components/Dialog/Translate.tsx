@@ -23,7 +23,8 @@ import { selectLocale } from "../../slices/language";
 interface TranslateProps<IModel, IModelParams> {
   queryKey: string;
   name: string;
-  label: string;
+  inputLabel: string;
+  buttonLabel: string;
   patchFn: (id: number, params: IModelParams) => Promise<AxiosResponse<IModel>>;
 }
 
@@ -33,7 +34,8 @@ function Translate<
 >({
   queryKey,
   name,
-  label,
+  inputLabel,
+  buttonLabel,
   patchFn,
 }: TranslateProps<IModel, IModelParams>): JSX.Element {
   const [open, handleOpen, handleClose] = useOpen();
@@ -76,7 +78,7 @@ function Translate<
             <ControlTextField
               name={name}
               defaultValue=""
-              label={label}
+              label={inputLabel}
               variant="outlined"
               control={control}
               errors={errors}
@@ -101,7 +103,7 @@ function Translate<
               loading={updateMutation.isLoading}
               fullWidth
             >
-              Translate {label}
+              {buttonLabel}
             </LoadingButton>
           </DialogActions>
         </form>
