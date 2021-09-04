@@ -9,6 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
 import TextFieldsIcon from "@material-ui/icons/TextFields";
 import { Box, LinearProgress } from "@material-ui/core";
+import { FormattedMessage } from "react-intl";
 import LinkButton from "../Button/Link";
 import TwitterIcon from "../Icon/Twitter";
 import ItunesIcon from "../Icon/Itunes";
@@ -72,7 +73,9 @@ const Link: React.FC<LinkProps> = ({
         <TableHead>
           <TableRow>
             <TableCell>Link</TableCell>
-            <TableCell>Edit</TableCell>
+            <TableCell>
+              <FormattedMessage id="edit" />
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -92,7 +95,7 @@ const Link: React.FC<LinkProps> = ({
               </TableCell>
               <TableCell>
                 <Button variant="text" onClick={onTwitterOpen}>
-                  Edit
+                  <FormattedMessage id="edit" />
                 </Button>
                 {twitter.renderDialog(twitterOpen, onTwitterClose)}
               </TableCell>
@@ -107,7 +110,7 @@ const Link: React.FC<LinkProps> = ({
               </TableCell>
               <TableCell>
                 <Button variant="text" onClick={onItunesOpen}>
-                  Edit
+                  <FormattedMessage id="edit" />
                 </Button>
 
                 {itunes.renderDialog(itunesOpen, onItunesClose)}
@@ -130,7 +133,7 @@ const Link: React.FC<LinkProps> = ({
               </TableCell>
               <TableCell>
                 <Button variant="text" onClick={onSpotifyOpen}>
-                  Edit
+                  <FormattedMessage id="edit" />
                 </Button>
 
                 {spotify.renderDialog(spotifyOpen, onSpotifyClose)}
@@ -151,7 +154,7 @@ const Link: React.FC<LinkProps> = ({
               </TableCell>
               <TableCell>
                 <Button variant="text" onClick={onMusixmatchOpen}>
-                  Edit
+                  <FormattedMessage id="edit" />
                 </Button>
 
                 {musixmatch.renderDialog(musixmatchOpen, onMusixmatchClose)}
@@ -174,7 +177,7 @@ const Link: React.FC<LinkProps> = ({
               </TableCell>
               <TableCell>
                 <Button variant="text" onClick={onWikipediaOpen}>
-                  Edit
+                  <FormattedMessage id="edit" />
                 </Button>
 
                 {wikipedia.renderDialog(wikipediaOpen, onWikipediaClose)}
@@ -195,7 +198,7 @@ const Link: React.FC<LinkProps> = ({
               </TableCell>
               <TableCell>
                 <Button variant="text" onClick={onYoutubeOpen}>
-                  Edit
+                  <FormattedMessage id="edit" />
                 </Button>
 
                 {youtube.renderDialog(
