@@ -6,6 +6,7 @@ type IMessages = Record<
   | "band"
   | "bands"
   | "composers"
+  | "contact"
   | "createArtist"
   | "createAlbum"
   | "createMusic"

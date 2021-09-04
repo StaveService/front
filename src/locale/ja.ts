@@ -7,6 +7,7 @@ const ja: IMessages = {
   artists: "アーティスト",
   band: "バンド",
   bands: "バンド",
+  contact: "問い合わせ",
   composers: "作曲者",
   createArtist: "アーティストを作成",
   createAlbum: "アルバムを作成",
