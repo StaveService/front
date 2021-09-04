@@ -173,13 +173,13 @@ const Header: React.FC = () => {
                           component={RouterLink}
                           to={`${routes.USERS}/${currentUser.id}`}
                         >
-                          Account
+                          <FormattedMessage id="account" />
                         </MenuItem>
                         <MenuItem
                           disabled={signOut.isLoading}
                           onClick={handleSignOut}
                         >
-                          Logout
+                          <FormattedMessage id="signout" />
                         </MenuItem>
                       </Popover>
                     </>

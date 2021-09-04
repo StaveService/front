@@ -1,12 +1,15 @@
 import IMessages from "./type";
 
 const ja: IMessages = {
+  account: "アカウント",
   album: "アルバム",
   albums: "アルバム",
   artist: "アーティスト",
   artists: "アーティスト",
   band: "バンド",
   bands: "バンド",
+  beBookmarked: "{username}が{music}をお気に入りしました",
+  beFollowed: "{username}にフォローされました",
   contact: "問い合わせ",
   create: "作成",
   composer: "作曲者",
@@ -27,6 +30,7 @@ const ja: IMessages = {
   music: "曲",
   musics: "曲",
   name: "名前",
+  noNotification: "",
   nickname: "ニックネーム",
   pleaseTranslate: "翻訳のご協力お願いします",
   password: "パスワード",

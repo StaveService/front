@@ -1,12 +1,15 @@
 import IMessages from "./type";
 
 const en: IMessages = {
+  account: "Account",
   album: "album",
   albums: "albums",
   artist: "artist",
   artists: "artists",
   band: "band",
   bands: "bands",
+  beFollowed: "followed by {username}",
+  beBookmarked: "{music} bookmarked by {username}",
   contact: "contact",
   create: "create",
   composer: "composer",
@@ -27,6 +30,7 @@ const en: IMessages = {
   music: "music",
   musics: "musics",
   name: "name",
+  noNotification: "No Notification",
   nickname: "nickname",
   password: "Password",
   passwordConfirmation: "Password Confirmation",
