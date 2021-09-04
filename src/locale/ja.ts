@@ -6,6 +6,7 @@ const ja: IMessages = {
   createAlbum: "アルバムを作成",
   createMusic: "曲を作成",
   createBand: "バンドを作成",
+  searchByItunes: "iTunesで検索",
   music: "曲",
   name: "名前",
   title: "タイトル",

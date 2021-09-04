@@ -6,6 +6,7 @@ const en: IMessages = {
   createAlbum: "Create Album",
   createMusic: "Create Music",
   createBand: "Create Band",
+  searchByItunes: "Search By Itunes",
   music: "music",
   name: "name",
   title: "title",

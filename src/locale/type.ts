@@ -4,6 +4,7 @@ type IMessages = Record<
   | "createAlbum"
   | "createMusic"
   | "createBand"
+  | "searchByItunes"
   | "music"
   | "name"
   | "title",
