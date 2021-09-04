@@ -20,7 +20,6 @@ import TwitterDialog from "../../components/Dialog/Twitter";
 import WikipediaDialog from "../../components/Dialog/Wikipedia";
 import TranslateDialog from "../../components/Dialog/Translate";
 import YoutubeDialog from "../../components/Dialog/Youtube";
-
 import DefaultLayout from "../../layout/Default";
 import {
   IArtist,

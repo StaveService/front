@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
-import { useMutation, useQuery, useQueryClient } from "react-query";
 import ControlTextField from "../../components/ControlTextField/ControlTextField";
 import AlbumTable from "../../components/Table/Album";
 import LoadingButton from "../../ui/LoadingButton";
@@ -47,6 +48,8 @@ const New: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IAlbum>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${routes.ALBUMS}/${res.data.id}`);
@@ -89,7 +92,7 @@ const New: React.FC = () => {
             name="title"
             defaultValue=""
             autoComplete="on"
-            label="Title"
+            label={intl.formatMessage({ id: "title" })}
             variant="outlined"
             control={control}
             errors={errors}
@@ -133,7 +136,7 @@ const New: React.FC = () => {
             onClick={handleSubmit(onSubmit)}
             fullWidth
           >
-            Create Album
+            <FormattedMessage id="createAlbum" />
           </LoadingButton>
         </Box>
       </Paper>

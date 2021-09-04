@@ -4,6 +4,7 @@ import { useDebounce } from "use-debounce";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
@@ -48,6 +49,8 @@ const New: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IBand>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${routes.BANDS}/${res.data.id}`);
@@ -92,7 +95,7 @@ const New: React.FC = () => {
             name="name"
             defaultValue=""
             autoComplete="on"
-            label="Name"
+            label={intl.formatMessage({ id: "name" })}
             variant="outlined"
             control={control}
             errors={errors}
@@ -136,7 +139,7 @@ const New: React.FC = () => {
             onClick={handleSubmit(onSubmit)}
             fullWidth
           >
-            Create Band
+            <FormattedMessage id="createBand" />
           </LoadingButton>
         </Box>
       </Paper>

@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import Image from "material-ui-image";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import { useMutation, useQuery, useQueryClient } from "react-query";
 import ControlTextField from "../../components/ControlTextField/ControlTextField";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingButton from "../../ui/LoadingButton";
@@ -57,6 +58,8 @@ const New: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IMusic>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
@@ -100,7 +103,7 @@ const New: React.FC = () => {
             name="title"
             defaultValue=""
             autoComplete="on"
-            label="Title"
+            label={intl.formatMessage({ id: "title" })}
             variant="outlined"
             control={control}
             errors={errors}
@@ -144,7 +147,7 @@ const New: React.FC = () => {
             onClick={handleSubmit(onSubmit)}
             fullWidth
           >
-            Create Music
+            <FormattedMessage id="createMusic" />
           </LoadingButton>
         </Box>
       </Paper>

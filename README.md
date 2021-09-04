@@ -37,6 +37,7 @@
 - [react-use](https://github.com/streamich/react-use)
 - [react-script-hook](https://github.com/hupe1980/react-script-hook)
 - [react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)
+- [react-intl](https://github.com/formatjs/formatjs)
 - [redux-toolkit](https://redux-toolkit.js.org/)
 - [redux-persist](https://github.com/rt2zz/redux-persist)
 - [redux-logger](https://github.com/LogRocket/redux-logger)

@@ -3,10 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import { useMutation, useQuery, useQueryClient } from "react-query";
 import { IArtistParams, postArtist } from "../../axios/axios";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField/ControlTextField";
@@ -48,6 +49,8 @@ const New: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IArtist>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
@@ -92,7 +95,7 @@ const New: React.FC = () => {
             name="name"
             defaultValue=""
             autoComplete="on"
-            label="Name"
+            label={intl.formatMessage({ id: "name" })}
             variant="outlined"
             control={control}
             errors={errors}
@@ -136,7 +139,7 @@ const New: React.FC = () => {
             onClick={handleSubmit(onSubmit)}
             fullWidth
           >
-            Create Artist
+            <FormattedMessage id="createArtist" />
           </LoadingButton>
         </Box>
       </Paper>
