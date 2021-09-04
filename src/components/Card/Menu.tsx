@@ -1,4 +1,5 @@
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import { Link as RouterLink } from "react-router-dom";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -14,47 +15,29 @@ import routes from "../../constants/routes.json";
 import { MenuCardType } from "../../interfaces";
 
 interface ILayout {
-  type: MenuCardType;
+  icon: React.ReactNode;
+  title: MenuCardType;
+  messageId: string;
+  to: string;
 }
-const Layout: React.FC<ILayout> = ({ type }: ILayout) => {
-  let icon = null;
-  let to = "";
-  const size = "large";
-  switch (type) {
-    case "Album":
-      icon = <AlbumIcon fontSize={size} />;
-      to = routes.ALBUMS;
-      break;
-    case "Artist":
-      icon = <AccessibilityNewIcon fontSize={size} />;
-      to = routes.ARTISTS;
-      break;
-    case "Music":
-      icon = <MusicNoteIcon fontSize={size} />;
-      to = routes.MUSICS;
-      break;
-    case "Band":
-      icon = <GroupIcon fontSize={size} />;
-      to = routes.BANDS;
-      break;
-    default:
-      return null;
-  }
+const Layout: React.FC<ILayout> = ({ icon, title, messageId, to }: ILayout) => {
   return (
     <Card variant="outlined">
       <CardContent>
         <Box textAlign="center">{icon}</Box>
         <Typography variant="h5" component="h2">
-          {type}
+          <FormattedMessage id={title} />
         </Typography>
-        <Typography color="textSecondary">create {type}</Typography>
+        <Typography color="textSecondary">
+          <FormattedMessage id={messageId} />
+        </Typography>
         <Typography variant="body2" component="p">
-          create {type}
+          <FormattedMessage id={messageId} />
         </Typography>
       </CardContent>
       <CardActions>
         <Button size="small" component={RouterLink} to={`${to}${routes.NEW}`}>
-          Create
+          <FormattedMessage id="create" />
         </Button>
       </CardActions>
     </Card>

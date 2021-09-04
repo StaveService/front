@@ -1,5 +1,6 @@
 import React from "react";
 import { useQuery } from "react-query";
+import { FormattedMessage } from "react-intl";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
@@ -40,12 +41,12 @@ const BandCard: React.FC<IMusicCard> = ({ music, onClick }: IMusicCard) => {
           </Typography>
           {music.band?.name && (
             <Typography color="textSecondary" noWrap>
-              Band: {music.band?.name}
+              <FormattedMessage id="band" />: {music.band?.name}
             </Typography>
           )}
           {music.composers?.length ? (
             <Typography color="textSecondary" noWrap>
-              Composer:{" "}
+              <FormattedMessage id="composer" />:{" "}
               {music.composers.map((composer) => (
                 <span key={composer.id}>{composer.name}</span>
               ))}

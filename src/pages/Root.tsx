@@ -4,6 +4,10 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
+import AlbumIcon from "@material-ui/icons/Album";
+import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
+import MusicNoteIcon from "@material-ui/icons/MusicNote";
+import GroupIcon from "@material-ui/icons/Group";
 import Image from "material-ui-image";
 import { useSelector } from "react-redux";
 import MusicsTable from "../components/Table/Music";
@@ -85,16 +89,36 @@ const Root: React.FC = () => {
       <Box mb={3}>
         <Grid container spacing={2}>
           <Grid item xs={3}>
-            <MenuCard type="Music" />
+            <MenuCard
+              icon={<MusicNoteIcon fontSize="large" />}
+              title="music"
+              messageId="createMusic"
+              to="musics"
+            />
           </Grid>
           <Grid item xs={3}>
-            <MenuCard type="Album" />
+            <MenuCard
+              icon={<AlbumIcon fontSize="large" />}
+              title="album"
+              messageId="createAlbum"
+              to="albums"
+            />
           </Grid>
           <Grid item xs={3}>
-            <MenuCard type="Artist" />
+            <MenuCard
+              icon={<AccessibilityNewIcon fontSize="large" />}
+              title="artist"
+              messageId="createArtist"
+              to="artists"
+            />
           </Grid>
           <Grid item xs={3}>
-            <MenuCard type="Band" />
+            <MenuCard
+              icon={<GroupIcon fontSize="large" />}
+              title="band"
+              messageId="createBand"
+              to="bands"
+            />
           </Grid>
         </Grid>
       </Box>

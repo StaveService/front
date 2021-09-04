@@ -8,6 +8,8 @@ const en: IMessages = {
   band: "band",
   bands: "bands",
   contact: "contact",
+  create: "create",
+  composer: "composer",
   composers: "composers",
   createArtist: "Create Artist",
   createAlbum: "Create Album",
