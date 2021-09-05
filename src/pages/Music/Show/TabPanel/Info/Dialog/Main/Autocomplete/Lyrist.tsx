@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import React, { ChangeEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
+import { useIntl } from "react-intl";
 import { useParams } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/TextField/AutocompleteTextField";
@@ -34,6 +35,8 @@ const Lyrist: React.FC = () => {
   const userId = Number(params.userId);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const handleCreateSuccess = (
     res: AxiosResponse<IArtist>,
@@ -93,7 +96,7 @@ const Lyrist: React.FC = () => {
       onSelectOption={handleSelectOption}
       onRemoveOption={handleRemoveOption}
       textFieldProps={{
-        label: "Lyrists",
+        label: intl.formatMessage({ id: "lyrists" }),
         variant: "outlined",
         margin: "normal",
       }}

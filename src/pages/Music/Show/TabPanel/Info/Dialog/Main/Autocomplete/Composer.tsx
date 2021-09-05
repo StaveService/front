@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
+import { useIntl } from "react-intl";
 import AutocompleteTextField from "../../../../../../../../components/TextField/AutocompleteTextField";
 import { IArtist, IMusic } from "../../../../../../../../interfaces";
 import queryKey from "../../../../../../../../constants/queryKey.json";
@@ -34,6 +35,8 @@ const Composer: React.FC = () => {
   const userId = Number(params.userId);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const handleCreateSuccess = (
     res: AxiosResponse<IArtist>,
@@ -89,7 +92,7 @@ const Composer: React.FC = () => {
       onSelectOption={handleSelectOption}
       onRemoveOption={handleRemoveOption}
       textFieldProps={{
-        label: "Composers",
+        label: intl.formatMessage({ id: "composers" }),
         variant: "outlined",
         margin: "normal",
       }}

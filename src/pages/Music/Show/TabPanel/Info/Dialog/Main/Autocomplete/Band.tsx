@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import React, { ChangeEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
+import { useIntl } from "react-intl";
 import { useRouteMatch } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/TextField/AutocompleteTextField";
@@ -34,6 +35,8 @@ const Band: React.FC = () => {
   const id = Number(match.params.id);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const handleCreateSuccess = (
     res: AxiosResponse<IBand>,
@@ -90,7 +93,7 @@ const Band: React.FC = () => {
       onSelectOption={handleSelectOption}
       onRemoveOption={handleRemoveOption}
       textFieldProps={{
-        label: "Band",
+        label: intl.formatMessage({ id: "band" }),
         variant: "outlined",
         margin: "normal",
       }}

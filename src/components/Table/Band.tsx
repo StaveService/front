@@ -33,6 +33,7 @@ const Band: React.FC<BandProps> = ({
                 <FormattedMessage id="bands" />
               </Link>
             </TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>

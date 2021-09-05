@@ -1,6 +1,8 @@
 import React from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { Link as RouterLink, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { FormattedMessage } from "react-intl";
 import { format } from "date-fns";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -11,7 +13,6 @@ import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import { useDispatch, useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
 import AlbumsTable from "../../../../../components/Table/Album";
 import LinkTable from "../../../../../components/Table/Link";
@@ -171,20 +172,26 @@ const Info: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Main</TableCell>
+                <TableCell>
+                  <FormattedMessage id="main" />
+                </TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell>ReleaseDate</TableCell>
+                <TableCell>
+                  <FormattedMessage id="releaseDate" />
+                </TableCell>
                 <TableCell>
                   {itunesMusic?.releaseDate &&
                     format(new Date(itunesMusic.releaseDate), "yyyy/MM/dd")}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Composer</TableCell>
+                <TableCell>
+                  <FormattedMessage id="composers" />
+                </TableCell>
                 <TableCell>
                   {music?.composers?.map((composer) => (
                     <Link
@@ -198,7 +205,9 @@ const Info: React.FC = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Lyrists</TableCell>
+                <TableCell>
+                  <FormattedMessage id="lyrists" />
+                </TableCell>
                 <TableCell>
                   {music?.lyrists?.map((lyrists) => (
                     <Link
@@ -212,7 +221,9 @@ const Info: React.FC = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Band</TableCell>
+                <TableCell>
+                  <FormattedMessage id="band" />
+                </TableCell>
                 <TableCell>
                   {music?.band && (
                     <Link
@@ -225,7 +236,9 @@ const Info: React.FC = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Created by</TableCell>
+                <TableCell>
+                  <FormattedMessage id="user" />
+                </TableCell>
                 <TableCell>
                   {music?.user && (
                     <Link
@@ -247,8 +260,12 @@ const Info: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Role</TableCell>
-                <TableCell>Artist</TableCell>
+                <TableCell>
+                  <FormattedMessage id="role" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="artist" />
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

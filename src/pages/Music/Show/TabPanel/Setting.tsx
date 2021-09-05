@@ -3,12 +3,13 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
+import { useMutation, useQueryClient } from "react-query";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import { useMutation, useQueryClient } from "react-query";
 import ControlTextField from "../../../../components/ControlTextField/ControlTextField";
 import LoadingButton from "../../../../ui/LoadingButton";
 import { setHeaders } from "../../../../slices/currentUser/currentUser";
@@ -45,7 +46,9 @@ const Setting: React.FC = () => {
     <>
       <Dialog onClose={handleClose} open={open}>
         <Box m={3}>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogTitle>
+            <FormattedMessage id="alertDelete" />
+          </DialogTitle>
           <Typography>
             Please type{" "}
             <Box display="inline" fontWeight="Bold">

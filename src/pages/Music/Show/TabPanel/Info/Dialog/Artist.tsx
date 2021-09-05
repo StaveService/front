@@ -3,6 +3,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
+import { FormattedMessage, useIntl } from "react-intl";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
@@ -61,6 +62,8 @@ const Artist: React.FC = () => {
   const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
@@ -122,18 +125,28 @@ const Artist: React.FC = () => {
   }, [register]);
   return (
     <>
-      <Button onClick={handleOpen}>Edit</Button>
+      <Button onClick={handleOpen}>
+        <FormattedMessage id="edit" />
+      </Button>
       <Dialog onClose={handleClose} open={open} fullWidth>
-        <DialogTitle>Role</DialogTitle>
+        <DialogTitle>
+          <FormattedMessage id="role" />
+        </DialogTitle>
         <Container>
           <Box mb={3}>
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Role</TableCell>
-                    <TableCell>Artist</TableCell>
-                    <TableCell align="right">Delete</TableCell>
+                    <TableCell>
+                      <FormattedMessage id="role" />
+                    </TableCell>
+                    <TableCell>
+                      <FormattedMessage id="artist" />
+                    </TableCell>
+                    <TableCell align="right">
+                      <FormattedMessage id="delete" />
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -191,7 +204,7 @@ const Artist: React.FC = () => {
                   onSelectOption={handleSelectOption}
                   onRemoveOption={handleRemoveOption}
                   textFieldProps={{
-                    label: "Artist",
+                    label: intl.formatMessage({ id: "artist" }),
                     variant: "outlined",
                   }}
                   autocompleteProps={{
@@ -213,7 +226,7 @@ const Artist: React.FC = () => {
               onClick={handleSubmit(onSubmit)}
               fullWidth
             >
-              Add Artist
+              <FormattedMessage id="addArtist" />
             </LoadingButton>
           </Box>
         </Container>

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
 import { useMutation } from "react-query";
+import { FormattedMessage, useIntl } from "react-intl";
 import ControlTextField from "../../../../../components/ControlTextField/ControlTextField";
 import LoadingButton from "../../../../../ui/LoadingButton";
 import { issueSchema } from "../../../../../schema";
@@ -25,6 +26,7 @@ const New: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { onError } = useQuerySnackbar();
+  const intl = useIntl();
   const onSuccess = (res: AxiosResponse<IIssue>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
@@ -43,7 +45,7 @@ const New: React.FC = () => {
         name="title"
         defaultValue=""
         autoComplete="on"
-        label="Title"
+        label={intl.formatMessage({ id: "title" })}
         variant="outlined"
         margin="normal"
         control={control}
@@ -55,7 +57,7 @@ const New: React.FC = () => {
         name="description"
         defaultValue=""
         autoComplete="on"
-        label="Description"
+        label={intl.formatMessage({ id: "description" })}
         variant="outlined"
         margin="normal"
         control={control}
@@ -66,7 +68,7 @@ const New: React.FC = () => {
         multiline
       />
       <LoadingButton type="submit" loading={isLoading}>
-        create issue
+        <FormattedMessage id="createIssue" />
       </LoadingButton>
     </form>
   );

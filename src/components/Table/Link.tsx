@@ -72,7 +72,9 @@ const Link: React.FC<LinkProps> = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Link</TableCell>
+            <TableCell>
+              <FormattedMessage id="link" />
+            </TableCell>
             <TableCell>
               <FormattedMessage id="edit" />
             </TableCell>

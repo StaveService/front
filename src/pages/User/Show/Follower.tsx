@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
+import { FormattedMessage } from "react-intl";
 import DefaultLayout from "../../../layout/Default";
 import UserTable from "../../../components/Table/User";
 import queryKey from "../../../constants/queryKey.json";
@@ -19,7 +20,7 @@ const Follower: React.FC = () => {
   return (
     <DefaultLayout>
       <Typography variant="h5" color="initial">
-        Followers
+        <FormattedMessage id="follower" />
       </Typography>
       <UserTable
         users={followers.data?.data}
