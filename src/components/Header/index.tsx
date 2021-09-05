@@ -4,6 +4,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useSnackbar } from "notistack";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import AppBar from "@material-ui/core/AppBar";
@@ -40,6 +41,7 @@ const Header: React.FC = () => {
   const headers = useSelector(selectHeaders);
   const locale = useSelector(selectLocale);
   const history = useHistory();
+  const intl = useIntl();
   const onMutate = () => {
     dispatch(remove());
     history.push({
@@ -47,7 +49,7 @@ const Header: React.FC = () => {
     });
   };
   const onSuccess = () => {
-    enqueueSnackbar("SignOut successful", {
+    enqueueSnackbar(intl.formatMessage({ id: "signoutSuccessful" }), {
       variant: "success",
       anchorOrigin: {
         vertical: "bottom",
@@ -98,7 +100,7 @@ const Header: React.FC = () => {
                   component={RouterLink}
                   to={routes.SIGNIN}
                 >
-                  SignIn
+                  <FormattedMessage id="signin" />
                 </Button>
                 <Button
                   color="inherit"
@@ -106,7 +108,7 @@ const Header: React.FC = () => {
                   component={RouterLink}
                   to={routes.SIGNUP}
                 >
-                  SignUp
+                  <FormattedMessage id="signup" />
                 </Button>
               </>
             ) : (
@@ -171,13 +173,13 @@ const Header: React.FC = () => {
                           component={RouterLink}
                           to={`${routes.USERS}/${currentUser.id}`}
                         >
-                          Account
+                          <FormattedMessage id="account" />
                         </MenuItem>
                         <MenuItem
                           disabled={signOut.isLoading}
                           onClick={handleSignOut}
                         >
-                          Logout
+                          <FormattedMessage id="signout" />
                         </MenuItem>
                       </Popover>
                     </>

@@ -1,4 +1,5 @@
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
@@ -13,11 +14,15 @@ const Edit: React.FC = () => {
   const [open, handleOpen, handleClose] = useOpen();
   return (
     <>
-      <Button onClick={handleOpen}>Edit</Button>
+      <Button onClick={handleOpen}>
+        <FormattedMessage id="edit" />
+      </Button>
       <Dialog onClose={handleClose} open={open} fullWidth>
         <Container>
           <Box mb={3}>
-            <DialogTitle>Edit Info</DialogTitle>
+            <DialogTitle>
+              <FormattedMessage id="editInfo" />
+            </DialogTitle>
             <ComposerAutocomplete />
             <LyristAutocomplete />
             <BandAutocomplete />

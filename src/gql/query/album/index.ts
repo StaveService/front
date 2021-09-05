@@ -13,6 +13,10 @@ const albumQuery = gql`
       artists {
         id
         name(locale: $locale)
+        link {
+          id
+          twitter
+        }
       }
       bookmark(currentUserId: $currentUserId) {
         id

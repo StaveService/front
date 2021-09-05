@@ -1,9 +1,10 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FormattedMessage } from "react-intl";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import { useDispatch, useSelector } from "react-redux";
 import {
   ICountryCode,
   ILocale,
@@ -34,7 +35,9 @@ const Setting: React.FC<SettingProps> = ({
   };
   return (
     <Dialog onClose={handleClose} open={open} fullWidth>
-      <DialogTitle>Setting</DialogTitle>
+      <DialogTitle>
+        <FormattedMessage id="setting" />
+      </DialogTitle>
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"

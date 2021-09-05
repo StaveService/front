@@ -1,4 +1,5 @@
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import { Link as RouterLink } from "react-router-dom";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
@@ -28,7 +29,9 @@ const Files: React.FC<FilesProps> = ({
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>files</TableCell>
+            <TableCell>
+              <FormattedMessage id="file" />
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

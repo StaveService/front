@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import { AxiosResponse } from "axios";
 import Link from "@material-ui/core/Link";
+import { FormattedMessage, useIntl } from "react-intl";
 import FollowButton from "../../../components/Button/Follow";
 import MusicsTabPanel from "./TabPanel/Musics";
 import ProfileTabPanel from "./TabPanel/Profile";
@@ -45,6 +46,8 @@ const Show: React.FC = () => {
   const id = Number(match.params.id);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const { isLoading, data } = useQuery(
     [queryKey.USER, id],
     getUser(id, currentUser?.id),
@@ -93,9 +96,7 @@ const Show: React.FC = () => {
               onFollow={handleFollow}
               onUnfollow={handleUnfollow}
               disabled={isLoading}
-            >
-              Follow
-            </FollowButton>
+            />
           )}
         </Grid>
       </Grid>
@@ -105,7 +106,8 @@ const Show: React.FC = () => {
             component={RouterLink}
             to={`${routes.USERS}/${id}${routes.FOLLOWERS}`}
           >
-            {data?.followersCount}Followers
+            {data?.followersCount}
+            <FormattedMessage id="follower" />
           </Link>
         </Grid>
         <Grid item>
@@ -113,7 +115,8 @@ const Show: React.FC = () => {
             component={RouterLink}
             to={`${routes.USERS}/${id}${routes.FOLLOWING}`}
           >
-            {data?.followingCount}Following
+            {data?.followingCount}
+            <FormattedMessage id="following" />
           </Link>
         </Grid>
       </Grid>
@@ -126,25 +129,25 @@ const Show: React.FC = () => {
         }
       >
         <Tab
-          label="Profile"
+          label={intl.formatMessage({ id: "profile" })}
           value={match.url}
           component={RouterLink}
           to={match.url}
         />
         <Tab
-          label="Musics"
+          label={intl.formatMessage({ id: "musics" })}
           value={match.url + routes.MUSICS}
           component={RouterLink}
           to={match.url + routes.MUSICS}
         />
         <Tab
-          label="Bookmark"
+          label={intl.formatMessage({ id: "bookmark" })}
           value={match.url + routes.BOOKMARKS}
           component={RouterLink}
           to={match.url + routes.BOOKMARKS}
         />
         <Tab
-          label="Setting"
+          label={intl.formatMessage({ id: "setting" })}
           value={match.url + routes.SETTING}
           component={RouterLink}
           to={match.url + routes.SETTING}

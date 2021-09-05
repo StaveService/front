@@ -1,5 +1,6 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -29,9 +30,10 @@ const Band: React.FC<BandProps> = ({
           <TableRow>
             <TableCell>
               <Link component={RouterLink} to={`${routes.BANDS}`}>
-                Band
+                <FormattedMessage id="bands" />
               </Link>
             </TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>

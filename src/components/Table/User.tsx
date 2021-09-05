@@ -6,11 +6,12 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
+import { FormattedMessage } from "react-intl";
+import Layout, { LayoutProps } from "./Layout";
 import TwitterIcon from "../Icon/Twitter";
 import LinkIconButton from "../Button/Icon/Link";
 import { IUser } from "../../interfaces";
 import routes from "../../constants/routes.json";
-import Layout, { LayoutProps } from "./Layout";
 
 interface UserProps extends LayoutProps {
   users: IUser[] | undefined;
@@ -26,7 +27,9 @@ const User: React.FC<UserProps> = ({
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell>Name</TableCell>
+          <TableCell>
+            <FormattedMessage id="name" />
+          </TableCell>
           <TableCell>{/* twitter */}</TableCell>
         </TableRow>
       </TableHead>

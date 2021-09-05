@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "react-query";
 import { Link as RouterLink } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
 import Image from "material-ui-image";
 import Link from "@material-ui/core/Link";
 import Table from "@material-ui/core/Table";
@@ -18,7 +19,6 @@ import Layout, { LayoutProps } from "./Layout";
 interface AlbumProps extends LayoutProps {
   albums: IAlbum[];
 }
-
 const Album: React.FC<AlbumProps> = ({
   albums,
   loading,
@@ -46,7 +46,7 @@ const Album: React.FC<AlbumProps> = ({
             <TableCell />
             <TableCell>
               <Link component={RouterLink} to={routes.ALBUMS}>
-                Albums
+                <FormattedMessage id="albums" />
               </Link>
             </TableCell>
           </TableRow>

@@ -3,6 +3,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import GroupIcon from "@material-ui/icons/Group";
@@ -61,6 +62,8 @@ const Show: React.FC = () => {
   const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IBandBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
@@ -157,8 +160,12 @@ const Show: React.FC = () => {
       {band.data?.localed && (
         <Box mb={3}>
           <Alert severity="warning">
-            <AlertTitle>Not translated</AlertTitle>
-            Please Contribute! — <strong>check it out!</strong>
+            <AlertTitle>
+              <FormattedMessage id="untranslation" />
+            </AlertTitle>
+            <strong>
+              <FormattedMessage id="pleaseTranslate" />
+            </strong>
           </Alert>
         </Box>
       )}
@@ -181,7 +188,8 @@ const Show: React.FC = () => {
           <TranslateDialog<IBand, IBandParams>
             queryKey={queryKey.BAND}
             name="name"
-            label="Name"
+            inputLabel={intl.formatMessage({ id: "name" })}
+            buttonLabel={intl.formatMessage({ id: "translateName" })}
             patchFn={patchBand}
           />
         </Grid>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { useQuery } from "react-query";
+import { FormattedMessage, useIntl } from "react-intl";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
@@ -17,6 +18,7 @@ const Index: React.FC = () => {
   // const [searchValue, setSearchValue] = useState("");
   const match = useRouteMatch<{ id: string }>();
   const { onError } = useQuerySnackbar();
+  const intl = useIntl();
   const handleKeyPress = () =>
     /* e: React.KeyboardEvent<HTMLDivElement> */
     {
@@ -34,7 +36,7 @@ const Index: React.FC = () => {
           <Grid item xs={10}>
             <TextField
               variant="outlined"
-              label="Search Issues"
+              label={intl.formatMessage({ id: "searchIssues" })}
               onKeyPress={handleKeyPress}
               fullWidth
             />
@@ -45,7 +47,7 @@ const Index: React.FC = () => {
               component={RouterLink}
               to={match.url + routes.NEW}
             >
-              New
+              <FormattedMessage id="create" />
             </Button>
           </Grid>
         </Grid>
