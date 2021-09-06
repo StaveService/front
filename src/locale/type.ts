@@ -1,3 +1,5 @@
+import IUiMessages from "../ui/locale/type";
+
 type IMessages = Record<
   | "album"
   | "albums"
@@ -24,15 +26,12 @@ type IMessages = Record<
   | "description"
   | "editAlbum"
   | "editInfo"
-  | "email"
   | "edit"
-  | "familyname"
   | "followUs"
   | "follower"
   | "following"
   | "unfollowUs"
   | "file"
-  | "givenname"
   | "issues"
   | "link"
   | "lyric"
@@ -43,9 +42,6 @@ type IMessages = Record<
   | "musics"
   | "name"
   | "noNotification"
-  | "nickname"
-  | "password"
-  | "passwordConfirmation"
   | "pleaseTranslate"
   | "pleaseType"
   | "profile"
@@ -53,11 +49,6 @@ type IMessages = Record<
   | "releaseDate"
   | "searchByItunes"
   | "searchIssues"
-  | "signout"
-  | "signoutSuccessful"
-  | "signin"
-  | "signinSuccessful"
-  | "signup"
   | "setting"
   | "title"
   | "translateTitle"
@@ -66,5 +57,6 @@ type IMessages = Record<
   | "untranslation"
   | "watchScore",
   string
->;
+> &
+  IUiMessages;
 export default IMessages;
