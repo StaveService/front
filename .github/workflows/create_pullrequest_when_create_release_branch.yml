@@ -1,0 +1,20 @@
+name: Release PullRequest
+
+on:
+  create:
+    branch: [release]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create Pull Request
+        env:
+          GIT_PR_RELEASE_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GIT_PR_RELEASE_BRANCH_STAGING: release
+          GIT_PR_RELEASE_BRANCH_PRODUCTION: main
+          GIT_PR_RELEASE_LABELS: release
+        run: |
+          gem install -N git-pr-release
+          git-pr-release
