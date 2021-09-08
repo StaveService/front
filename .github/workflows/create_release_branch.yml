@@ -23,9 +23,10 @@ jobs:
       
       - name: Create Pull Request
         env:
-          REVIEWERS: "izszzz"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH_NAME: ${{ steps.create_branch.outputs.branch_name }}
+          GIT_PR_RELEASE_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GIT_PR_RELEASE_BRANCH_STAGING: release
+          GIT_PR_RELEASE_BRANCH_PRODUCTION: main
+          GIT_PR_RELEASE_LABELS: release
         run: |
-          hub push
-          hub pull-request -m release -b main -h $BRANCH_NAME
+          gem install -N git-pr-release -v "1.4.0"
+          git-pr-release --no-fetch
