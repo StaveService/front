@@ -17,8 +17,7 @@ jobs:
       - name: Set up Ruby
         uses: actions/setup-ruby@v1
         with:
-          fetch-depth: 0
-
+          ruby-version: 2.7.x
       - name: Create Release Branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
