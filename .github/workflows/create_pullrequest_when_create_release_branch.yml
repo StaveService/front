@@ -9,6 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: checkout develop
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7.x
+
       - name: Create Pull Request
         env:
           GIT_PR_RELEASE_TOKEN: ${{secrets.GITHUB_TOKEN}}
