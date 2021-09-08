@@ -1,7 +1,8 @@
 import { AxiosResponse } from "axios";
 import React, { ChangeEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useIntl } from "react-intl";
 import { useParams } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/TextField/AutocompleteTextField";
@@ -14,6 +15,7 @@ import {
   postLyristMusic,
 } from "../../../../../../../../axios/axios";
 import { getArtists } from "../../../../../../../../gql";
+import { selectLocale } from "../../../../../../../../slices/language";
 
 interface MutateVariables {
   option: IArtist;
@@ -26,12 +28,15 @@ const Lyrist: React.FC = () => {
   const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-redux
   const dispatch = useDispatch();
+  const locale = useSelector(selectLocale);
   // react-router-dom
   const params = useParams<{ userId: string; id: string }>();
   const id = Number(params.id);
   const userId = Number(params.userId);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const handleCreateSuccess = (
     res: AxiosResponse<IArtist>,
@@ -73,8 +78,8 @@ const Lyrist: React.FC = () => {
   const handleRemoveOption = (option: IArtist, options: IArtist[]) =>
     destroyMutation.mutate({ option, options });
   const lyrists = useQuery(
-    [queryKey.ARTISTS, { query: debouncedInputValue }],
-    getArtists(1, { name_eq: debouncedInputValue }),
+    [queryKey.ARTISTS, locale, { query: debouncedInputValue }],
+    getArtists(1, locale, { name_eq: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
 
@@ -91,7 +96,7 @@ const Lyrist: React.FC = () => {
       onSelectOption={handleSelectOption}
       onRemoveOption={handleRemoveOption}
       textFieldProps={{
-        label: "Lyrists",
+        label: intl.formatMessage({ id: "lyrists" }),
         variant: "outlined",
         margin: "normal",
       }}

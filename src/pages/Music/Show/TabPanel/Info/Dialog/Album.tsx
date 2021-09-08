@@ -3,7 +3,8 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { FormattedMessage, useIntl } from "react-intl";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Table from "@material-ui/core/Table";
@@ -32,6 +33,7 @@ import {
   postAlbumMusic,
 } from "../../../../../../axios/axios";
 import { getAlbums } from "../../../../../../gql";
+import { selectLocale } from "../../../../../../slices/language";
 
 const Album: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -50,10 +52,13 @@ const Album: React.FC = () => {
   const id = Number(params.id);
   // react-redux
   const dispatch = useDispatch();
+  const locale = useSelector(selectLocale);
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const handleCreateSuccess = (res: AxiosResponse<IAlbumMusic>) => {
     dispatch(setHeaders(res.headers));
@@ -91,8 +96,8 @@ const Album: React.FC = () => {
     { onSuccess: handleDestroySuccess, onError }
   );
   const albums = useQuery(
-    [queryKey.ALBUMS, { query: debouncedInputValue }],
-    getAlbums(1, { title_cont: debouncedInputValue }),
+    [queryKey.ALBUMS, locale, { query: debouncedInputValue }],
+    getAlbums(1, locale, { title_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
@@ -112,16 +117,24 @@ const Album: React.FC = () => {
   }, [register]);
   return (
     <>
-      <Button onClick={handleOpen}>Edit</Button>
+      <Button onClick={handleOpen}>
+        <FormattedMessage id="edit" />
+      </Button>
       <Dialog onClose={handleClose} open={open} fullWidth>
-        <DialogTitle>Edit Albums</DialogTitle>
+        <DialogTitle>
+          <FormattedMessage id="editAlbum" />
+        </DialogTitle>
         <Container>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Album</TableCell>
-                  <TableCell align="right">Delete</TableCell>
+                  <TableCell>
+                    <FormattedMessage id="artist" />
+                  </TableCell>
+                  <TableCell align="right">
+                    <FormattedMessage id="delete" />
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -151,7 +164,7 @@ const Album: React.FC = () => {
               onSelectOption={handleSelectOption}
               onRemoveOption={handleRemoveOption}
               textFieldProps={{
-                label: "Albums",
+                label: intl.formatMessage({ id: "albums" }),
                 variant: "outlined",
                 margin: "normal",
               }}
@@ -175,7 +188,7 @@ const Album: React.FC = () => {
               onClick={handleSubmit(onSubmit)}
               fullWidth
             >
-              Add Artist
+              <FormattedMessage id="addAlbum" />
             </LoadingButton>
           </Box>
         </Container>

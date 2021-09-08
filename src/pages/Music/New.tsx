@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import Image from "material-ui-image";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import { useMutation, useQuery, useQueryClient } from "react-query";
 import ControlTextField from "../../components/ControlTextField/ControlTextField";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import LoadingButton from "../../ui/LoadingButton";
@@ -28,6 +29,7 @@ import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import usePaginate from "../../hooks/usePaginate";
 import { getMusics } from "../../gql";
+import { selectLocale } from "../../slices/language";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -44,6 +46,7 @@ const New: React.FC = () => {
   // react-redux
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
+  const locale = useSelector(selectLocale);
   // react-router-dom
   const history = useHistory();
   const match = useRouteMatch<{ id: string }>();
@@ -55,6 +58,8 @@ const New: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IMusic>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
@@ -70,8 +75,8 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.MUSICS, { page, query: debouncedTitle }],
-    getMusics(page, { title_eq: debouncedTitle }),
+    [queryKey.MUSICS, locale, { page, query: debouncedTitle }],
+    getMusics(page, locale, { title_eq: debouncedTitle }),
     { enabled: !isPending() && !!debouncedTitle, onError }
   );
   // handlers
@@ -98,7 +103,7 @@ const New: React.FC = () => {
             name="title"
             defaultValue=""
             autoComplete="on"
-            label="Title"
+            label={intl.formatMessage({ id: "title" })}
             variant="outlined"
             control={control}
             errors={errors}
@@ -142,7 +147,7 @@ const New: React.FC = () => {
             onClick={handleSubmit(onSubmit)}
             fullWidth
           >
-            Create Music
+            <FormattedMessage id="createMusic" />
           </LoadingButton>
         </Box>
       </Paper>

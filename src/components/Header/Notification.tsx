@@ -1,7 +1,9 @@
 import React from "react";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, Locale } from "date-fns";
+import { ja } from "date-fns/locale";
 import { AxiosResponse } from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { useIntl, FormattedMessage } from "react-intl";
 import { useMutation, useQueryClient } from "react-query";
 import { Link as RouterLink } from "react-router-dom";
 import Box from "@material-ui/core/Box";
@@ -18,11 +20,13 @@ import {
   selectCurrentUser,
   setHeaders,
 } from "../../slices/currentUser/currentUser";
+import { selectLocale } from "../../slices/language";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import { IIndexType, INotification } from "../../interfaces";
 import routes from "../../constants/routes.json";
 import queryKey from "../../constants/queryKey.json";
 
+const locales: { [key: string]: Locale } = { ja };
 interface NotificationProps {
   notifications: INotification[] | undefined;
   loading: boolean;
@@ -34,7 +38,9 @@ const Notification: React.FC<NotificationProps> = ({
   const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
+  const locale = useSelector(selectLocale);
   const queryClient = useQueryClient();
+  const intl = useIntl();
   const onSuccess = (res: AxiosResponse<INotification>, id: number) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<
@@ -57,7 +63,11 @@ const Notification: React.FC<NotificationProps> = ({
   return (
     <Box p={1}>
       {loading && <LinearProgress />}
-      {!notifications?.length && <Typography variant="h6">Nothing</Typography>}
+      {!notifications?.length && (
+        <Typography variant="h6">
+          <FormattedMessage id="noNotification" />
+        </Typography>
+      )}
       {notifications?.map((notification) => {
         const handleClick = () => mutate(notification.id);
         if (notification.type === "UserRelationshipNotification")
@@ -76,9 +86,16 @@ const Notification: React.FC<NotificationProps> = ({
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
-                primary={`followed by ${notification.params.userRelationship.follower.nickname}`}
+                primary={intl.formatMessage(
+                  { id: "beFollowed" },
+                  {
+                    username:
+                      notification.params.userRelationship.follower.nickname,
+                  }
+                )}
                 secondary={formatDistanceToNow(
-                  new Date(notification.createdAt)
+                  new Date(notification.createdAt),
+                  { locale: locales[locale] }
                 )}
               />
             </ListItem>
@@ -99,9 +116,16 @@ const Notification: React.FC<NotificationProps> = ({
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
-                primary={`${notification.params.musicBookmark.user.nickname} bookmarked ${notification.params.musicBookmark.music.title}`}
+                primary={intl.formatMessage(
+                  { id: "beBookmarked" },
+                  {
+                    username: notification.params.musicBookmark.user.nickname,
+                    music: notification.params.musicBookmark.music.title,
+                  }
+                )}
                 secondary={formatDistanceToNow(
-                  new Date(notification.createdAt)
+                  new Date(notification.createdAt),
+                  { locale: locales[locale] }
                 )}
               />
             </ListItem>

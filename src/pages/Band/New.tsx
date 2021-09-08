@@ -1,9 +1,10 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
@@ -24,6 +25,7 @@ import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import usePaginate from "../../hooks/usePaginate";
 import { getBands } from "../../gql";
+import { selectLocale } from "../../slices/language";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -42,10 +44,13 @@ const New: React.FC = () => {
   const match = useRouteMatch<{ id: string }>();
   // react-redux
   const dispatch = useDispatch();
+  const locale = useSelector(selectLocale);
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IBand>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${routes.BANDS}/${res.data.id}`);
@@ -64,8 +69,8 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.BANDS, { page, query: debouncedName }],
-    getBands(page, { name_eq: debouncedName }),
+    [queryKey.BANDS, locale, { page, query: debouncedName }],
+    getBands(page, locale, { name_eq: debouncedName }),
     { enabled: !!debouncedName, onError }
   );
   // handlers
@@ -90,7 +95,7 @@ const New: React.FC = () => {
             name="name"
             defaultValue=""
             autoComplete="on"
-            label="Name"
+            label={intl.formatMessage({ id: "name" })}
             variant="outlined"
             control={control}
             errors={errors}
@@ -134,7 +139,7 @@ const New: React.FC = () => {
             onClick={handleSubmit(onSubmit)}
             fullWidth
           >
-            Create Band
+            <FormattedMessage id="createBand" />
           </LoadingButton>
         </Box>
       </Paper>

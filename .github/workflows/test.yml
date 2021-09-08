@@ -1,0 +1,15 @@
+name: test
+on: [pull_request]
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: eslint
+        run: |
+          git submodule update --init --recursive
+          yarn
+          yarn lint

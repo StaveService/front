@@ -1,10 +1,18 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FormattedMessage } from "react-intl";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import { useDispatch, useSelector } from "react-redux";
-import { selectLocale, setLocale } from "../../../slices/language";
+import {
+  ICountryCode,
+  ILocale,
+  selectCountryCode,
+  selectLocale,
+  setCountryCode,
+  setLocale,
+} from "../../../slices/language";
 
 interface SettingProps {
   open: boolean;
@@ -16,20 +24,37 @@ const Setting: React.FC<SettingProps> = ({
 }: SettingProps) => {
   const dispatch = useDispatch();
   const locale = useSelector(selectLocale);
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch(setLocale(event.target.value as string));
+  const countryCode = useSelector(selectCountryCode);
+  const handleLocaleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    dispatch(setLocale(event.target.value as ILocale));
+  };
+  const handleCountryCodeChange = (
+    event: React.ChangeEvent<{ value: unknown }>
+  ) => {
+    dispatch(setCountryCode(event.target.value as ICountryCode));
   };
   return (
     <Dialog onClose={handleClose} open={open} fullWidth>
-      <DialogTitle>Setting</DialogTitle>
+      <DialogTitle>
+        <FormattedMessage id="setting" />
+      </DialogTitle>
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
         value={locale}
-        onChange={handleChange}
+        onChange={handleLocaleChange}
       >
         <MenuItem value="ja">Japanese</MenuItem>
         <MenuItem value="en">English</MenuItem>
+      </Select>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={countryCode}
+        onChange={handleCountryCodeChange}
+      >
+        <MenuItem value="JP">JP</MenuItem>
+        <MenuItem value="US">US</MenuItem>
       </Select>
     </Dialog>
   );

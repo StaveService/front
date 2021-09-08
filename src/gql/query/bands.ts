@@ -9,6 +9,9 @@ const bandsQuery = gql`
       data {
         id
         name(locale: $locale)
+        link {
+          twitter
+        }
       }
     }
   }

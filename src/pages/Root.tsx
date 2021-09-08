@@ -4,7 +4,12 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
+import AlbumIcon from "@material-ui/icons/Album";
+import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
+import MusicNoteIcon from "@material-ui/icons/MusicNote";
+import GroupIcon from "@material-ui/icons/Group";
 import Image from "material-ui-image";
+import { useSelector } from "react-redux";
 import MusicsTable from "../components/Table/Music";
 import AlbumsTable from "../components/Table/Album";
 import ArtistsTable from "../components/Table/Artist";
@@ -17,6 +22,7 @@ import useQuerySnackbar from "../hooks/useQuerySnackbar";
 import usePaginate from "../hooks/usePaginate";
 import { getAlbums, getArtists, getBands, getMusics } from "../gql";
 import img from "../images/stave.png";
+import { selectLocale } from "../slices/language";
 
 const Root: React.FC = () => {
   const [musicPage, handleMusicPage] = usePaginate();
@@ -24,37 +30,38 @@ const Root: React.FC = () => {
   const [artistPage, handleArtistPage] = usePaginate();
   const [bandPage, handleBandPage] = usePaginate();
   const { onError } = useQuerySnackbar();
+  const locale = useSelector(selectLocale);
   const musics = useQuery(
-    [queryKey.MUSICS, musicPage],
-    getMusics(musicPage, { s: "updated_at desc" }),
+    [queryKey.MUSICS, musicPage, locale],
+    getMusics(musicPage, locale, { s: "updated_at desc" }),
     {
       onError,
     }
   );
   const albums = useQuery(
-    [queryKey.ALBUMS, albumPage],
-    getAlbums(albumPage, { s: "updated_at desc" }),
+    [queryKey.ALBUMS, albumPage, locale],
+    getAlbums(albumPage, locale, { s: "updated_at desc" }),
     {
       onError,
     }
   );
   const artists = useQuery(
-    [queryKey.ARTISTS, artistPage],
-    getArtists(artistPage, { s: "updated_at desc" }),
+    [queryKey.ARTISTS, artistPage, locale],
+    getArtists(artistPage, locale, { s: "updated_at desc" }),
     {
       onError,
     }
   );
   const bands = useQuery(
-    [queryKey.BANDS, bandPage],
-    getBands(bandPage, { s: "updated_at desc" }),
+    [queryKey.BANDS, bandPage, locale],
+    getBands(bandPage, locale, { s: "updated_at desc" }),
     {
       onError,
     }
   );
   const bookmarkedMusics = useQuery(
-    [queryKey.MUSICS, 1, queryKey.BOOKMARKS],
-    getMusics(1, { s: "bookmarks_count desc" }),
+    [queryKey.MUSICS, 1, queryKey.BOOKMARKS, locale],
+    getMusics(1, locale, { s: "bookmarks_count desc" }),
     {
       onError,
     }
@@ -82,16 +89,36 @@ const Root: React.FC = () => {
       <Box mb={3}>
         <Grid container spacing={2}>
           <Grid item xs={3}>
-            <MenuCard type="Music" />
+            <MenuCard
+              icon={<MusicNoteIcon fontSize="large" />}
+              title="music"
+              messageId="createMusic"
+              to="musics"
+            />
           </Grid>
           <Grid item xs={3}>
-            <MenuCard type="Album" />
+            <MenuCard
+              icon={<AlbumIcon fontSize="large" />}
+              title="album"
+              messageId="createAlbum"
+              to="albums"
+            />
           </Grid>
           <Grid item xs={3}>
-            <MenuCard type="Artist" />
+            <MenuCard
+              icon={<AccessibilityNewIcon fontSize="large" />}
+              title="artist"
+              messageId="createArtist"
+              to="artists"
+            />
           </Grid>
           <Grid item xs={3}>
-            <MenuCard type="Band" />
+            <MenuCard
+              icon={<GroupIcon fontSize="large" />}
+              title="band"
+              messageId="createBand"
+              to="bands"
+            />
           </Grid>
         </Grid>
       </Box>

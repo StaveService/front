@@ -1,6 +1,8 @@
 import React from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { Link as RouterLink, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { FormattedMessage } from "react-intl";
 import { format } from "date-fns";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -11,13 +13,13 @@ import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import { useDispatch } from "react-redux";
 import { AxiosResponse } from "axios";
 import AlbumsTable from "../../../../../components/Table/Album";
 import LinkTable from "../../../../../components/Table/Link";
 import ItunesMusicDialog from "../../../../../components/Dialog/Itunes/Music";
 import MusixmatchDialog from "../../../../../components/Dialog/Musixmatch";
 import SpotifyTrackDialog from "../../../../../components/Dialog/Spotify/Track";
+import YoutubeDialog from "../../../../../components/Dialog/Youtube";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
@@ -33,6 +35,8 @@ import {
 import queryKey from "../../../../../constants/queryKey.json";
 import { patchMusicLink } from "../../../../../axios/axios";
 import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
+import { selectLocale } from "../../../../../slices/language";
+import styles from "./index.module.css";
 
 const Info: React.FC = () => {
   const { onError } = useQuerySnackbar();
@@ -42,18 +46,19 @@ const Info: React.FC = () => {
   const userId = Number(params.userId);
   // react-redux
   const dispatch = useDispatch();
+  const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
+  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id, locale]);
   const itunesMusic = queryClient.getQueryData<IItunesMusic>([
     queryKey.ITUNES,
     queryKey.MUSIC,
     music?.link?.itunes,
   ]);
-  const handleCreateSuccess = (res: AxiosResponse<IMusicLink>) => {
+  const handleUpdateSuccess = (res: AxiosResponse<IMusicLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id],
+      [queryKey.MUSIC, id, locale],
       (prev) => prev && { ...prev, link: res.data }
     );
   };
@@ -61,7 +66,7 @@ const Info: React.FC = () => {
     (link: Partial<Omit<IMusicLink, "id">>) =>
       patchMusicLink(userId, id, music?.link.id, link),
     {
-      onSuccess: handleCreateSuccess,
+      onSuccess: handleUpdateSuccess,
       onError,
     }
   );
@@ -72,6 +77,8 @@ const Info: React.FC = () => {
     patchMutation.mutate({ itunes: selectedMusic.trackId });
   const handleMusixmatchSelect = (selectedMusic: IMusixmatchTrack) =>
     patchMutation.mutate({ musixmatch: selectedMusic.track.track_id });
+  const handleYoutubeSelect = (value: string) =>
+    patchMutation.mutate({ youtube: value });
   return (
     <>
       <Box mb={3}>
@@ -118,28 +125,73 @@ const Info: React.FC = () => {
               );
             },
           }}
+          youtube={{
+            type: "v",
+            link: music?.link.youtube,
+            renderDialog(open, baseURL, handleClose) {
+              return (
+                <YoutubeDialog
+                  id={music?.link.youtube || ""}
+                  baseURL={baseURL}
+                  open={open}
+                  onClose={handleClose}
+                  onPatch={handleYoutubeSelect}
+                  loading={patchMutation.isLoading}
+                />
+              );
+            },
+          }}
         />
       </Box>
+      {music?.link.youtube && (
+        <Box
+          mb={3}
+          display="block"
+          position="relative"
+          width="100%"
+          height="0"
+          pt="56.25%"
+        >
+          <iframe
+            className={styles.iframe}
+            width="560"
+            height="315"
+            src={`https://www.youtube.com/embed/${
+              music?.link.youtube || "undefined"
+            }`}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </Box>
+      )}
       <Box mb={3}>
         <MainDialog />
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Main</TableCell>
+                <TableCell>
+                  <FormattedMessage id="main" />
+                </TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell>ReleaseDate</TableCell>
+                <TableCell>
+                  <FormattedMessage id="releaseDate" />
+                </TableCell>
                 <TableCell>
                   {itunesMusic?.releaseDate &&
                     format(new Date(itunesMusic.releaseDate), "yyyy/MM/dd")}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Composer</TableCell>
+                <TableCell>
+                  <FormattedMessage id="composers" />
+                </TableCell>
                 <TableCell>
                   {music?.composers?.map((composer) => (
                     <Link
@@ -153,7 +205,9 @@ const Info: React.FC = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Lyrists</TableCell>
+                <TableCell>
+                  <FormattedMessage id="lyrists" />
+                </TableCell>
                 <TableCell>
                   {music?.lyrists?.map((lyrists) => (
                     <Link
@@ -167,7 +221,9 @@ const Info: React.FC = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Band</TableCell>
+                <TableCell>
+                  <FormattedMessage id="band" />
+                </TableCell>
                 <TableCell>
                   {music?.band && (
                     <Link
@@ -180,7 +236,9 @@ const Info: React.FC = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Created by</TableCell>
+                <TableCell>
+                  <FormattedMessage id="user" />
+                </TableCell>
                 <TableCell>
                   {music?.user && (
                     <Link
@@ -202,8 +260,12 @@ const Info: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Role</TableCell>
-                <TableCell>Artist</TableCell>
+                <TableCell>
+                  <FormattedMessage id="role" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="artist" />
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

@@ -37,6 +37,7 @@
 - [react-use](https://github.com/streamich/react-use)
 - [react-script-hook](https://github.com/hupe1980/react-script-hook)
 - [react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)
+- [react-intl](https://github.com/formatjs/formatjs)
 - [redux-toolkit](https://redux-toolkit.js.org/)
 - [redux-persist](https://github.com/rt2zz/redux-persist)
 - [redux-logger](https://github.com/LogRocket/redux-logger)
@@ -53,13 +54,13 @@
 | type            | key                                                                                                   |
 | --------------- | ----------------------------------------------------------------------------------------------------- |
 | artist          | [artist, :id, { musicPage, albumPage }]                                                               |
-| artists         | [artists, :page]                                                                                      |
+| artists         | [artists, :page, :locale]                                                                             |
 | album           | [album, :id]                                                                                          |
-| albums          | [albums, :page]                                                                                       |
+| albums          | [albums, :page, :locale]                                                                              |
 | band            | [band, :id]                                                                                           |
-| bands           | [bands, :page, { musicPage, albumPage }]                                                              |
+| bands           | [bands, :page, :locale]                                                                               |
 | music           | [music, :id]                                                                                          |
-| musics          | [musics, :page]                                                                                       |
+| musics          | [musics, :page, :locale]                                                                              |
 | user            | [<br>user, :id,<br> { musicPage, bookmarkedMusicPage, bookmarkedArtistPage, bookmarkedBandPage }<br>] |
 | users           | [users, :page]                                                                                        |
 | itunesArtist    | [itunes, artist, :id]                                                                                 |

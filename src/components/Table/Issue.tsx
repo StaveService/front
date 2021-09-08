@@ -1,4 +1,5 @@
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -25,7 +26,9 @@ const Issue: React.FC<IssueProps> = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>title</TableCell>
+            <TableCell>
+              <FormattedMessage id="title" />
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

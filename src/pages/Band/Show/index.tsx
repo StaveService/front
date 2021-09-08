@@ -3,6 +3,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import GroupIcon from "@material-ui/icons/Group";
@@ -20,6 +21,7 @@ import TwitterDialog from "../../../components/Dialog/Twitter";
 import WikipediaDialog from "../../../components/Dialog/Wikipedia";
 import SpotifyArtistDialog from "../../../components/Dialog/Spotify/Artist";
 import TranslateDialog from "../../../components/Dialog/Translate";
+import YoutubeDialog from "../../../components/Dialog/Youtube";
 import DefaultLayout from "../../../layout/Default";
 import {
   IBand,
@@ -60,10 +62,12 @@ const Show: React.FC = () => {
   const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IBandBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id],
+      [queryKey.BAND, id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -75,7 +79,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id],
+      [queryKey.BAND, id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -87,27 +91,27 @@ const Show: React.FC = () => {
   const handleUpdateSuccess = (res: AxiosResponse<IBandLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id],
+      [queryKey.BAND, id, locale],
       (prev) => prev && { ...prev, link: res.data }
     );
   };
   const band = useQuery(
     [queryKey.BAND, id, locale],
-    getBand(id, currentUser?.id),
+    getBand(id, currentUser?.id, locale),
     {
       onError,
     }
   );
   const bandAlbums = useQuery(
     [queryKey.BAND, id, queryKey.ALBUMS, albumPage, locale],
-    getBandAlbums(id, albumPage),
+    getBandAlbums(id, albumPage, locale),
     {
       onError,
     }
   );
   const bandMusics = useQuery(
     [queryKey.BAND, id, queryKey.MUSICS, musicPage, locale],
-    getBandMusics(id, musicPage),
+    getBandMusics(id, musicPage, locale),
     {
       onError,
     }
@@ -135,7 +139,7 @@ const Show: React.FC = () => {
   );
   const updateLinkMutation = useMutation(
     (link: Partial<Omit<IBandLink, "id">>) =>
-      patchBandLink(id, band.data?.link.id, link),
+      patchBandLink(id, band.data?.link.id, link, locale),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers
@@ -145,6 +149,8 @@ const Show: React.FC = () => {
     updateLinkMutation.mutate({ wikipedia: selectedWikipedia.pageid });
   const handleSpotifySelect = (selectedSpotify: ISpotifyArtist) =>
     updateLinkMutation.mutate({ spotify: selectedSpotify.id });
+  const handleYoutubeSelect = (value: string) =>
+    updateLinkMutation.mutate({ youtube: value });
   const handleSubmit = (value: string) =>
     updateLinkMutation.mutate({ twitter: value });
   const handleCreateBookmarkMutation = () => createBookmarkMutation.mutate();
@@ -154,8 +160,12 @@ const Show: React.FC = () => {
       {band.data?.localed && (
         <Box mb={3}>
           <Alert severity="warning">
-            <AlertTitle>Not translated</AlertTitle>
-            Please Contribute! — <strong>check it out!</strong>
+            <AlertTitle>
+              <FormattedMessage id="untranslation" />
+            </AlertTitle>
+            <strong>
+              <FormattedMessage id="pleaseTranslate" />
+            </strong>
           </Alert>
         </Box>
       )}
@@ -178,7 +188,8 @@ const Show: React.FC = () => {
           <TranslateDialog<IBand, IBandParams>
             queryKey={queryKey.BAND}
             name="name"
-            label="Name"
+            inputLabel={intl.formatMessage({ id: "name" })}
+            buttonLabel={intl.formatMessage({ id: "translateName" })}
             patchFn={patchBand}
           />
         </Grid>
@@ -239,6 +250,22 @@ const Show: React.FC = () => {
                   onClose={handleClose}
                   onSelect={handleSpotifySelect}
                   showSearchBar
+                />
+              );
+            },
+          }}
+          youtube={{
+            type: "channel",
+            link: band.data?.link.youtube,
+            renderDialog(open, baseURL, handleClose) {
+              return (
+                <YoutubeDialog
+                  id={band.data?.link.youtube || ""}
+                  baseURL={baseURL}
+                  open={open}
+                  onClose={handleClose}
+                  onPatch={handleYoutubeSelect}
+                  loading={updateLinkMutation.isLoading}
                 />
               );
             },

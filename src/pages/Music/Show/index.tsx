@@ -9,6 +9,7 @@ import {
   useLocation,
   useRouteMatch,
 } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Tab from "@material-ui/core/Tab";
@@ -72,6 +73,8 @@ const Show: React.FC = () => {
   const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IMusicBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
@@ -102,7 +105,7 @@ const Show: React.FC = () => {
   };
   const music = useQuery(
     [queryKey.MUSIC, id, locale],
-    getMusic(id, currentUser?.id),
+    getMusic(id, currentUser?.id, locale),
     {
       onError,
     }
@@ -146,8 +149,12 @@ const Show: React.FC = () => {
         {music.data?.localed && (
           <Box mb={3}>
             <Alert severity="warning">
-              <AlertTitle>Not translated</AlertTitle>
-              Please Contribute! — <strong>check it out!</strong>
+              <AlertTitle>
+                <FormattedMessage id="untranslation" />
+              </AlertTitle>
+              <strong>
+                <FormattedMessage id="pleaseTranslate" />
+              </strong>
             </Alert>
           </Box>
         )}
@@ -170,7 +177,8 @@ const Show: React.FC = () => {
             <TranslateDialog<IMusic, IMusicParams>
               queryKey={queryKey.MUSIC}
               name="title"
-              label="Title"
+              inputLabel={intl.formatMessage({ id: "title" })}
+              buttonLabel={intl.formatMessage({ id: "translateTitle" })}
               patchFn={patchMusic(userId)}
             />
           </Grid>
@@ -188,36 +196,36 @@ const Show: React.FC = () => {
             fullWidth
             disableElevation
           >
-            Watch Tab
+            <FormattedMessage id="watchScore" />
           </Button>
         </Box>
         <Tabs value={tabsValue()}>
           <Tab
-            label="Info"
+            label={intl.formatMessage({ id: "info" })}
             value={match.url}
             component={RouterLink}
             to={match.url}
           />
           <Tab
-            label="Files"
+            label={intl.formatMessage({ id: "file" })}
             value={match.url + routes.FILES}
             component={RouterLink}
             to={match.url + routes.FILES}
           />
           <Tab
-            label="Lyric"
+            label={intl.formatMessage({ id: "lyric" })}
             value={match.url + routes.LYRIC}
             component={RouterLink}
             to={match.url + routes.LYRIC}
           />
           <Tab
-            label="Issues"
+            label={intl.formatMessage({ id: "issues" })}
             value={match.url + routes.ISSUES}
             component={RouterLink}
             to={match.url + routes.ISSUES}
           />
           <Tab
-            label="Setting"
+            label={intl.formatMessage({ id: "setting" })}
             value={match.url + routes.SETTING}
             component={RouterLink}
             to={match.url + routes.SETTING}

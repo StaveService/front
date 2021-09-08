@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import React, { ChangeEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
+import { useIntl } from "react-intl";
 import { useRouteMatch } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/TextField/AutocompleteTextField";
@@ -14,6 +15,7 @@ import {
 } from "../../../../../../../../slices/currentUser/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
 import { getBands } from "../../../../../../../../gql";
+import { selectLocale } from "../../../../../../../../slices/language";
 
 interface MutateVariables {
   option: IBand;
@@ -25,13 +27,16 @@ const Band: React.FC = () => {
   // use-debounce
   const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   // react-redux
-  const headers = useSelector(selectHeaders);
   const dispatch = useDispatch();
+  const headers = useSelector(selectHeaders);
+  const locale = useSelector(selectLocale);
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
   const handleCreateSuccess = (
     res: AxiosResponse<IBand>,
@@ -69,8 +74,8 @@ const Band: React.FC = () => {
   const handleRemoveOption = (option: IBand, options: IBand[]) =>
     destroyMutation.mutate({ option, options });
   const bands = useQuery(
-    [queryKey.BANDS, { query: debouncedInputValue }],
-    getBands(1, { name_cont: debouncedInputValue }),
+    [queryKey.BANDS, locale, { query: debouncedInputValue }],
+    getBands(1, locale, { name_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
@@ -88,7 +93,7 @@ const Band: React.FC = () => {
       onSelectOption={handleSelectOption}
       onRemoveOption={handleRemoveOption}
       textFieldProps={{
-        label: "Band",
+        label: intl.formatMessage({ id: "band" }),
         variant: "outlined",
         margin: "normal",
       }}

@@ -1,9 +1,10 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "react-query";
+import Typography from "@material-ui/core/Typography";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { AxiosResponse } from "axios";
 import { userSchema } from "../../../../schema";
 import ControlTextField from "../../../../components/ControlTextField/ControlTextField";
@@ -24,6 +25,7 @@ const Setting: React.FC = () => {
   const { errors, control, handleSubmit } = useForm({
     resolver: yupResolver(userSchema),
   });
+  const intl = useIntl();
   const handleSuccess = (res: AxiosResponse<IUser>) => {
     dispatch(setCurrentUser(res.data));
     dispatch(setHeaders(res.headers));
@@ -36,12 +38,12 @@ const Setting: React.FC = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Typography variant="h5" color="initial">
-        Setting
+        <FormattedMessage id="setting" />
       </Typography>
       <ControlTextField
         name="email"
         defaultValue={currentUser?.email}
-        label="Email"
+        label={intl.formatMessage({ id: "email" })}
         variant="outlined"
         margin="normal"
         control={control}
@@ -52,7 +54,7 @@ const Setting: React.FC = () => {
       <ControlTextField
         name="nickname"
         defaultValue={currentUser?.nickname}
-        label="NickName"
+        label={intl.formatMessage({ id: "nickname" })}
         variant="outlined"
         margin="normal"
         control={control}
@@ -63,7 +65,7 @@ const Setting: React.FC = () => {
       <ControlTextField
         name="familyname"
         defaultValue={currentUser?.familyname}
-        label="FamilyName"
+        label={intl.formatMessage({ id: "familyname" })}
         variant="outlined"
         margin="normal"
         control={control}
@@ -74,7 +76,7 @@ const Setting: React.FC = () => {
       <ControlTextField
         name="givenname"
         defaultValue={currentUser?.givenname}
-        label="GivenName"
+        label={intl.formatMessage({ id: "givenname" })}
         variant="outlined"
         margin="normal"
         control={control}
@@ -85,7 +87,7 @@ const Setting: React.FC = () => {
       <ControlTextField
         name="introduction"
         defaultValue={currentUser?.introduction}
-        label="Introduction"
+        label={intl.formatMessage({ id: "introduction" })}
         variant="outlined"
         margin="normal"
         control={control}

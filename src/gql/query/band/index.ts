@@ -10,8 +10,9 @@ const bandQuery = gql`
         id
         itunes
         twitter
-        wikipedia
         spotify
+        wikipedia(locale: $locale)
+        youtube
       }
       artists {
         id

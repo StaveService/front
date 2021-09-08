@@ -2,11 +2,12 @@ import { AxiosResponse } from "axios";
 import React from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { FormattedMessage, useIntl } from "react-intl";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
-import { useDispatch, useSelector } from "react-redux";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import MusicsTable from "../../components/Table/Music";
@@ -19,6 +20,7 @@ import SpotifyArtistDialog from "../../components/Dialog/Spotify/Artist";
 import TwitterDialog from "../../components/Dialog/Twitter";
 import WikipediaDialog from "../../components/Dialog/Wikipedia";
 import TranslateDialog from "../../components/Dialog/Translate";
+import YoutubeDialog from "../../components/Dialog/Youtube";
 import DefaultLayout from "../../layout/Default";
 import {
   IArtist,
@@ -59,10 +61,12 @@ const Show: React.FC = () => {
   const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IArtistBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      [queryKey.ARTIST, id],
+      [queryKey.ARTIST, id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -74,7 +78,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      [queryKey.ARTIST, id],
+      [queryKey.ARTIST, id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -86,25 +90,25 @@ const Show: React.FC = () => {
   const handleUpdateSuccess = (res: AxiosResponse<IArtistLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      [queryKey.ARTIST, id],
+      [queryKey.ARTIST, id, locale],
       (prev) => prev && { ...prev, link: res.data }
     );
   };
   const artist = useQuery(
     [queryKey.ARTIST, id, locale],
-    getArtist(id, currentUser?.id),
+    getArtist(id, currentUser?.id, locale),
     {
       onError,
     }
   );
   const artistAlbums = useQuery(
     [queryKey.ARTIST, id, queryKey.ALBUMS, albumPage, locale],
-    getArtistAlbums(id, albumPage),
+    getArtistAlbums(id, albumPage, locale),
     { onError }
   );
   const artistMusics = useQuery(
     [queryKey.ARTIST, id, queryKey.MUSICS, musicPage, locale],
-    getArtistMusics(id, musicPage),
+    getArtistMusics(id, musicPage, locale),
     { onError }
   );
   const wikipedia = useQuery<IWikipedia>(
@@ -145,6 +149,8 @@ const Show: React.FC = () => {
     updateLinkMutation.mutate({ wikipedia: selectedWikipedia.pageid });
   const handleSpotifySelect = (selectedArtist: ISpotifyArtist) =>
     updateLinkMutation.mutate({ spotify: selectedArtist.id });
+  const handleYoutubeSelect = (value: string) =>
+    updateLinkMutation.mutate({ youtube: value });
   const handleSubmit = (value: string) =>
     updateLinkMutation.mutate({ twitter: value });
 
@@ -153,8 +159,12 @@ const Show: React.FC = () => {
       {artist.data?.localed && (
         <Box mb={3}>
           <Alert severity="warning">
-            <AlertTitle>Not translated</AlertTitle>
-            Please Contribute! — <strong>check it out!</strong>
+            <AlertTitle>
+              <FormattedMessage id="untranslation" />
+            </AlertTitle>
+            <strong>
+              <FormattedMessage id="pleaseTranslate" />
+            </strong>
           </Alert>
         </Box>
       )}
@@ -177,7 +187,8 @@ const Show: React.FC = () => {
           <TranslateDialog<IArtist, IArtistParams>
             queryKey={queryKey.ARTIST}
             name="name"
-            label="Name"
+            inputLabel={intl.formatMessage({ id: "name" })}
+            buttonLabel={intl.formatMessage({ id: "translateName" })}
             patchFn={patchArtist}
           />
         </Grid>
@@ -242,6 +253,22 @@ const Show: React.FC = () => {
                   onClose={handleClose}
                   onSelect={handleSpotifySelect}
                   showSearchBar
+                />
+              );
+            },
+          }}
+          youtube={{
+            type: "channel",
+            link: artist.data?.link.youtube,
+            renderDialog(open, baseURL, handleClose) {
+              return (
+                <YoutubeDialog
+                  id={artist.data?.link.youtube || ""}
+                  baseURL={baseURL}
+                  open={open}
+                  onClose={handleClose}
+                  onPatch={handleYoutubeSelect}
+                  loading={updateLinkMutation.isLoading}
                 />
               );
             },

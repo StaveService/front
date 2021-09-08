@@ -1,12 +1,13 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
-import { useMutation, useQuery, useQueryClient } from "react-query";
 import { IArtistParams, postArtist } from "../../axios/axios";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
 import ControlTextField from "../../components/ControlTextField/ControlTextField";
@@ -23,6 +24,7 @@ import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import usePaginate from "../../hooks/usePaginate";
 import { getArtists } from "../../gql";
+import { selectLocale } from "../../slices/language";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -40,12 +42,15 @@ const New: React.FC = () => {
   const history = useHistory();
   const match = useRouteMatch();
   const route = match.url.replace("/new", "");
+  const locale = useSelector(selectLocale);
   // react-redux
   const dispatch = useDispatch();
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IArtist>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
@@ -64,8 +69,8 @@ const New: React.FC = () => {
     { onSuccess: handleCreateSuccess, onError }
   );
   const searchQuery = useQuery(
-    [queryKey.ARTISTS, { page, query: debouncedInputValue }],
-    getArtists(1, { name_cont: debouncedInputValue }),
+    [queryKey.ARTISTS, locale, { page, query: debouncedInputValue }],
+    getArtists(1, locale, { name_cont: debouncedInputValue }),
     { enabled: !!debouncedInputValue, onError }
   );
   // handlers
@@ -90,7 +95,7 @@ const New: React.FC = () => {
             name="name"
             defaultValue=""
             autoComplete="on"
-            label="Name"
+            label={intl.formatMessage({ id: "name" })}
             variant="outlined"
             control={control}
             errors={errors}
@@ -134,7 +139,7 @@ const New: React.FC = () => {
             onClick={handleSubmit(onSubmit)}
             fullWidth
           >
-            Create Artist
+            <FormattedMessage id="createArtist" />
           </LoadingButton>
         </Box>
       </Paper>

@@ -1,11 +1,14 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
+import TwitterIcon from "../Icon/Twitter";
+import LinkIconButton from "../Button/Icon/Link";
 import { IBand } from "../../interfaces";
 import routes from "../../constants/routes.json";
 import Layout, { LayoutProps } from "./Layout";
@@ -27,9 +30,10 @@ const Band: React.FC<BandProps> = ({
           <TableRow>
             <TableCell>
               <Link component={RouterLink} to={`${routes.BANDS}`}>
-                Band
+                <FormattedMessage id="bands" />
               </Link>
             </TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -39,6 +43,17 @@ const Band: React.FC<BandProps> = ({
                 <Link component={RouterLink} to={`${routes.BANDS}/${band.id}`}>
                   {band.name}
                 </Link>
+              </TableCell>
+              <TableCell>
+                <LinkIconButton
+                  href={
+                    band.link.twitter
+                      ? `https://twitter.com/${band.link.twitter}`
+                      : undefined
+                  }
+                >
+                  <TwitterIcon />
+                </LinkIconButton>
               </TableCell>
             </TableRow>
           ))}

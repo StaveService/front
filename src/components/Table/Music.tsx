@@ -1,6 +1,7 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useQuery } from "react-query";
+import { FormattedMessage } from "react-intl";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -29,18 +30,18 @@ const Music: React.FC<MusicProps> = ({
   const columns = [
     {
       route: routes.MUSICS,
-      name: "Musics",
+      name: "musics",
     },
-    { route: routes.BANDS, name: "Bands" },
+    { route: routes.BANDS, name: "bands" },
     {
       route: routes.ARTISTS,
-      name: "Composers",
+      name: "composers",
     },
     {
       route: routes.ARTISTS,
-      name: "Lyrists",
+      name: "lyrists",
     },
-    { route: routes.USERS, name: "Users" },
+    { route: routes.USERS, name: "users" },
   ];
   let i = 0;
   let imageUrl: string | undefined = "";
@@ -62,7 +63,7 @@ const Music: React.FC<MusicProps> = ({
             {columns.map((column) => (
               <TableCell key={column.name}>
                 <Link component={RouterLink} to={column.route}>
-                  {column.name}
+                  <FormattedMessage id={column.name} />
                 </Link>
               </TableCell>
             ))}
@@ -71,7 +72,11 @@ const Music: React.FC<MusicProps> = ({
         <TableBody>
           {musics?.map(
             ({ id, title, band, user, composers, lyrists, link }) => {
-              if (link.itunes && itunesMusics.data) {
+              if (
+                itunesMusics.data &&
+                itunesMusics.data[i] &&
+                link.itunes === itunesMusics.data[i].trackId
+              ) {
                 imageUrl = itunesMusics.data[i].artworkUrl60;
                 i += 1;
               } else {

@@ -2,7 +2,7 @@ import { AlphaTabApi, model, synth } from "@coderline/alphatab";
 // eslint-disable-next-line import/no-cycle
 import { ITokenHeaders } from "./slices/currentUser/currentUser";
 
-export type MenuCardType = "Artist" | "Album" | "Music" | "Band";
+export type MenuCardType = "artist" | "album" | "music" | "band";
 
 export interface IHeaders {
   headers: ITokenHeaders;
@@ -71,6 +71,7 @@ export interface IBandLink {
   twitter: string;
   wikipedia: number;
   spotify: string;
+  youtube: string;
 }
 export interface IMusic {
   id: number;
@@ -93,17 +94,13 @@ export interface IMusic {
   scoreExist: boolean;
   localed: boolean;
 }
-export interface ITree {
-  name: string;
-  oid: string;
-  filemode: string;
-  type: string;
-}
+export type ITree = Record<"name" | "oid" | "filemode" | "type", string>;
 export interface IMusicLink {
   id: number;
   itunes: number | null;
   musixmatch: number | null;
   spotify: string | null;
+  youtube: string | null;
 }
 export interface IArtist extends IMusicsType, IAlbumsType {
   id: number;
@@ -120,6 +117,7 @@ export interface IArtistLink {
   spotify: string | null;
   twitter: string | null;
   wikipedia: number | null;
+  youtube: string | null;
 }
 export interface IAlbum extends IMusicsType {
   id: number;
@@ -142,10 +140,7 @@ export interface IIssue {
   music?: IMusic;
   user?: IUser;
 }
-export interface IContact {
-  email: string;
-  description: string;
-}
+export type IContact = Record<"email" | "description", string>;
 export interface IArtistMusic {
   id: number;
   ["artist_id"]: number;
@@ -190,12 +185,10 @@ export interface IArtistBookmark {
 export interface IAlbumBookmark {
   id: number;
 }
-export interface IPaginationType {
-  currentPage: number;
-  limitValue: number;
-  totalCount: number;
-  totalPages: number;
-}
+export type IPaginationType = Record<
+  "currentPage" | "limitValue" | "totalCount" | "totalPages",
+  number
+>;
 export interface IIndexType<Data> {
   data: Data[];
   pagination: IPaginationType;
@@ -258,11 +251,10 @@ export interface IBookmarkedAlbumsType {
   bookmarkedAlbums: IIndexType<IAlbum>;
 }
 
-interface IItunesArtwork {
-  artworkUrl30: string;
-  artworkUrl60: string;
-  artworkUrl100: string;
-}
+type IItunesArtwork = Record<
+  "artworkUrl30" | "artworkUrl60" | "artworkUrl100",
+  string
+>;
 export interface IItunesMusic extends IItunesArtwork {
   artistName: string;
   artistViewUrl: string;

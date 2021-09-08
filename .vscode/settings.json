@@ -21,6 +21,9 @@
   "[css]": {
     "editor.formatOnSave": true,
   },
+  "[yml]": {
+    "editor.formatOnSave": true,
+  },
   "editor.snippetSuggestions": "top",
   "javascript.validate.enable": false,
   "javascript.format.enable": false,

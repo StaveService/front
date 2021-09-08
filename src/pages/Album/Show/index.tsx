@@ -6,6 +6,7 @@ import AlbumIcon from "@material-ui/icons/Album";
 import Image from "material-ui-image";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
+import { FormattedMessage, useIntl } from "react-intl";
 import { AxiosResponse } from "axios";
 import Grid from "@material-ui/core/Grid";
 import Alert from "@material-ui/lab/Alert";
@@ -23,9 +24,9 @@ import LinkTable from "../../../components/Table/Link";
 import ItunesAlbumDialog from "../../../components/Dialog/Itunes/Album";
 import SpotifyAlbumDialog from "../../../components/Dialog/Spotify/Album";
 import TranslateDialog from "../../../components/Dialog/Translate";
+import ArtistDialog from "./Dialog/Artist";
 import BookmarkButton from "../../../components/Button/Icon/Bookmark";
 import DefaultLayout from "../../../layout/Default";
-import ArtistDialog from "./Dialog/Artist";
 import {
   deleteAlbumBookmark,
   IAlbumParams,
@@ -56,6 +57,8 @@ const Show: React.FC = () => {
   const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
+  // react-intl
+  const intl = useIntl();
   const handleUpdateSuccess = (res: AxiosResponse<IAlbumLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IAlbum | undefined>(
@@ -89,14 +92,14 @@ const Show: React.FC = () => {
   };
   const album = useQuery(
     [queryKey.ALBUM, id, locale],
-    getAlbum(id, currentUser?.id),
+    getAlbum(id, currentUser?.id, locale),
     {
       onError,
     }
   );
   const albumMusics = useQuery(
     [queryKey.ALBUM, id, queryKey.MUSICS, musicPage, locale],
-    getAlbumMusics(id, musicPage),
+    getAlbumMusics(id, musicPage, locale),
     {
       onError,
     }
@@ -140,8 +143,12 @@ const Show: React.FC = () => {
       {album.data?.localed && (
         <Box mb={3}>
           <Alert severity="warning">
-            <AlertTitle>Not translated</AlertTitle>
-            Please Contribute! — <strong>check it out!</strong>
+            <AlertTitle>
+              <FormattedMessage id="untranslation" />
+            </AlertTitle>
+            <strong>
+              <FormattedMessage id="pleaseTranslate" />
+            </strong>
           </Alert>
         </Box>
       )}
@@ -164,7 +171,8 @@ const Show: React.FC = () => {
           <TranslateDialog<IAlbum, IAlbumParams>
             queryKey={queryKey.ARTIST}
             name="title"
-            label="Title"
+            inputLabel={intl.formatMessage({ id: "title" })}
+            buttonLabel={intl.formatMessage({ id: "translateTitle" })}
             patchFn={patchAlbum}
           />
         </Grid>
