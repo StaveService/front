@@ -11,21 +11,18 @@ jobs:
     steps:
       - name: checkout develop
         uses: actions/checkout@v2
-        with:
-          ref: develop
 
-      - name: Create Release Branch
+      - name: set up ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7.x
+
+      - name: Create Release Branch PullRequest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_PR_RELEASE_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GIT_PR_RELEASE_BRANCH_STAGING: release
+          GIT_PR_RELEASE_BRANCH_PRODUCTION: main
+          GIT_PR_RELEASE_LABELS: release
         run: |
-          git checkout -b release
-          git push origin release
-      
-      - name: Create Pull Request
-        env:
-          REVIEWERS: "izszzz"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH_NAME: ${{ steps.create_branch.outputs.branch_name }}
-        run: |
-          hub push
-          hub pull-request -m release -b main -h $BRANCH_NAME
+          gem install -N git-pr-release -v "1.4.0"
+          git-pr-release --no-fetch
