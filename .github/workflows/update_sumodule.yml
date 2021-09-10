@@ -10,7 +10,7 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
-          repository: StaveService/b
+          repository: StaveService/web
           token: ${{ secrets.STAVE_ACCESS_TOKEN }}
           event-type: front_update
 
