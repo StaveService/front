@@ -13,4 +13,5 @@ jobs:
           repository: StaveService/web
           token: ${{ secrets.STAVE_ACCESS_TOKEN }}
           event-type: front_update
+          client-payload: '{"ref": "develop"}'
 
