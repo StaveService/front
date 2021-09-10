@@ -8,6 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: |
+      - run: |
         curl -X POST -H  -H "Authorization: token ${{secrets.STAVE_ACCESS_TOKEN}}" -H "Accept: application/vnd.github.everest-preview+json" --data '{"event_type": "front_update"}' https://api.github.com/repos/StaveService/web/dispatches
 
