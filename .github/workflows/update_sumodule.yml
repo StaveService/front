@@ -8,7 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Send Dispatch Event
-        run: |
-          curl -X POST -H  -H "Authorization: token ${{secrets.STAVE_ACCESS_TOKEN}}" -H "Accept: application/vnd.github.everest-preview+json" --data '{"event_type": "front_update"}' https://api.github.com/repos/StaveService/web/dispatches
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          repository: StaveService/web
+          token: ${{ secrets.STAVE_ACCESS_TOKEN }}
+          event-type: front_update
 
