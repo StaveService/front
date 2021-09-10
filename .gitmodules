@@ -2,9 +2,12 @@
 	path = src/ui
 	url = https://github.com/StaveService/ui.git
 	branch = main
+
 [submodule "src/components/ControlTextField"]
 	path = src/components/ControlTextField
 	url = https://gist.github.com/c4ae1db9c19e956c46d052618842a780.git
+
 [submodule "src/slices/currentUser"]
 	path = src/slices/currentUser
 	url = https://gist.github.com/0d30252c213ace8013b9babdd6dedbc8.git
+
