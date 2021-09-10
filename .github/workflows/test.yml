@@ -13,6 +13,5 @@ jobs:
 
       - name: eslint
         run: |
-          git submodule update --init --recursive
           yarn
           yarn lint
