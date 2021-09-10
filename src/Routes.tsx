@@ -81,8 +81,10 @@ const Routes: React.FC = () => (
     {/* AUTH */}
     <Route exact path={routes.SIGNIN} component={SignIn} />
     <Route exact path={routes.SIGNUP} component={SignUp} />
+
     {/* CONTACTS */}
     <Route exact path={routes.CONTACTS} component={Contact} />
+
     {/* ROOT */}
     <Route exact path={routes.ROOT} component={Root} />
   </Switch>
