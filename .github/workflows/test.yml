@@ -6,12 +6,12 @@ jobs:
     name: test
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Checkout
         uses: actions/checkout@v2
         with:
           submodules: true
 
-      - name: eslint
+      - name: ESlint
         run: |
           yarn
           yarn lint
