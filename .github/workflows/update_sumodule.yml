@@ -1,5 +1,4 @@
-
-name: Dispatch
+name: Update Submodule
 on: 
   push:
     branches: [ main ]
@@ -11,7 +10,7 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
-          repository: StaveService/web
+          repository: StaveService/b
           token: ${{ secrets.STAVE_ACCESS_TOKEN }}
           event-type: front_update
 
