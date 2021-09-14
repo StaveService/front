@@ -22,6 +22,8 @@ jobs:
         run: |
           ls -la
           mv .github build
+          git add -A
+          git commit -m "add workflow"
 
 
       - name: Deploy with gh-pages
