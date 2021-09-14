@@ -20,8 +20,8 @@ jobs:
 
       - name: Add Workflow
         run: |
-          ls
-          git mv .github build
+          ls -la
+          mv .github build
 
 
       - name: Deploy with gh-pages
