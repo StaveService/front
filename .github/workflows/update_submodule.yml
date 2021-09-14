@@ -1,7 +1,7 @@
 name: Update Submodule
 on: 
   push:
-    branches: [ main ]
+    branches: [ gh-pages ]
 
 jobs:
   build:
