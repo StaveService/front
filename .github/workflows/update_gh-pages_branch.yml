@@ -20,6 +20,7 @@ jobs:
 
       - name: Add Workflow
         run: |
+          ls
           git mv .github build
 
 
