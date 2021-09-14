@@ -13,10 +13,15 @@ jobs:
           token: ${{ secrets.STAVE_ACCESS_TOKEN }}
           submodules: true
 
-      - name: build
+      - name: Build
         run: |
           yarn
           yarn build
+
+      - name: Add Workflow
+        run: |
+          git mv .github build
+
 
       - name: Deploy with gh-pages
         run: |
