@@ -18,6 +18,10 @@ jobs:
           yarn
           yarn build
 
+      - name: Add Workflow
+        run: |
+          mv ./.github/ ./build/
+
       - name: Deploy with gh-pages
         run: |
           git remote set-url origin https://git:${STAVE_ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
