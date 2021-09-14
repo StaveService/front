@@ -23,6 +23,9 @@ jobs:
           ls -la
           mv ./.github/ ./build/
           ls -la
+          cd build
+          ls -la
+          cd ..
           git config --local user.name "izszzz"
           git config --local user.email "izszzz@yahoo.co.jp"
           git add -A
