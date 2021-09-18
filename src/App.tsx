@@ -18,7 +18,7 @@ const App: React.FC = () => (
         <ReactQueryProvider>
           <IntlProvider>
             <ReactQueryDevtools initialIsOpen />
-            <Router basename="front">
+            <Router>
               <Header />
               <Routes />
               <Footer />
