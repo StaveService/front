@@ -169,12 +169,14 @@ export const getMusic =
         locale,
       })
       .then((res) => res.music);
-export const getMusicScore = (id: number) => (): Promise<IMusic> =>
-  graphQLCilent
-    .request<IMusicType>(musicScoreQuery, {
-      id,
-    })
-    .then((res) => res.music);
+export const getMusicScore =
+  (id: number, locale: string) => (): Promise<IMusic> =>
+    graphQLCilent
+      .request<IMusicType>(musicScoreQuery, {
+        id,
+        locale,
+      })
+      .then((res) => res.music);
 export const getMusicRootTree = (id: number) => (): Promise<IMusic> =>
   graphQLCilent
     .request<IMusicType>(rootTreeQuery, {
