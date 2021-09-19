@@ -4,7 +4,7 @@ const musicScoreQuery = gql`
   query getMusic($id: Int!) {
     music(id: $id) {
       id
-      title
+      title(locale: $locale)
       score
     }
   }
