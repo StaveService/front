@@ -4,6 +4,7 @@ import { useSnackbar } from "notistack";
 import { AlphaTabApi, model } from "@coderline/alphatab";
 import Box from "@material-ui/core/Box";
 import { useQuery } from "react-query";
+import { useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
 import Header from "./Header";
 import Tracks, { ITrack } from "../../../../ui/Tracks";
@@ -12,6 +13,7 @@ import styles from "./index.module.css";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import { getMusicScore } from "../../../../gql";
+import { selectLocale } from "../../../../slices/language";
 
 const settings = {
   tex: true,
@@ -33,10 +35,11 @@ const Tab: React.FC = () => {
     src: "https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js",
   });
   const match = useRouteMatch<{ id: string }>();
+  const locale = useSelector(selectLocale);
   const id = Number(match.params.id);
   const onSuccess = (res: IMusic) => alphaTabApi?.tex(res.score);
   // react-query
-  useQuery([queryKey.MUSIC, id, queryKey.SCORE], getMusicScore(id), {
+  useQuery([queryKey.MUSIC, id, queryKey.SCORE], getMusicScore(id, locale), {
     onSuccess,
     onError,
     enabled: loading,
