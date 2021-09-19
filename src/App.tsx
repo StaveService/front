@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { HashRouter as Router } from "react-router-dom";
 import { ReactQueryDevtools } from "react-query/devtools";
 import ThemeProvider from "./providers/Theme";
 import ReduxProvider from "./providers/Redux";
