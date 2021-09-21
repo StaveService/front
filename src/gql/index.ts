@@ -214,7 +214,11 @@ export const getIssue = (id: number) => (): Promise<IIssue> =>
     })
     .then((res) => res.issue);
 export const getBands =
-  (page: number, locale: string, q?: { [key: string]: string }) =>
+  (
+    page: number,
+    locale: string,
+    q?: { s?: string; [key: string]: string | undefined }
+  ) =>
   (): Promise<IIndexType<IBand>> =>
     graphQLCilent
       .request<IBandsType>(bandsQuery, {
@@ -254,7 +258,11 @@ export const getBandMusics =
       })
       .then((res) => res.band.musics);
 export const getArtists =
-  (page: number, locale: string, q?: { [key: string]: string }) =>
+  (
+    page: number,
+    locale: string,
+    q?: { s?: string; [key: string]: string | undefined }
+  ) =>
   (): Promise<IIndexType<IArtist>> =>
     graphQLCilent
       .request<IArtistsType>(artistsQuery, {
@@ -294,7 +302,11 @@ export const getArtistMusics =
       })
       .then((res) => res.artist.musics);
 export const getAlbums =
-  (page: number, locale: string, q?: { [key: string]: string }) =>
+  (
+    page: number,
+    locale: string,
+    q?: { s?: string; [key: string]: string | undefined }
+  ) =>
   (): Promise<IIndexType<IAlbum>> =>
     graphQLCilent
       .request<IAlbumsType>(albumsQuery, {

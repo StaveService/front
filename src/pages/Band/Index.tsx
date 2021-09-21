@@ -10,6 +10,7 @@ import usePaginate from "../../hooks/usePaginate";
 import { getBands } from "../../gql";
 import SearchTextField from "../../components/TextField/SearchTextField";
 import { selectLocale } from "../../slices/language";
+import { useBandsQuery } from "../../reactQuery";
 
 const Index: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -17,7 +18,10 @@ const Index: React.FC = () => {
   const { onError } = useQuerySnackbar();
   const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   const locale = useSelector(selectLocale);
-  const { isLoading, data } = useQuery(
+  const { isLoading, data } = useBandsQuery(page, locale, {
+    name_cont: debouncedInputValue,
+  });
+  useQuery(
     [queryKey.BANDS, page, locale, debouncedInputValue],
     getBands(page, locale, { name_cont: debouncedInputValue }),
     {
