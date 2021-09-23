@@ -25,7 +25,7 @@ import {
   useBandsQuery,
   useDescBookmarkMusicsQuery,
   useMusicsQuery,
-} from "../reactQuery";
+} from "../reactQuery/query";
 
 const Root: React.FC = () => {
   const [musicPage, handleMusicPage] = usePaginate();
@@ -33,12 +33,32 @@ const Root: React.FC = () => {
   const [artistPage, handleArtistPage] = usePaginate();
   const [bandPage, handleBandPage] = usePaginate();
   const locale = useSelector(selectLocale);
-  const musics = useMusicsQuery(musicPage, locale, { s: "updated_at desc" });
-  const albums = useAlbumsQuery(albumPage, locale, { s: "updated_at desc" });
-  const artists = useArtistsQuery(artistPage, locale, { s: "updated_at desc" });
-  const bands = useBandsQuery(bandPage, locale, { s: "updated_at desc" });
-  const descBookmarkMusics = useDescBookmarkMusicsQuery(1, locale, {
-    s: "bookmarks_count desc",
+  const musics = useMusicsQuery({
+    page: musicPage,
+    locale,
+    q: { s: "updated_at desc" },
+  });
+  const albums = useAlbumsQuery({
+    page: albumPage,
+    locale,
+    q: { s: "updated_at desc" },
+  });
+  const artists = useArtistsQuery({
+    page: artistPage,
+    locale,
+    q: { s: "updated_at desc" },
+  });
+  const bands = useBandsQuery({
+    page: bandPage,
+    locale,
+    q: { s: "updated_at desc" },
+  });
+  const descBookmarkMusics = useDescBookmarkMusicsQuery({
+    page: 1,
+    locale,
+    q: {
+      s: "bookmarks_count desc",
+    },
   });
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;

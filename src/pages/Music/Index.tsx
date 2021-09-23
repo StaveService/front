@@ -6,15 +6,19 @@ import DefaultLayout from "../../layout/Default";
 import usePaginate from "../../hooks/usePaginate";
 import SearchTextField from "../../components/TextField/SearchTextField";
 import { selectLocale } from "../../slices/language";
-import { useMusicsQuery } from "../../reactQuery";
+import { useMusicsQuery } from "../../reactQuery/query";
 
 const Index: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const [page, handlePage] = usePaginate();
   const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   const locale = useSelector(selectLocale);
-  const { isLoading, data } = useMusicsQuery(page, locale, {
-    title_cont: debouncedInputValue,
+  const { isLoading, data } = useMusicsQuery({
+    page,
+    locale,
+    q: {
+      title_cont: debouncedInputValue,
+    },
   });
   // handlers
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>

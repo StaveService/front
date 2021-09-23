@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import React from "react";
 import {
   useLocation,
@@ -33,7 +33,7 @@ import {
   deleteUserRelationship,
   postUserRelationship,
 } from "../../../axios/axios";
-import { getUser } from "../../../gql";
+import { useUserQuery } from "../../../reactQuery/query";
 
 const Show: React.FC = () => {
   const { onError } = useQuerySnackbar();
@@ -48,11 +48,10 @@ const Show: React.FC = () => {
   const queryClient = useQueryClient();
   // react-intl
   const intl = useIntl();
-  const { isLoading, data } = useQuery(
-    [queryKey.USER, id],
-    getUser(id, currentUser?.id),
-    { onError }
-  );
+  const { isLoading, data } = useUserQuery({
+    id,
+    currentUserId: currentUser?.id,
+  });
   const handleCreateSuccess = (res: AxiosResponse<IUserRelationship>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IUser | undefined>(

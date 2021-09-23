@@ -5,7 +5,7 @@ import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import Image from "material-ui-image";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
@@ -28,8 +28,8 @@ import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import usePaginate from "../../hooks/usePaginate";
-import { getMusics } from "../../gql";
 import { selectLocale } from "../../slices/language";
+import { useMusicsQuery } from "../../reactQuery/query";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -74,11 +74,14 @@ const New: React.FC = () => {
     (newMusic: IMusicParams) => postMusic(currentUser?.id, newMusic),
     { onSuccess: handleCreateSuccess, onError }
   );
-  const searchQuery = useQuery(
-    [queryKey.MUSICS, locale, { page, query: debouncedTitle }],
-    getMusics(page, locale, { title_eq: debouncedTitle }),
-    { enabled: !isPending() && !!debouncedTitle, onError }
-  );
+  const searchQuery = useMusicsQuery({
+    page,
+    locale,
+    q: {
+      title_cont: debouncedTitle,
+    },
+    options: { enabled: !isPending() && !!debouncedTitle, onError },
+  });
   // handlers
   const onSubmit = (data: IMusicParams) => createMusicMutation.mutate(data);
   const handleSelect = (selectedCard: IItunesMusic) =>

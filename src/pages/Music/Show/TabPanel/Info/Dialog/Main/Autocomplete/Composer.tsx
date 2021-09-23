@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import React, { ChangeEvent, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
@@ -14,8 +14,8 @@ import {
   deleteComposerMusic,
   postComposerMusic,
 } from "../../../../../../../../axios/axios";
-import { getArtists } from "../../../../../../../../gql";
 import { selectLocale } from "../../../../../../../../slices/language";
+import { useArtistsQuery } from "../../../../../../../../reactQuery/query";
 
 interface MutateVariables {
   option: IArtist;
@@ -74,11 +74,14 @@ const Composer: React.FC = () => {
   );
   const handleRemoveOption = (option: IArtist, options: IArtist[]) =>
     destroyMutation.mutate({ option, options });
-  const composers = useQuery(
-    [queryKey.ARTISTS, locale, { query: debouncedInputValue }],
-    getArtists(1, locale, { name_eq: debouncedInputValue }),
-    { enabled: !!debouncedInputValue, onError }
-  );
+  const composers = useArtistsQuery({
+    page: 1,
+    locale,
+    q: {
+      name_cont: debouncedInputValue,
+    },
+    options: { enabled: !!debouncedInputValue },
+  });
   // handlers
   const onInputChange = (
     _e: ChangeEvent<Record<string, unknown>>,

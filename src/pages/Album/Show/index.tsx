@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import AlbumIcon from "@material-ui/icons/Album";
 import Image from "material-ui-image";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { FormattedMessage, useIntl } from "react-intl";
 import { AxiosResponse } from "axios";
@@ -40,10 +40,10 @@ import {
   selectCurrentUser,
   setHeaders,
 } from "../../../slices/currentUser/currentUser";
-import { lookupItunesAlbum } from "../../../axios/itunes";
 import usePaginate from "../../../hooks/usePaginate";
-import { getAlbum, getAlbumMusics } from "../../../gql";
 import { selectLocale } from "../../../slices/language";
+import { useAlbumMusicsQuery, useAlbumQuery } from "../../../reactQuery/query";
+import { useLookupItunesAlbum } from "../../../reactQuery/itunes";
 
 const Show: React.FC = () => {
   const [musicPage, handleMusicPage] = usePaginate();
@@ -90,28 +90,9 @@ const Show: React.FC = () => {
         }
     );
   };
-  const album = useQuery(
-    [queryKey.ALBUM, id, locale],
-    getAlbum(id, currentUser?.id, locale),
-    {
-      onError,
-    }
-  );
-  const albumMusics = useQuery(
-    [queryKey.ALBUM, id, queryKey.MUSICS, musicPage, locale],
-    getAlbumMusics(id, musicPage, locale),
-    {
-      onError,
-    }
-  );
-  const itunesAlbum = useQuery(
-    [queryKey.ITUNES, queryKey.ALBUM, album.data?.link.itunes],
-    () =>
-      lookupItunesAlbum<number>(album.data?.link.itunes).then(
-        (res) => res.results[0]
-      ),
-    { enabled: !!album.data?.link.itunes, onError }
-  );
+  const album = useAlbumQuery({ id, locale, currentUserId: currentUser?.id });
+  const albumMusics = useAlbumMusicsQuery({ id, page: musicPage, locale });
+  const itunesAlbum = useLookupItunesAlbum({ id: album.data?.link.itunes });
   const patchLinkMutation = useMutation(
     (link: Partial<Omit<IAlbumLink, "id">>) =>
       patchAlbumLink(id, album.data?.link.id, link),
@@ -178,12 +159,12 @@ const Show: React.FC = () => {
         </Grid>
       </Grid>
       <Box height="100px" width="100px" m="auto">
-        {itunesAlbum.data && <Image src={itunesAlbum.data.artworkUrl100} />}
+        {itunesAlbum.data && <Image src={itunesAlbum.data[0].artworkUrl100} />}
       </Box>
       <Box mb={3}>
         <LinkTable
           itunes={{
-            link: itunesAlbum.data?.collectionViewUrl || "",
+            link: itunesAlbum.data ? itunesAlbum.data[0].collectionViewUrl : "",
             renderDialog(open, handleClose) {
               return (
                 <ItunesAlbumDialog

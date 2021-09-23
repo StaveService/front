@@ -3,7 +3,7 @@ import React from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useHistory } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useSnackbar } from "notistack";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
@@ -23,15 +23,14 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import SettingDialog from "./Dialog/Setting";
 import Notification from "./Notification";
 import routes from "../../constants/routes.json";
-import queryKey from "../../constants/queryKey.json";
 import {
   remove,
   selectCurrentUser,
   selectHeaders,
 } from "../../slices/currentUser/currentUser";
-import { getUserNotifications } from "../../gql";
 import useOpen from "../../hooks/useOpen";
 import { selectLocale } from "../../slices/language";
+import { useUserNotificationsQuery } from "../../reactQuery/query";
 
 const Header: React.FC = () => {
   const [open, handleOpen, handleClose] = useOpen();
@@ -66,11 +65,14 @@ const Header: React.FC = () => {
       },
     });
   };
-  const notifications = useQuery(
-    [queryKey.NOTIFICATIONS, 1, locale],
-    getUserNotifications(currentUser?.id, 1, locale),
-    { onError, enabled: !!currentUser }
-  );
+  const notifications = useUserNotificationsQuery({
+    id: currentUser?.id,
+    page: 1,
+    locale,
+    options: {
+      enabled: !!currentUser,
+    },
+  });
   const signOut = useMutation(() => axios.delete("/auth/sign_out", headers), {
     onMutate,
     onSuccess,

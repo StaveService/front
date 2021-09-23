@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import React from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Link as RouterLink,
@@ -37,26 +37,21 @@ import {
   selectCurrentUser,
   setHeaders,
 } from "../../../slices/currentUser/currentUser";
-import {
-  IItunesMusic,
-  IMusic,
-  IMusicBookmark,
-  ISpotifyTrack,
-} from "../../../interfaces";
+import { IMusic, IMusicBookmark } from "../../../interfaces";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
 import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
-import { lookupItunesMusic } from "../../../axios/itunes";
 import {
   deleteMusicBookmark,
   IMusicParams,
   patchMusic,
   postMusicBookmark,
 } from "../../../axios/axios";
-import { getSpotifyTrack } from "../../../axios/spotify";
 import { remove, selectSpotifyToken } from "../../../slices/spotify";
-import { getMusic } from "../../../gql";
 import { selectLocale } from "../../../slices/language";
+import { useMusicQuery } from "../../../reactQuery/query";
+import { useLookupItunesMusic } from "../../../reactQuery/itunes";
+import { useSpotifyTrackQuery } from "../../../reactQuery/spotify";
 
 const Show: React.FC = () => {
   // react-hook-form
@@ -103,29 +98,12 @@ const Show: React.FC = () => {
     dispatch(remove());
     onError(err);
   };
-  const music = useQuery(
-    [queryKey.MUSIC, id, locale],
-    getMusic(id, currentUser?.id, locale),
-    {
-      onError,
-    }
-  );
-  const itunesMusic = useQuery<IItunesMusic>(
-    [queryKey.ITUNES, queryKey.MUSIC, music.data?.link?.itunes],
-    () =>
-      lookupItunesMusic<number>(music.data?.link.itunes).then(
-        (res) => res.results[0]
-      ),
-    { enabled: !!music.data?.link?.itunes, onError, retry: 2 }
-  );
-  const spotifyTrack = useQuery<ISpotifyTrack>(
-    [queryKey.SPOTIFY, queryKey.MUSIC, music.data?.link?.spotify],
-    () => getSpotifyTrack(music.data?.link.spotify, spotifyToken?.access_token),
-    {
-      enabled: !!music.data?.link?.spotify && !!spotifyToken,
-      onError: handleError,
-      retry: 2,
-    }
+  const music = useMusicQuery({ id, locale, currentUserId: currentUser?.id });
+  const itunesMusic = useLookupItunesMusic({ id: music.data?.link?.itunes });
+  const spotifyTrack = useSpotifyTrackQuery(
+    { options: { onError: handleError } },
+    music.data?.link.spotify,
+    spotifyToken?.access_token
   );
   const createMutation = useMutation(() => postMusicBookmark(userId, id), {
     onSuccess: handleCreateSuccess,
@@ -184,7 +162,9 @@ const Show: React.FC = () => {
           </Grid>
         </Grid>
         <Box height="100px" width="100px" m="auto">
-          {itunesMusic.data && <Image src={itunesMusic.data.artworkUrl100} />}
+          {itunesMusic.data && (
+            <Image src={itunesMusic.data[0].artworkUrl100} />
+          )}
         </Box>
         <Box my={3}>
           <Button
@@ -283,7 +263,7 @@ const Show: React.FC = () => {
       </DefaultLayout>
       <Player
         src={{
-          itunes: itunesMusic.data?.previewUrl,
+          itunes: itunesMusic.data ? itunesMusic.data[0].previewUrl : undefined,
           spotify: spotifyTrack.data?.preview_url,
         }}
       />

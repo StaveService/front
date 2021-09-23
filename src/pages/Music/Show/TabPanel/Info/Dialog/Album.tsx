@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { FormattedMessage, useIntl } from "react-intl";
 import Dialog from "@material-ui/core/Dialog";
@@ -32,8 +32,8 @@ import {
   deleteAlbumMusic,
   postAlbumMusic,
 } from "../../../../../../axios/axios";
-import { getAlbums } from "../../../../../../gql";
 import { selectLocale } from "../../../../../../slices/language";
+import { useAlbumsQuery } from "../../../../../../reactQuery/query";
 
 const Album: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -95,11 +95,12 @@ const Album: React.FC = () => {
     (album: IAlbum) => deleteAlbumMusic(userId, id, album.id),
     { onSuccess: handleDestroySuccess, onError }
   );
-  const albums = useQuery(
-    [queryKey.ALBUMS, locale, { query: debouncedInputValue }],
-    getAlbums(1, locale, { title_cont: debouncedInputValue }),
-    { enabled: !!debouncedInputValue, onError }
-  );
+  const albums = useAlbumsQuery({
+    page: 1,
+    locale,
+    q: { title_cont: debouncedInputValue },
+    options: { enabled: !!debouncedInputValue },
+  });
   // handlers
   const handleRemoveOption = () => setValue("album_id", "");
   const handleSelectOption = (option: IAlbum) =>
