@@ -1,5 +1,4 @@
 import React from "react";
-import { useQuery } from "react-query";
 import { Link as RouterLink } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import Image from "material-ui-image";
@@ -10,11 +9,9 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { IAlbum } from "../../interfaces";
-import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
-import { lookupItunesAlbum } from "../../axios/itunes";
 import Layout, { LayoutProps } from "./Layout";
+import { useLookupItunesAlbum } from "../../reactQuery/itunes";
 
 interface AlbumProps extends LayoutProps {
   albums: IAlbum[];
@@ -26,18 +23,11 @@ const Album: React.FC<AlbumProps> = ({
   pageCount,
   onPage,
 }: AlbumProps) => {
-  const { onError } = useQuerySnackbar();
   const ids = albums.map((album) => album.link.itunes).join(",");
   let i = 0;
   let imageUrl: string | undefined = "";
   // react-query
-  const itunesAlbums = useQuery(
-    [queryKey.ITUNES, queryKey.ALBUMS, ids],
-    () => lookupItunesAlbum(ids).then((res) => res.results),
-    {
-      onError,
-    }
-  );
+  const itunesAlbums = useLookupItunesAlbum({ id: ids });
   return (
     <Layout page={page} pageCount={pageCount} onPage={onPage} loading={loading}>
       <Table>

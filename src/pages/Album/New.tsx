@@ -5,7 +5,7 @@ import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import Image from "material-ui-image";
@@ -25,8 +25,8 @@ import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import { postAlbum, IAlbumParams } from "../../axios/axios";
 import usePaginate from "../../hooks/usePaginate";
-import { getAlbums } from "../../gql";
 import { selectLocale } from "../../slices/language";
+import { useAlbumsQuery } from "../../reactQuery/query";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -64,11 +64,12 @@ const New: React.FC = () => {
     (newAlbum: IAlbumParams) => postAlbum(newAlbum),
     { onSuccess: handleCreateSuccess, onError }
   );
-  const searchQuery = useQuery(
-    [queryKey.ALBUMS, locale, { page, query: debouncedTitle }],
-    getAlbums(page, locale, { title_cont: debouncedTitle }),
-    { enabled: !!debouncedTitle, onError }
-  );
+  const searchQuery = useAlbumsQuery({
+    page,
+    locale,
+    q: { title_cont: debouncedTitle },
+    options: { enabled: !!debouncedTitle, onError },
+  });
   // handlers
   const onSubmit = (data: IAlbumParams) => createMutation.mutate(data);
   const handleSelect = (selectedItem: IItunesAlbum) => {

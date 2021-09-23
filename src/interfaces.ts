@@ -192,6 +192,7 @@ export type IPaginationType = Record<
 export interface IIndexType<Data> {
   data: Data[];
   pagination: IPaginationType;
+  notificationExist?: boolean;
 }
 export interface IUserType {
   user: IUser;
@@ -200,7 +201,7 @@ export interface IUsersType {
   users: IIndexType<IUser>;
 }
 export interface INotificationsType {
-  notifications: IIndexType<INotification> & { notificationExist: boolean };
+  notifications: IIndexType<INotification>;
 }
 export interface IFollowersType {
   followers: IIndexType<IUser>;

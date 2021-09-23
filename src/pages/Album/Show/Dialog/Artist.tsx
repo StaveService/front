@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
@@ -31,8 +31,8 @@ import { IAlbum, IArtist, IArtistAlbum } from "../../../../interfaces";
 import useOpen from "../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
-import { getArtists } from "../../../../gql";
 import { selectLocale } from "../../../../slices/language";
+import { useArtistsQuery } from "../../../../reactQuery/query";
 
 const Artist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -87,11 +87,12 @@ const Artist: React.FC = () => {
     (artist: IArtist) => axios.delete(`${route}/${artist.id}`, headers),
     { onSuccess: handleDestorySuccess, onError }
   );
-  const artists = useQuery(
-    [queryKey.ARTISTS, locale, { query: debouncedInputValue }],
-    getArtists(1, locale, { name_cont: debouncedInputValue }),
-    { enabled: !!debouncedInputValue, onError }
-  );
+  const artists = useArtistsQuery({
+    page: 1,
+    locale,
+    q: { name_cont: debouncedInputValue },
+    options: { enabled: !!debouncedInputValue },
+  });
   // handlers
   const handleRemoveOption = () => setValue("artist_id", "");
   const handleSelectOption = (option: IArtist) =>

@@ -1,5 +1,4 @@
 import React from "react";
-import { useQuery } from "react-query";
 import { FormattedMessage } from "react-intl";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -8,8 +7,7 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import CardMedia from "@material-ui/core/CardMedia";
 import { IMusic } from "../../interfaces";
-import queryKey from "../../constants/queryKey.json";
-import { lookupItunesMusic } from "../../axios/itunes";
+import { useLookupItunesMusic } from "../../reactQuery/itunes";
 
 const useStyles = makeStyles({
   media: {
@@ -23,16 +21,14 @@ interface IMusicCard {
 }
 const BandCard: React.FC<IMusicCard> = ({ music, onClick }: IMusicCard) => {
   const classes = useStyles();
-  const { data } = useQuery(
-    [queryKey.ITUNES, queryKey.MUSIC, music.link.itunes],
-    () => lookupItunesMusic(music.link.itunes).then((res) => res.results[0])
-  );
+  const { data } = useLookupItunesMusic({ id: music.link.itunes });
+
   return (
     <Card onClick={onClick}>
       <Box display="flex">
         <Box display="flex" justifyItems="center" alignItems="center" p={1}>
-          {data?.artworkUrl100 && (
-            <CardMedia image={data?.artworkUrl60} className={classes.media} />
+          {data && (
+            <CardMedia image={data[0].artworkUrl60} className={classes.media} />
           )}
         </Box>
         <CardContent>

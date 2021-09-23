@@ -1,11 +1,9 @@
 import React from "react";
-import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import MusicTable from "../../../../components/Table/Music";
-import queryKey from "../../../../constants/queryKey.json";
-import { getUserMusics } from "../../../../gql";
 import usePaginate from "../../../../hooks/usePaginate";
+import { useUserMusicsQuery } from "../../../../reactQuery/query";
 import { selectLocale } from "../../../../slices/language";
 
 const Posted: React.FC = () => {
@@ -13,10 +11,7 @@ const Posted: React.FC = () => {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const locale = useSelector(selectLocale);
-  const musics = useQuery(
-    [queryKey.USER, id, queryKey.MUSICS, page, locale],
-    getUserMusics(id, page, locale)
-  );
+  const musics = useUserMusicsQuery({ id, page, locale });
   return (
     <MusicTable
       musics={musics.data?.data || []}

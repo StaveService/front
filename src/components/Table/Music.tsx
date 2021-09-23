@@ -1,6 +1,5 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { useQuery } from "react-query";
 import { FormattedMessage } from "react-intl";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -12,9 +11,7 @@ import Image from "material-ui-image";
 import Layout, { LayoutProps } from "./Layout";
 import { IMusic } from "../../interfaces";
 import routes from "../../constants/routes.json";
-import queryKey from "../../constants/queryKey.json";
-import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import { lookupItunesMusic } from "../../axios/itunes";
+import { useLookupItunesMusic } from "../../reactQuery/itunes";
 
 interface MusicProps extends LayoutProps {
   musics: IMusic[];
@@ -45,15 +42,12 @@ const Music: React.FC<MusicProps> = ({
   ];
   let i = 0;
   let imageUrl: string | undefined = "";
-  const { onError } = useQuerySnackbar();
-  const itunesMusics = useQuery(
-    [queryKey.ITUNES, queryKey.MUSICS, ids],
-    () => lookupItunesMusic<string>(ids).then((res) => res.results),
-    {
+  const itunesMusics = useLookupItunesMusic({
+    id: ids,
+    options: {
       enabled: !!ids,
-      onError,
-    }
-  );
+    },
+  });
   return (
     <Layout page={page} pageCount={pageCount} onPage={onPage} loading={loading}>
       <Table>
