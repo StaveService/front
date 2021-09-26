@@ -114,7 +114,7 @@ const Show: React.FC = () => {
   );
   const updateLinkMutation = useMutation(
     (link: Partial<Omit<IBandLink, "id">>) =>
-      patchBandLink(id, band.data?.link.id, link, locale),
+      patchBandLink(id, band.data?.link.id, link),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers

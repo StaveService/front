@@ -33,7 +33,7 @@ const Bookmark: React.FC = () => {
       bookmarkedMusicPage,
       locale,
     ],
-    getUserBookmarkedMusics(id, bookmarkedMusicPage, locale)
+    getUserBookmarkedMusics({ id, page: bookmarkedMusicPage, locale })
   );
   const bookmarkedBands = useQuery(
     [
@@ -44,7 +44,7 @@ const Bookmark: React.FC = () => {
       bookmarkedBandPage,
       locale,
     ],
-    getUserBookmarkedBands(id, bookmarkedBandPage, locale)
+    getUserBookmarkedBands({ id, page: bookmarkedBandPage, locale })
   );
   const bookmarkedArtists = useQuery(
     [
@@ -55,7 +55,7 @@ const Bookmark: React.FC = () => {
       bookmarkedArtistPage,
       locale,
     ],
-    getUserBookmarkedArtists(id, bookmarkedArtistPage, locale)
+    getUserBookmarkedArtists({ id, page: bookmarkedArtistPage, locale })
   );
   const bookmarkedAlbums = useQuery(
     [
@@ -66,7 +66,7 @@ const Bookmark: React.FC = () => {
       bookmarkedAlbumPage,
       locale,
     ],
-    getUserBookmarkedAlbums(id, bookmarkedAlbumPage, locale)
+    getUserBookmarkedAlbums({ id, page: bookmarkedAlbumPage, locale })
   );
 
   return (
