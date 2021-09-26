@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
 import Typography from "@material-ui/core/Typography";
@@ -37,7 +37,6 @@ import {
   setHeaders,
 } from "../../../slices/currentUser/currentUser";
 import queryKey from "../../../constants/queryKey.json";
-import { lookupItunesArtist } from "../../../axios/itunes";
 import {
   postBandBookmark,
   deleteBandBookmark,
@@ -45,10 +44,15 @@ import {
   IBandParams,
   patchBand,
 } from "../../../axios/axios";
-import { getWikipedia } from "../../../axios/wikipedia";
 import usePaginate from "../../../hooks/usePaginate";
-import { getBand, getBandAlbums, getBandMusics } from "../../../gql";
 import { selectLocale } from "../../../slices/language";
+import {
+  useBandAlbumsQuery,
+  useBandMusicsQuery,
+  useBandQuery,
+} from "../../../reactQuery/query";
+import { useLookupItunesArtist } from "../../../reactQuery/itunes";
+import { useWikipediaQuery } from "../../../reactQuery/wikipedia";
 
 const Show: React.FC = () => {
   const [albumPage, handleAlbumPage] = usePaginate();
@@ -95,40 +99,11 @@ const Show: React.FC = () => {
       (prev) => prev && { ...prev, link: res.data }
     );
   };
-  const band = useQuery(
-    [queryKey.BAND, id, locale],
-    getBand(id, currentUser?.id, locale),
-    {
-      onError,
-    }
-  );
-  const bandAlbums = useQuery(
-    [queryKey.BAND, id, queryKey.ALBUMS, albumPage, locale],
-    getBandAlbums(id, albumPage, locale),
-    {
-      onError,
-    }
-  );
-  const bandMusics = useQuery(
-    [queryKey.BAND, id, queryKey.MUSICS, musicPage, locale],
-    getBandMusics(id, musicPage, locale),
-    {
-      onError,
-    }
-  );
-  const itunesArtist = useQuery<IItunesArtist>(
-    [queryKey.ITUNES, queryKey.BAND, band.data?.link.itunes],
-    () =>
-      lookupItunesArtist<number>(band.data?.link.itunes).then(
-        (res) => res.results[0]
-      ),
-    { enabled: !!band.data?.link.itunes, onError }
-  );
-  const wikipedia = useQuery<IWikipedia>(
-    [queryKey.WIKIPEDIA, band.data?.link.wikipedia],
-    () => getWikipedia(band.data?.link.wikipedia),
-    { enabled: !!band.data?.link.wikipedia, onError }
-  );
+  const band = useBandQuery({ id, locale, currentUserId: currentUser?.id });
+  const bandAlbums = useBandAlbumsQuery({ id, page: albumPage, locale });
+  const bandMusics = useBandMusicsQuery({ id, page: musicPage, locale });
+  const itunesArtist = useLookupItunesArtist({ id: band.data?.link.itunes });
+  const wikipedia = useWikipediaQuery(band.data?.link.wikipedia);
   const createBookmarkMutation = useMutation(() => postBandBookmark(id), {
     onSuccess: handleCreateSuccess,
     onError,
@@ -139,7 +114,7 @@ const Show: React.FC = () => {
   );
   const updateLinkMutation = useMutation(
     (link: Partial<Omit<IBandLink, "id">>) =>
-      patchBandLink(id, band.data?.link.id, link, locale),
+      patchBandLink(id, band.data?.link.id, link),
     { onSuccess: handleUpdateSuccess, onError }
   );
   // handlers
@@ -212,7 +187,7 @@ const Show: React.FC = () => {
             },
           }}
           itunes={{
-            link: itunesArtist.data?.artistLinkUrl || "",
+            link: itunesArtist.data ? itunesArtist.data[0].artistLinkUrl : "",
             renderDialog(open, handleClose) {
               return (
                 <ItunesArtistDialog

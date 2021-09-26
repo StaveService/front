@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import SearchItunesButton from "../../components/Button/Search/Itunes";
@@ -24,8 +24,8 @@ import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import usePaginate from "../../hooks/usePaginate";
-import { getBands } from "../../gql";
 import { selectLocale } from "../../slices/language";
+import { useBandsQuery } from "../../reactQuery/query";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -68,11 +68,12 @@ const New: React.FC = () => {
     (newBand: IBandParams) => postBand(newBand),
     { onSuccess: handleCreateSuccess, onError }
   );
-  const searchQuery = useQuery(
-    [queryKey.BANDS, locale, { page, query: debouncedName }],
-    getBands(page, locale, { name_eq: debouncedName }),
-    { enabled: !!debouncedName, onError }
-  );
+  const searchQuery = useBandsQuery({
+    page,
+    locale,
+    q: { name_cont: debouncedName },
+    options: { enabled: !!debouncedName, onError },
+  });
   // handlers
   const onSubmit = (data: IBandParams) => createMutation.mutate(data);
   const handleSelect = (selectedItem: IItunesArtist) =>

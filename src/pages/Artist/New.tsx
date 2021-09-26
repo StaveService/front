@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
 import Box from "@material-ui/core/Box";
@@ -23,8 +23,8 @@ import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import queryKey from "../../constants/queryKey.json";
 import usePaginate from "../../hooks/usePaginate";
-import { getArtists } from "../../gql";
 import { selectLocale } from "../../slices/language";
+import { useArtistsQuery } from "../../reactQuery/query";
 
 const New: React.FC = () => {
   const [page, handlePage] = usePaginate();
@@ -68,11 +68,14 @@ const New: React.FC = () => {
     (newArtist: IArtistParams) => postArtist(newArtist),
     { onSuccess: handleCreateSuccess, onError }
   );
-  const searchQuery = useQuery(
-    [queryKey.ARTISTS, locale, { page, query: debouncedInputValue }],
-    getArtists(1, locale, { name_cont: debouncedInputValue }),
-    { enabled: !!debouncedInputValue, onError }
-  );
+  const searchQuery = useArtistsQuery({
+    page: 1,
+    locale,
+    q: {
+      name_cont: debouncedInputValue,
+    },
+    options: { enabled: !!debouncedInputValue, onError },
+  });
   // handlers
   const onSubmit = (data: IArtistParams) => createMutation.mutate(data);
   const handleSelect = (selectedItem: IItunesArtist) =>

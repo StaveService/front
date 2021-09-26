@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import React, { ChangeEvent, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useIntl } from "react-intl";
 import { useRouteMatch } from "react-router-dom";
@@ -14,8 +14,8 @@ import {
   setHeaders,
 } from "../../../../../../../../slices/currentUser/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
-import { getBands } from "../../../../../../../../gql";
 import { selectLocale } from "../../../../../../../../slices/language";
+import { useBandsQuery } from "../../../../../../../../reactQuery/query";
 
 interface MutateVariables {
   option: IBand;
@@ -73,11 +73,12 @@ const Band: React.FC = () => {
   );
   const handleRemoveOption = (option: IBand, options: IBand[]) =>
     destroyMutation.mutate({ option, options });
-  const bands = useQuery(
-    [queryKey.BANDS, locale, { query: debouncedInputValue }],
-    getBands(1, locale, { name_cont: debouncedInputValue }),
-    { enabled: !!debouncedInputValue, onError }
-  );
+  const bands = useBandsQuery({
+    page: 1,
+    locale,
+    q: { name_cont: debouncedInputValue },
+    options: { enabled: !!debouncedInputValue },
+  });
   // handlers
   const onInputChange = (
     e: ChangeEvent<Record<string, unknown>>,

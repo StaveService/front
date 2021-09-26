@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useQuery } from "react-query";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -17,55 +16,50 @@ import BandsTable from "../components/Table/Band";
 import MenuCard from "../components/Card/Menu";
 import MusicCards from "../components/Cards/Musics";
 import DefaultLayout from "../layout/Default";
-import queryKey from "../constants/queryKey.json";
-import useQuerySnackbar from "../hooks/useQuerySnackbar";
 import usePaginate from "../hooks/usePaginate";
-import { getAlbums, getArtists, getBands, getMusics } from "../gql";
 import img from "../images/stave.png";
 import { selectLocale } from "../slices/language";
+import {
+  useAlbumsQuery,
+  useArtistsQuery,
+  useBandsQuery,
+  useDescBookmarkMusicsQuery,
+  useMusicsQuery,
+} from "../reactQuery/query";
 
 const Root: React.FC = () => {
   const [musicPage, handleMusicPage] = usePaginate();
   const [albumPage, handleAlbumPage] = usePaginate();
   const [artistPage, handleArtistPage] = usePaginate();
   const [bandPage, handleBandPage] = usePaginate();
-  const { onError } = useQuerySnackbar();
   const locale = useSelector(selectLocale);
-  const musics = useQuery(
-    [queryKey.MUSICS, musicPage, locale],
-    getMusics(musicPage, locale, { s: "updated_at desc" }),
-    {
-      onError,
-    }
-  );
-  const albums = useQuery(
-    [queryKey.ALBUMS, albumPage, locale],
-    getAlbums(albumPage, locale, { s: "updated_at desc" }),
-    {
-      onError,
-    }
-  );
-  const artists = useQuery(
-    [queryKey.ARTISTS, artistPage, locale],
-    getArtists(artistPage, locale, { s: "updated_at desc" }),
-    {
-      onError,
-    }
-  );
-  const bands = useQuery(
-    [queryKey.BANDS, bandPage, locale],
-    getBands(bandPage, locale, { s: "updated_at desc" }),
-    {
-      onError,
-    }
-  );
-  const bookmarkedMusics = useQuery(
-    [queryKey.MUSICS, 1, queryKey.BOOKMARKS, locale],
-    getMusics(1, locale, { s: "bookmarks_count desc" }),
-    {
-      onError,
-    }
-  );
+  const musics = useMusicsQuery({
+    page: musicPage,
+    locale,
+    q: { s: "updated_at desc" },
+  });
+  const albums = useAlbumsQuery({
+    page: albumPage,
+    locale,
+    q: { s: "updated_at desc" },
+  });
+  const artists = useArtistsQuery({
+    page: artistPage,
+    locale,
+    q: { s: "updated_at desc" },
+  });
+  const bands = useBandsQuery({
+    page: bandPage,
+    locale,
+    q: { s: "updated_at desc" },
+  });
+  const descBookmarkMusics = useDescBookmarkMusicsQuery({
+    page: 1,
+    locale,
+    q: {
+      s: "bookmarks_count desc",
+    },
+  });
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;
     const code = params.get("code");
@@ -123,7 +117,7 @@ const Root: React.FC = () => {
         </Grid>
       </Box>
       <Box mb={3}>
-        <MusicCards data={bookmarkedMusics.data?.data} />
+        <MusicCards data={descBookmarkMusics.data?.data} />
       </Box>
       <Box mb={3}>
         <Typography variant="h4">Musics</Typography>

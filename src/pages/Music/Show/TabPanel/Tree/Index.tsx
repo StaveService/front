@@ -1,15 +1,13 @@
 import React from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import { useRouteMatch } from "react-router-dom";
 import FileTable from "../../../../../components/Table/File";
 import baseURL from "../../../../../constants/baseURL";
 import queryKey from "../../../../../constants/queryKey.json";
-import { getMusicRootTree } from "../../../../../gql";
-import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
 import { IMusic } from "../../../../../interfaces";
+import { useMusicRootTreeQuery } from "../../../../../reactQuery/query";
 
 const Files: React.FC = () => {
-  const { onError } = useQuerySnackbar();
   const match = useRouteMatch<{ userId: string; id: string }>();
   const id = Number(match.params.id);
   const userId = Number(match.params.userId);
@@ -18,13 +16,7 @@ const Files: React.FC = () => {
     queryKey.MUSIC,
     id,
   ]);
-  const musicTree = useQuery(
-    [queryKey.MUSIC, id, queryKey.REPOSITORY],
-    getMusicRootTree(id),
-    {
-      onError,
-    }
-  );
+  const musicTree = useMusicRootTreeQuery({ id });
   return (
     <div>
       <p>

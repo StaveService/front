@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import React, { ChangeEvent, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useIntl } from "react-intl";
 import { useParams } from "react-router-dom";
@@ -14,8 +14,8 @@ import {
   deleteLyristMusic,
   postLyristMusic,
 } from "../../../../../../../../axios/axios";
-import { getArtists } from "../../../../../../../../gql";
 import { selectLocale } from "../../../../../../../../slices/language";
+import { useArtistsQuery } from "../../../../../../../../reactQuery/query";
 
 interface MutateVariables {
   option: IArtist;
@@ -77,12 +77,12 @@ const Lyrist: React.FC = () => {
   );
   const handleRemoveOption = (option: IArtist, options: IArtist[]) =>
     destroyMutation.mutate({ option, options });
-  const lyrists = useQuery(
-    [queryKey.ARTISTS, locale, { query: debouncedInputValue }],
-    getArtists(1, locale, { name_eq: debouncedInputValue }),
-    { enabled: !!debouncedInputValue, onError }
-  );
-
+  const lyrists = useArtistsQuery({
+    page: 1,
+    locale,
+    q: { name_cont: debouncedInputValue },
+    options: { enabled: !!debouncedInputValue },
+  });
   // handlers
   const onInputChange = (
     _e: ChangeEvent<Record<string, unknown>>,

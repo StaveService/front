@@ -1,27 +1,25 @@
 import React, { ChangeEvent, useState } from "react";
-import { useQuery } from "react-query";
 import { useDebounce } from "use-debounce/lib";
 import { useSelector } from "react-redux";
 import MusicsTable from "../../components/Table/Music";
 import DefaultLayout from "../../layout/Default";
-import queryKey from "../../constants/queryKey.json";
-import useQuerySnackbar from "../../hooks/useQuerySnackbar";
 import usePaginate from "../../hooks/usePaginate";
-import { getMusics } from "../../gql";
 import SearchTextField from "../../components/TextField/SearchTextField";
 import { selectLocale } from "../../slices/language";
+import { useMusicsQuery } from "../../reactQuery/query";
 
 const Index: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const [page, handlePage] = usePaginate();
-  const { onError } = useQuerySnackbar();
   const [debouncedInputValue, { isPending }] = useDebounce(inputValue, 1000);
   const locale = useSelector(selectLocale);
-  const { isLoading, data } = useQuery(
-    [queryKey.MUSICS, page, locale, debouncedInputValue],
-    getMusics(page, locale, { title_cont: debouncedInputValue }),
-    { onError }
-  );
+  const { isLoading, data } = useMusicsQuery({
+    page,
+    locale,
+    q: {
+      title_cont: debouncedInputValue,
+    },
+  });
   // handlers
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     setInputValue(e.target.value);

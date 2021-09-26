@@ -18,7 +18,7 @@ import Box from "@material-ui/core/Box";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import useDebounce from "use-debounce/lib/useDebounce";
 import LoadingButton from "../../../../ui/LoadingButton";
 import AutocompleteTextField from "../../../../components/TextField/AutocompleteTextField";
@@ -31,8 +31,8 @@ import { IArtist, IArtistBand, IBand } from "../../../../interfaces";
 import useOpen from "../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
-import { getArtists } from "../../../../gql";
 import { selectLocale } from "../../../../slices/language";
+import { useArtistsQuery } from "../../../../reactQuery/query";
 
 const Artist: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -91,11 +91,12 @@ const Artist: React.FC = () => {
     (artist) => axios.delete(`${route}/${artist.id}`, headers),
     { onSuccess: handleDestroySuccess, onError }
   );
-  const artists = useQuery(
-    [queryKey.ARTISTS, locale, { query: debouncedInputValue }],
-    getArtists(1, locale, { name_cont: debouncedInputValue }),
-    { enabled: !!debouncedInputValue, onError }
-  );
+  const artists = useArtistsQuery({
+    page: 1,
+    locale,
+    q: { name_cont: debouncedInputValue },
+    options: { enabled: !!debouncedInputValue },
+  });
 
   // handlers
   const handleRemoveOption = () => setValue("artist_id", "");

@@ -185,13 +185,16 @@ export interface IArtistBookmark {
 export interface IAlbumBookmark {
   id: number;
 }
-export type IPaginationType = Record<
-  "currentPage" | "limitValue" | "totalCount" | "totalPages",
-  number
->;
+export interface IPaginationType {
+  currentPage?: number;
+  limitValue?: number;
+  totalCount?: number;
+  totalPages: number;
+}
 export interface IIndexType<Data> {
   data: Data[];
   pagination: IPaginationType;
+  notificationExist?: boolean;
 }
 export interface IUserType {
   user: IUser;
@@ -200,7 +203,7 @@ export interface IUsersType {
   users: IIndexType<IUser>;
 }
 export interface INotificationsType {
-  notifications: IIndexType<INotification> & { notificationExist: boolean };
+  notifications: IIndexType<INotification>;
 }
 export interface IFollowersType {
   followers: IIndexType<IUser>;

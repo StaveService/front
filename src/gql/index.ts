@@ -1,4 +1,5 @@
 import { GraphQLClient } from "graphql-request";
+import { UseQueryOptions } from "react-query";
 import {
   IAlbum,
   IAlbumsType,
@@ -52,16 +53,39 @@ import blobQuery from "./query/music/blob";
 import treeQuery from "./query/music/tree";
 import baseURL from "../constants/baseURL";
 import userNotificationsQuery from "./query/user/notifications";
+import { ILocale } from "../slices/language";
 
+export type IndexQueryFnArgs<T> = {
+  page: number;
+  locale?: ILocale;
+  q?: { s?: string; [key: string]: string | undefined };
+  options?: UseQueryOptions<T>;
+};
+export type ResourcesIndexQueryFnArgs = {
+  id: number | undefined;
+  page: number;
+  locale?: ILocale;
+  q?: { s?: string; [key: string]: string | undefined };
+  options?: UseQueryOptions;
+};
+
+export type ShowQueryFnArgs<T> = {
+  id: number;
+  locale?: ILocale;
+  currentUserId?: number | undefined;
+  oid?: string;
+  options?: UseQueryOptions<T>;
+};
 const graphQLCilent = new GraphQLClient(`${baseURL}/graphql`);
 export const getUsers =
-  (page: number, q?: { [key: string]: string }) =>
+  ({ page, q }: IndexQueryFnArgs<IIndexType<IUser>>) =>
   (): Promise<IIndexType<IUser>> =>
     graphQLCilent
       .request<IUsersType>(usersQuery, { page, q })
       .then((res) => res.users);
 export const getUser =
-  (id: number, currentUserId: undefined | number) => (): Promise<IUser> =>
+  ({ id, currentUserId }: ShowQueryFnArgs<IUser>) =>
+  (): Promise<IUser> =>
     graphQLCilent
       .request<IUserType>(userQuery, { id, currentUserId })
       .then((res) => res.user);
@@ -70,27 +94,27 @@ export const getUserProfile = (id: number) => (): Promise<IUser> =>
     .request<IUserType>(userProfileQuery, { id })
     .then((res) => res.user);
 export const getUserMusics =
-  (id: number, page: number, locale: string) =>
+  ({ id, page: musicPage, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IUserType>(userMusicsQuery, {
         id,
-        musicPage: page,
+        musicPage,
         locale,
       })
       .then((res) => res.user.musics);
 export const getUserNotifications =
-  (id: number | undefined, page: number, locale: string) =>
-  (): Promise<IIndexType<INotification> & { notificationExist: boolean }> =>
+  ({ id, page: notificationPage, locale }: ResourcesIndexQueryFnArgs) =>
+  (): Promise<IIndexType<INotification>> =>
     graphQLCilent
       .request<IUserType>(userNotificationsQuery, {
         id,
-        notificationPage: page,
+        notificationPage,
         locale,
       })
       .then((res) => res.user.notifications);
 export const getUserBookmarkedMusics =
-  (id: number, page: number, locale: string) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedMusicsQuery, {
@@ -100,7 +124,7 @@ export const getUserBookmarkedMusics =
       })
       .then((res) => res.user.bookmarkedMusics);
 export const getUserBookmarkedArtists =
-  (id: number, page: number, locale: string) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IArtist>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedArtistsQuery, {
@@ -110,7 +134,7 @@ export const getUserBookmarkedArtists =
       })
       .then((res) => res.user.bookmarkedArtists);
 export const getUserBookmarkedBands =
-  (id: number, page: number, locale: string) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IBand>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedBandsQuery, {
@@ -120,7 +144,7 @@ export const getUserBookmarkedBands =
       })
       .then((res) => res.user.bookmarkedBands);
 export const getUserBookmarkedAlbums =
-  (id: number, page: number, locale: string) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IAlbum>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedAlbumsQuery, {
@@ -130,27 +154,25 @@ export const getUserBookmarkedAlbums =
       })
       .then((res) => res.user.bookmarkedAlbums);
 export const getUserFollower =
-  (id: number, page: number) => (): Promise<IIndexType<IUser>> =>
+  ({ id, page: followerPage }: ResourcesIndexQueryFnArgs) =>
+  (): Promise<IIndexType<IUser>> =>
     graphQLCilent
       .request<IUserType>(userFollowerQuery, {
         id,
-        followerPage: page,
+        followerPage,
       })
       .then((res) => res.user.followers);
 export const getUserFollowing =
-  (id: number, page: number) => (): Promise<IIndexType<IUser>> =>
+  ({ id, page: followingPage }: ResourcesIndexQueryFnArgs) =>
+  (): Promise<IIndexType<IUser>> =>
     graphQLCilent
       .request<IUserType>(userFollowingQuery, {
         id,
-        followingPage: page,
+        followingPage,
       })
       .then((res) => res.user.following);
 export const getMusics =
-  (
-    page: number,
-    locale: string,
-    q?: { s?: string; [key: string]: string | undefined }
-  ) =>
+  ({ page, locale, q }: IndexQueryFnArgs<IIndexType<IMusic>>) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IMusicsType>(musicsQuery, {
@@ -160,45 +182,52 @@ export const getMusics =
       })
       .then((res) => res.musics);
 export const getMusic =
-  (id: number, currentUserId: number | undefined, locale: string) =>
+  ({ id, locale, currentUserId }: ShowQueryFnArgs<IMusic>) =>
   (): Promise<IMusic> =>
     graphQLCilent
       .request<IMusicType>(musicQuery, {
         id,
-        currentUserId,
         locale,
+        currentUserId,
       })
       .then((res) => res.music);
 export const getMusicScore =
-  (id: number, locale: string) => (): Promise<IMusic> =>
+  ({ id, locale }: ShowQueryFnArgs<IMusic>) =>
+  (): Promise<IMusic> =>
     graphQLCilent
       .request<IMusicType>(musicScoreQuery, {
         id,
         locale,
       })
       .then((res) => res.music);
-export const getMusicRootTree = (id: number) => (): Promise<IMusic> =>
-  graphQLCilent
-    .request<IMusicType>(rootTreeQuery, {
-      id,
-    })
-    .then((res) => res.music);
-export const getMusicTree = (id: number, oid: string) => (): Promise<IMusic> =>
-  graphQLCilent
-    .request<IMusicType>(treeQuery, {
-      id,
-      oid,
-    })
-    .then((res) => res.music);
-export const getMusicBlob = (id: number, oid: string) => (): Promise<IMusic> =>
-  graphQLCilent
-    .request<IMusicType>(blobQuery, {
-      id,
-      oid,
-    })
-    .then((res) => res.music);
+export const getMusicRootTree =
+  ({ id }: ShowQueryFnArgs<IMusic>) =>
+  (): Promise<IMusic> =>
+    graphQLCilent
+      .request<IMusicType>(rootTreeQuery, {
+        id,
+      })
+      .then((res) => res.music);
+export const getMusicTree =
+  ({ id, oid }: ShowQueryFnArgs<IMusic>) =>
+  (): Promise<IMusic> =>
+    graphQLCilent
+      .request<IMusicType>(treeQuery, {
+        id,
+        oid,
+      })
+      .then((res) => res.music);
+export const getMusicBlob =
+  ({ id, oid }: ShowQueryFnArgs<IMusic>) =>
+  (): Promise<IMusic> =>
+    graphQLCilent
+      .request<IMusicType>(blobQuery, {
+        id,
+        oid,
+      })
+      .then((res) => res.music);
 export const getIssues =
-  (musicId: number, page: number, q?: { [key: string]: string }) =>
+  ({ id: musicId, page, q }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IIssue>> =>
     graphQLCilent
       .request<IIssuesType>(issuesQuery, {
@@ -207,14 +236,16 @@ export const getIssues =
         q,
       })
       .then((res) => res.issues);
-export const getIssue = (id: number) => (): Promise<IIssue> =>
-  graphQLCilent
-    .request<IIssueType>(issueQuery, {
-      id,
-    })
-    .then((res) => res.issue);
+export const getIssue =
+  ({ id }: ShowQueryFnArgs<IIssue>) =>
+  (): Promise<IIssue> =>
+    graphQLCilent
+      .request<IIssueType>(issueQuery, {
+        id,
+      })
+      .then((res) => res.issue);
 export const getBands =
-  (page: number, locale: string, q?: { [key: string]: string }) =>
+  ({ page, locale, q }: IndexQueryFnArgs<IIndexType<IBand>>) =>
   (): Promise<IIndexType<IBand>> =>
     graphQLCilent
       .request<IBandsType>(bandsQuery, {
@@ -224,102 +255,102 @@ export const getBands =
       })
       .then((res) => res.bands);
 export const getBand =
-  (id: number, currentUserId: number | undefined, locale: string) =>
+  ({ id, locale, currentUserId }: ShowQueryFnArgs<IBand>) =>
   (): Promise<IBand> =>
     graphQLCilent
       .request<IBandType>(bandQuery, {
         id,
-        currentUserId,
         locale,
+        currentUserId,
       })
       .then((res) => res.band);
 export const getBandAlbums =
-  (id: number, page: number, locale: string) =>
+  ({ id, page: albumPage, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IAlbum>> =>
     graphQLCilent
       .request<IBandType>(bandAlbumsQuery, {
         id,
-        albumPage: page,
+        albumPage,
         locale,
       })
       .then((res) => res.band.albums);
 export const getBandMusics =
-  (id: number, page: number, locale: string) =>
+  ({ id, page: musicPage, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IBandType>(bandMusicsQuery, {
         id,
-        musicPage: page,
+        musicPage,
         locale,
       })
       .then((res) => res.band.musics);
 export const getArtists =
-  (page: number, locale: string, q?: { [key: string]: string }) =>
+  ({ page, locale, q }: IndexQueryFnArgs<IIndexType<IArtist>>) =>
   (): Promise<IIndexType<IArtist>> =>
     graphQLCilent
       .request<IArtistsType>(artistsQuery, {
         page,
-        q,
         locale,
+        q,
       })
       .then((res) => res.artists);
 export const getArtist =
-  (id: number, currentUserId: number | undefined, locale: string) =>
+  ({ id, locale, currentUserId }: ShowQueryFnArgs<IArtist>) =>
   (): Promise<IArtist> =>
     graphQLCilent
       .request<IArtistType>(artistQuery, {
         id,
-        currentUserId,
         locale,
+        currentUserId,
       })
       .then((res) => res.artist);
 export const getArtistAlbums =
-  (id: number, page: number, locale: string) =>
+  ({ id, page: albumPage, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IAlbum>> =>
     graphQLCilent
       .request<IArtistType>(artistAlbumsQuery, {
         id,
-        albumPage: page,
+        albumPage,
         locale,
       })
       .then((res) => res.artist.albums);
 export const getArtistMusics =
-  (id: number, page: number, locale: string) =>
+  ({ id, page: musicPage, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IArtistType>(artistMusicsQuery, {
         id,
-        musicPage: page,
+        musicPage,
         locale,
       })
       .then((res) => res.artist.musics);
 export const getAlbums =
-  (page: number, locale: string, q?: { [key: string]: string }) =>
+  ({ page, locale, q }: IndexQueryFnArgs<IIndexType<IAlbum>>) =>
   (): Promise<IIndexType<IAlbum>> =>
     graphQLCilent
       .request<IAlbumsType>(albumsQuery, {
         page,
-        q,
         locale,
+        q,
       })
       .then((res) => res.albums);
 export const getAlbum =
-  (id: number, currentUserId: number | undefined, locale: string) =>
+  ({ id, locale, currentUserId }: ShowQueryFnArgs<IAlbum>) =>
   (): Promise<IAlbum> =>
     graphQLCilent
       .request<IAlbumType>(albumQuery, {
         id,
-        currentUserId,
         locale,
+        currentUserId,
       })
       .then((res) => res.album);
 export const getAlbumMusics =
-  (id: number, page: number, locale: string) =>
+  ({ id, page: musicPage, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IAlbumType>(albumMusicsQuery, {
         id,
-        musicPage: page,
+        musicPage,
         locale,
       })
       .then((res) => res.album.musics);

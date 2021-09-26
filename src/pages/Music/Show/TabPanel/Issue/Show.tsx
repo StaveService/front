@@ -1,5 +1,4 @@
 import React from "react";
-import { useQuery } from "react-query";
 import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -10,17 +9,12 @@ import {
   ReactMarkdownNames,
 } from "react-markdown/src/ast-to-react";
 import { dark } from "@material-ui/core/styles/createPalette";
-import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
-import { getIssue } from "../../../../../gql";
-import queryKey from "../../../../../constants/queryKey.json";
+import { useIssueQuery } from "../../../../../reactQuery/query";
 
 const Show: React.FC = () => {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
-  const { onError } = useQuerySnackbar();
-  const { data, isLoading } = useQuery([queryKey.ISSUE, id], getIssue(id), {
-    onError,
-  });
+  const { data, isLoading } = useIssueQuery({ id });
 
   const CodeBlock: CodeComponent | ReactMarkdownNames = ({
     // eslint-disable-next-line react/prop-types
