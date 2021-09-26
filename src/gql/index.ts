@@ -114,7 +114,7 @@ export const getUserNotifications =
       })
       .then((res) => res.user.notifications);
 export const getUserBookmarkedMusics =
-  (id: number, page: number, locale: string) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedMusicsQuery, {
@@ -124,7 +124,7 @@ export const getUserBookmarkedMusics =
       })
       .then((res) => res.user.bookmarkedMusics);
 export const getUserBookmarkedArtists =
-  (id: number, page: number, locale: string) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IArtist>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedArtistsQuery, {
@@ -134,7 +134,7 @@ export const getUserBookmarkedArtists =
       })
       .then((res) => res.user.bookmarkedArtists);
 export const getUserBookmarkedBands =
-  (id: number, page: number, locale: string) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IBand>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedBandsQuery, {
@@ -144,7 +144,7 @@ export const getUserBookmarkedBands =
       })
       .then((res) => res.user.bookmarkedBands);
 export const getUserBookmarkedAlbums =
-  (id: number, page: number, locale: string) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
   (): Promise<IIndexType<IAlbum>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedAlbumsQuery, {

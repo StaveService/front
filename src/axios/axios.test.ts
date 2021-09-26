@@ -26,7 +26,7 @@ import {
   patchUser,
   postUserRelationship,
   deleteUserRelationship,
-  postContact,
+  // postContact,
   patchUserLink,
 } from "./axios";
 import {
@@ -78,7 +78,7 @@ afterAll(async () => {
     await deleteUser(currentUser.id);
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.log(e);
+    console.log("delete User Fail");
   }
 });
 describe("axios", () => {
@@ -207,6 +207,7 @@ describe("axios", () => {
           itunes: 0,
           spotify: "spotify",
           wikipedia: 0,
+          youtube: "string",
           twitter: "string",
         },
       });
@@ -257,6 +258,7 @@ describe("axios", () => {
           itunes: 0,
           spotify: "spotify",
           wikipedia: 0,
+          youtube: "string",
           twitter: "string",
         },
       });
@@ -316,15 +318,15 @@ describe("axios", () => {
     });
   });
 
-  describe("/contact", () => {
-    it("POST", async () => {
-      const res = await postContact({
-        email: "i@i.com",
-        description: "front testing",
-      });
-      expect(res.status).toBe(200);
-    });
-  });
+  // describe("/contact", () => {
+  //   it("POST", async () => {
+  //     const res = await postContact({
+  //       email: "i@i.com",
+  //       description: "front testing",
+  //     });
+  //     expect(res.status).toBe(200);
+  //   });
+  // });
 
   describe("/user", () => {
     const currentUser = getCurrentUser();
