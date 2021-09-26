@@ -185,10 +185,12 @@ export interface IArtistBookmark {
 export interface IAlbumBookmark {
   id: number;
 }
-export type IPaginationType = Record<
-  "currentPage" | "limitValue" | "totalCount" | "totalPages",
-  number
->;
+export interface IPaginationType {
+  currentPage?: number;
+  limitValue?: number;
+  totalCount?: number;
+  totalPages: number;
+}
 export interface IIndexType<Data> {
   data: Data[];
   pagination: IPaginationType;
