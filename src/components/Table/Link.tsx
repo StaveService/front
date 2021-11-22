@@ -31,11 +31,7 @@ interface LinkProps {
   youtube?: {
     type: "v" | "channel";
     link?: string | null;
-    renderDialog: (
-      open: boolean,
-      baseURL: string,
-      handleClose: () => void
-    ) => React.ReactNode;
+    renderDialog: (open: boolean, handleClose: () => void) => React.ReactNode;
   };
   loading?: boolean;
 }
@@ -48,19 +44,6 @@ const Link: React.FC<LinkProps> = ({
   youtube,
   loading,
 }: LinkProps) => {
-  let youtubeBaseURL = "https://www.youtube.com/";
-  if (youtube) {
-    switch (youtube.type) {
-      case "v":
-        youtubeBaseURL += "watch?v=";
-        break;
-      case "channel":
-        youtubeBaseURL += "/channel/";
-        break;
-      default:
-        youtubeBaseURL = "";
-    }
-  }
   const [itunesOpen, onItunesOpen, onItunesClose] = useOpen();
   const [twitterOpen, onTwitterOpen, onTwitterClose] = useOpen();
   const [spotifyOpen, onSpotifyOpen, onSpotifyClose] = useOpen();
@@ -191,9 +174,7 @@ const Link: React.FC<LinkProps> = ({
               <TableCell>
                 <LinkButton
                   startIcon={<YoutubeIcon />}
-                  href={
-                    youtube.link ? youtubeBaseURL + youtube.link : undefined
-                  }
+                  href={youtube.link || undefined}
                 >
                   youtube
                 </LinkButton>
@@ -203,11 +184,7 @@ const Link: React.FC<LinkProps> = ({
                   <FormattedMessage id="edit" />
                 </Button>
 
-                {youtube.renderDialog(
-                  youtubeOpen,
-                  youtubeBaseURL,
-                  onYoutubeClose
-                )}
+                {youtube.renderDialog(youtubeOpen, onYoutubeClose)}
               </TableCell>
             </TableRow>
           )}
