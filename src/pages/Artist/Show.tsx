@@ -239,11 +239,10 @@ const Show: React.FC = () => {
           youtube={{
             type: "channel",
             link: artist.data?.link.youtube,
-            renderDialog(open, baseURL, handleClose) {
+            renderDialog(open, handleClose) {
               return (
                 <YoutubeDialog
                   id={artist.data?.link.youtube || ""}
-                  baseURL={baseURL}
                   open={open}
                   onClose={handleClose}
                   onPatch={handleYoutubeSelect}

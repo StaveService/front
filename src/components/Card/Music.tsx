@@ -22,12 +22,11 @@ interface IMusicCard {
 const BandCard: React.FC<IMusicCard> = ({ music, onClick }: IMusicCard) => {
   const classes = useStyles();
   const { data } = useLookupItunesMusic({ id: music.link.itunes });
-
   return (
     <Card onClick={onClick}>
       <Box display="flex">
         <Box display="flex" justifyItems="center" alignItems="center" p={1}>
-          {data && (
+          {data && data.length && (
             <CardMedia image={data[0].artworkUrl60} className={classes.media} />
           )}
         </Box>

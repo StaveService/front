@@ -16,11 +16,11 @@ function Music({
   return (
     <CardSearchDialogTest<IItunesMusic>
       defaultValue={defaultValue}
-      title="Album"
+      title="Music"
       open={open}
       showSearchBar={showSearchBar}
       useQueryArgs={{
-        key: [queryKey.ITUNES, queryKey.ALBUMS],
+        key: [queryKey.ITUNES, queryKey.MUSICS],
         fn: ({ term, page }) =>
           searchItunesMusics(term, page).then((res) => {
             return {
