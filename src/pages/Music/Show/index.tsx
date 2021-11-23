@@ -73,7 +73,7 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IMusicBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id, locale],
+      ["music", id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -85,7 +85,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id, locale],
+      ["music", id, locale],
       (prev) =>
         prev && {
           ...prev,

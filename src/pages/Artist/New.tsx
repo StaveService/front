@@ -21,7 +21,6 @@ import { setHeaders } from "../../slices/currentUser/currentUser";
 import { IArtist, IItunesArtist } from "../../interfaces";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import queryKey from "../../constants/queryKey.json";
 import usePaginate from "../../hooks/usePaginate";
 import { selectLocale } from "../../slices/language";
 import { useArtistsQuery } from "../../reactQuery/query";
@@ -55,12 +54,12 @@ const New: React.FC = () => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
     queryClient.setQueryData(
-      [queryKey.ARTIST, res.data.id, { musicPage: 1, albumPage: 1 }],
+      ["artist", res.data.id, { musicPage: 1, albumPage: 1 }],
       res.data
     );
     if (selectedItunesArtist)
       queryClient.setQueryData(
-        [queryKey.ITUNES, queryKey.ARTIST, selectedItunesArtist.artistId],
+        ["itunes", "artist", selectedItunesArtist.artistId],
         selectedItunesArtist
       );
   };

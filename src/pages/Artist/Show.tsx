@@ -70,7 +70,7 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IArtistBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      [queryKey.ARTIST, id, locale],
+      ["artist", id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -82,7 +82,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      [queryKey.ARTIST, id, locale],
+      ["artist", id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -94,7 +94,7 @@ const Show: React.FC = () => {
   const handleUpdateSuccess = (res: AxiosResponse<IArtistLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IArtist | undefined>(
-      [queryKey.ARTIST, id, locale],
+      ["artist", id, locale],
       (prev) => prev && { ...prev, link: res.data }
     );
   };
