@@ -30,7 +30,6 @@ import {
 import { IArtist, IArtistBand, IBand } from "../../../../interfaces";
 import useOpen from "../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
-import queryKey from "../../../../constants/queryKey.json";
 import { selectLocale } from "../../../../slices/language";
 import { useArtistsQuery } from "../../../../reactQuery/query";
 
@@ -54,11 +53,11 @@ const Artist: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-query
   const queryClient = useQueryClient();
-  const band = queryClient.getQueryData<IBand>([queryKey.BAND, id]);
+  const band = queryClient.getQueryData<IBand>(["band", id]);
   const handleCreateSuccess = (res: AxiosResponse<IArtistBand>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id],
+      ["band", id],
       (prev) =>
         prev && {
           ...prev,
@@ -69,7 +68,7 @@ const Artist: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse<IBand>, artist: IArtist) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id],
+      ["band", id],
       (prev) =>
         prev && {
           ...prev,

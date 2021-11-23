@@ -25,7 +25,6 @@ import {
 } from "../../slices/currentUser/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import usePaginate from "../../hooks/usePaginate";
 import { selectLocale } from "../../slices/language";
@@ -63,10 +62,10 @@ const New: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IMusic>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${route}/${res.data.id}`);
-    queryClient.setQueryData([queryKey.MUSIC, id], res.data);
+    queryClient.setQueryData(["music", id], res.data);
     if (selectedItunesMusic)
       queryClient.setQueryData(
-        [queryKey.ITUNES, queryKey.MUSIC, selectedItunesMusic.trackId],
+        ["itunes", "music", selectedItunesMusic.trackId],
         selectedItunesMusic
       );
   };

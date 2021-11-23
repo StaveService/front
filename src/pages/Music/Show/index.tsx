@@ -73,7 +73,7 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IMusicBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id],
+      ["music", id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -85,7 +85,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id],
+      ["music", id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -197,6 +197,7 @@ const Show: React.FC = () => {
             value={match.url + routes.LYRIC}
             component={RouterLink}
             to={match.url + routes.LYRIC}
+            disabled
           />
           <Tab
             label={intl.formatMessage({ id: "issues" })}

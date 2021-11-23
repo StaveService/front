@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { useMutation, useQueryClient } from "react-query";
@@ -19,6 +19,7 @@ import useOpen from "../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
 import queryKey from "../../../../constants/queryKey.json";
 import { deleteMusic } from "../../../../axios/axios";
+import { selectLocale } from "../../../../slices/language";
 
 const Setting: React.FC = () => {
   const [open, handleOpen, handleClose] = useOpen();
@@ -28,13 +29,14 @@ const Setting: React.FC = () => {
   const match = useRouteMatch<{ userId: string; id: string }>();
   const id = Number(match.params.id);
   const userId = Number(match.params.userId);
+  const locale = useSelector(selectLocale);
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
+  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id, locale]);
   const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const onSuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
-    queryClient.removeQueries([queryKey.MUSIC, id]);
+    queryClient.removeQueries([queryKey.MUSIC, id, locale]);
     history.push(routes.ROOT);
   };
   const destroyMusicMutation = useMutation(() => deleteMusic(userId, id), {

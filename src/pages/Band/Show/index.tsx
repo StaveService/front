@@ -71,7 +71,7 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IBandBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id, locale],
+      ["band", id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -83,7 +83,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id, locale],
+      ["band", id, locale],
       (prev) =>
         prev && {
           ...prev,
@@ -95,7 +95,7 @@ const Show: React.FC = () => {
   const handleUpdateSuccess = (res: AxiosResponse<IBandLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.BAND, id, locale],
+      ["band", id, locale],
       (prev) => prev && { ...prev, link: res.data }
     );
   };
@@ -232,11 +232,10 @@ const Show: React.FC = () => {
           youtube={{
             type: "channel",
             link: band.data?.link.youtube,
-            renderDialog(open, baseURL, handleClose) {
+            renderDialog(open, handleClose) {
               return (
                 <YoutubeDialog
                   id={band.data?.link.youtube || ""}
-                  baseURL={baseURL}
                   open={open}
                   onClose={handleClose}
                   onPatch={handleYoutubeSelect}

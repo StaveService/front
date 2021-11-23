@@ -21,7 +21,6 @@ import { IAlbum, IItunesAlbum } from "../../interfaces";
 import { setHeaders } from "../../slices/currentUser/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import { postAlbum, IAlbumParams } from "../../axios/axios";
 import usePaginate from "../../hooks/usePaginate";
@@ -53,10 +52,10 @@ const New: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IAlbum>) => {
     dispatch(setHeaders(res.headers));
     history.push(`${routes.ALBUMS}/${res.data.id}`);
-    queryClient.setQueryData([queryKey.ALBUM, res.data.id], res.data);
+    queryClient.setQueryData(["album", res.data.id], res.data);
     if (selectedItunesAlbum)
       queryClient.setQueryData(
-        [queryKey.ITUNES, queryKey.MUSIC, selectedItunesAlbum.collectionId],
+        ["itunes", "music", selectedItunesAlbum.collectionId],
         selectedItunesAlbum
       );
   };

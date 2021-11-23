@@ -37,6 +37,7 @@ import { patchMusicLink } from "../../../../../axios/axios";
 import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
 import { selectLocale } from "../../../../../slices/language";
 import styles from "./index.module.css";
+import getIDfromYoutubeURL from "../../../../../helpers/getIDfromYoutubeURL";
 
 const Info: React.FC = () => {
   const { onError } = useQuerySnackbar();
@@ -50,7 +51,7 @@ const Info: React.FC = () => {
   // react-query
   const queryClient = useQueryClient();
   const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id, locale]);
-  const itunesMusic = queryClient.getQueryData<IItunesMusic>([
+  const itunesMusics = queryClient.getQueryData<IItunesMusic[]>([
     queryKey.ITUNES,
     queryKey.MUSIC,
     music?.link?.itunes,
@@ -84,7 +85,7 @@ const Info: React.FC = () => {
       <Box mb={3}>
         <LinkTable
           itunes={{
-            link: itunesMusic?.trackViewUrl,
+            link: itunesMusics ? itunesMusics[0].previewUrl : undefined,
             renderDialog(open, handleClose) {
               return (
                 <ItunesMusicDialog
@@ -128,11 +129,10 @@ const Info: React.FC = () => {
           youtube={{
             type: "v",
             link: music?.link.youtube,
-            renderDialog(open, baseURL, handleClose) {
+            renderDialog(open, handleClose) {
               return (
                 <YoutubeDialog
                   id={music?.link.youtube || ""}
-                  baseURL={baseURL}
                   open={open}
                   onClose={handleClose}
                   onPatch={handleYoutubeSelect}
@@ -157,7 +157,7 @@ const Info: React.FC = () => {
             width="560"
             height="315"
             src={`https://www.youtube.com/embed/${
-              music?.link.youtube || "undefined"
+              getIDfromYoutubeURL(music?.link.youtube) || "undefined"
             }`}
             title="YouTube video player"
             frameBorder="0"
@@ -184,8 +184,9 @@ const Info: React.FC = () => {
                   <FormattedMessage id="releaseDate" />
                 </TableCell>
                 <TableCell>
-                  {itunesMusic?.releaseDate &&
-                    format(new Date(itunesMusic.releaseDate), "yyyy/MM/dd")}
+                  {itunesMusics &&
+                    itunesMusics[0].releaseDate &&
+                    format(new Date(itunesMusics[0].releaseDate), "yyyy/MM/dd")}
                 </TableCell>
               </TableRow>
               <TableRow>
