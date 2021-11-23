@@ -21,7 +21,6 @@ import { IBand, IItunesArtist } from "../../interfaces";
 import { IBandParams, postBand } from "../../axios/axios";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import queryKey from "../../constants/queryKey.json";
 import routes from "../../constants/routes.json";
 import usePaginate from "../../hooks/usePaginate";
 import { selectLocale } from "../../slices/language";
@@ -55,12 +54,12 @@ const New: React.FC = () => {
     dispatch(setHeaders(res.headers));
     history.push(`${routes.BANDS}/${res.data.id}`);
     queryClient.setQueryData(
-      [queryKey.BAND, Number(match.params.id), { musicPage: 1, albumPage: 1 }],
+      ["band", Number(match.params.id), { musicPage: 1, albumPage: 1 }],
       res.data
     );
     if (selectedItunesArtist)
       queryClient.setQueryData(
-        [queryKey.ITUNES, queryKey.ARTIST, selectedItunesArtist.artistId],
+        ["itunes", "artist", selectedItunesArtist.artistId],
         selectedItunesArtist
       );
   };

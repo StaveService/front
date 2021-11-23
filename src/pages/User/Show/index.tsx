@@ -23,7 +23,6 @@ import SettingTabPanel from "./TabPanel/Setting";
 import DefaultLayout from "../../../layout/Default";
 import { IUser, IUserRelationship } from "../../../interfaces";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
-import queryKey from "../../../constants/queryKey.json";
 import routes from "../../../constants/routes.json";
 import {
   selectCurrentUser,
@@ -55,14 +54,14 @@ const Show: React.FC = () => {
   const handleCreateSuccess = (res: AxiosResponse<IUserRelationship>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IUser | undefined>(
-      [queryKey.USER, id],
+      ["user", id],
       (prev) => prev && { ...prev, followed: res.data }
     );
   };
   const handleDeleteSuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IUser | undefined>(
-      [queryKey.USER, id],
+      ["user", id],
       (prev) => prev && { ...prev, followed: undefined }
     );
   };
