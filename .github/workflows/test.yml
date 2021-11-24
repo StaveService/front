@@ -1,0 +1,17 @@
+name: Test
+on: [pull_request]
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: ESlint
+        run: |
+          yarn
+          yarn lint
