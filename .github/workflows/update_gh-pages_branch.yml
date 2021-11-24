@@ -27,3 +27,10 @@ jobs:
           npx gh-pages -d build -u "github-actions-bot <support+actions@github.com>" --dotfiles
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          repository: StaveService/web
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          event-type: front_update
