@@ -52,6 +52,7 @@ type IMessages = Record<
   | "setting"
   | "title"
   | "translateTitle"
+  | "translateName"
   | "users"
   | "user"
   | "untranslation"

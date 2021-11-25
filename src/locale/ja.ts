@@ -54,6 +54,7 @@ const ja: IMessages = {
   setting: "設定",
   title: "タイトル",
   translateTitle: "タイトルを翻訳",
+  translateName: "名前を翻訳",
   user: "ユーザー",
   users: "ユーザー",
   untranslation: "未翻訳",

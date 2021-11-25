@@ -93,20 +93,23 @@ function useResourcesIndexQuery<T>(
   query: {
     firstKey: string;
     secondKey: string;
-    fn: (fnArgs: ResourcesIndexQueryFnArgs) => () => Promise<IIndexType<T>>;
+    fn: (
+      fnArgs: ResourcesIndexQueryFnArgs<IIndexType<T>>
+    ) => () => Promise<IIndexType<T>>;
   },
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<T>>
 ): UseQueryResult<IIndexType<T>> {
-  const { id, page, locale, q } = args;
+  const { id, page, locale, q, options } = args;
   const { firstKey, secondKey, fn } = query;
   const { onError } = useQuerySnackbar();
   return useQuery([firstKey, id, secondKey, locale, page, q], fn(args), {
+    ...options,
     onError,
   });
 }
 
 export const useMusicIssuesQuery = (
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<IIssue>>
 ): UseQueryResult<IIndexType<IIssue>> =>
   useResourcesIndexQuery(
     { firstKey: "music", secondKey: "issues", fn: getIssues },
@@ -114,7 +117,7 @@ export const useMusicIssuesQuery = (
   );
 
 export const useBandMusicsQuery = (
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<IMusic>>
 ): UseQueryResult<IIndexType<IMusic>> =>
   useResourcesIndexQuery(
     { firstKey: "band", secondKey: "musics", fn: getBandMusics },
@@ -122,7 +125,7 @@ export const useBandMusicsQuery = (
   );
 
 export const useBandAlbumsQuery = (
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<IAlbum>>
 ): UseQueryResult<IIndexType<IAlbum>> =>
   useResourcesIndexQuery(
     { firstKey: "band", secondKey: "albums", fn: getBandAlbums },
@@ -130,7 +133,7 @@ export const useBandAlbumsQuery = (
   );
 
 export const useArtistAlbumsQuery = (
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<IAlbum>>
 ): UseQueryResult<IIndexType<IAlbum>> =>
   useResourcesIndexQuery(
     { firstKey: "artist", secondKey: "albums", fn: getArtistAlbums },
@@ -138,7 +141,7 @@ export const useArtistAlbumsQuery = (
   );
 
 export const useArtistMusicsQuery = (
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<IMusic>>
 ): UseQueryResult<IIndexType<IMusic>> =>
   useResourcesIndexQuery(
     { firstKey: "artist", secondKey: "musics", fn: getArtistMusics },
@@ -146,7 +149,7 @@ export const useArtistMusicsQuery = (
   );
 
 export const useUserFollowingQuery = (
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<IUser>>
 ): UseQueryResult<IIndexType<IUser>> =>
   useResourcesIndexQuery(
     { firstKey: "user", secondKey: "following", fn: getUserFollowing },
@@ -154,7 +157,7 @@ export const useUserFollowingQuery = (
   );
 
 export const useUserFollowerQuery = (
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<IUser>>
 ): UseQueryResult<IIndexType<IUser>> =>
   useResourcesIndexQuery(
     { firstKey: "user", secondKey: "follower", fn: getUserFollower },
@@ -162,7 +165,7 @@ export const useUserFollowerQuery = (
   );
 
 export const useUserMusicsQuery = (
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<IMusic>>
 ): UseQueryResult<IIndexType<IMusic>> =>
   useResourcesIndexQuery(
     { firstKey: "user", secondKey: "musics", fn: getUserMusics },
@@ -170,7 +173,7 @@ export const useUserMusicsQuery = (
   );
 
 export const useUserNotificationsQuery = (
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<INotification>>
 ): UseQueryResult<IIndexType<INotification>> =>
   useResourcesIndexQuery(
     { firstKey: "user", secondKey: "notifications", fn: getUserNotifications },
@@ -178,7 +181,7 @@ export const useUserNotificationsQuery = (
   );
 
 export const useAlbumMusicsQuery = (
-  args: ResourcesIndexQueryFnArgs
+  args: ResourcesIndexQueryFnArgs<IIndexType<IMusic>>
 ): UseQueryResult<IIndexType<IMusic>> =>
   useResourcesIndexQuery(
     { firstKey: "album", secondKey: "musics", fn: getAlbumMusics },
