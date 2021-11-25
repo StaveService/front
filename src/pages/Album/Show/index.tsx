@@ -92,7 +92,7 @@ const Show: React.FC = () => {
   };
   const album = useAlbumQuery({ id, locale, currentUserId: currentUser?.id });
   const albumMusics = useAlbumMusicsQuery({ id, page: musicPage, locale });
-  const itunesAlbum = useLookupItunesAlbum({ id: album.data?.link.itunes });
+  const itunesAlbums = useLookupItunesAlbum({ id: album.data?.link.itunes });
   const patchLinkMutation = useMutation(
     (link: Partial<Omit<IAlbumLink, "id">>) =>
       patchAlbumLink(id, album.data?.link.id, link),
@@ -159,12 +159,17 @@ const Show: React.FC = () => {
         </Grid>
       </Grid>
       <Box height="100px" width="100px" m="auto">
-        {itunesAlbum.data && <Image src={itunesAlbum.data[0].artworkUrl100} />}
+        {itunesAlbums.data && itunesAlbums.data[0] && (
+          <Image src={itunesAlbums.data[0].artworkUrl100} />
+        )}
       </Box>
       <Box mb={3}>
         <LinkTable
           itunes={{
-            link: itunesAlbum.data ? itunesAlbum.data[0].collectionViewUrl : "",
+            link:
+              itunesAlbums.data && itunesAlbums.data[0]
+                ? itunesAlbums.data[0].collectionViewUrl
+                : "",
             renderDialog(open, handleClose) {
               return (
                 <ItunesAlbumDialog

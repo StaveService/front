@@ -54,6 +54,7 @@ const en: IMessages = {
   setting: "Setting",
   title: "title",
   translateTitle: "Translate Title",
+  translateName: "Translate Name",
   user: "User",
   users: "Users",
   untranslation: "Untranslation",

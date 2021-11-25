@@ -61,12 +61,12 @@ export type IndexQueryFnArgs<T> = {
   q?: { s?: string; [key: string]: string | undefined };
   options?: UseQueryOptions<T>;
 };
-export type ResourcesIndexQueryFnArgs = {
+export type ResourcesIndexQueryFnArgs<T> = {
   id: number | undefined;
   page: number;
   locale?: ILocale;
   q?: { s?: string; [key: string]: string | undefined };
-  options?: UseQueryOptions;
+  options?: UseQueryOptions<T>;
 };
 
 export type ShowQueryFnArgs<T> = {
@@ -94,7 +94,11 @@ export const getUserProfile = (id: number) => (): Promise<IUser> =>
     .request<IUserType>(userProfileQuery, { id })
     .then((res) => res.user);
 export const getUserMusics =
-  ({ id, page: musicPage, locale }: ResourcesIndexQueryFnArgs) =>
+  ({
+    id,
+    page: musicPage,
+    locale,
+  }: ResourcesIndexQueryFnArgs<IIndexType<IMusic>>) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IUserType>(userMusicsQuery, {
@@ -104,7 +108,11 @@ export const getUserMusics =
       })
       .then((res) => res.user.musics);
 export const getUserNotifications =
-  ({ id, page: notificationPage, locale }: ResourcesIndexQueryFnArgs) =>
+  ({
+    id,
+    page: notificationPage,
+    locale,
+  }: ResourcesIndexQueryFnArgs<IIndexType<INotification>>) =>
   (): Promise<IIndexType<INotification>> =>
     graphQLCilent
       .request<IUserType>(userNotificationsQuery, {
@@ -114,7 +122,7 @@ export const getUserNotifications =
       })
       .then((res) => res.user.notifications);
 export const getUserBookmarkedMusics =
-  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs<IMusic>) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedMusicsQuery, {
@@ -124,7 +132,7 @@ export const getUserBookmarkedMusics =
       })
       .then((res) => res.user.bookmarkedMusics);
 export const getUserBookmarkedArtists =
-  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs<IIndexType<IArtist>>) =>
   (): Promise<IIndexType<IArtist>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedArtistsQuery, {
@@ -134,7 +142,7 @@ export const getUserBookmarkedArtists =
       })
       .then((res) => res.user.bookmarkedArtists);
 export const getUserBookmarkedBands =
-  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs<IIndexType<IBand>>) =>
   (): Promise<IIndexType<IBand>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedBandsQuery, {
@@ -144,7 +152,7 @@ export const getUserBookmarkedBands =
       })
       .then((res) => res.user.bookmarkedBands);
 export const getUserBookmarkedAlbums =
-  ({ id, page, locale }: ResourcesIndexQueryFnArgs) =>
+  ({ id, page, locale }: ResourcesIndexQueryFnArgs<IIndexType<IAlbum>>) =>
   (): Promise<IIndexType<IAlbum>> =>
     graphQLCilent
       .request<IUserType>(userBookmarkedAlbumsQuery, {
@@ -154,7 +162,7 @@ export const getUserBookmarkedAlbums =
       })
       .then((res) => res.user.bookmarkedAlbums);
 export const getUserFollower =
-  ({ id, page: followerPage }: ResourcesIndexQueryFnArgs) =>
+  ({ id, page: followerPage }: ResourcesIndexQueryFnArgs<IIndexType<IUser>>) =>
   (): Promise<IIndexType<IUser>> =>
     graphQLCilent
       .request<IUserType>(userFollowerQuery, {
@@ -163,7 +171,7 @@ export const getUserFollower =
       })
       .then((res) => res.user.followers);
 export const getUserFollowing =
-  ({ id, page: followingPage }: ResourcesIndexQueryFnArgs) =>
+  ({ id, page: followingPage }: ResourcesIndexQueryFnArgs<IIndexType<IUser>>) =>
   (): Promise<IIndexType<IUser>> =>
     graphQLCilent
       .request<IUserType>(userFollowingQuery, {
@@ -227,7 +235,7 @@ export const getMusicBlob =
       })
       .then((res) => res.music);
 export const getIssues =
-  ({ id: musicId, page, q }: ResourcesIndexQueryFnArgs) =>
+  ({ id: musicId, page, q }: ResourcesIndexQueryFnArgs<IIndexType<IIssue>>) =>
   (): Promise<IIndexType<IIssue>> =>
     graphQLCilent
       .request<IIssuesType>(issuesQuery, {
@@ -265,7 +273,11 @@ export const getBand =
       })
       .then((res) => res.band);
 export const getBandAlbums =
-  ({ id, page: albumPage, locale }: ResourcesIndexQueryFnArgs) =>
+  ({
+    id,
+    page: albumPage,
+    locale,
+  }: ResourcesIndexQueryFnArgs<IIndexType<IAlbum>>) =>
   (): Promise<IIndexType<IAlbum>> =>
     graphQLCilent
       .request<IBandType>(bandAlbumsQuery, {
@@ -275,7 +287,11 @@ export const getBandAlbums =
       })
       .then((res) => res.band.albums);
 export const getBandMusics =
-  ({ id, page: musicPage, locale }: ResourcesIndexQueryFnArgs) =>
+  ({
+    id,
+    page: musicPage,
+    locale,
+  }: ResourcesIndexQueryFnArgs<IIndexType<IMusic>>) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IBandType>(bandMusicsQuery, {
@@ -305,7 +321,11 @@ export const getArtist =
       })
       .then((res) => res.artist);
 export const getArtistAlbums =
-  ({ id, page: albumPage, locale }: ResourcesIndexQueryFnArgs) =>
+  ({
+    id,
+    page: albumPage,
+    locale,
+  }: ResourcesIndexQueryFnArgs<IIndexType<IAlbum>>) =>
   (): Promise<IIndexType<IAlbum>> =>
     graphQLCilent
       .request<IArtistType>(artistAlbumsQuery, {
@@ -315,7 +335,11 @@ export const getArtistAlbums =
       })
       .then((res) => res.artist.albums);
 export const getArtistMusics =
-  ({ id, page: musicPage, locale }: ResourcesIndexQueryFnArgs) =>
+  ({
+    id,
+    page: musicPage,
+    locale,
+  }: ResourcesIndexQueryFnArgs<IIndexType<IMusic>>) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IArtistType>(artistMusicsQuery, {
@@ -345,7 +369,11 @@ export const getAlbum =
       })
       .then((res) => res.album);
 export const getAlbumMusics =
-  ({ id, page: musicPage, locale }: ResourcesIndexQueryFnArgs) =>
+  ({
+    id,
+    page: musicPage,
+    locale,
+  }: ResourcesIndexQueryFnArgs<IIndexType<IMusic>>) =>
   (): Promise<IIndexType<IMusic>> =>
     graphQLCilent
       .request<IAlbumType>(albumMusicsQuery, {
