@@ -70,7 +70,7 @@ const Header: React.FC = () => {
     page: 1,
     locale,
     options: {
-      enabled: false,
+      enabled: !!currentUser,
     },
   });
   const signOut = useMutation(() => axios.delete("/auth/sign_out", headers), {
