@@ -49,7 +49,7 @@ const Twitter: React.FC<TwitterProps> = ({
           fullWidth
           color="primary"
           loading={loading}
-          disabled={!!value}
+          disabled={!value}
           onClick={handleClick}
         >
           UPDATE

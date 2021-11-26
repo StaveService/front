@@ -11,6 +11,7 @@ const artistMusicsQuery = gql`
             itunes
           }
           band {
+            id
             name(locale: $locale)
           }
           composers {
