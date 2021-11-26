@@ -87,7 +87,7 @@ const Info: React.FC = () => {
           itunes={{
             link:
               itunesMusics && itunesMusics[0]
-                ? itunesMusics[0].previewUrl
+                ? itunesMusics[0].trackViewUrl
                 : undefined,
             renderDialog(open, handleClose) {
               return (
