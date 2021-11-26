@@ -11,6 +11,16 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
+      
+      - name: Make EnvFile
+        run: |
+          touch .env
+          echo REACT_APP_SPOTIFY_KEY=${REACT_APP_SPOTIFY_KEY} >> .env
+          echo REACT_APP_SPOTIFY_SECRET_KEY=${REACT_APP_SPOTIFY_SECRET_KEY} >> .env
+          
+        env:
+          REACT_APP_SPOTIFY_KEY: ${{ secrets.REACT_APP_SPOTIFY_KEY }}
+          REACT_APP_SPOTIFY_SECRET_KEY: ${{ secrets.REACT_APP_SPOTIFY_SECRET_KEY }}
 
       - name: Build
         run: |
