@@ -99,7 +99,7 @@ const Show: React.FC = () => {
     onError(err);
   };
   const music = useMusicQuery({ id, locale, currentUserId: currentUser?.id });
-  const itunesMusic = useLookupItunesMusic({ id: music.data?.link?.itunes });
+  const itunesMusics = useLookupItunesMusic({ id: music.data?.link?.itunes });
   const spotifyTrack = useSpotifyTrackQuery(
     { options: { onError: handleError } },
     music.data?.link.spotify,
@@ -162,8 +162,8 @@ const Show: React.FC = () => {
           </Grid>
         </Grid>
         <Box height="100px" width="100px" m="auto">
-          {itunesMusic.data && (
-            <Image src={itunesMusic.data[0].artworkUrl100} />
+          {itunesMusics.data && itunesMusics.data[0] && (
+            <Image src={itunesMusics.data[0].artworkUrl100} />
           )}
         </Box>
         <Box my={3}>
@@ -264,7 +264,10 @@ const Show: React.FC = () => {
       </DefaultLayout>
       <Player
         src={{
-          itunes: itunesMusic.data ? itunesMusic.data[0].previewUrl : undefined,
+          itunes:
+            itunesMusics.data && itunesMusics.data[0]
+              ? itunesMusics.data[0].previewUrl
+              : undefined,
           spotify: spotifyTrack.data?.preview_url,
         }}
       />

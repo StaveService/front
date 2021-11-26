@@ -85,7 +85,10 @@ const Info: React.FC = () => {
       <Box mb={3}>
         <LinkTable
           itunes={{
-            link: itunesMusics ? itunesMusics[0].previewUrl : undefined,
+            link:
+              itunesMusics && itunesMusics[0]
+                ? itunesMusics[0].previewUrl
+                : undefined,
             renderDialog(open, handleClose) {
               return (
                 <ItunesMusicDialog
@@ -185,6 +188,7 @@ const Info: React.FC = () => {
                 </TableCell>
                 <TableCell>
                   {itunesMusics &&
+                    itunesMusics[0] &&
                     itunesMusics[0].releaseDate &&
                     format(new Date(itunesMusics[0].releaseDate), "yyyy/MM/dd")}
                 </TableCell>
