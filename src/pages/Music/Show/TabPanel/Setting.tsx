@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { useMutation, useQueryClient } from "react-query";
@@ -13,15 +13,13 @@ import Dialog from "@material-ui/core/Dialog";
 import ControlTextField from "../../../../components/ControlTextField/ControlTextField";
 import LoadingButton from "../../../../ui/LoadingButton";
 import { setHeaders } from "../../../../slices/currentUser/currentUser";
-import routes from "../../../../constants/routes.json";
 import { IMusic } from "../../../../interfaces";
 import useOpen from "../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../hooks/useQuerySnackbar";
-import queryKey from "../../../../constants/queryKey.json";
 import { deleteMusic } from "../../../../axios/axios";
-import { selectLocale } from "../../../../slices/language";
+import { ShowProps } from "../interface";
 
-const Setting: React.FC = () => {
+const Setting: React.FC<ShowProps> = ({ queryKey }: ShowProps) => {
   const [open, handleOpen, handleClose] = useOpen();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { errors, control, handleSubmit } = useForm();
@@ -29,15 +27,14 @@ const Setting: React.FC = () => {
   const match = useRouteMatch<{ userId: string; id: string }>();
   const id = Number(match.params.id);
   const userId = Number(match.params.userId);
-  const locale = useSelector(selectLocale);
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id, locale]);
+  const music = queryClient.getQueryData<IMusic>(queryKey);
   const { onError } = useQuerySnackbar();
   const dispatch = useDispatch();
   const onSuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
-    queryClient.removeQueries([queryKey.MUSIC, id, locale]);
-    history.push(routes.ROOT);
+    queryClient.removeQueries(queryKey);
+    history.push("/");
   };
   const destroyMusicMutation = useMutation(() => deleteMusic(userId, id), {
     onSuccess,
@@ -86,9 +83,6 @@ const Setting: React.FC = () => {
       </Button>
     </>
   );
-};
-Setting.defaultProps = {
-  music: undefined,
 };
 
 export default Setting;

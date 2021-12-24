@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/TextField/AutocompleteTextField";
 import { IArtist, IMusic } from "../../../../../../../../interfaces";
-import queryKey from "../../../../../../../../constants/queryKey.json";
 import { setHeaders } from "../../../../../../../../slices/currentUser/currentUser";
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
 import {
@@ -16,12 +15,13 @@ import {
 } from "../../../../../../../../axios/axios";
 import { selectLocale } from "../../../../../../../../slices/language";
 import { useArtistsQuery } from "../../../../../../../../reactQuery/query";
+import { ShowProps } from "../../../../../interface";
 
 interface MutateVariables {
   option: IArtist;
   options: IArtist[];
 }
-const Lyrist: React.FC = () => {
+const Lyrist: React.FC<ShowProps> = ({ queryKey }: ShowProps) => {
   const [inputValue, setInputValue] = useState("");
   const { onError } = useQuerySnackbar();
   // use-debounce
@@ -37,23 +37,20 @@ const Lyrist: React.FC = () => {
   const queryClient = useQueryClient();
   // react-intl
   const intl = useIntl();
-  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
+  const music = queryClient.getQueryData<IMusic>(queryKey);
   const handleCreateSuccess = (
     res: AxiosResponse<IArtist>,
     { options }: MutateVariables
   ) => {
     dispatch(setHeaders(res.headers));
-    queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id],
-      (prev) => {
-        return (
-          prev && {
-            ...prev,
-            lyrists: options,
-          }
-        );
-      }
-    );
+    queryClient.setQueryData<IMusic | undefined>(queryKey, (prev) => {
+      return (
+        prev && {
+          ...prev,
+          lyrists: options,
+        }
+      );
+    });
   };
   const handleDestroySuccess = (
     res: AxiosResponse<IArtist>,
@@ -61,7 +58,7 @@ const Lyrist: React.FC = () => {
   ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id],
+      queryKey,
       (prev) => prev && { ...prev, lyrists: options }
     );
   };

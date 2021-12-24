@@ -1,7 +1,7 @@
 import React from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { Link as RouterLink, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import { format } from "date-fns";
 import Table from "@material-ui/core/Table";
@@ -23,7 +23,6 @@ import YoutubeDialog from "../../../../../components/Dialog/Youtube";
 import MainDialog from "./Dialog/Main";
 import RoleDialog from "./Dialog/Artist";
 import AlbumDialog from "./Dialog/Album";
-import routes from "../../../../../constants/routes.json";
 import { setHeaders } from "../../../../../slices/currentUser/currentUser";
 import {
   IItunesMusic,
@@ -32,14 +31,13 @@ import {
   IMusixmatchTrack,
   ISpotifyTrack,
 } from "../../../../../interfaces";
-import queryKey from "../../../../../constants/queryKey.json";
 import { patchMusicLink } from "../../../../../axios/axios";
 import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
-import { selectLocale } from "../../../../../slices/language";
 import styles from "./index.module.css";
 import getIDfromYoutubeURL from "../../../../../helpers/getIDfromYoutubeURL";
+import { ShowProps } from "../../interface";
 
-const Info: React.FC = () => {
+const Info: React.FC<ShowProps> = ({ queryKey }: ShowProps) => {
   const { onError } = useQuerySnackbar();
   // react-router
   const params = useParams<{ userId: string; id: string }>();
@@ -47,19 +45,18 @@ const Info: React.FC = () => {
   const userId = Number(params.userId);
   // react-redux
   const dispatch = useDispatch();
-  const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id, locale]);
+  const music = queryClient.getQueryData<IMusic>(queryKey);
   const itunesMusics = queryClient.getQueryData<IItunesMusic[]>([
-    queryKey.ITUNES,
-    queryKey.MUSIC,
+    "itunes",
+    "music",
     music?.link?.itunes,
   ]);
   const handleUpdateSuccess = (res: AxiosResponse<IMusicLink>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id, locale],
+      queryKey,
       (prev) => prev && { ...prev, link: res.data }
     );
   };
@@ -170,7 +167,7 @@ const Info: React.FC = () => {
         </Box>
       )}
       <Box mb={3}>
-        <MainDialog />
+        <MainDialog queryKey={queryKey} />
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -202,7 +199,7 @@ const Info: React.FC = () => {
                     <Link
                       key={composer.id}
                       component={RouterLink}
-                      to={`${routes.ARTISTS}/${composer.id}`}
+                      to={`/artists/${composer.id}`}
                     >
                       {composer.name}
                     </Link>
@@ -218,7 +215,7 @@ const Info: React.FC = () => {
                     <Link
                       key={lyrists.id}
                       component={RouterLink}
-                      to={`${routes.ARTISTS}/${lyrists.id}`}
+                      to={`/artists/${lyrists.id}`}
                     >
                       {lyrists.name}
                     </Link>
@@ -231,10 +228,7 @@ const Info: React.FC = () => {
                 </TableCell>
                 <TableCell>
                   {music?.band && (
-                    <Link
-                      component={RouterLink}
-                      to={`${routes.BANDS}/${music.band.id}`}
-                    >
+                    <Link component={RouterLink} to={`/bands/${music.band.id}`}>
                       {music.band.name}
                     </Link>
                   )}
@@ -246,10 +240,7 @@ const Info: React.FC = () => {
                 </TableCell>
                 <TableCell>
                   {music?.user && (
-                    <Link
-                      component={RouterLink}
-                      to={`${routes.USERS}/${music.user.id}`}
-                    >
+                    <Link component={RouterLink} to={`/users/${music.user.id}`}>
                       {music.user.nickname}
                     </Link>
                   )}
@@ -260,7 +251,7 @@ const Info: React.FC = () => {
         </TableContainer>
       </Box>
       <Box mb={3}>
-        <RoleDialog />
+        <RoleDialog queryKey={queryKey} />
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -280,7 +271,7 @@ const Info: React.FC = () => {
                   <TableCell>
                     <Link
                       component={RouterLink}
-                      to={`${routes.ARTISTS}/${artistMusic.artist.id}`}
+                      to={`/artists/${artistMusic.artist.id}`}
                     >
                       {artistMusic.artist.name}
                     </Link>
@@ -291,7 +282,7 @@ const Info: React.FC = () => {
           </Table>
         </TableContainer>
       </Box>
-      <AlbumDialog />
+      <AlbumDialog queryKey={queryKey} />
       <AlbumsTable albums={music?.albums || []} />
     </>
   );

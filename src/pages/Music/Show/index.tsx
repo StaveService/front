@@ -39,8 +39,6 @@ import {
 } from "../../../slices/currentUser/currentUser";
 import { IMusic, IMusicBookmark } from "../../../interfaces";
 import useQuerySnackbar from "../../../hooks/useQuerySnackbar";
-import queryKey from "../../../constants/queryKey.json";
-import routes from "../../../constants/routes.json";
 import {
   deleteMusicBookmark,
   IMusicParams,
@@ -68,12 +66,13 @@ const Show: React.FC = () => {
   const locale = useSelector(selectLocale);
   // react-query
   const queryClient = useQueryClient();
+  const queryKey = ["music", id, locale];
   // react-intl
   const intl = useIntl();
   const handleCreateSuccess = (res: AxiosResponse<IMusicBookmark>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["music", id, locale],
+      queryKey,
       (prev) =>
         prev && {
           ...prev,
@@ -85,7 +84,7 @@ const Show: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      ["music", id, locale],
+      queryKey,
       (prev) =>
         prev && {
           ...prev,
@@ -117,8 +116,8 @@ const Show: React.FC = () => {
   const handleCreateMutation = () => createMutation.mutate();
   const handleDestroyMutation = () => destroyMutation.mutate();
   const tabsValue = () => {
-    if (location.pathname.includes("issues")) return match.url + routes.ISSUES;
-    if (location.pathname.includes("files")) return match.url + routes.FILES;
+    if (location.pathname.includes("issues")) return `${match.url}/issues`;
+    if (location.pathname.includes("files")) return `${match.url}/files`;
     return location.pathname;
   };
   return (
@@ -153,7 +152,7 @@ const Show: React.FC = () => {
           </Grid>
           <Grid item xs={1}>
             <TranslateDialog<IMusic, IMusicParams>
-              queryKey={queryKey.MUSIC}
+              queryKey="music"
               name="title"
               inputLabel={intl.formatMessage({ id: "title" })}
               buttonLabel={intl.formatMessage({ id: "translateTitle" })}
@@ -172,7 +171,7 @@ const Show: React.FC = () => {
             color="primary"
             disabled={music.data ? !music.data.scoreExist : false}
             component={RouterLink}
-            to={match.url + routes.TAB}
+            to={`${match.url}/tab`}
             fullWidth
             disableElevation
           >
@@ -188,78 +187,70 @@ const Show: React.FC = () => {
           />
           <Tab
             label={intl.formatMessage({ id: "file" })}
-            value={match.url + routes.FILES}
+            value={`${match.url}/files`}
             component={RouterLink}
-            to={match.url + routes.FILES}
+            to={`${match.url}/files`}
           />
           <Tab
             label={intl.formatMessage({ id: "lyric" })}
-            value={match.url + routes.LYRIC}
+            value={`${match.url}/lyric`}
             component={RouterLink}
-            to={match.url + routes.LYRIC}
+            to={`${match.url}/lyric`}
             disabled
           />
           <Tab
             label={intl.formatMessage({ id: "issues" })}
-            value={match.url + routes.ISSUES}
+            value={`${match.url}/issues`}
             component={RouterLink}
-            to={match.url + routes.ISSUES}
+            to={`${match.url}/issues`}
           />
           <Tab
             label={intl.formatMessage({ id: "setting" })}
-            value={match.url + routes.SETTING}
+            value={`${match.url}/setting`}
             component={RouterLink}
-            to={match.url + routes.SETTING}
+            to={`${match.url}/setting`}
             disabled={currentUser?.id !== Number(match.params.userId)}
           />
         </Tabs>
         <Switch>
-          <Route exact path={match.path} component={InfoTabPanel} />
           <Route
             exact
-            path={match.path + routes.FILES}
-            component={TreeTabPanel}
+            path={match.path}
+            render={() => <InfoTabPanel queryKey={queryKey} />}
           />
           <Route
             exact
-            path={match.path + routes.SETTING}
-            component={SettingTabPanel}
+            path={`${match.path}/files`}
+            render={() => <TreeTabPanel queryKey={queryKey} />}
           />
           <Route
             exact
-            path={match.path + routes.LYRIC}
-            component={LyricTabPanel}
+            path={`${match.path}/setting`}
+            render={() => <SettingTabPanel queryKey={queryKey} />}
           />
           <Route
             exact
-            path={match.path + routes.FILES}
-            component={TreeTabPanel}
+            path={`${match.path}/lyric`}
+            render={() => <LyricTabPanel queryKey={queryKey} />}
           />
+          <Route exact path={`${match.path}/files`} component={TreeTabPanel} />
           <Route
             exact
-            path={`${match.path + routes.FILES + routes.TREE}/:filename`}
+            path={`${match.path}/files/tree/:filename`}
             component={TreeShow}
           />
           <Route
             strict
-            path={`${match.path + routes.FILES + routes.BLOB}/:filename`}
+            path={`${match.path}/files/blob/:filename`}
             component={BlobShow}
           />
           <Route
             exact
-            path={match.path + routes.ISSUES}
+            path={`${match.path}/issues`}
             component={IssuesTabPanel}
           />
-          <Route
-            exact
-            path={match.path + routes.ISSUES + routes.NEW}
-            component={IssueNew}
-          />
-          <Route
-            exact
-            path={`${match.path}${routes.ISSUES}/:id`}
-            component={Issue}
-          />
+          <Route exact path={`${match.path}/issues/new`} component={IssueNew} />
+          <Route exact path={`${match.path}/issues/:id`} component={Issue} />
         </Switch>
       </DefaultLayout>
       <Player

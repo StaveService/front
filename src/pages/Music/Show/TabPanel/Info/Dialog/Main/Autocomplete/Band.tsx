@@ -8,7 +8,6 @@ import useDebounce from "use-debounce/lib/useDebounce";
 import AutocompleteTextField from "../../../../../../../../components/TextField/AutocompleteTextField";
 import { IBand, IMusic } from "../../../../../../../../interfaces";
 import routes from "../../../../../../../../constants/routes.json";
-import queryKey from "../../../../../../../../constants/queryKey.json";
 import {
   selectHeaders,
   setHeaders,
@@ -16,12 +15,13 @@ import {
 import useQuerySnackbar from "../../../../../../../../hooks/useQuerySnackbar";
 import { selectLocale } from "../../../../../../../../slices/language";
 import { useBandsQuery } from "../../../../../../../../reactQuery/query";
+import { ShowProps } from "../../../../../interface";
 
 interface MutateVariables {
   option: IBand;
   options: IBand[];
 }
-const Band: React.FC = () => {
+const Band: React.FC<ShowProps> = ({ queryKey }: ShowProps) => {
   const [inputValue, setInputValue] = useState("");
   const { onError } = useQuerySnackbar();
   // use-debounce
@@ -32,19 +32,18 @@ const Band: React.FC = () => {
   const locale = useSelector(selectLocale);
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
-  const id = Number(match.params.id);
   // react-query
   const queryClient = useQueryClient();
   // react-intl
   const intl = useIntl();
-  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
+  const music = queryClient.getQueryData<IMusic>(queryKey);
   const handleCreateSuccess = (
     res: AxiosResponse<IBand>,
     { option }: MutateVariables
   ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IBand | undefined>(
-      [queryKey.MUSIC, id],
+      queryKey,
       (prev) =>
         prev && {
           ...prev,
@@ -55,7 +54,7 @@ const Band: React.FC = () => {
   const handleDestroySuccess = (res: AxiosResponse<IBand>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id],
+      queryKey,
       (prev) => prev && { ...prev, band: null }
     );
   };

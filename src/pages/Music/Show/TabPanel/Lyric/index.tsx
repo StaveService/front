@@ -1,21 +1,18 @@
 import React from "react";
 import { useQuery, useQueryClient } from "react-query";
-import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getTrackLyric } from "../../../../../axios/musixmatch";
-import queryKey from "../../../../../constants/queryKey.json";
 import useQuerySnackbar from "../../../../../hooks/useQuerySnackbar";
 import { IMusic } from "../../../../../interfaces";
 import style from "./index.module.css";
+import { ShowProps } from "../../interface";
 
-const Lyric: React.FC = () => {
+const Lyric: React.FC<ShowProps> = ({ queryKey }: ShowProps) => {
   const { onError } = useQuerySnackbar();
-  const params = useParams<{ id: string }>();
-  const id = Number(params.id);
   const queryClient = useQueryClient();
-  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
+  const music = queryClient.getQueryData<IMusic>(queryKey);
   const { data, isLoading } = useQuery(
-    [queryKey.MUSIXMATCH, music?.link.id],
+    ["MUSIXMATCH", music?.link.id],
     () => getTrackLyric(music?.link.musixmatch),
     { onError }
   );

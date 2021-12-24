@@ -35,12 +35,11 @@ import {
 } from "../../../../../../slices/currentUser/currentUser";
 import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
-import routes from "../../../../../../constants/routes.json";
-import queryKey from "../../../../../../constants/queryKey.json";
 import { selectLocale } from "../../../../../../slices/language";
 import { useArtistsQuery } from "../../../../../../reactQuery/query";
+import { ShowProps } from "../../../interface";
 
-const Artist: React.FC = () => {
+const Artist: React.FC<ShowProps> = ({ queryKey }: ShowProps) => {
   const [inputValue, setInputValue] = useState("");
   const [open, handleOpen, handleClose] = useOpen();
   // use-debounce
@@ -54,8 +53,7 @@ const Artist: React.FC = () => {
   const { onError } = useQuerySnackbar();
   // react-router-dom
   const match = useRouteMatch<{ id: string }>();
-  const id = Number(match.params.id);
-  const route = match.url + routes.ARTISTS;
+  const route = `${match.url}/artists`;
   // react-redux
   const dispatch = useDispatch();
   const headers = useSelector(selectHeaders);
@@ -64,14 +62,14 @@ const Artist: React.FC = () => {
   const queryClient = useQueryClient();
   // react-intl
   const intl = useIntl();
-  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
+  const music = queryClient.getQueryData<IMusic>(queryKey);
   const handleSelectOption = (option: IArtist) =>
     setValue("artist_id", option.id);
   const handleRemoveOption = () => setValue("artist_id", "");
   const handleCreateSuccess = (res: AxiosResponse<IArtistMusic>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id],
+      queryKey,
       (prev) =>
         prev && {
           ...prev,
@@ -85,7 +83,7 @@ const Artist: React.FC = () => {
   ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id],
+      queryKey,
       (prev) =>
         prev && {
           ...prev,
@@ -164,7 +162,7 @@ const Artist: React.FC = () => {
                         <TableCell>
                           <Link
                             component={RouterLink}
-                            to={`${routes.ARTISTS}/${artistMusic.artist.id}`}
+                            to={`/artists/${artistMusic.artist.id}`}
                           >
                             {artistMusic.artist.name}
                           </Link>

@@ -9,8 +9,9 @@ import ComposerAutocomplete from "./Autocomplete/Composer";
 import LyristAutocomplete from "./Autocomplete/Lyrist";
 import BandAutocomplete from "./Autocomplete/Band";
 import useOpen from "../../../../../../../hooks/useOpen";
+import { ShowProps } from "../../../../interface";
 
-const Edit: React.FC = () => {
+const Edit: React.FC<ShowProps> = ({ queryKey }: ShowProps) => {
   const [open, handleOpen, handleClose] = useOpen();
   return (
     <>
@@ -23,9 +24,9 @@ const Edit: React.FC = () => {
             <DialogTitle>
               <FormattedMessage id="editInfo" />
             </DialogTitle>
-            <ComposerAutocomplete />
-            <LyristAutocomplete />
-            <BandAutocomplete />
+            <ComposerAutocomplete queryKey={queryKey} />
+            <LyristAutocomplete queryKey={queryKey} />
+            <BandAutocomplete queryKey={queryKey} />
           </Box>
         </Container>
       </Dialog>

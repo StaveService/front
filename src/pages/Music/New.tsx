@@ -25,7 +25,6 @@ import {
 } from "../../slices/currentUser/currentUser";
 import useOpen from "../../hooks/useOpen";
 import useQuerySnackbar from "../../hooks/useQuerySnackbar";
-import routes from "../../constants/routes.json";
 import usePaginate from "../../hooks/usePaginate";
 import { selectLocale } from "../../slices/language";
 import { useMusicsQuery } from "../../reactQuery/query";
@@ -50,9 +49,7 @@ const New: React.FC = () => {
   const history = useHistory();
   const match = useRouteMatch<{ id: string }>();
   const id = Number(match.params.id);
-  const route = `${routes.USERS}/${currentUser?.id || "undefinde"}${
-    routes.MUSICS
-  }`;
+  const route = `/users/${currentUser?.id || "undefinde"}/musics`;
   // notistack
   const { onError } = useQuerySnackbar();
   // react-query

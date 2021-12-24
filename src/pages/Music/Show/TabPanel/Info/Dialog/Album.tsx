@@ -27,15 +27,15 @@ import { setHeaders } from "../../../../../../slices/currentUser/currentUser";
 import { IAlbum, IAlbumMusic, IMusic } from "../../../../../../interfaces";
 import useOpen from "../../../../../../hooks/useOpen";
 import useQuerySnackbar from "../../../../../../hooks/useQuerySnackbar";
-import queryKey from "../../../../../../constants/queryKey.json";
 import {
   deleteAlbumMusic,
   postAlbumMusic,
 } from "../../../../../../axios/axios";
 import { selectLocale } from "../../../../../../slices/language";
 import { useAlbumsQuery } from "../../../../../../reactQuery/query";
+import { ShowProps } from "../../../interface";
 
-const Album: React.FC = () => {
+const Album: React.FC<ShowProps> = ({ queryKey }: ShowProps) => {
   const [inputValue, setInputValue] = useState("");
   const [open, handleOpen, handleClose] = useOpen();
   // use-debounce
@@ -59,11 +59,11 @@ const Album: React.FC = () => {
   const queryClient = useQueryClient();
   // react-intl
   const intl = useIntl();
-  const music = queryClient.getQueryData<IMusic>([queryKey.MUSIC, id]);
+  const music = queryClient.getQueryData<IMusic>(queryKey);
   const handleCreateSuccess = (res: AxiosResponse<IAlbumMusic>) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id],
+      queryKey,
       (prev) =>
         prev && {
           ...prev,
@@ -77,7 +77,7 @@ const Album: React.FC = () => {
   ) => {
     dispatch(setHeaders(res.headers));
     queryClient.setQueryData<IMusic | undefined>(
-      [queryKey.MUSIC, id],
+      queryKey,
       (prev) =>
         prev && {
           ...prev,
